@@ -10,7 +10,8 @@ import DynamicImage from "@/components/DynamicImage";
 import BackToTopButton from "@/components/BackToTopButton";
 import GumroadFollowForm from "@/components/GumroadFollowForm";
 import ExpertiseItemCard from "@/components/ExpertiseItemCard";
-import ContactForm from "@/components/ContactForm"; // Import the new ContactForm component
+import ContactForm from "@/components/ContactForm";
+import SectionHeading from "@/components/SectionHeading"; // Import the new SectionHeading component
 
 const LandingPage = () => {
   useSmoothScroll();
@@ -58,7 +59,7 @@ const LandingPage = () => {
             />
           </div>
           <div className="text-center md:text-left space-y-8">
-            <h2 className="text-4xl font-bold text-brand-primary">About Daniele Buatti</h2>
+            <SectionHeading className="md:text-left">About Daniele Buatti</SectionHeading>
             <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
               For over 12 years, I've been a Music Director, Pianist, Arranger, Vocal Coach, and Educator. I offer a unique blend of artistic leadership and evidence-based methods, training versatile, industry-ready performers and communicators. My experience spans professional music theatre, vocal pedagogy, tertiary education, and holistic somatic practices. My focus is on high-quality, embodied coaching and innovative performance curricula, helping artists express themselves through a holistic approach that connects breath, body, and mind for truly embodied performance.
             </p>
@@ -74,7 +75,7 @@ const LandingPage = () => {
               </a>
             </Button>
             <div className="grid grid-cols-1 gap-6 text-left">
-              <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary">
+              <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
                     <GraduationCap className="h-6 w-6" />
@@ -146,9 +147,9 @@ const LandingPage = () => {
 
         {/* Who I Work With Section */}
         <section className="max-w-6xl mx-auto text-center space-y-10">
-          <h2 className="text-4xl font-bold text-brand-primary">Who I Work With</h2>
+          <SectionHeading>Who I Work With</SectionHeading>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
-            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
+            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
               <CardHeader className="p-0 pb-4">
                 <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
                   <Mic className="h-6 w-6" />
@@ -159,7 +160,7 @@ const LandingPage = () => {
                 Achieve technical mastery, expressive freedom, and integrated musical skill to truly shine.
               </CardContent>
             </Card>
-            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
+            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
               <CardHeader className="p-0 pb-4">
                 <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
                   <Lightbulb className="h-6 w-6" />
@@ -170,7 +171,7 @@ const LandingPage = () => {
                 Cultivate confident, impactful communication and authentic stage presence that captivates your audience.
               </CardContent>
             </Card>
-            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
+            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
               <CardHeader className="p-0 pb-4">
                 <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
                   <Camera className="h-6 w-6" />
@@ -181,7 +182,7 @@ const LandingPage = () => {
                 Refine performances for film, stage, auditions, and streaming platforms with nuanced presence and authenticity.
               </CardContent>
             </Card>
-            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
+            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
               <CardHeader className="p-0 pb-4">
                 <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
                   <HeartHandshake className="h-6 w-6" />
@@ -199,24 +200,24 @@ const LandingPage = () => {
 
         {/* My Approach Section */}
         <section id="approach" className="max-w-4xl mx-auto space-y-10">
-          <h2 className="text-4xl font-bold text-center text-brand-primary">My Embodied Holistic Approach</h2>
+          <SectionHeading>My Embodied Holistic Approach</SectionHeading>
           <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center">
             All my teachings are informed by Buddhist and yogic philosophies, fostering a heart-centred, process-oriented journey focused on truth and transformation, not just the destination.
           </p>
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4">
+            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
               <CardTitle className="text-2xl text-brand-primary">1. Embodiment & Alignment</CardTitle>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
                 Rooted in Kinesiology, Yoga, and Somatic Therapy, we release tension, improve posture, and find effortless breath control. Free your body to support your voice, instrument, and presence naturally, cultivating a deeper connection between mind and body.
               </CardContent>
             </Card>
-            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4">
+            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
               <CardTitle className="text-2xl text-brand-primary">2. Mindset & Performance Coaching</CardTitle>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
                 Utilising Mindfulness and therapeutic techniques, we manage nerves, setbacks, and creative blocks. Build consistency and unwavering confidence in practice, on stage, or on camera, understanding your mind to overcome performance anxiety.
               </CardContent>
             </Card>
-            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4">
+            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
               <CardTitle className="text-2xl text-brand-primary">3. Integrated Skill Development</CardTitle>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
                 Voice, piano, public speaking, acting, on-camera presence—tailored to your goals. Coaching is practical, creative, and always aligned with your unique vision and desired impact, helping you refine repertoire and improve musicianship.
@@ -232,9 +233,9 @@ const LandingPage = () => {
 
         {/* Sessions & Availability Section */}
         <section id="sessions" className="max-w-4xl mx-auto text-center space-y-10">
-          <h2 className="text-4xl font-bold text-brand-primary">Sessions & Availability</h2>
+          <SectionHeading>Sessions & Availability</SectionHeading>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
-            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
+            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
               <CardHeader className="p-0 pb-4">
                 <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
                   <CalendarDays className="h-6 w-6" />
@@ -245,7 +246,7 @@ const LandingPage = () => {
                 Experience personalised 1:1 coaching tailored to your unique journey. Whether it's vocal mastery (breath work, body integration, repertoire, audition prep), supportive piano lessons (musicianship, theory), or integrated body-voice work, sessions are available in flexible 30, 45, 60, or 90-minute durations to perfectly fit your schedule and goals.
               </CardContent>
             </Card>
-            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
+            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
               <CardHeader className="p-0 pb-4">
                 <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
                   <Users className="h-6 w-6" />
@@ -256,7 +257,7 @@ const LandingPage = () => {
                 Join the "Body Voice Sound Workshop" for movement, improvisation, and sound exploration, or specialised group sessions for public speaking and on-camera presence.
               </CardContent>
             </Card>
-            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
+            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
               <CardHeader className="p-0 pb-4">
                 <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
                   <Monitor className="h-6 w-6" />
@@ -277,10 +278,10 @@ const LandingPage = () => {
 
         {/* Buattiverse Section */}
         <section className="max-w-4xl mx-auto text-center space-y-10">
-          <h2 className="text-4xl font-bold text-brand-primary flex items-center justify-center gap-3">
+          <SectionHeading className="flex items-center justify-center gap-3">
             <Music className="h-8 w-8" />
             Explore Buattiverse: Sheet Music & Backing Tracks
-          </h2>
+          </SectionHeading>
           <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
             Welcome to Buattiverse — your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources tailored for performers, educators, and creatives. Whether you're looking for detailed backing vocal arrangements or resources to bring your ensemble to life, you're in the right place to elevate your musical projects.
           </p>
@@ -301,27 +302,27 @@ const LandingPage = () => {
 
         {/* Why Work With Me Section */}
         <section id="why-me" className="max-w-4xl mx-auto text-center space-y-10">
-          <h2 className="text-4xl font-bold text-brand-primary">Why Work With Me?</h2>
+          <SectionHeading>Why Work With Me?</SectionHeading>
           <ul className="grid md:grid-cols-2 gap-6 text-left text-lg text-brand-dark/80 dark:text-brand-light/80">
-            <li className="flex items-start gap-3 p-4 bg-brand-light dark:bg-brand-dark shadow-md rounded-lg border border-brand-secondary">
+            <li className="flex items-start gap-3 p-4 bg-brand-light dark:bg-brand-dark shadow-md rounded-lg border border-brand-secondary hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
               <CheckCircle2 className="h-6 w-6 text-brand-primary flex-shrink-0 mt-1" />
               <div>
                 <strong className="text-brand-primary">Holistic Expertise:</strong> Voice, piano, public speaking, acting, on-camera, performance coaching, kinesiology, mindset.
               </div>
             </li>
-            <li className="flex items-start gap-3 p-4 bg-brand-light dark:bg-brand-dark shadow-md rounded-lg border border-brand-secondary">
+            <li className="flex items-start gap-3 p-4 bg-brand-light dark:bg-brand-dark shadow-md rounded-lg border border-brand-secondary hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
               <CheckCircle2 className="h-6 w-6 text-brand-primary flex-shrink-0 mt-1" />
               <div>
                 <strong className="text-brand-primary">Embodiment-Based:</strong> Build strength and skill without tension or burnout, rooted in Kinesiology, Yoga, and Somatic Therapy.
               </div>
             </li>
-            <li className="flex items-start gap-3 p-4 bg-brand-light dark:bg-brand-dark shadow-md rounded-lg border border-brand-secondary">
+            <li className="flex items-start gap-3 p-4 bg-brand-light dark:bg-brand-dark shadow-md rounded-lg border border-brand-secondary hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
               <CheckCircle2 className="h-6 w-6 text-brand-primary flex-shrink-0 mt-1" />
               <div>
                 <strong className="text-brand-primary">Results-Oriented:</strong> Clients leave feeling more confident, expressive, and capable across all performance and communication domains.
               </div>
             </li>
-            <li className="flex items-start gap-3 p-4 bg-brand-light dark:bg-brand-dark shadow-md rounded-lg border border-brand-secondary">
+            <li className="flex items-start gap-3 p-4 bg-brand-light dark:bg-brand-dark shadow-md rounded-lg border border-brand-secondary hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
               <CheckCircle2 className="h-6 w-6 text-brand-primary flex-shrink-0 mt-1" />
               <div>
                 <strong className="text-brand-primary">Creative Freedom:</strong> Integrates technique with improvisation, artistry, and authentic self-expression for any medium.
@@ -333,9 +334,9 @@ const LandingPage = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
         {/* Testimonials Section */}
-        <section className="max-w-6xl mx-auto text-center space-y-10">
-          <h2 className="text-4xl font-bold text-brand-primary">What My Clients Say</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <section className="max-w-6xl mx-auto text-center space-y-10 py-16 bg-brand-secondary/20 dark:bg-brand-dark/50 rounded-lg">
+          <SectionHeading>What My Clients Say</SectionHeading>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
             <TestimonialCard
               quote="Daniele's coaching transformed my vocal stamina and stage presence. Truly holistic!"
               author="Sarah L."
@@ -358,7 +359,7 @@ const LandingPage = () => {
 
         {/* Call to Action / Booking */}
         <section id="contact" className="text-center max-w-4xl mx-auto space-y-8">
-          <h2 className="text-4xl font-bold text-brand-primary">Ready to Transform Your Artistry & Presence?</h2>
+          <SectionHeading>Ready to Transform Your Artistry & Presence?</SectionHeading>
           <p className="text-xl text-brand-dark/80 dark:text-brand-light/80">
             Let’s chat about your goals and find the best coaching path for you. Take the first step towards unlocking your full potential. Your journey to embodied performance starts here.
           </p>
@@ -370,7 +371,7 @@ const LandingPage = () => {
             </Button>
           </div>
           <div className="mt-8">
-            <ContactForm /> {/* Integrate the new ContactForm here */}
+            <ContactForm />
           </div>
           <div className="flex flex-col sm:flex-row justify-center gap-6 mt-8 text-brand-dark/80 dark:text-brand-light/80">
             <a href="mailto:daniele.buatti@gmail.com" className="flex items-center gap-2 hover:text-brand-primary transition-colors text-lg">
