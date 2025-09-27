@@ -25,29 +25,32 @@ const AdditionalProgramsSection: React.FC = () => {
         />
 
         <AdditionalProgramBanner
-          title="Professional Piano Backing Tracks by Daniele for Musicals, Auditions & Performances"
+          title="Professional Piano Backing Tracks by Daniele for Musicals, Auditions & Performances" // Main title for right column
           description="High-quality, meticulously crafted tracks for singers and performers, streamlining your preparation."
           link="https://pianobackingsbydaniele.vercel.app"
           linkText="Discover Piano Backings"
           bgColorClass="bg-brand-magenta" // Reverted to pink background
-          leftColumnTextColorClass="text-brand-yellow" // Set to yellow for title
-          subtitleTextColorClass="text-brand-light" // Set to white for subtitle
+          leftColumnTextColorClass="text-brand-yellow" // Set to yellow for left column title
+          leftColumnTitle="Piano Backings" // Content for left column
+          leftColumnSubtitle="by Daniele" // Content for left column
+          subtitleTextColorClass="text-brand-light" // Set to white for left column subtitle and right column subtitle
           rightColumnTextColorClass="text-brand-light" // Set to white for description and button
           buttonBgClass="bg-black hover:bg-black/90 text-brand-light"
-          logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png" // Piano icon logo
+          // logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png" // Removed logoSrc as it's not in the image for this layout
           className="rounded-none"
           bottomStripColorClass="bg-brand-magenta"
           titleInLeftColumn={true} // Title and logo in left column
         />
 
         <AdditionalProgramBanner
-          title="Resonance with Daniele"
-          subtitle="A Joyful Pop-Up Choir for All Voices"
+          title="Resonance with Daniele" // Main title for right column
+          subtitle="A Joyful Pop-Up Choir for All Voices" // Subtitle for right column
           description="Join a welcoming community to sing, connect, and shine, with no experience needed."
           link="https://resonance-with-daniele.vercel.app"
           linkText="Join Resonance Choir"
           bgColorClass="bg-brand-blue"
           leftColumnTextColorClass="text-brand-light"
+          leftColumnTitle="Resonance with Daniele" // Content for left column
           rightColumnTextColorClass="text-brand-light"
           buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
           className="rounded-none"

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface AdditionalProgramBannerProps {
-  title: string;
+  title: string; // Main title for the right column
   description: string;
   link: string;
   linkText: string;
@@ -16,14 +16,17 @@ interface AdditionalProgramBannerProps {
   buttonVariant?: "default" | "secondary" | "destructive" | "outline" | "ghost" | "link";
   buttonBgClass?: string;
   buttonTextClass?: string;
-  logoSrc?: string; // This is for an IMAGE logo
+  logoSrc?: string; // Logo for the right column (mobile) or default layout
   className?: string;
   backgroundImageSrc?: string; // Full banner background image
   bottomStripColorClass?: string;
   // New prop to indicate if the main title should be in the left 2/3 column
   titleInLeftColumn?: boolean;
-  subtitle?: string; // New prop for subtitle
+  subtitle?: string; // Subtitle for the right column
   subtitleTextColorClass?: string; // New prop for subtitle text color
+  // NEW PROPS for content specifically in the left column when titleInLeftColumn is true
+  leftColumnTitle?: string;
+  leftColumnSubtitle?: string;
 }
 
 const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
@@ -45,6 +48,8 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   titleInLeftColumn = false,
   subtitle, // Destructure new prop
   subtitleTextColorClass, // Destructure new prop
+  leftColumnTitle, // New prop
+  leftColumnSubtitle, // New prop
 }) => {
   const buttonElement = (
     <Button asChild size="lg" variant={buttonVariant} className={cn("text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
@@ -54,34 +59,35 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
     </Button>
   );
 
-  const isResonanceBanner = title.includes("Resonance with Daniele"); // Check for "Resonance with Daniele" in the title
-  const titleFontClass = isResonanceBanner ? "font-display" : "";
+  // Determine font class for the main title (right column)
+  const isMainTitleResonance = title.includes("Resonance with Daniele");
+  const mainTitleFontClass = isMainTitleResonance ? "font-display" : "";
+
+  // Determine font class for the left column title
+  const isLeftColumnResonance = leftColumnTitle?.includes("Resonance with Daniele");
+  const leftColumnTitleFontClass = isLeftColumnResonance ? "font-display" : "";
 
   return (
     <div className={cn("relative w-full flex flex-col overflow-hidden", className)}>
       <div className="flex-grow grid grid-cols-1 md:grid-cols-3 h-[450px]">
         {titleInLeftColumn ? (
           <>
-            {/* Left Half (Logo/Title) - Visible on md and up, takes 2/3 width */}
+            {/* Left Half (Custom Content) - Visible on md and up, takes 2/3 width */}
             <div className={cn(
               "relative z-10 hidden md:flex flex-col items-center justify-center p-8 text-center space-y-4 md:col-span-2 h-full",
               bgColorClass || "bg-brand-dark",
               leftColumnTextColorClass || textColorClass
             )}>
-              {logoSrc && (
-                <img
-                  src={logoSrc}
-                  alt={`${title} logo`}
-                  className="mx-auto h-20 object-contain mb-2"
-                />
+              {/* Display leftColumnTitle and leftColumnSubtitle if provided */}
+              {leftColumnTitle && (
+                <h3 className={cn("text-4xl font-bold leading-tight", leftColumnTitleFontClass)}>{leftColumnTitle}</h3>
               )}
-              {/* Show only the main title in the left column */}
-              {!logoSrc && (
-                <h3 className={cn("text-4xl font-bold leading-tight", titleFontClass)}>{title}</h3>
+              {leftColumnSubtitle && (
+                <p className={cn("text-xl", subtitleTextColorClass)}>{leftColumnSubtitle}</p>
               )}
             </div>
 
-            {/* Right Half (Title, Subtitle, Description and Button) - Full width on mobile, 1/3 on md and up */}
+            {/* Right Half (Main Title, Subtitle, Description and Button) - Full width on mobile, 1/3 on md and up */}
             <div className={cn(
               "relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6 md:col-span-1 h-full",
               bgColorClass || "bg-brand-dark",
@@ -95,10 +101,11 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
                     className="mx-auto h-16 object-contain md:hidden" // Only show logo on mobile in right column
                   />
                 )}
-                {/* Combine title and subtitle for the right column header */}
-                <h3 className={cn("text-4xl font-bold leading-tight", titleFontClass)} style={{ color: rightColumnTextColorClass ? undefined : 'inherit' }}>
-                  {title} {subtitle && <span className={cn(subtitleTextColorClass)}>{subtitle}</span>}
+                {/* Main title and subtitle for the right column */}
+                <h3 className={cn("text-4xl font-bold leading-tight", mainTitleFontClass)} style={{ color: rightColumnTextColorClass ? undefined : 'inherit' }}>
+                  {title}
                 </h3>
+                {subtitle && <p className={cn("text-xl", subtitleTextColorClass)}>{subtitle}</p>}
               </div>
               <p className="text-lg max-w-3xl mx-auto">{description}</p>
               {buttonElement}
@@ -130,7 +137,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
                   className="mx-auto h-20 object-contain mb-4"
                 />
               )}
-              <h3 className={cn("text-4xl font-bold", titleFontClass)}>{title}</h3>
+              <h3 className={cn("text-4xl font-bold", mainTitleFontClass)}>{title}</h3>
               <p className="text-lg max-w-3xl mx-auto">{description}</p>
               {buttonElement}
             </div>
