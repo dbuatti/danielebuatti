@@ -69,7 +69,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
 
   return (
     <div className={cn("relative w-full flex flex-col overflow-hidden", className)}>
-      <div className="flex-grow grid grid-cols-1 md:grid-cols-3 h-[350px]"> {/* Changed height from 450px to 350px */}
+      <div className="flex-grow grid grid-cols-1 md:grid-cols-3 h-[280px]"> {/* Changed height from 350px to 280px */}
         {titleInLeftColumn ? (
           <>
             {/* Left Half (Custom Content) - Visible on md and up, takes 2/3 width */}
