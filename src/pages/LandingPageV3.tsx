@@ -442,46 +442,48 @@ const LandingPageV3 = () => {
             </a>
           </div>
         </section>
-
-        {/* Additional Programs Section - New Banners */}
-        <section className="space-y-0 shadow-lg rounded-xl overflow-hidden"> {/* Removed max-w-7xl mx-auto */}
-          <SectionHeading>Explore More from Daniele</SectionHeading>
-          <div className="space-y-0 shadow-lg rounded-xl overflow-hidden">
-            <AdditionalProgramBanner
-              title="Explore Buattiverse: Sheet Music & Backing Tracks"
-              description="Your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources."
-              link="https://buattiverse.gumroad.com/"
-              linkText="Visit Buattiverse Store"
-              bgColorClass="bg-brand-dark"
-              textColorClass="text-brand-light"
-              buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-              logoSrc="/gumroad.png"
-              className="rounded-t-xl"
-            />
-            <AdditionalProgramBanner
-              title="Piano Backings by Daniele"
-              description="High-quality piano backing tracks for singers and performers."
-              link="https://pianobackingsbydaniele.vercel.app"
-              linkText="Discover Piano Backings"
-              bgColorClass="bg-brand-magenta"
-              textColorClass="text-brand-dark"
-              buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
-              logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png"
-              className="!rounded-none"
-            />
-            <AdditionalProgramBanner
-              title="Resonance Choir with Daniele"
-              description="Join a vibrant community exploring voice, movement, and sound."
-              link="https://resonance-with-daniele.vercel.app"
-              linkText="Join Resonance Choir"
-              bgColorClass="bg-brand-blue"
-              textColorClass="text-brand-light"
-              buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
-              className="rounded-b-xl"
-            />
-          </div>
-        </section>
       </main>
+
+      {/* Additional Programs Section - Moved outside <main> */}
+      <section className="space-y-0 shadow-lg rounded-xl overflow-hidden mt-12"> {/* Added mt-12 for spacing */}
+        <div className="container mx-auto px-4 mb-10"> {/* Added container for heading */}
+          <SectionHeading>Explore More from Daniele</SectionHeading>
+        </div>
+        <div className="space-y-0 shadow-lg rounded-xl overflow-hidden">
+          <AdditionalProgramBanner
+            title="Explore Buattiverse: Sheet Music & Backing Tracks"
+            description="Your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources."
+            link="https://buattiverse.gumroad.com/"
+            linkText="Visit Buattiverse Store"
+            bgColorClass="bg-brand-dark"
+            textColorClass="text-brand-light"
+            buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
+            logoSrc="/gumroad.png"
+            className="rounded-t-xl"
+          />
+          <AdditionalProgramBanner
+            title="Piano Backings by Daniele"
+            description="High-quality piano backing tracks for singers and performers."
+            link="https://pianobackingsbydaniele.vercel.app"
+            linkText="Discover Piano Backings"
+            bgColorClass="bg-brand-magenta"
+            textColorClass="text-brand-dark"
+            buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
+            logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png"
+            className="!rounded-none"
+          />
+          <AdditionalProgramBanner
+            title="Resonance Choir with Daniele"
+            description="Join a vibrant community exploring voice, movement, and sound."
+            link="https://resonance-with-daniele.vercel.app"
+            linkText="Join Resonance Choir"
+            bgColorClass="bg-brand-blue"
+            textColorClass="text-brand-light"
+            buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
+            className="rounded-b-xl"
+          />
+        </div>
+      </section>
       <Footer />
       <BackToTopButton />
     </div>
