@@ -159,6 +159,7 @@ const LivePianoServicesPage: React.FC = () => {
             opts={{
               align: "start",
               loop: true,
+              dragFree: true, // Added to allow more fluid trackpad interaction
             }}
             setApi={setApi} // Set the API instance
             className="w-full"
