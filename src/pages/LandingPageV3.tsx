@@ -55,9 +55,9 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <FullBioSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <AdditionalProgramsSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" /> {/* Added separator before the moved CallToActionSection */}
-        <CallToActionSection />
+        <CallToActionSection /> {/* Moved CallToActionSection here */}
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <AdditionalProgramsSection /> {/* AdditionalProgramsSection now comes after */}
       </main>
       <Footer />
       <BackToTopButton />
