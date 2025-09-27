@@ -358,7 +358,7 @@ const LandingPageV3 = () => {
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
                 Receive world-class coaching from anywhere in the world. Ideal for refining on-camera performance, mastering virtual presentations, quick online audition cuts, or Kinesiology to uncover subconscious patterns and cultivate a holistic mind-body connection. Plus, complimentary 15-minute discovery calls are always available to explore your potential.
-              </Content>
+              </CardContent>
             </Card>
           </div>
           <p className="text-xl font-medium text-brand-primary mt-8">
