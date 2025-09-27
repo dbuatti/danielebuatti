@@ -104,9 +104,8 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
           </div>
 
           {/* Right side: Description and Button */}
-          <div className="md:col-span-1 text-center md:text-right space-y-6">
-            {/* Added md:max-w-prose and md:ml-auto to the paragraph for right alignment and width control */}
-            <p className="text-lg md:max-w-prose md:ml-auto">{description}</p>
+          <div className="md:col-span-1 text-center md:text-center space-y-6"> {/* Changed md:text-right to md:text-center */}
+            <p className="text-lg max-w-3xl mx-auto">{description}</p> {/* Changed md:max-w-prose md:ml-auto to max-w-3xl mx-auto */}
             {buttonElement}
           </div>
         </div>
