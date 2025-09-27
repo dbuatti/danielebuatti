@@ -37,16 +37,20 @@ const Navbar = () => {
       }, 100); // 100ms delay
     } else if (href.startsWith('#')) {
       event.preventDefault(); // Prevent default browser jump for anchor links
+      event.stopPropagation(); // Prevent global useSmoothScroll from interfering
       const id = href.substring(1);
       const element = document.getElementById(id);
       if (element) {
-        // Small delay to ensure sheet closes visually before scroll, and element is ready
-        setTimeout(() => {
-          element.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        }, 100);
+        // Calculate scroll position with offset for sticky header
+        const headerOffset = 64; // Height of the sticky Navbar (h-16 = 64px)
+        const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+        const offsetPosition = elementPosition - headerOffset;
+
+        // Use window.scrollTo for precise offset control
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth"
+        });
       }
     }
   };
