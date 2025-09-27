@@ -4,72 +4,36 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
 import { navLinks } from "@/constants/navigation";
 import { useActiveSection } from "@/hooks/use-active-section";
 import { cn } from "@/lib/utils";
 import DynamicImage from "@/components/DynamicImage";
-import { useTheme } from "next-themes";
+import { useTheme } from "next-themes"; // Import useTheme
 
 const Navbar = () => {
   const activeSection = useActiveSection();
   const location = useLocation();
-  const navigate = useNavigate();
-  const { theme } = useTheme();
-  const [isSheetOpen, setIsSheetOpen] = React.useState(false);
+  const { theme } = useTheme(); // Get the current theme
 
+  // Determine logo sources based on theme
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
-  const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
-
-  const handleLinkClick = (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    setIsSheetOpen(false); // Close the sheet immediately
-
-    if (href.startsWith('/')) {
-      event.preventDefault(); // Prevent default for internal routes to use navigate
-      // Add a small delay to allow the sheet to visually close before navigating
-      setTimeout(() => {
-        if (href === '/' && location.pathname === '/') {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        } else {
-          navigate(href);
-        }
-      }, 100); // 100ms delay
-    } else if (href.startsWith('#')) {
-      event.preventDefault(); // Prevent default browser jump for anchor links
-      event.stopPropagation(); // Prevent global useSmoothScroll from interfering
-      const id = href.substring(1);
-      const element = document.getElementById(id);
-      if (element) {
-        // Calculate scroll position with offset for sticky header
-        const headerOffset = 64; // Height of the sticky Navbar (h-16 = 64px)
-        const elementPosition = element.getBoundingClientRect().top + window.scrollY;
-        const offsetPosition = elementPosition - headerOffset;
-
-        // Use a small timeout to ensure the sheet has closed and DOM is stable before scrolling
-        setTimeout(() => {
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: "smooth"
-          });
-        }, 50); // 50ms delay
-      }
-    }
-  };
+  const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png"; // Corrected this line
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
           <DynamicImage
-            src={brandSymbolSrc}
+            src={brandSymbolSrc} // Dynamic source
             alt="Daniele Buatti Brand Symbol"
             className="h-8 w-auto"
             width={32}
             height={32}
           />
           <DynamicImage
-            src={textLogoSrc}
+            src={textLogoSrc} // Dynamic source
             alt="Daniele Buatti Logo"
             className="h-12 w-auto"
             width={220}
@@ -97,20 +61,20 @@ const Navbar = () => {
               );
             } else {
               return (
-                <a key={link.name} href={link.href} className={commonClasses} onClick={(e) => handleLinkClick(e, link.href)}>
+                <a key={link.name} href={link.href} className={commonClasses}>
                   {link.name}
                 </a>
               );
             }
           })}
           <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-            <a href="#sessions" onClick={(e) => handleLinkClick(e, "#sessions")}>Book a Lesson</a>
+            <a href="#sessions">Book a Lesson</a>
           </Button>
           <ThemeToggle />
         </nav>
         <div className="flex items-center md:hidden">
           <ThemeToggle />
-          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+          <Sheet>
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
@@ -137,20 +101,20 @@ const Navbar = () => {
 
                   if (link.href.startsWith('/')) {
                     return (
-                      <Link key={link.name} to={link.href} className={commonClasses} onClick={(e) => handleLinkClick(e, link.href)}>
+                      <Link key={link.name} to={link.href} className={commonClasses}>
                         {link.name}
                       </Link>
                     );
                   } else {
                     return (
-                      <a key={link.name} href={link.href} className={commonClasses} onClick={(e) => handleLinkClick(e, link.href)}>
+                      <a key={link.name} href={link.href} className={commonClasses}>
                         {link.name}
                       </a>
                     );
                   }
                 })}
                 <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
-                  <a href="#sessions" onClick={(e) => handleLinkClick(e, "#sessions")}>Book a Lesson</a>
+                  <a href="#sessions">Book a Lesson</a>
                 </Button>
               </nav>
             </SheetContent>

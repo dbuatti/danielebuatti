@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Separator } from "@/components/ui/separator";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
-// import { useSmoothScroll } from "@/hooks/use-smooth-scroll"; // Temporarily commented out
+import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 
 // Import new modular sections
 import HeroSection from "@/components/pages/landing-page-v3/HeroSection";
@@ -23,29 +23,7 @@ import AdditionalProgramsSection from "@/components/pages/landing-page-v3/Additi
 import FullBioSection from "@/components/pages/landing-page-v3/FullBioSection";
 
 const LandingPageV3: React.FC = () => {
-  // useSmoothScroll(); // Temporarily commented out
-
-  useEffect(() => {
-    // Check for hash on initial load
-    if (window.location.hash) {
-      const id = window.location.hash.substring(1);
-      const element = document.getElementById(id);
-      if (element) {
-        // Use a timeout to ensure the element has rendered and the layout is stable
-        setTimeout(() => {
-          // Calculate scroll position with offset for sticky header
-          const headerOffset = 64; // Height of the sticky Navbar (h-16 = 64px)
-          const elementPosition = element.getBoundingClientRect().top + window.scrollY;
-          const offsetPosition = elementPosition - headerOffset;
-
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: "smooth"
-          });
-        }, 100); // Small delay
-      }
-    }
-  }, []); // Run only once on mount
+  useSmoothScroll();
 
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
