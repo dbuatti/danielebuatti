@@ -54,6 +54,9 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
     </Button>
   );
 
+  const isResonanceBanner = title === "Resonance with Daniele A Joyful Pop-Up Choir for All Voices";
+  const titleFontClass = isResonanceBanner ? "font-serif" : "";
+
   return (
     <div className={cn("relative w-full flex flex-col overflow-hidden", className)}> {/* Removed fixed height from here */}
       <div className="flex-grow grid grid-cols-1 md:grid-cols-3 h-[450px]"> {/* Main content area fixed to 450px */}
@@ -74,7 +77,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
               )}
               {/* Show only the main title in the left column */}
               {!logoSrc && (
-                <h3 className="text-4xl font-bold leading-tight">{title}</h3>
+                <h3 className={cn("text-4xl font-bold leading-tight", titleFontClass)}>{title}</h3>
               )}
             </div>
 
@@ -93,7 +96,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
                   />
                 )}
                 {/* Combine title and subtitle for the right column header */}
-                <h3 className="text-4xl font-bold leading-tight" style={{ color: rightColumnTextColorClass ? undefined : 'inherit' }}>
+                <h3 className={cn("text-4xl font-bold leading-tight", titleFontClass)} style={{ color: rightColumnTextColorClass ? undefined : 'inherit' }}>
                   {title} {subtitle && <span className={cn(subtitleTextColorClass)}>{subtitle}</span>}
                 </h3>
               </div>
@@ -127,7 +130,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
                   className="mx-auto h-20 object-contain mb-4"
                 />
               )}
-              <h3 className="text-4xl font-bold">{title}</h3>
+              <h3 className={cn("text-4xl font-bold", titleFontClass)}>{title}</h3>
               <p className="text-lg max-w-3xl mx-auto">{description}</p>
               {buttonElement}
             </div>
