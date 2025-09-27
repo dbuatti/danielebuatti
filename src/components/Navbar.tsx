@@ -25,23 +25,20 @@ const Navbar = () => {
   const handleLinkClick = (href: string) => {
     setIsSheetOpen(false); // Close the sheet first
 
-    // Add a small delay to allow the sheet to close before attempting to scroll/navigate
-    setTimeout(() => {
-      if (href === '/') {
-        // If already on the home page, just scroll to top
-        if (location.pathname === '/') {
+    // For internal routes, navigate immediately after a small delay to allow sheet to close.
+    // For anchor links, we let the default <a> tag behavior (and useSmoothScroll) handle it.
+    if (href.startsWith('/')) {
+      setTimeout(() => {
+        if (href === '/' && location.pathname === '/') {
           window.scrollTo({ top: 0, behavior: "smooth" });
         } else {
-          // Otherwise, navigate to home
-          navigate('/');
+          navigate(href);
         }
-      } else if (href.startsWith('/')) {
-        // For other internal routes (e.g., /live-piano-services)
-        navigate(href);
-      }
-      // For anchor links (href.startsWith('#')), the useSmoothScroll hook will handle it
-      // because we are not preventing default here. The <a> tag's default behavior will trigger it.
-    }, 100); // 100ms delay
+      }, 100); // Small delay for visual closing of sheet before navigation
+    }
+    // If it's an anchor link (href.startsWith('#')), no explicit action needed here
+    // beyond closing the sheet. The browser's default <a> tag behavior will trigger
+    // the hash change, which the useSmoothScroll hook will then intercept and make smooth.
   };
 
   return (
@@ -122,9 +119,9 @@ const Navbar = () => {
                       : "text-brand-dark dark:text-brand-light"
                   );
 
-                  // For all links in the mobile menu, call handleLinkClick to close the sheet
-                  // The actual navigation/scrolling will then be handled by the Link/a tag's default behavior
-                  // and the useSmoothScroll hook for anchors.
+                  // For all links in the mobile menu, call handleLinkClick to close the sheet.
+                  // The actual navigation/scrolling for anchor links will be handled by the <a> tag's default behavior
+                  // and the useSmoothScroll hook.
                   if (link.href.startsWith('/')) {
                     return (
                       <Link key={link.name} to={link.href} className={commonClasses} onClick={() => handleLinkClick(link.href)}>
