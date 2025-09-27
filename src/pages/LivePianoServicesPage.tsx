@@ -119,22 +119,28 @@ const LivePianoServicesPage: React.FC = () => {
   return (
     <div className="live-piano-theme min-h-screen bg-livePiano-background text-livePiano-light">
       {/* Header */}
-      <header className="bg-livePiano-darker py-4 px-6 md:px-12 border-b border-livePiano-border/20">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-end gap-4">
-          <Button asChild className="bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light px-6 py-2">
-            <Link to="/">Back to Services</Link>
-          </Button>
-        </div>
-        {/* Main Header */}
-        <div className="max-w-7xl mx-auto flex items-center justify-between mt-4">
-          <Link to="/" className="text-livePiano-light hover:text-livePiano-primary transition-colors">
-            <Home size={24} />
-          </Link>
-          <div className="flex flex-col items-center">
-            <img src="/gold-36.png" alt="Daniele Buatti Logo" className="h-16 md:h-20" />
-            <h1 className="text-xl md:text-2xl font-bold text-livePiano-light tracking-widest mt-2">DANIELE BUATTI</h1>
+      <header className="bg-livePiano-darker py-4 px-6 md:px-12"> {/* Removed border-b */}
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          {/* Left section: Home and Back to Services */}
+          <div className="flex items-center gap-4">
+            <Link to="/" className="text-livePiano-light hover:text-livePiano-primary transition-colors">
+              <Home size={24} />
+            </Link>
+            <Button asChild className="bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light px-4 py-2 text-sm">
+              <Link to="/">Back to Services</Link>
+            </Button>
           </div>
-          <div className="w-6"></div> {/* Spacer for alignment */}
+
+          {/* Center section: Logo and Title */}
+          <div className="flex flex-col items-center absolute left-1/2 -translate-x-1/2">
+            <img src="/gold-36.png" alt="Daniele Buatti Logo" className="h-16 md:h-20" />
+            <h1 className="text-xl md:text-2xl font-montserrat font-light uppercase text-livePiano-light tracking-widest mt-2">
+              Daniele Buatti
+            </h1>
+          </div>
+
+          {/* Right section: Spacer (or future elements) */}
+          <div className="w-6"></div>
         </div>
       </header>
 
@@ -176,26 +182,23 @@ const LivePianoServicesPage: React.FC = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="left-2" /> {/* Adjusted position */}
-            <CarouselNext className="right-2" /> {/* Adjusted position */}
+            <CarouselPrevious className="-left-8 hidden md:flex" /> {/* Adjusted position and hidden on small screens */}
+            <CarouselNext className="-right-8 hidden md:flex" /> {/* Adjusted position and hidden on small screens */}
           </Carousel>
         </section>
 
         {/* Main Content */}
         <section className="text-center mb-16">
-          <h2 className="text-5xl font-extrabold text-livePiano-primary mb-6 leading-tight">
+          <h2 className="text-5xl font-libre-baskerville font-bold text-livePiano-primary mb-6 leading-tight">
             AN UNFORGETTABLE MUSICAL EXPERIENCE
           </h2>
-          <p className="text-xl text-livePiano-light/90 max-w-3xl mx-auto mb-8">
-            Indulge in the elegance of live piano music and elevate your wedding, corporate event, or private party to new heights with the incomparable talent of Daniele Buatti. Daniele's versatile, refined performance creates an unforgettable atmosphere, with a repertoire spanning classical, jazz, and pop genres.
+          <p className="text-xl font-libre-baskerville text-livePiano-light/90 max-w-3xl mx-auto mb-8">
+            Indulge in the elegance of live piano music and elevate your wedding, corporate event, or private party to new heights with the incomparable talent of Daniele Buatti.
           </p>
-          <p className="text-lg text-livePiano-light/80 max-w-2xl mx-auto mb-8">
-            CONTACT DANIELE TODAY TO BOOK HIS SERVICES AND EXPERIENCE THE UNFORGETTABLE MAGIC OF LIVE PIANO MUSIC AT YOUR EVENT.
+          <p className="text-lg font-libre-baskerville text-livePiano-light/80 max-w-2xl mx-auto mb-8">
+            Daniele's versatile, refined performance creates an unforgettable atmosphere, with a repertoire spanning classical, jazz, and pop genres. Contact Daniele today to book his services and experience the unforgettable magic of live piano music at your event.
           </p>
-          <div className="space-y-2 text-lg">
-            <p>Explore Daniele's media <a href="https://example.com/media" target="_blank" rel="noopener noreferrer" className="text-livePiano-primary hover:underline">here</a></p>
-            <p>Discover the Blue Velvet Style <a href="https://example.com/blue-velvet" target="_blank" rel="noopener noreferrer" className="text-livePiano-primary hover:underline">here</a></p>
-          </div>
+          {/* Removed broken links */}
         </section>
 
         {/* Contact Form */}
@@ -342,7 +345,7 @@ const LivePianoServicesPage: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-livePiano-darker py-8 text-center border-t border-livePiano-border/20 mt-12">
+      <footer className="bg-livePiano-darker py-8 text-center mt-12"> {/* Removed border-t */}
         <div className="max-w-7xl mx-auto px-4">
           <img src="/bowtie-logo.png" alt="Bowtie Logo" className="h-12 mx-auto mb-4" />
           <p className="text-livePiano-light/80 text-lg flex items-center justify-center gap-4">

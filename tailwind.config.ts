@@ -19,8 +19,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Outfit", "sans-serif"], // Add Outfit to the sans-serif font stack
-        display: ["Roboto Slab", "serif"], // Add Roboto Slab for display text
+        sans: ["Outfit", "sans-serif"],
+        display: ["Roboto Slab", "serif"],
+        montserrat: ["Montserrat", "sans-serif"], // Added Montserrat
+        "libre-baskerville": ["Libre Baskerville", "serif"], // Added Libre Baskerville
       },
       colors: {
         border: "hsl(var(--border))",
