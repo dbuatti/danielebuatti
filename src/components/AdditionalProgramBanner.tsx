@@ -55,7 +55,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   );
 
   return (
-    <div className={cn("relative w-full min-h-[450px] overflow-hidden flex flex-col", className)}>
+    <div className={cn("relative w-full h-[450px] overflow-hidden flex flex-col", className)}>
       <div className="flex-grow grid grid-cols-1 md:grid-cols-3">
         {titleInLeftColumn ? (
           <>
