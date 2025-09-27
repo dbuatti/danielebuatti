@@ -21,26 +21,31 @@ const AdditionalProgramsSection: React.FC = () => {
           className="max-w-6xl"
         />
 
-        {/* FeaturedProgramCard for Piano Backings */}
-        <FeaturedProgramCard
+        {/* AdditionalProgramBanner for Piano Backings */}
+        <AdditionalProgramBanner
           title="Professional Piano Backing Tracks"
           description="High-quality, meticulously crafted tracks for singers and performers, streamlining your preparation."
           link="https://pianobackingsbydaniele.vercel.app"
           linkText="Discover Piano Backings"
-          backgroundImageSrc="/pianobackingslogo.png"
+          bgColorClass="bg-brand-magenta"
+          logoSrc="/pianobackingslogo.png"
+          textColorClass="text-brand-dark"
+          buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
           className="max-w-6xl"
+          titleInLeftColumn={false}
         />
 
-        {/* NEW: FeaturedProgramCard for Resonance with Daniele */}
-        <FeaturedProgramCard
+        {/* AdditionalProgramBanner for Resonance with Daniele */}
+        <AdditionalProgramBanner
           title="Resonance with Daniele: A Joyful Pop-Up Choir for All Voices"
           description="Join a welcoming community to sing, connect, and shine, with no experience needed."
           link="https://resonance-with-daniele.vercel.app"
           linkText="Join Resonance Choir"
-          // Using a suitable image from public
-          backgroundImageSrc="/danielepianolaugh.jpeg"
+          bgColorClass="bg-brand-blue"
+          textColorClass="text-brand-light"
+          buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
           className="max-w-6xl"
-          buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
+          titleInLeftColumn={false}
         />
 
         {/* Creative Exploration Pill Banner */}

@@ -49,7 +49,7 @@
     --brand-light: 0 0% 100%; /* FFFFFF */
     --brand-secondary: 210 40% 90%; /* A6CCE8 */
     --brand-blue: 227 63% 33%; /* New blue from image */
-    --brand-magenta: 300 100% 50%; /* New pink from image */
+    --brand-magenta: 324 100% 50%; /* Updated to match provided pink */
     --brand-yellow: 48 100% 50%; /* Bright Yellow */
   }
 
@@ -97,7 +97,7 @@
     --brand-light: 0 0% 100%; /* FFFFFF */
     --brand-secondary: 210 40% 90%; /* A6CCE8 */
     --brand-blue: 227 63% 33%; /* New blue from image */
-    --brand-magenta: 300 100% 50%; /* New pink from image */
+    --brand-magenta: 324 100% 50%; /* Updated to match provided pink */
     --brand-yellow: 48 100% 50%; /* Bright Yellow */
   }
 }
