@@ -26,12 +26,12 @@ const AdditionalProgramsSection: React.FC = () => {
 
         <AdditionalProgramBanner
           title="Professional Piano Backing Tracks"
-          description="For Musicals, Auditions & Performances. High-quality piano backing tracks for singers and performers." {/* Restored description */}
+          description="For Musicals, Auditions & Performances. High-quality piano backing tracks for singers and performers."
           link="https://pianobackingsbydaniele.vercel.app"
           linkText="Discover Piano Backings"
-          bgColorClass="bg-brand-magenta" {/* Reverted to pink background */}
-          leftColumnTextColorClass="text-brand-yellow" {/* Set to yellow for title */}
-          rightColumnTextColorClass="text-brand-light" {/* Set to white for description and button */}
+          bgColorClass="bg-brand-dark"
+          leftColumnTextColorClass="text-brand-light"
+          rightColumnTextColorClass="text-brand-light"
           buttonBgClass="bg-black hover:bg-black/90 text-brand-light"
           logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png" // Piano icon logo
           className="rounded-none"
