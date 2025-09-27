@@ -19,9 +19,9 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
       <Navbar />
-      <main className="container mx-auto px-4 py-12 space-y-16"> {/* Reduced overall padding */}
+      <main className="container mx-auto px-4 py-12 space-y-20"> {/* Adjusted overall padding */}
         {/* Hero Section */}
-        <section id="home" className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto py-12">
+        <section id="home" className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto py-16"> {/* Consistent section padding */}
           <div className="text-center md:text-left space-y-6">
             <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-brand-primary">
               Unlock Your True Voice. Master Your Presence.
@@ -38,9 +38,9 @@ const LandingPage = () => {
           </div>
           <div className="flex justify-center md:justify-end">
             <DynamicImage
-              src="/headshot.jpeg" // Updated image source to your headshot
-              alt="Daniele Buatti professional headshot" // Updated alt text
-              className="w-full max-w-lg h-auto rounded-xl shadow-2xl object-cover border-2 border-brand-secondary" // Adjusted styling for hero image
+              src="/headshot.jpeg"
+              alt="Daniele Buatti professional headshot"
+              className="w-full max-w-lg h-auto rounded-xl shadow-2xl object-cover border-2 border-brand-secondary"
               width={600}
               height={600}
             />
@@ -50,12 +50,12 @@ const LandingPage = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
         {/* About Me Section */}
-        <section id="about" className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+        <section id="about" className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto py-16"> {/* Consistent section padding */}
           <div className="flex justify-center md:justify-start">
             <DynamicImage
-              src="/pinkcarpet.jpg" // Updated image source
-              alt="Daniele Buatti professional headshot on pink carpet" // Updated alt text
-              className="w-full max-w-sm h-auto rounded-xl shadow-2xl object-cover border-2 border-brand-secondary" // Added border
+              src="/pinkcarpet.jpg"
+              alt="Daniele Buatti professional headshot on pink carpet"
+              className="w-full max-w-md h-auto rounded-xl shadow-2xl object-cover border-2 border-brand-secondary" // Adjusted max-w for better balance
               width={400}
               height={500}
             />
@@ -148,7 +148,7 @@ const LandingPage = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
         {/* Greenroom Awards Image - Moved to its own section */}
-        <section className="max-w-4xl mx-auto text-center py-8"> {/* Reduced padding */}
+        <section className="max-w-4xl mx-auto text-center py-12 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-lg"> {/* Added background */}
           <DynamicImage
             src="/greenroom.jpeg"
             alt="Daniele Buatti at the Greenroom Awards"
@@ -164,7 +164,7 @@ const LandingPage = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
         {/* Who I Work With Section */}
-        <section className="max-w-6xl mx-auto text-center space-y-10">
+        <section className="max-w-6xl mx-auto text-center space-y-10 py-16"> {/* Consistent section padding */}
           <SectionHeading>Who I Work With</SectionHeading>
           <div className="flex justify-center mb-8">
             <DynamicImage
@@ -224,7 +224,7 @@ const LandingPage = () => {
         </section>
 
         {/* New Section for Daniele Smile Host BU Image */}
-        <section className="max-w-4xl mx-auto text-center py-8"> {/* Reduced padding */}
+        <section className="max-w-4xl mx-auto text-center py-12 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-lg"> {/* Added background */}
           <DynamicImage
             src="/daniele-smile-host-bu.jpeg"
             alt="Daniele Buatti smiling and interacting with a host at Broadway Unplugged"
@@ -237,7 +237,7 @@ const LandingPage = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
         {/* New Section for Daniele Calm at Piano Image */}
-        <section className="max-w-4xl mx-auto text-center py-8"> {/* Reduced padding */}
+        <section className="max-w-4xl mx-auto text-center py-12 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-lg"> {/* Added background */}
           <DynamicImage
             src="/danielecalmatpiano.jpeg"
             alt="Daniele Buatti playing piano with eyes closed, deeply in the moment"
@@ -248,7 +248,7 @@ const LandingPage = () => {
         </section>
 
         {/* My Approach Section */}
-        <section id="approach" className="max-w-4xl mx-auto space-y-10">
+        <section id="approach" className="max-w-4xl mx-auto space-y-10 py-16"> {/* Consistent section padding */}
           <SectionHeading>My Embodied Holistic Approach</SectionHeading>
           <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center">
             All my teachings are informed by Buddhist and yogic philosophies, fostering a heart-centred, process-oriented journey focused on truth and transformation, not just the destination.
@@ -279,7 +279,7 @@ const LandingPage = () => {
         </section>
 
         {/* New Section for Tulips Image */}
-        <section className="max-w-4xl mx-auto text-center py-8"> {/* Reduced padding */}
+        <section className="max-w-4xl mx-auto text-center py-12 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-lg"> {/* Added background */}
           <DynamicImage
             src="/tulips.jpeg"
             alt="Daniele Buatti smiling with tulips in a garden"
@@ -292,7 +292,7 @@ const LandingPage = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
         {/* Sessions & Availability Section */}
-        <section id="sessions" className="max-w-4xl mx-auto text-center space-y-10">
+        <section id="sessions" className="max-w-4xl mx-auto text-center space-y-10 py-16"> {/* Consistent section padding */}
           <SectionHeading>Sessions & Availability</SectionHeading>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
@@ -337,7 +337,7 @@ const LandingPage = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
         {/* Buattiverse Section */}
-        <section className="max-w-4xl mx-auto text-center space-y-10">
+        <section className="max-w-4xl mx-auto text-center space-y-10 py-16"> {/* Consistent section padding */}
           <SectionHeading className="flex items-center justify-center gap-3">
             <Music className="h-8 w-8" />
             Explore Buattiverse: Sheet Music & Backing Tracks
@@ -361,7 +361,7 @@ const LandingPage = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
         {/* Why Work With Me Section */}
-        <section id="why-me" className="max-w-4xl mx-auto text-center space-y-10">
+        <section id="why-me" className="max-w-4xl mx-auto text-center space-y-10 py-16"> {/* Consistent section padding */}
           <SectionHeading>Why Work With Me?</SectionHeading>
           <ul className="grid md:grid-cols-2 gap-6 text-left text-lg text-brand-dark/80 dark:text-brand-light/80">
             <li className="flex items-start gap-3 p-4 bg-brand-light dark:bg-brand-dark shadow-md rounded-lg border border-brand-secondary hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
@@ -418,7 +418,7 @@ const LandingPage = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
         {/* Call to Action / Booking */}
-        <section id="contact" className="text-center max-w-4xl mx-auto space-y-8">
+        <section id="contact" className="text-center max-w-4xl mx-auto space-y-8 py-16"> {/* Consistent section padding */}
           <SectionHeading>Ready to Transform Your Artistry & Presence?</SectionHeading>
           <p className="text-xl text-brand-dark/80 dark:text-brand-light/80">
             Let’s chat about your goals and find the best coaching path for you. Take the first step towards unlocking your full potential. Your journey to embodied performance starts here.
