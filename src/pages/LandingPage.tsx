@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle2, CalendarDays, Mic, Piano, Brain, HeartHandshake, Users, Monitor, Mail, Phone, GraduationCap, Award, Lightbulb, Camera, Volume2 } from "lucide-react";
+import { CheckCircle2, CalendarDays, Mic, Piano, Brain, HeartHandshake, Users, Monitor, Mail, Phone, GraduationCap, Award, Lightbulb, Camera, Volume2, Music } from "lucide-react"; // Added Music icon
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TestimonialCard from "@/components/TestimonialCard";
@@ -233,6 +233,34 @@ const LandingPage = () => {
           </div>
           <p className="text-xl font-medium text-brand-primary mt-8">
             📅 November spots are now open. DM to claim your session or schedule a discovery session.
+          </p>
+        </section>
+
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+
+        {/* Buattiverse Section */}
+        <section className="max-w-4xl mx-auto text-center space-y-10">
+          <h2 className="text-4xl font-bold text-brand-primary flex items-center justify-center gap-3">
+            <Music className="h-8 w-8" />
+            Explore Buattiverse: Sheet Music & Backing Tracks
+          </h2>
+          <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
+            Welcome to Buattiverse — your source for professional vocal transcriptions, SATB arrangements, and music resources tailored for performers, educators, and creatives. Whether you're looking for detailed backing vocal arrangements or resources to bring your ensemble to life, you're in the right place.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+            <Button size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+              <a href="https://buattiverse.gumroad.com/" target="_blank" rel="noopener noreferrer">
+                Visit Buattiverse Store
+              </a>
+            </Button>
+            <Button size="lg" variant="outline" className="border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+              <a href="https://buattiverse.gumroad.com/subscribe" target="_blank" rel="noopener noreferrer">
+                Subscribe for Updates
+              </a>
+            </Button>
+          </div>
+          <p className="text-md text-brand-dark/70 dark:text-brand-light/70 mt-4">
+            Have a custom request or question? Get in touch: <a href="mailto:info@danielebuatti.com" className="underline hover:text-brand-primary">info@danielebuatti.com</a>
           </p>
         </section>
 
