@@ -43,6 +43,18 @@ const AdditionalProgramsSection: React.FC = () => {
           className="max-w-6xl"
           buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
         />
+
+        {/* NEW: FeaturedProgramCard for Live Piano Services */}
+        <FeaturedProgramCard
+          title="An Unforgettable Musical Experience"
+          description="Indulge in the elegance of live piano music and elevate your wedding, corporate event, or private party to new heights with the incomparable talent of Daniele Buatti. Daniele's versatile, refined performance creates an unforgettable atmosphere, with a repertoire spanning classical, jazz, and pop genres."
+          link="#contact" {/* Linking to contact section for inquiries */}
+          linkText="Enquire Now!"
+          backgroundImageSrc="/piano-landingpageV2_edited.jpg"
+          className="max-w-6xl"
+          buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
+          overlayColorClass="bg-black/50" // Slightly darker overlay for better text contrast
+        />
       </div>
     </section>
   );
