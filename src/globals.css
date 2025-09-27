@@ -51,6 +51,7 @@
     --brand-blue: 227 63% 33%; /* New blue from image */
     --brand-magenta: 324 100% 50%; /* Updated to match provided pink (FF0099) */
     --brand-yellow: 48 100% 50%; /* Bright Yellow */
+    --brand-dark-alt: 222.2 84% 8%; /* Slightly lighter dark blue for contrast */
   }
 
   .dark {
@@ -99,6 +100,7 @@
     --brand-blue: 227 63% 33%; /* New blue from image */
     --brand-magenta: 324 100% 50%; /* Updated to match provided pink (FF0099) */
     --brand-yellow: 48 100% 50%; /* Bright Yellow */
+    --brand-dark-alt: 240 100% 5%; /* Slightly lighter dark blue for contrast */
   }
 }
 

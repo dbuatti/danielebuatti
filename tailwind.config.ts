@@ -75,6 +75,7 @@ export default {
           blue: "hsl(var(--brand-blue))",
           magenta: "hsl(var(--brand-magenta))",
           yellow: "hsl(var(--brand-yellow))", // Added brand-yellow
+          "dark-alt": "hsl(var(--brand-dark-alt))", // Added new color
         },
       },
       borderRadius: {

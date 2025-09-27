@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,26 +11,39 @@ import { cn } from "@/lib/utils";
 import { Home, Mail, Phone } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel"; // Import Carousel components and CarouselApi type
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
+import { useForm } from "react-hook-form"; // Import useForm
+import { zodResolver } from "@hookform/resolvers/zod"; // Import zodResolver
+import * as z from "zod"; // Import zod
+import { // Import form components
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+// Define the form schema using zod
+const formSchema = z.object({
+  firstName: z.string().min(1, { message: "First name is required." }),
+  lastName: z.string().min(1, { message: "Last name is required." }),
+  email: z.string().email({ message: "Please enter a valid email address." }),
+  phone: z.string().optional(),
+  suburb: z.string().optional(),
+  eventDescription: z.string().min(10, { message: "Please describe your event (at least 10 characters)." }).max(500, { message: "Event description must not be longer than 500 characters." }),
+  pianoType: z.string().optional(),
+});
 
 const LivePianoServicesPage: React.FC = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    suburb: '',
-    eventDescription: '',
-    pianoType: '',
-  });
   const [loading, setLoading] = useState(false);
 
   const [api, setApi] = useState<CarouselApi>();
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0); // New state for the large image index
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const galleryImages = [
-    "/blacktie.avif", // Added blacktie.avif as the first image
+    "/blacktie.avif",
     "/blacktie1.avif",
     "/blacktie2.avif",
     "/blacktie3.avif",
@@ -39,7 +52,20 @@ const LivePianoServicesPage: React.FC = () => {
     "/426062_bc3659f68c1c4c6ca899497d7350a91f~mv2.avif",
   ];
 
-  // Effect to update selectedImageIndex when carousel API changes
+  // Initialize react-hook-form
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      suburb: '',
+      eventDescription: '',
+      pianoType: '',
+    },
+  });
+
   useEffect(() => {
     if (!api) {
       return;
@@ -52,25 +78,11 @@ const LivePianoServicesPage: React.FC = () => {
     });
   }, [api]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSelectChange = (name: string, value: string) => {
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleContactSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleContactSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
+    const loadingToastId = toast.loading("Sending your inquiry...");
 
-    const { firstName, lastName, email, phone, suburb, eventDescription, pianoType } = formData;
-
-    if (!firstName || !lastName || !email || !eventDescription) {
-      toast.error("Please fill in all required fields (First Name, Last Name, Email, Event Description).");
-      setLoading(false);
-      return;
-    }
+    const { firstName, lastName, email, phone, suburb, eventDescription, pianoType } = values;
 
     const messageContent = `
       Event Description: ${eventDescription}
@@ -79,32 +91,29 @@ const LivePianoServicesPage: React.FC = () => {
       Suburb: ${suburb || 'Not provided'}
     `;
 
-    const { data, error } = await supabase
-      .from('contact_messages')
-      .insert([
-        {
-          name: `${firstName} ${lastName}`,
-          email: email,
-          message: messageContent,
-        },
-      ]);
+    try {
+      const { error } = await supabase
+        .from('contact_messages')
+        .insert([
+          {
+            name: `${firstName} ${lastName}`,
+            email: email,
+            message: messageContent,
+          },
+        ]);
 
-    if (error) {
+      if (error) {
+        throw error;
+      }
+
+      toast.success('Inquiry sent successfully! Daniele will be in touch soon.', { id: loadingToastId });
+      form.reset(); // Reset the form after successful submission
+    } catch (error) {
       console.error('Error submitting contact form:', error);
-      toast.error('Failed to send inquiry. Please try again.');
-    } else {
-      toast.success('Inquiry sent successfully! Daniele will be in touch soon.');
-      setFormData({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        suburb: '',
-        eventDescription: '',
-        pianoType: '',
-      });
+      toast.error('Failed to send inquiry. Please try again.', { id: loadingToastId });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -147,9 +156,9 @@ const LivePianoServicesPage: React.FC = () => {
             opts={{
               align: "start",
               loop: true,
-              dragFree: true, // Added to allow more fluid trackpad interaction
+              dragFree: true,
             }}
-            setApi={setApi} // Set the API instance
+            setApi={setApi}
             className="w-full"
           >
             <CarouselContent className="-ml-4">
@@ -158,17 +167,17 @@ const LivePianoServicesPage: React.FC = () => {
                   <Card 
                     className={cn(
                       "bg-brand-dark-alt border-brand-secondary/30 rounded-xl overflow-hidden shadow-lg cursor-pointer",
-                      selectedImageIndex === index ? "border-4 border-brand-primary" : "" // Highlight selected image
+                      selectedImageIndex === index ? "border-4 border-brand-primary" : ""
                     )}
-                    onClick={() => api?.scrollTo(index)} // Click to select and scroll
+                    onClick={() => api?.scrollTo(index)}
                   >
                     <img src={imageSrc} alt={`Event ${index + 1}`} className="w-full h-48 object-cover" />
                   </Card>
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="left-4" />
-            <CarouselNext className="right-4" />
+            <CarouselPrevious className="left-2" /> {/* Adjusted position */}
+            <CarouselNext className="right-2" /> {/* Adjusted position */}
           </Carousel>
         </section>
 
@@ -184,84 +193,151 @@ const LivePianoServicesPage: React.FC = () => {
             CONTACT DANIELE TODAY TO BOOK HIS SERVICES AND EXPERIENCE THE UNFORGETTABLE MAGIC OF LIVE PIANO MUSIC AT YOUR EVENT.
           </p>
           <div className="space-y-2 text-lg">
-            <p>Media as link <a href="#" className="text-brand-primary hover:underline">here</a></p>
-            <p>Blue Velvet Style <a href="#" className="text-brand-primary hover:underline">here</a></p>
+            <p>Explore Daniele's media <a href="https://example.com/media" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline">here</a></p>
+            <p>Discover the Blue Velvet Style <a href="https://example.com/blue-velvet" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline">here</a></p>
           </div>
         </section>
 
         {/* Contact Form */}
         <section className="max-w-2xl mx-auto bg-brand-dark-alt p-8 rounded-xl shadow-2xl border border-brand-secondary/30">
           <h3 className="text-4xl font-bold text-center text-brand-light mb-8">Enquire now!</h3>
-          <form onSubmit={handleContactSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Input
-                type="text"
-                name="firstName"
-                placeholder="First name"
-                value={formData.firstName}
-                onChange={handleChange}
-                className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60"
-                required
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleContactSubmit)} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-brand-light">First Name *</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Your First Name"
+                          {...field}
+                          className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-brand-light">Last Name *</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Your Last Name"
+                          {...field}
+                          className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-brand-light">Email *</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="your@email.com"
+                        {...field}
+                        className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              <Input
-                type="text"
-                name="lastName"
-                placeholder="Last name"
-                value={formData.lastName}
-                onChange={handleChange}
-                className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60"
-                required
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-brand-light">Phone</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="tel"
+                        placeholder="Your Phone Number"
+                        {...field}
+                        className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <Input
-              type="email"
-              name="email"
-              placeholder="Email *"
-              value={formData.email}
-              onChange={handleChange}
-              className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60"
-              required
-            />
-            <Input
-              type="tel"
-              name="phone"
-              placeholder="Phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60"
-            />
-            <Input
-              type="text"
-              name="suburb"
-              placeholder="Suburb"
-              value={formData.suburb}
-              onChange={handleChange}
-              className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60"
-            />
-            <Textarea
-              name="eventDescription"
-              placeholder="Tell us about your event"
-              value={formData.eventDescription}
-              onChange={handleChange}
-              rows={5}
-              className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60"
-              required
-            />
-            <Select onValueChange={(value) => handleSelectChange('pianoType', value)} value={formData.pianoType}>
-              <SelectTrigger className="w-full bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60">
-                <SelectValue placeholder="What piano do you have at your home?" />
-              </SelectTrigger>
-              <SelectContent className="bg-brand-dark border-brand-secondary text-brand-light">
-                <SelectItem value="grand-piano">Grand Piano</SelectItem>
-                <SelectItem value="upright-piano">Upright Piano</SelectItem>
-                <SelectItem value="digital-piano">Digital Piano</SelectItem>
-                <SelectItem value="none">None (I need one provided)</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button type="submit" size="lg" className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg py-3 rounded-full" disabled={loading}>
-              {loading ? 'Sending...' : 'Send'}
-            </Button>
-          </form>
+              <FormField
+                control={form.control}
+                name="suburb"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-brand-light">Suburb</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Your Suburb"
+                        {...field}
+                        className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="eventDescription"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-brand-light">Tell us about your event *</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Describe your event, date, time, and any special requests..."
+                        {...field}
+                        rows={5}
+                        className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="pianoType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-brand-light">What piano do you have at your home?</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="w-full bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60">
+                          <SelectValue placeholder="Select an option" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="bg-brand-dark border-brand-secondary text-brand-light">
+                        <SelectItem value="grand-piano">Grand Piano</SelectItem>
+                        <SelectItem value="upright-piano">Upright Piano</SelectItem>
+                        <SelectItem value="digital-piano">Digital Piano</SelectItem>
+                        <SelectItem value="none">None (I need one provided)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" size="lg" className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg py-3 rounded-full" disabled={loading}>
+                {loading ? 'Sending...' : 'Send'}
+              </Button>
+            </form>
+          </Form>
         </section>
       </main>
 
