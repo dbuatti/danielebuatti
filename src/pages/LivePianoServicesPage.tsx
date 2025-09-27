@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { Home, Mail, Phone } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"; // Import Carousel components
 
 const LivePianoServicesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -80,6 +81,15 @@ const LivePianoServicesPage: React.FC = () => {
     setLoading(false);
   };
 
+  const galleryImages = [
+    "/blacktie1.avif",
+    "/blacktie2.avif",
+    "/blacktie3.avif",
+    "/blacktie4.avif",
+    "/other.avif",
+    "/426062_bc3659f68c1c4c6ca899497d7350a91f~mv2.avif",
+  ];
+
   return (
     <div className="min-h-screen bg-brand-dark text-brand-light">
       {/* Header */}
@@ -120,19 +130,27 @@ const LivePianoServicesPage: React.FC = () => {
           </div>
         </section>
 
-        {/* Image Gallery */}
+        {/* Image Carousel */}
         <section className="mb-16">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="bg-brand-dark-alt border-brand-secondary/30 rounded-xl overflow-hidden shadow-lg">
-              <img src="/gallery-img-1.jpeg" alt="Event 1" className="w-full h-48 object-cover" />
-            </Card>
-            <Card className="bg-brand-dark-alt border-brand-secondary/30 rounded-xl overflow-hidden shadow-lg">
-              <img src="/gallery-img-2.jpeg" alt="Event 2" className="w-full h-48 object-cover" />
-            </Card>
-            <Card className="bg-brand-dark-alt border-brand-secondary/30 rounded-xl overflow-hidden shadow-lg">
-              <img src="/gallery-img-3.jpeg" alt="Event 3" className="w-full h-48 object-cover" />
-            </Card>
-          </div>
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-4">
+              {galleryImages.map((imageSrc, index) => (
+                <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                  <Card className="bg-brand-dark-alt border-brand-secondary/30 rounded-xl overflow-hidden shadow-lg">
+                    <img src={imageSrc} alt={`Event ${index + 1}`} className="w-full h-48 object-cover" />
+                  </Card>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-4" />
+            <CarouselNext className="right-4" />
+          </Carousel>
         </section>
 
         {/* Main Content */}
