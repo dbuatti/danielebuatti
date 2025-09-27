@@ -455,6 +455,7 @@ const LandingPageV3 = () => {
               bgColorClass="bg-brand-dark"
               textColorClass="text-brand-light"
               buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
+              logoSrc="/gumroad.png"
             />
             <AdditionalProgramBanner
               title="Piano Backings by Daniele"
@@ -464,6 +465,7 @@ const LandingPageV3 = () => {
               bgColorClass="bg-brand-magenta"
               textColorClass="text-brand-dark"
               buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
+              logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png"
             />
             <AdditionalProgramBanner
               title="Resonance Choir with Daniele"
