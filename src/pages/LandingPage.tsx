@@ -5,8 +5,9 @@ import { CheckCircle2, CalendarDays, Mic, Piano, Brain, HeartHandshake, Users, M
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TestimonialCard from "@/components/TestimonialCard";
-import BackToTopButton from "@/components/BackToTopButton"; // Import BackToTopButton
+import BackToTopButton from "@/components/BackToTopButton";
 import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
+import DynamicImage from "@/components/DynamicImage"; // Import DynamicImage
 
 const LandingPage = () => {
   useSmoothScroll();
@@ -32,10 +33,11 @@ const LandingPage = () => {
             </Button>
           </div>
           <div className="flex justify-center md:justify-end">
-            <img
-              src="/public/placeholder.svg"
+            <DynamicImage
               alt="Daniele Buatti coaching a performer"
               className="w-full max-w-md h-auto rounded-xl shadow-2xl object-cover"
+              width={600}
+              height={400}
             />
           </div>
         </section>
@@ -45,10 +47,11 @@ const LandingPage = () => {
         {/* About Me Section */}
         <section id="about" className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
           <div className="flex justify-center md:justify-start">
-            <img
-              src="/public/placeholder.svg"
+            <DynamicImage
               alt="Daniele Buatti professional headshot"
               className="w-full max-w-sm h-auto rounded-xl shadow-2xl object-cover"
+              width={400}
+              height={500}
             />
           </div>
           <div className="text-center md:text-left space-y-8">
@@ -312,7 +315,7 @@ const LandingPage = () => {
         </section>
       </main>
       <Footer />
-      <BackToTopButton /> {/* Add BackToTopButton here */}
+      <BackToTopButton />
     </div>
   );
 };
