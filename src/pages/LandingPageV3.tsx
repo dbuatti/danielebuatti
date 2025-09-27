@@ -48,9 +48,9 @@ const LandingPageV3 = () => {
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
       <Navbar />
-      <main className="container mx-auto px-4 space-y-28"> {/* Increased overall spacing for V3 */}
+      <main className="container mx-auto px-4 space-y-16"> {/* Reduced overall spacing */}
         {/* Hero Section - Split Layout with Image */}
-        <section id="home" className="grid md:grid-cols-2 gap-16 items-center max-w-7xl mx-auto py-20">
+        <section id="home" className="grid md:grid-cols-2 gap-16 items-center max-w-7xl mx-auto py-16"> {/* Reduced padding */}
           <div className="text-center md:text-left space-y-8">
             <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-tight text-brand-primary">
               Unlock Your True Voice. Master Your Presence.
@@ -290,6 +290,8 @@ const LandingPageV3 = () => {
             “Daniele doesn’t just teach technique—he teaches how to inhabit your artistry and presence fully.”
           </p>
         </section>
+
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
         {/* Image Section: Tulips - with caption */}
         <section className="max-w-6xl mx-auto text-center py-12 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-xl shadow-lg">
