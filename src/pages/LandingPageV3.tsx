@@ -258,7 +258,7 @@ const LandingPageV3 = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
         {/* My Approach Section - Visualized with icons */}
-        <section id="approach" className="max-w-7xl mx-auto space-y-10 py-16">
+        <section id="approach" className="max-w-7xl mx-auto space-y-10 py-12"> {/* Changed py-16 to py-12 */}
           <SectionHeading>My Embodied Holistic Approach</SectionHeading>
           <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
             All my teachings are informed by Buddhist and yogic philosophies, fostering a heart-centred, process-oriented journey focused on truth and transformation, not just the destination.
@@ -291,10 +291,8 @@ const LandingPageV3 = () => {
           </p>
         </section>
 
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-
         {/* Image Section: Tulips - with caption */}
-        <section className="max-w-6xl mx-auto text-center py-12 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-xl shadow-lg">
+        <section className="max-w-6xl mx-auto text-center py-8 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-xl shadow-lg"> {/* Changed py-12 to py-8 */}
           <DynamicImage
             src="/tulips.jpeg"
             alt="Daniele Buatti smiling with tulips in a garden"
