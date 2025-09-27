@@ -1,6 +1,6 @@
 import React from "react";
 import { MadeWithDyad } from "@/components/made-with-dyad";
-import { Instagram, Youtube, Twitch, Mail, Phone, Link as LinkIcon, Piano } from "lucide-react";
+import { Instagram, Youtube, Twitch, Mail, Phone, Link as LinkIcon, Piano, Users, Facebook, Heart, MessageSquare, Newspaper, Coffee } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 const Footer = () => {
@@ -8,8 +8,14 @@ const Footer = () => {
     { name: "Instagram", href: "https://instagram.com/daniele.buatti", icon: Instagram },
     { name: "YouTube", href: "http://youtube.com/danielebuatti", icon: Youtube },
     { name: "Twitch", href: "https://twitch.tv/danielebuatti", icon: Twitch },
-    { name: "Piano Backings", href: "https://pianobackingsbydaniele.vercel.app", icon: Piano }, // Using Piano icon for piano backings
+    { name: "Piano Backings", href: "https://pianobackingsbydaniele.vercel.app", icon: Piano },
     { name: "Substack", href: "https://substack.com/@danielebuatti", icon: LinkIcon },
+    { name: "Resonance Choir", href: "https://resonance-with-daniele.vercel.app", icon: Users },
+    { name: "Facebook", href: "http://www.facebook.com/danielebuatti", icon: Facebook },
+    { name: "Patreon", href: "http://patreon.com/danielebuatti", icon: Heart },
+    { name: "Discord", href: "https://discord.gg/pfW8B3Fy", icon: MessageSquare },
+    { name: "Mailing List", href: "http://eepurl.com/hg2ptX", icon: Newspaper },
+    { name: "Buy Me a Coffee", href: "http://Buymeacoffee.com/danielebuatti", icon: Coffee },
   ];
 
   return (
