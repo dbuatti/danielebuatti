@@ -461,8 +461,8 @@ const LandingPageV3 = () => {
               description="High-quality piano backing tracks for singers and performers."
               link="https://pianobackingsbydaniele.vercel.app"
               linkText="Discover Piano Backings"
-              bgColorClass="bg-brand-secondary dark:bg-brand-secondary/30"
-              textColorClass="text-brand-dark dark:text-brand-light"
+              bgColorClass="bg-brand-magenta"
+              textColorClass="text-brand-dark"
               buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
             />
             <AdditionalProgramBanner
@@ -470,9 +470,9 @@ const LandingPageV3 = () => {
               description="Join a vibrant community exploring voice, movement, and sound."
               link="https://resonance-with-daniele.vercel.app"
               linkText="Join Resonance Choir"
-              bgColorClass="bg-brand-primary dark:bg-brand-primary/30"
-              textColorClass="text-brand-light dark:text-brand-dark"
-              buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
+              bgColorClass="bg-brand-blue"
+              textColorClass="text-brand-light"
+              buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
             />
           </div>
         </section>
