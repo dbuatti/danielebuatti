@@ -39,19 +39,12 @@ const AdditionalProgramsSection: React.FC = () => {
           description="Join a welcoming community to sing, connect, and shine, with no experience needed."
           link="https://resonance-with-daniele.vercel.app"
           linkText="Join Resonance Choir"
-          backgroundImageSrc="/conduct.jpeg" // Updated to conduct.jpeg
+          backgroundImageSrc="/conduct.jpeg"
           className="max-w-6xl"
           buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
         />
 
-        {/* Creative Exploration Pill Banner */}
-        <PillBanner
-          title="Ignite Your Creative Spark"
-          description="Discover personalized coaching to unleash your passion for music, performance, and authentic self-expression."
-          link="#contact"
-          backgroundImageSrc="/danielepianolaugh.jpeg"
-          className="max-w-6xl"
-        />
+        {/* Creative Exploration Pill Banner - REMOVED */}
       </div>
     </section>
   );
