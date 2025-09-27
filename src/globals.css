@@ -45,7 +45,7 @@
 
     /* Custom Brand Colors */
     --brand-primary: 320 60% 57%; /* DB4CA3 */
-    --brand-dark: 240 100% 0%; /* 00022D */
+    --brand-dark: 0 0% 0%; /* Pure Black */
     --brand-light: 0 0% 100%; /* FFFFFF */
     --brand-secondary: 210 40% 90%; /* A6CCE8 */
     --brand-blue: 227 63% 33%; /* New blue from image */
