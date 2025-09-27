@@ -44,12 +44,12 @@ const AdditionalProgramsSection: React.FC = () => {
           description="Join a vibrant community exploring voice, movement, and sound."
           link="https://resonance-with-daniele.vercel.app"
           linkText="Join Resonance Choir"
-          bgColorClass="bg-brand-blue" {/* Changed to blue */}
+          bgColorClass="bg-brand-blue"
           leftColumnTextColorClass="text-brand-light"
           rightColumnTextColorClass="text-brand-light"
           buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
           className="rounded-none"
-          bottomStripColorClass="bg-brand-blue" {/* Changed to blue */}
+          bottomStripColorClass="bg-brand-blue"
           titleInLeftColumn={true} // Title in left column
         />
       </div>
