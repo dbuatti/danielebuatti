@@ -30,6 +30,7 @@ const LivePianoServicesPage: React.FC = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0); // New state for the large image index
 
   const galleryImages = [
+    "/blacktie.avif", // Added blacktie.avif as the first image
     "/blacktie1.avif",
     "/blacktie2.avif",
     "/blacktie3.avif",
@@ -132,12 +133,7 @@ const LivePianoServicesPage: React.FC = () => {
         {/* Main Video Section (kept as placeholder) */}
         <section className="mb-16">
           <div className="relative w-full h-[400px] md:h-[600px] bg-gray-800 rounded-xl overflow-hidden shadow-2xl flex items-center justify-center">
-            {/* Placeholder for video */}
-            <img
-              src="/blacktie.avif" // Using the same image as a placeholder for the video
-              alt="Daniele Buatti playing piano"
-              className="absolute inset-0 w-full h-full object-cover object-center"
-            />
+            {/* Placeholder for video - removed the specific blacktie.avif img tag */}
             <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
               <Button variant="ghost" className="text-white text-6xl opacity-80 hover:opacity-100 transition-opacity">
                 ▶
