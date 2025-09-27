@@ -35,10 +35,20 @@ const Navbar = () => {
           navigate(href);
         }
       }, 100); // 100ms delay
+    } else if (href.startsWith('#')) {
+      event.preventDefault(); // Prevent default browser jump for anchor links
+      const id = href.substring(1);
+      const element = document.getElementById(id);
+      if (element) {
+        // Small delay to ensure sheet closes visually before scroll, and element is ready
+        setTimeout(() => {
+          element.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }, 100);
+      }
     }
-    // For anchor links (href.startsWith('#')), DO NOT call event.preventDefault() here.
-    // Let the default <a> tag behavior proceed, which will then be intercepted by useSmoothScroll.
-    // The useSmoothScroll hook will handle the smooth scrolling and preventDefault itself.
   };
 
   return (
@@ -81,14 +91,14 @@ const Navbar = () => {
               );
             } else {
               return (
-                <a key={link.name} href={link.href} className={commonClasses}>
+                <a key={link.name} href={link.href} className={commonClasses} onClick={(e) => handleLinkClick(e, link.href)}>
                   {link.name}
                 </a>
               );
             }
           })}
           <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-            <a href="#sessions">Book a Lesson</a>
+            <a href="#sessions" onClick={(e) => handleLinkClick(e, "#sessions")}>Book a Lesson</a>
           </Button>
           <ThemeToggle />
         </nav>
