@@ -434,7 +434,7 @@ const LandingPageV3 = () => {
             <ContactForm />
           </div>
           <div className="flex flex-col sm:flex-row justify-center gap-6 mt-8 text-brand-dark/80 dark:text-brand-light/80">
-            <a href="mailto:daniele.buatti@gmail.com" className="flex items-center gap-2 hover:text-brand-primary transition-colors text-lg">
+            <a href="mailto:info@danielebuatti.com" className="flex items-center gap-2 hover:text-brand-primary transition-colors text-lg">
               <Mail className="h-6 w-6" /> daniele.buatti@gmail.com
             </a>
             <a href="tel:+61424174067" className="flex items-center gap-2 hover:text-brand-primary transition-colors text-lg">
@@ -444,7 +444,7 @@ const LandingPageV3 = () => {
         </section>
 
         {/* Additional Programs Section - New Banners */}
-        <section className="max-w-7xl mx-auto space-y-8 py-16">
+        <section className="space-y-0 shadow-lg rounded-xl overflow-hidden"> {/* Removed max-w-7xl mx-auto */}
           <SectionHeading>Explore More from Daniele</SectionHeading>
           <div className="space-y-0 shadow-lg rounded-xl overflow-hidden">
             <AdditionalProgramBanner

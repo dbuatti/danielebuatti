@@ -15,7 +15,7 @@ interface AdditionalProgramBannerProps {
   buttonBgClass?: string;
   buttonTextClass?: string;
   logoSrc?: string;
-  className?: string; // Added className to props
+  className?: string;
 }
 
 const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
@@ -29,11 +29,11 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   buttonBgClass = "bg-brand-light hover:bg-brand-light/90 text-brand-dark",
   buttonTextClass = "",
   logoSrc,
-  className, // Destructure className
+  className,
 }) => {
   return (
-    <div className={cn("w-full py-16 px-4 text-center", bgColorClass, textColorClass, className)}>
-      <div className="container mx-auto space-y-6">
+    <div className={cn("w-full py-16 text-center", bgColorClass, textColorClass, className)}>
+      <div className="container mx-auto px-4 space-y-6"> {/* Added container and px-4 here */}
         {logoSrc && (
           <img
             src={logoSrc}
