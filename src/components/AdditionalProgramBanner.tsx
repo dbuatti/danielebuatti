@@ -72,8 +72,13 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
                   className="mx-auto h-20 object-contain mb-2" // Adjusted margin
                 />
               )}
-              <h3 className="text-5xl font-bold">{title}</h3> {/* Always show text title */}
-              {subtitle && <p className={cn("text-2xl font-medium", subtitleTextColorClass || leftColumnTextColorClass || textColorClass)}>{subtitle}</p>} {/* New subtitle */}
+              {/* Only render text title/subtitle if no logoSrc is provided, to avoid duplication */}
+              {!logoSrc && (
+                <>
+                  <h3 className="text-5xl font-bold">{title}</h3>
+                  {subtitle && <p className={cn("text-2xl font-medium", subtitleTextColorClass || leftColumnTextColorClass || textColorClass)}>{subtitle}</p>}
+                </>
+              )}
             </div>
 
             {/* Right Half (Description and Button) - Full width on mobile, 1/3 on md and up */}
@@ -91,8 +96,12 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
                     className="mx-auto h-16 object-contain"
                   />
                 )}
-                <h3 className="text-4xl font-bold">{title}</h3>
-                {subtitle && <p className={cn("text-xl font-medium", subtitleTextColorClass || rightColumnTextColorClass || textColorClass)}>{subtitle}</p>}
+                {!logoSrc && (
+                  <>
+                    <h3 className="text-4xl font-bold">{title}</h3>
+                    {subtitle && <p className={cn("text-xl font-medium", subtitleTextColorClass || rightColumnTextColorClass || textColorClass)}>{subtitle}</p>}
+                  </>
+                )}
               </div>
               <p className="text-lg max-w-3xl mx-auto">{description}</p>
               {buttonElement}
