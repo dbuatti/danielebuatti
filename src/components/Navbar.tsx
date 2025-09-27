@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom"; // Import useLocation
 import { ThemeToggle } from "./ThemeToggle";
 import { navLinks } from "@/constants/navigation";
 import { useActiveSection } from "@/hooks/use-active-section";
@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils"; // Import cn utility
 
 const Navbar = () => {
   const activeSection = useActiveSection();
+  const location = useLocation(); // Get current location
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
@@ -24,8 +25,10 @@ const Navbar = () => {
               href={link.href}
               className={cn(
                 "text-sm font-medium transition-colors hover:text-brand-primary",
-                activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home")
-                  ? "text-brand-primary dark:text-brand-primary border-b-2 border-brand-primary pb-1" // Added border-b-2 and pb-1 for active state
+                // Check if it's a hash link and active section matches, or if it's a route link and path matches
+                (link.href.startsWith("#") && (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))) ||
+                (!link.href.startsWith("#") && location.pathname === link.href)
+                  ? "text-brand-primary dark:text-brand-primary border-b-2 border-brand-primary pb-1"
                   : "text-brand-dark dark:text-brand-light"
               )}
             >
@@ -58,7 +61,9 @@ const Navbar = () => {
                     href={link.href}
                     className={cn(
                       "text-lg font-medium hover:text-brand-primary",
-                      activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home")
+                      // Check if it's a hash link and active section matches, or if it's a route link and path matches
+                      (link.href.startsWith("#") && (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))) ||
+                      (!link.href.startsWith("#") && location.pathname === link.href)
                         ? "text-brand-primary dark:text-brand-primary"
                         : "text-brand-dark dark:text-brand-light"
                     )}
