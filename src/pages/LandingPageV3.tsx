@@ -358,7 +358,7 @@ const LandingPageV3 = () => {
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
                 Receive world-class coaching from anywhere in the world. Ideal for refining on-camera performance, mastering virtual presentations, quick online audition cuts, or Kinesiology to uncover subconscious patterns and cultivate a holistic mind-body connection. Plus, complimentary 15-minute discovery calls are always available to explore your potential.
-              </CardContent>
+              </Content>
             </Card>
           </div>
           <p className="text-xl font-medium text-brand-primary mt-8">
@@ -444,9 +444,9 @@ const LandingPageV3 = () => {
         </section>
 
         {/* Additional Programs Section - New Banners */}
-        <section className="max-w-7xl mx-auto space-y-8 py-16">
-          <SectionHeading>Explore More from Daniele</SectionHeading>
-          <div className="space-y-0 shadow-lg rounded-xl overflow-hidden"> {/* Changed this div */}
+        <section className="space-y-8 py-16">
+          <SectionHeading className="max-w-7xl mx-auto px-4">Explore More from Daniele</SectionHeading>
+          <div className="space-y-0 shadow-lg rounded-xl overflow-hidden">
             <AdditionalProgramBanner
               title="Explore Buattiverse: Sheet Music & Backing Tracks"
               description="Your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources."
@@ -456,7 +456,7 @@ const LandingPageV3 = () => {
               textColorClass="text-brand-light"
               buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
               logoSrc="/gumroad.png"
-              className="rounded-t-xl" // Added className
+              className="rounded-t-xl"
             />
             <AdditionalProgramBanner
               title="Piano Backings by Daniele"
@@ -467,7 +467,7 @@ const LandingPageV3 = () => {
               textColorClass="text-brand-dark"
               buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
               logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png"
-              className="!rounded-none" // Added className
+              className="!rounded-none"
             />
             <AdditionalProgramBanner
               title="Resonance Choir with Daniele"
@@ -477,7 +477,7 @@ const LandingPageV3 = () => {
               bgColorClass="bg-brand-blue"
               textColorClass="text-brand-light"
               buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
-              className="rounded-b-xl" // Added className
+              className="rounded-b-xl"
             />
           </div>
         </section>
