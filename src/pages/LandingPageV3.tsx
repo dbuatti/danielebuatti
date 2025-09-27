@@ -4,7 +4,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
 import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
-import InstagramStrip from "@/components/InstagramStrip"; // Import the new component
 
 // Import new modular sections
 import HeroSection from "@/components/pages/landing-page-v3/HeroSection";
@@ -15,7 +14,7 @@ import WhoIWorkWithSection from "@/components/pages/landing-page-v3/WhoIWorkWith
 import DanieleSmileHostSection from "@/components/pages/landing-page-v3/DanieleSmileHostSection";
 import EmbodiedApproachSection from "@/components/pages/landing-page-v3/EmbodiedApproachSection";
 import DanieleCalmAtPianoSection from "@/components/pages/landing-page-v3/DanieleCalmAtPianoSection";
-import TestimonialsSection from "@/components/pages/landing-page-v3/TestimonialsSection"; // Corrected import path
+import TestimonialsSection from "@/components/pages/landing-page-v3/TestimonialsSection";
 import SessionsAvailabilitySection from "@/components/pages/landing-page-v3/SessionsAvailabilitySection";
 import WhyWorkWithMeSection from "@/components/pages/landing-page-v3/WhyWorkWithMeSection";
 import TulipsSection from "@/components/pages/landing-page-v3/TulipsSection";
@@ -60,7 +59,6 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary my-12" />
         <AdditionalProgramsSection />
       </main>
-      <InstagramStrip /> {/* Added the Instagram strip here */}
       <Footer />
       <BackToTopButton />
     </div>
