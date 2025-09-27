@@ -79,34 +79,26 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
       </div>
     );
   } else {
-    // Layout for banners without a background image - now using a 3-column grid for alignment
+    // Original layout for banners without a background image: centered content
     return (
       <div
         className={cn(
-          "relative w-full py-16 overflow-hidden flex flex-col", // Keep flex-col for mobile stacking
+          "relative w-full py-16 overflow-hidden flex flex-col items-center justify-center text-center space-y-6",
           bgColorClass || "bg-brand-dark",
           textColorClass,
           className
         )}
       >
-        <div className="container grid grid-cols-1 md:grid-cols-3 items-center gap-8">
-          {/* Empty div to push content to the right on md and up, aligning with image banner's content */}
-          <div className="hidden md:block md:col-span-2"></div>
-
-          {/* Content for non-image banners - now takes 1/3 of the space on md+ and is centered */}
-          <div className="md:col-span-1 text-center space-y-6">
-            {logoSrc && (
-              <img
-                src={logoSrc}
-                alt={`${title} logo`}
-                className="mx-auto h-20 object-contain mb-4"
-              />
-            )}
-            <h3 className="text-4xl font-bold">{title}</h3>
-            <p className="text-lg max-w-3xl mx-auto">{description}</p>
-            {buttonElement}
-          </div>
-        </div>
+        {logoSrc && (
+          <img
+            src={logoSrc}
+            alt={`${title} logo`}
+            className="mx-auto h-20 object-contain mb-4"
+          />
+        )}
+        <h3 className="text-4xl font-bold">{title}</h3>
+        <p className="text-lg max-w-3xl mx-auto">{description}</p>
+        {buttonElement}
       </div>
     );
   }
