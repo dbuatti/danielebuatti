@@ -21,31 +21,26 @@ const AdditionalProgramsSection: React.FC = () => {
           className="max-w-6xl"
         />
 
-        {/* AdditionalProgramBanner for Piano Backings */}
-        <AdditionalProgramBanner
+        {/* FeaturedProgramCard for Piano Backings */}
+        <FeaturedProgramCard
           title="Professional Piano Backing Tracks"
           description="High-quality, meticulously crafted tracks for singers and performers, streamlining your preparation."
           link="https://pianobackingsbydaniele.vercel.app"
           linkText="Discover Piano Backings"
-          bgColorClass="bg-brand-magenta"
-          logoSrc="/pianobackingslogo.png"
-          textColorClass="text-brand-dark"
-          buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
+          backgroundImageSrc="/pianobackingslogo.png"
           className="max-w-6xl"
-          titleInLeftColumn={false} // Explicitly set to false for full-width solid background
+          buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
         />
 
-        {/* AdditionalProgramBanner for Resonance with Daniele */}
-        <AdditionalProgramBanner
+        {/* FeaturedProgramCard for Resonance with Daniele */}
+        <FeaturedProgramCard
           title="Resonance with Daniele: A Joyful Pop-Up Choir for All Voices"
           description="Join a welcoming community to sing, connect, and shine, with no experience needed."
           link="https://resonance-with-daniele.vercel.app"
           linkText="Join Resonance Choir"
-          bgColorClass="bg-brand-blue"
-          textColorClass="text-brand-light"
-          buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
+          backgroundImageSrc="/blue-pink-ontrans.png" {/* Using a placeholder image */}
           className="max-w-6xl"
-          titleInLeftColumn={false} // Explicitly set to false for full-width solid background
+          buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
         />
 
         {/* Creative Exploration Pill Banner */}
