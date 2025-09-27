@@ -1,13 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle2, CalendarDays, Mic, Piano, Brain, HeartHandshake, Users, Monitor, Mail, Phone, GraduationCap, Award, Lightbulb, Camera, Volume2, Music } from "lucide-react"; // Added Music icon
+import { CheckCircle2, CalendarDays, Mic, Piano, Brain, HeartHandshake, Users, Monitor, Mail, Phone, GraduationCap, Award, Lightbulb, Camera, Volume2, Music } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TestimonialCard from "@/components/TestimonialCard";
 import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 import DynamicImage from "@/components/DynamicImage";
 import BackToTopButton from "@/components/BackToTopButton";
+import GumroadFollowForm from "@/components/GumroadFollowForm"; // Import the new component
 
 const LandingPage = () => {
   useSmoothScroll();
@@ -247,15 +248,11 @@ const LandingPage = () => {
           <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
             Welcome to Buattiverse — your source for professional vocal transcriptions, SATB arrangements, and music resources tailored for performers, educators, and creatives. Whether you're looking for detailed backing vocal arrangements or resources to bring your ensemble to life, you're in the right place.
           </p>
+          <GumroadFollowForm /> {/* Integrated Gumroad follow form here */}
           <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
             <Button size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
               <a href="https://buattiverse.gumroad.com/" target="_blank" rel="noopener noreferrer">
                 Visit Buattiverse Store
-              </a>
-            </Button>
-            <Button size="lg" variant="outline" className="border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-              <a href="https://buattiverse.gumroad.com/subscribe" target="_blank" rel="noopener noreferrer">
-                Subscribe for Updates
               </a>
             </Button>
           </div>
