@@ -26,7 +26,7 @@ const LandingPage = () => {
               Refine Your Voice. Elevate Your Presence.
             </p>
             <p className="text-lg md:text-xl text-brand-dark/80 dark:text-brand-light/80 max-w-3xl md:max-w-none mx-auto">
-              Got a big performance coming up? An audition, presentation, or need to nail your on-camera presence? My coaching is all about helping you perform and communicate with freedom, confidence, and ease. I blend world-class musical and performance training with deep body awareness and a powerful mindset approach. The goal? To help you achieve more, without the usual strain, stress, or burnout.
+              Got a big performance coming up? An audition, presentation, or need to nail your on-camera presence? My coaching is all about helping you perform and communicate with freedom, confidence, and ease. I blend world-class musical and performance training with deep body awareness and a powerful mindset approach. The goal? To help you achieve more, without the usual strain, stress, or burnout. At the heart of creating sound is a willingness to express, and I'm here to guide you.
             </p>
             <Button size="lg" className="mt-8 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
               <a href="#contact">Book a Discovery Session</a>
@@ -57,8 +57,14 @@ const LandingPage = () => {
           <div className="text-center md:text-left space-y-8">
             <h2 className="text-4xl font-bold text-brand-primary">About Daniele Buatti</h2>
             <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-              For over 12 years, I've been working as a Music Director, Pianist, Arranger, Vocal Coach, and Educator. What I bring to the table is a unique mix of artistic leadership and evidence-based methods, all aimed at training versatile, industry-ready performers and communicators. My experience covers everything from professional music theatre and vocal pedagogy to tertiary education and holistic somatic practices. My focus is always on high-quality, embodied coaching and innovative performance curricula.
+              For over 12 years, I've been working as a Music Director, Pianist, Arranger, Vocal Coach, and Educator. What I bring to the table is a unique mix of artistic leadership and evidence-based methods, all aimed at training versatile, industry-ready performers and communicators. My experience covers everything from professional music theatre and vocal pedagogy to tertiary education and holistic somatic practices. My focus is always on high-quality, embodied coaching and innovative performance curricula. I hold a great passion for helping artists express themselves, taking a unique and holistic approach to the voice, connecting breath, body, and mind to help create an embodied performance.
             </p>
+            <div className="space-y-2">
+              <p className="text-xl font-semibold text-brand-primary">THOUGHT • INTENTION • BREATH • EXPRESSION</p>
+              <p className="text-md text-brand-dark/70 dark:text-brand-light/70">
+                I believe expression truly happens when the thought arises to express. My therapeutic approach helps students not only inform the characters they portray but also gain a deeper understanding of their own mannerisms, expressions, and thoughts.
+              </p>
+            </div>
             <div className="grid grid-cols-1 gap-6 text-left">
               <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary">
                 <CardHeader>
@@ -157,23 +163,26 @@ const LandingPage = () => {
         {/* My Approach Section */}
         <section id="approach" className="max-w-4xl mx-auto space-y-10">
           <h2 className="text-4xl font-bold text-center text-brand-primary">My Embodied Holistic Approach</h2>
+          <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center">
+            All my teachings are informed by Buddhist and yogic philosophies, fostering a heart-centred, process-oriented journey focused on truth and transformation, not just the destination.
+          </p>
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4">
               <CardTitle className="text-2xl text-brand-primary">1. Embodiment & Alignment</CardTitle>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Rooted in Kinesiology, Yoga, and Somatic Therapy, we release tension, improve posture, and find effortless breath control. Free your body to support your voice, instrument, and presence naturally.
+                Rooted in Kinesiology, Yoga, and Somatic Therapy, we release tension, improve posture, and find effortless breath control. Free your body to support your voice, instrument, and presence naturally, cultivating a deeper connection between mind and body.
               </CardContent>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4">
               <CardTitle className="text-2xl text-brand-primary">2. Mindset & Performance Coaching</CardTitle>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Utilising Mindfulness and therapeutic techniques, we manage nerves, setbacks, and creative blocks. Build consistency and unwavering confidence in practice, on stage, or on camera.
+                Utilising Mindfulness and therapeutic techniques, we manage nerves, setbacks, and creative blocks. Build consistency and unwavering confidence in practice, on stage, or on camera, understanding your mind to overcome performance anxiety.
               </CardContent>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4">
               <CardTitle className="text-2xl text-brand-primary">3. Integrated Skill Development</CardTitle>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Voice, piano, public speaking, acting, on-camera presence—tailored to your goals. Coaching is practical, creative, and always aligned with your unique vision and desired impact.
+                Voice, piano, public speaking, acting, on-camera presence—tailored to your goals. Coaching is practical, creative, and always aligned with your unique vision and desired impact, helping you refine repertoire and improve musicianship.
               </CardContent>
             </Card>
           </div>
@@ -196,7 +205,7 @@ const LandingPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Personalised sessions for vocal coaching, piano lessons, kinesiology, or integrated body-voice work. Whether you're refining technique, preparing for an audition, or seeking deeper body-mind balance, we'll tailor a session just for you. Available in 30, 45, 60, or 90-minute durations.
+                Personalised sessions for vocal coaching (including breath work, body work, mind-body integration, repertoire, and audition prep), piano lessons (fun, supportive, improving musicianship and theory), or integrated body-voice work. Available in 30, 45, 60, or 90-minute durations.
               </CardContent>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
@@ -218,7 +227,7 @@ const LandingPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Access world-class coaching from anywhere. Perfect for on-camera performance, virtual presentations, or a quick online audition cut session. We also offer complimentary 15-minute discovery calls to explore how I can best support you.
+                Access world-class coaching from anywhere. Perfect for on-camera performance, virtual presentations, quick online audition cut sessions, or Kinesiology to understand subconscious patterns and create a holistic mind-body relationship. We also offer complimentary 15-minute discovery calls.
               </CardContent>
             </Card>
           </div>
