@@ -6,7 +6,7 @@ import FeaturedProgramCard from "@/components/FeaturedProgramCard";
 
 const AdditionalProgramsSection: React.FC = () => {
   return (
-    <section className="mt-12">
+    <section className="mt-12 pb-16"> {/* Added pb-16 here */}
       <div className="container mx-auto px-4 mb-10">
         <SectionHeading>Explore More from Daniele</SectionHeading>
       </div>
@@ -43,8 +43,6 @@ const AdditionalProgramsSection: React.FC = () => {
           className="max-w-6xl"
           buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
         />
-
-        {/* Creative Exploration Pill Banner - REMOVED */}
       </div>
     </section>
   );
