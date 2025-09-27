@@ -23,30 +23,22 @@ const Navbar = () => {
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
 
   const handleLinkClick = (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    event.preventDefault(); // Prevent default <a> tag navigation for all mobile menu links
     setIsSheetOpen(false); // Close the sheet immediately
 
-    // Add a small delay to allow the sheet to visually close before navigating/scrolling
-    setTimeout(() => {
-      if (href.startsWith('/')) {
-        // For internal routes (e.g., /, /live-piano-services)
+    if (href.startsWith('/')) {
+      event.preventDefault(); // Prevent default for internal routes to use navigate
+      // Add a small delay to allow the sheet to visually close before navigating
+      setTimeout(() => {
         if (href === '/' && location.pathname === '/') {
           window.scrollTo({ top: 0, behavior: "smooth" });
         } else {
           navigate(href);
         }
-      } else if (href.startsWith('#')) {
-        // For anchor links (e.g., #about)
-        const id = href.substring(1);
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        }
-      }
-    }, 100); // 100ms delay for visual closing of sheet
+      }, 100); // 100ms delay
+    }
+    // For anchor links (href.startsWith('#')), DO NOT call event.preventDefault() here.
+    // Let the default <a> tag behavior proceed, which will then be intercepted by useSmoothScroll.
+    // The useSmoothScroll hook will handle the smooth scrolling and preventDefault itself.
   };
 
   return (

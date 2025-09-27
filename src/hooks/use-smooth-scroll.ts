@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect } from "react";
 
 export function useSmoothScroll() {
@@ -12,12 +14,17 @@ export function useSmoothScroll() {
           const id = href.substring(1);
           const element = document.getElementById(id);
 
+          console.log("useSmoothScroll: Anchor clicked!", { href, id, elementFound: !!element });
+
           if (element) {
             event.preventDefault();
             element.scrollIntoView({
               behavior: "smooth",
               block: "start",
             });
+            console.log(`useSmoothScroll: Scrolled to #${id}`);
+          } else {
+            console.warn(`useSmoothScroll: Element with ID ${id} not found.`);
           }
         }
       }
