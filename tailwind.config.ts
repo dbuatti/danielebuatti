@@ -18,6 +18,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["Outfit", "sans-serif"], // Add Outfit to the sans-serif font stack
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
