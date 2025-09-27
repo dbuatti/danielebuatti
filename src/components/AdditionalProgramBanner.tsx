@@ -54,20 +54,20 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
 
   if (backgroundImageSrc) {
     return (
-      <div className={cn("relative w-full min-h-[450px] overflow-hidden flex flex-col", className)}> {/* Increased min-h to 450px */}
-        <div className="flex-grow grid grid-cols-1 md:grid-cols-2">
-          {/* Left Half (Image with gradient) - Visible on md and up */}
+      <div className={cn("relative w-full min-h-[450px] overflow-hidden flex flex-col", className)}>
+        <div className="flex-grow grid grid-cols-1 md:grid-cols-3"> {/* Changed to grid-cols-3 */}
+          {/* Left Half (Image with gradient) - Visible on md and up, takes 2/3 width */}
           <div
-            className="relative hidden md:block bg-cover bg-center"
-            style={{ backgroundImage: `url(${backgroundImageSrc})`, backgroundPosition: 'left center' }}
+            className="relative hidden md:block md:col-span-2 bg-cover bg-center" // Added md:col-span-2
+            style={{ backgroundImage: `url(${backgroundImageSrc})`, backgroundPosition: 'left center', backgroundSize: 'cover' }} // Added backgroundSize: 'cover'
           >
             {/* Gradient overlay to blend into the right side */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-brand-dark/70"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-brand-dark"></div> {/* Changed to-brand-dark for seamless blend */}
           </div>
 
-          {/* Right Half (Content with solid background) - Full width on mobile, half on md and up */}
+          {/* Right Half (Content with solid background) - Full width on mobile, 1/3 on md and up */}
           <div className={cn(
-            "relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6",
+            "relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6 md:col-span-1", // Added md:col-span-1
             bgColorClass || "bg-brand-dark", // Solid background for text area
             textColorClass
           )}>
