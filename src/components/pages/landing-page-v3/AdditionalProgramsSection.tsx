@@ -2,6 +2,7 @@ import React from "react";
 import SectionHeading from "@/components/SectionHeading";
 import AdditionalProgramBanner from "@/components/AdditionalProgramBanner";
 import PillBanner from "@/components/PillBanner"; // Import the new component
+import FeaturedProgramCard from "@/components/FeaturedProgramCard"; // Import the new FeaturedProgramCard
 
 const AdditionalProgramsSection: React.FC = () => {
   return (
@@ -58,16 +59,17 @@ const AdditionalProgramsSection: React.FC = () => {
           titleInLeftColumn={true} // Title in left column
         />
 
-        {/* New Pill Banner for Buattiverse */}
-        <PillBanner
-          title="Explore Buattiverse: Sheet Music & Backing Tracks"
+        {/* NEW: FeaturedProgramCard for Buattiverse */}
+        <FeaturedProgramCard
+          title="Buattiverse: Sheet Music & Backing Tracks"
           description="Your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources."
           link="https://buattiverse.gumroad.com/"
+          linkText="Visit Buattiverse Store"
           backgroundImageSrc="/sheetmusic.png"
-          className="max-w-6xl" // Adjusted max-width
+          className="max-w-6xl"
         />
 
-        {/* NEW: Creative Exploration Pill Banner */}
+        {/* Creative Exploration Pill Banner (kept for now) */}
         <PillBanner
           title="Ignite Your Creative Spark"
           description="Discover personalized coaching to unleash your passion for music, performance, and authentic self-expression."
