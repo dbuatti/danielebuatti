@@ -26,7 +26,7 @@ const AdditionalProgramsSection: React.FC = () => {
 
         <AdditionalProgramBanner
           title="Professional Piano Backing Tracks"
-          description="" {/* Removed the description text */}
+          description=""
           link="https://pianobackingsbydaniele.vercel.app"
           linkText="Discover Piano Backings"
           bgColorClass="bg-brand-magenta"
