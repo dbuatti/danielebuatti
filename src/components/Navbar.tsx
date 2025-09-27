@@ -3,18 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Link } from "react-router-dom";
-import { ThemeToggle } from "./ThemeToggle"; // Import ThemeToggle
+import { ThemeToggle } from "./ThemeToggle";
+import { navLinks } from "@/constants/navigation"; // Import navLinks
 
 const Navbar = () => {
-  const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "About", href: "#about" },
-    { name: "Approach", href: "#approach" },
-    { name: "Sessions", href: "#sessions" },
-    { name: "Why Me?", href: "#why-me" },
-    { name: "Contact", href: "#contact" },
-  ];
-
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
       <div className="container flex h-16 items-center justify-between">
@@ -34,10 +26,10 @@ const Navbar = () => {
           <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
             <a href="#contact">Book a Session</a>
           </Button>
-          <ThemeToggle /> {/* Add ThemeToggle here */}
+          <ThemeToggle />
         </nav>
-        <div className="flex items-center md:hidden"> {/* Wrap for mobile layout */}
-          <ThemeToggle /> {/* Add ThemeToggle for mobile */}
+        <div className="flex items-center md:hidden">
+          <ThemeToggle />
           <Sheet>
             <SheetTrigger asChild>
               <Button
