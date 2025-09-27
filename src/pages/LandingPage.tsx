@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle2, CalendarDays, Mic, Piano, Brain, HeartHandshake, Users, Monitor, Mail, Phone, GraduationCap, Award, Lightbulb, Camera, Volume2, Music } from "lucide-react";
+import { CheckCircle2, CalendarDays, Mic, Piano, Brain, HeartHandshake, Users, Monitor, Mail, Phone, GraduationCap, Award, Lightbulb, Camera, Volume2, Music, Leaf, Megaphone, Theater, Webcam, FileText } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TestimonialCard from "@/components/TestimonialCard";
@@ -9,6 +9,7 @@ import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 import DynamicImage from "@/components/DynamicImage";
 import BackToTopButton from "@/components/BackToTopButton";
 import GumroadFollowForm from "@/components/GumroadFollowForm";
+import ExpertiseItemCard from "@/components/ExpertiseItemCard"; // Import the new component
 
 const LandingPage = () => {
   useSmoothScroll();
@@ -82,26 +83,55 @@ const LandingPage = () => {
                   <p>Specialising in mind-body integration for performance.</p>
                 </CardContent>
               </Card>
-              <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
-                    <Award className="h-6 w-6" />
-                    Key Expertise
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-brand-dark/80 dark:text-brand-light/80">
-                  <ul className="list-disc list-inside space-y-1">
-                    <li>Vocal Coaching: Elevate your technique across contemporary, classical, and musical theatre genres.</li>
-                    <li>Music Direction & Conducting: Master the art of leading and inspiring musical ensembles.</li>
-                    <li>Holistic Voice & Somatic Techniques: Integrate Kinesiology, Breath-Body-Mind, Yoga, and Mindfulness for profound vocal freedom.</li>
-                    <li>Piano & Keyboard Performance: Enhance your instrumental skills and musicality.</li>
-                    <li>Public Speaking & Presentation Coaching: Cultivate confident, impactful communication.</li>
-                    <li>Acting & Film Performance Coaching: Refine your presence for stage and screen.</li>
-                    <li>On-Camera & Streaming Presence: Develop authentic and engaging virtual communication.</li>
-                    <li>Score Preparation & Technology Integration: Streamline your musical workflow with modern tools.</li>
-                  </ul>
-                </CardContent>
-              </Card>
+              {/* Key Expertise Section - Now using ExpertiseItemCard */}
+              <div className="space-y-6">
+                <h3 className="flex items-center gap-3 text-xl font-bold text-brand-primary">
+                  <Award className="h-6 w-6" />
+                  Key Expertise
+                </h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <ExpertiseItemCard
+                    icon={Mic}
+                    title="Vocal Coaching"
+                    description="Elevate your technique across contemporary, classical, and musical theatre genres."
+                  />
+                  <ExpertiseItemCard
+                    icon={Music}
+                    title="Music Direction & Conducting"
+                    description="Master the art of leading and inspiring musical ensembles."
+                  />
+                  <ExpertiseItemCard
+                    icon={Leaf}
+                    title="Holistic Voice & Somatic Techniques"
+                    description="Integrate Kinesiology, Breath-Body-Mind, Yoga, and Mindfulness for profound vocal freedom."
+                  />
+                  <ExpertiseItemCard
+                    icon={Piano}
+                    title="Piano & Keyboard Performance"
+                    description="Enhance your instrumental skills and musicality."
+                  />
+                  <ExpertiseItemCard
+                    icon={Megaphone}
+                    title="Public Speaking & Presentation Coaching"
+                    description="Cultivate confident, impactful communication."
+                  />
+                  <ExpertiseItemCard
+                    icon={Theater}
+                    title="Acting & Film Performance Coaching"
+                    description="Refine your presence for stage and screen."
+                  />
+                  <ExpertiseItemCard
+                    icon={Webcam}
+                    title="On-Camera & Streaming Presence"
+                    description="Develop authentic and engaging virtual communication."
+                  />
+                  <ExpertiseItemCard
+                    icon={FileText}
+                    title="Score Preparation & Technology Integration"
+                    description="Streamline your musical workflow with modern tools."
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </section>
