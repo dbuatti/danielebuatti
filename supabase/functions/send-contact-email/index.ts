@@ -69,7 +69,7 @@ serve(async (req) => {
         'Authorization': `Bearer ${EMAIL_SERVICE_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'onboarding@resend.dev', // IMPORTANT: Replace with your VERIFIED Resend sender email (e.g., 'no-reply@danielebuatti.com' or 'info@danielebuatti.com')
+        from: 'info@danielebuatti.com', // Changed to your verified email address
         to: CONTACT_FORM_RECIPIENT_EMAIL,
         subject: subject,
         text: emailBody,
