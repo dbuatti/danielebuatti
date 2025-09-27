@@ -455,12 +455,12 @@ const LandingPageV3 = () => {
             description="Your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources."
             link="https://buattiverse.gumroad.com/"
             linkText="Visit Buattiverse Store"
-            // Removed bgColorClass
+            bgColorClass="bg-brand-dark" // Explicitly set dark background for text side
             textColorClass="text-brand-light"
             buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
             logoSrc="/gumroad.png"
             className="rounded-none"
-            backgroundImageSrc="/sheetmusic.png" // Added background image
+            backgroundImageSrc="/sheetmusic.png"
           />
           <AdditionalProgramBanner
             title="Piano Backings by Daniele"

@@ -16,7 +16,7 @@ interface AdditionalProgramBannerProps {
   buttonTextClass?: string;
   logoSrc?: string;
   className?: string;
-  backgroundImageSrc?: string; // New prop for background image
+  backgroundImageSrc?: string;
 }
 
 const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
@@ -25,51 +25,68 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   link,
   linkText,
   bgColorClass,
-  textColorClass = "text-brand-light", // Default to light for contrast
+  textColorClass = "text-brand-light",
   buttonVariant = "default",
   buttonBgClass = "bg-brand-light hover:bg-brand-light/90 text-brand-dark",
   buttonTextClass = "",
   logoSrc,
   className,
-  backgroundImageSrc, // Destructure new prop
+  backgroundImageSrc,
 }) => {
-  const backgroundStyle = backgroundImageSrc
-    ? { backgroundImage: `url(${backgroundImageSrc})`, backgroundSize: 'cover', backgroundPosition: 'center' }
-    : {};
-
-  return (
-    <div
-      className={cn(
-        "relative w-full py-16 overflow-hidden flex items-end", // flex items-end pushes content to bottom
-        bgColorClass && !backgroundImageSrc ? bgColorClass : "", // Apply bgColorClass only if no image
-        className
+  const content = (
+    <div className={cn("relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6 h-full", textColorClass)}>
+      {logoSrc && (
+        <img
+          src={logoSrc}
+          alt={`${title} logo`}
+          className="mx-auto h-20 object-contain mb-4"
+        />
       )}
-      style={backgroundStyle}
-    >
-      {/* Gradient Overlay */}
-      {backgroundImageSrc && (
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-      )}
-
-      {/* Content */}
-      <div className={cn("relative z-10 container mx-auto px-4 text-center space-y-6", textColorClass)}>
-        {logoSrc && ( // Logo is now part of the bottom-aligned content
-          <img
-            src={logoSrc}
-            alt={`${title} logo`}
-            className="mx-auto h-20 object-contain mb-4" // Added mb-4 for spacing
-          />
-        )}
-        <h3 className="text-4xl font-bold">{title}</h3>
-        <p className="text-lg max-w-3xl mx-auto">{description}</p>
-        <Button asChild size="lg" variant={buttonVariant} className={cn("text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
-          <a href={link} target="_blank" rel="noopener noreferrer">
-            {linkText}
-          </a>
-        </Button>
-      </div>
+      <h3 className="text-4xl font-bold">{title}</h3>
+      <p className="text-lg max-w-3xl mx-auto">{description}</p>
+      <Button asChild size="lg" variant={buttonVariant} className={cn("text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
+        <a href={link} target="_blank" rel="noopener noreferrer">
+          {linkText}
+        </a>
+      </Button>
     </div>
   );
+
+  if (backgroundImageSrc) {
+    return (
+      <div className={cn("w-full grid grid-cols-1 md:grid-cols-2 min-h-[300px]", className)}>
+        {/* Image Side (Left) - Hidden on mobile, visible on md and up */}
+        <div
+          className="relative hidden md:block bg-cover bg-center min-h-[300px]"
+          style={{ backgroundImage: `url(${backgroundImageSrc})` }}
+        >
+          {/* No overlay needed here, as text is on the other side */}
+        </div>
+
+        {/* Content Side (Right) - Takes full width on mobile, half on md and up */}
+        <div className={cn(
+          "relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6 h-full",
+          bgColorClass || "bg-brand-dark", // Default background for content side
+          textColorClass
+        )}>
+          {content}
+        </div>
+      </div>
+    );
+  } else {
+    // Single column layout if no background image
+    return (
+      <div
+        className={cn(
+          "relative w-full py-16 overflow-hidden flex items-center justify-center",
+          bgColorClass || "bg-brand-dark", // Apply bgColorClass to the whole banner
+          className
+        )}
+      >
+        {content}
+      </div>
+    );
+  }
 };
 
 export default AdditionalProgramBanner;
