@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Mail, Phone } from 'lucide-react'; // Removed Home import
+import { Mail, Phone } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
@@ -137,9 +137,9 @@ const LivePianoServicesPage: React.FC = () => {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-12">
+      <main className="max-w-7xl mx-auto px-4 py-12 space-y-16">
         {/* Large Image Display */}
-        <section className="mb-8">
+        <section className="py-0">
           <Card className="bg-livePiano-darker border-livePiano-border/30 rounded-xl overflow-hidden shadow-lg">
             <img
               src={galleryImages[selectedImageIndex]}
@@ -150,7 +150,7 @@ const LivePianoServicesPage: React.FC = () => {
         </section>
 
         {/* Image Carousel */}
-        <section className="mb-16">
+        <section className="py-0">
           <Carousel
             opts={{
               align: "start",
@@ -181,7 +181,7 @@ const LivePianoServicesPage: React.FC = () => {
         </section>
 
         {/* Main Content */}
-        <section className="text-center mb-16">
+        <section className="text-center py-0">
           <h2 className="text-5xl font-libre-baskerville font-bold text-livePiano-primary mb-6 leading-tight">
             AN UNFORGETTABLE MUSICAL EXPERIENCE
           </h2>
@@ -194,7 +194,7 @@ const LivePianoServicesPage: React.FC = () => {
         </section>
 
         {/* Contact Form */}
-        <section className="max-w-2xl mx-auto bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30">
+        <section className="max-w-2xl mx-auto bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 py-0">
           <h3 className="text-4xl font-bold text-center text-livePiano-light mb-8">Enquire now!</h3>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleContactSubmit)} className="space-y-6">
@@ -338,7 +338,7 @@ const LivePianoServicesPage: React.FC = () => {
 
       {/* Footer */}
       <footer 
-        className="relative py-16 text-center mt-12 overflow-hidden"
+        className="relative py-16 text-center overflow-hidden"
         style={{ backgroundImage: `url(/bowtie.avif)`, backgroundSize: 'cover', backgroundPosition: 'center' }}
       >
         <div className="absolute inset-0 bg-black/60"></div> {/* Overlay for readability */}

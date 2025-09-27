@@ -28,7 +28,7 @@ const LandingPageV3: React.FC = () => {
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
       <Navbar />
-      <main className="container mx-auto px-4"> {/* Removed space-y-8 */}
+      <main className="mx-auto px-4"> {/* Removed 'container' class */}
         <HeroSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <AboutMeSection />
