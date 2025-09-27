@@ -27,9 +27,9 @@ const Navbar = () => {
           <DynamicImage
             src="/logo-dark-blue-transparent-25.png"
             alt="Daniele Buatti Logo"
-            className="h-10 w-auto" // Increased height for better visibility
-            width={180} // Adjusted width for better visibility
-            height={40} // Adjusted height for better visibility
+            className="h-12 w-auto" // Increased height for better visibility
+            width={220} // Adjusted width for better visibility
+            height={48} // Adjusted height for better visibility
           />
         </Link>
         <nav className="hidden md:flex items-center space-x-6">
