@@ -105,11 +105,11 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
 
           {/* Right side: Description and Button */}
           <div className="md:col-span-1 text-center md:text-right space-y-6">
-            <p className="text-lg max-w-prose mx-auto md:mx-0">{description}</p>
+            {/* Added md:max-w-prose and md:ml-auto to the paragraph for right alignment and width control */}
+            <p className="text-lg md:max-w-prose md:ml-auto">{description}</p>
             {buttonElement}
           </div>
         </div>
-        {/* REMOVED: Bottom Strip for non-image banners - will be handled externally */}
       </div>
     );
   }
