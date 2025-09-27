@@ -11,7 +11,7 @@ const SessionsAvailabilitySection: React.FC = () => {
       <SectionHeading>Sessions & Availability</SectionHeading>
       <div className="space-y-8"> {/* Container for hero and smaller cards */}
         {/* Hero Card: 1:1 Coaching */}
-        <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 max-w-3xl mx-auto"> {/* Removed max-w-3xl mx-auto */}
+        <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"> {/* Removed max-w-3xl mx-auto */}
           <CardHeader className="p-0 pb-4">
             <CardTitle className="flex items-center gap-3 text-xl text-brand-primary justify-center md:justify-start"> {/* Centered title for hero card */}
               <CalendarDays className="h-6 w-6" />
