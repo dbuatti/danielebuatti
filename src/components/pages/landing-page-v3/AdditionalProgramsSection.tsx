@@ -1,6 +1,7 @@
 import React from "react";
 import SectionHeading from "@/components/SectionHeading";
 import AdditionalProgramBanner from "@/components/AdditionalProgramBanner";
+import PillBanner from "@/components/PillBanner"; // Import the new component
 
 const AdditionalProgramsSection: React.FC = () => {
   return (
@@ -8,7 +9,7 @@ const AdditionalProgramsSection: React.FC = () => {
       <div className="container mx-auto px-4 mb-10">
         <SectionHeading>Explore More from Daniele</SectionHeading>
       </div>
-      <div className="space-y-0">
+      <div className="space-y-12"> {/* Changed to space-y-12 for better spacing */}
         <AdditionalProgramBanner
           title="Explore Buattiverse: Sheet Music & Backing Tracks"
           description="Your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources."
@@ -55,6 +56,15 @@ const AdditionalProgramsSection: React.FC = () => {
           className="rounded-none"
           bottomStripColorClass="bg-brand-blue"
           titleInLeftColumn={true} // Title in left column
+        />
+
+        {/* New Pill Banner for trial */}
+        <PillBanner
+          title="Explore Buattiverse: Sheet Music & Backing Tracks"
+          description="Your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources."
+          link="https://buattiverse.gumroad.com/"
+          backgroundImageSrc="/sheetmusic.png"
+          className="max-w-6xl" // Adjusted max-width
         />
       </div>
     </section>
