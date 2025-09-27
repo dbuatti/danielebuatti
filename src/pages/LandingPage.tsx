@@ -21,7 +21,7 @@ const LandingPage = () => {
               Refine Your Voice. Elevate Your Presence.
             </p>
             <p className="text-lg md:text-xl text-brand-dark/80 dark:text-brand-light/80 max-w-3xl md:max-w-none mx-auto">
-              Whether you’re preparing for a performance, audition, presentation, or enhancing your on-camera presence, my coaching helps you perform and communicate with freedom, confidence, and ease. I combine world-class musical and performance training with deep body awareness and a powerful mindset approach, so you can achieve more without strain, stress, or burnout.
+              Got a big performance coming up? An audition, presentation, or need to nail your on-camera presence? My coaching is all about helping you perform and communicate with freedom, confidence, and ease. I blend world-class musical and performance training with deep body awareness and a powerful mindset approach. The goal? To help you achieve more, without the usual strain, stress, or burnout.
             </p>
             <Button size="lg" className="mt-8 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
               Book a Discovery Session
@@ -50,7 +50,7 @@ const LandingPage = () => {
           <div className="text-center md:text-left space-y-8">
             <h2 className="text-4xl font-bold text-brand-primary">About Daniele Buatti</h2>
             <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-              As an accomplished Music Director, Pianist, Arranger, Vocal Coach, and Educator with over 12 years of experience, I bring a unique blend of artistic leadership and evidence-based approaches to training versatile, industry-ready performers and communicators. My work spans professional music theatre, vocal pedagogy, tertiary/adolescent education, and holistic somatic practices, always with an emphasis on high-quality, embodied coaching and innovative performance curricula.
+              For over 12 years, I've been working as a Music Director, Pianist, Arranger, Vocal Coach, and Educator. What I bring to the table is a unique mix of artistic leadership and evidence-based methods, all aimed at training versatile, industry-ready performers and communicators. My experience covers everything from professional music theatre and vocal pedagogy to tertiary education and holistic somatic practices. My focus is always on high-quality, embodied coaching and innovative performance curricula.
             </p>
             <div className="grid grid-cols-1 gap-6 text-left">
               <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary">
