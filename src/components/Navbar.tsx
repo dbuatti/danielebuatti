@@ -19,7 +19,7 @@ const Navbar = () => {
 
   // Determine logo sources based on theme
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
-  const textLogoSrc = theme === "dark" ? "/logo-pink-transparent-43.png" : "/logo-dark-blue-transparent-25.png";
+  const textLogoSrc = theme === "dark" ? "/logo-piano-white-44.png" : "/logo-dark-blue-transparent-25.png"; // Updated this line
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
