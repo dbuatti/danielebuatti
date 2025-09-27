@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client"; // Import Supabase client
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -41,14 +42,36 @@ const ContactForm: React.FC = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // For now, we'll just log the values and show a success toast.
-    // In a real application, you would send this data to a backend API.
-    console.log("Form submitted with values:", values);
-    toast.success("Your message has been sent!", {
-      description: "Daniele will get back to you shortly.",
-    });
-    form.reset(); // Reset the form after successful submission
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const loadingToastId = toast.loading("Sending your message...");
+
+    try {
+      const { error } = await supabase
+        .from("contact_messages")
+        .insert([
+          {
+            name: values.name,
+            email: values.email,
+            message: values.message,
+          },
+        ]);
+
+      if (error) {
+        throw error;
+      }
+
+      toast.success("Your message has been sent!", {
+        id: loadingToastId,
+        description: "Daniele will get back to you shortly.",
+      });
+      form.reset(); // Reset the form after successful submission
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      toast.error("Failed to send message.", {
+        id: loadingToastId,
+        description: "Please try again later or contact directly via email.",
+      });
+    }
   }
 
   return (
@@ -110,8 +133,9 @@ const ContactForm: React.FC = () => {
         <Button
           type="submit"
           className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+          disabled={form.formState.isSubmitting}
         >
-          Send Message
+          {form.formState.isSubmitting ? "Sending..." : "Send Message"}
         </Button>
       </form>
     </Form>
