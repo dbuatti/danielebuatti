@@ -30,13 +30,12 @@ const AdditionalProgramsSection: React.FC = () => {
           link="https://pianobackingsbydaniele.vercel.app"
           linkText="Discover Piano Backings"
           bgColorClass="bg-brand-magenta" // Reverted to pink background
-          leftColumnTextColorClass="text-brand-yellow" // Set to yellow for left column title
-          leftColumnTitle="Piano Backings" // Content for left column
-          leftColumnSubtitle="by Daniele" // Content for left column
-          subtitleTextColorClass="text-brand-light" // Set to white for left column subtitle and right column subtitle
+          // Removed leftColumnTextColorClass as it's not needed when a logo is present
+          // Removed leftColumnTitle and leftColumnSubtitle as the logo will replace them
+          subtitleTextColorClass="text-brand-light" // Set to white for right column subtitle
           rightColumnTextColorClass="text-brand-light" // Set to white for description and button
           buttonBgClass="bg-black hover:bg-black/90 text-brand-light"
-          // logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png" // Removed logoSrc as it's not in the image for this layout
+          logoSrc="/logo-piano-white-44.png" // Re-added the piano logo
           className="rounded-none"
           bottomStripColorClass="bg-brand-magenta"
           titleInLeftColumn={true} // Title and logo in left column

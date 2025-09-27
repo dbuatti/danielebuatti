@@ -78,12 +78,21 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
               bgColorClass || "bg-brand-dark",
               leftColumnTextColorClass || textColorClass
             )}>
-              {/* Display leftColumnTitle and leftColumnSubtitle if provided */}
-              {leftColumnTitle && (
-                <h3 className={cn("text-4xl font-bold leading-tight", leftColumnTitleFontClass)}>{leftColumnTitle}</h3>
-              )}
-              {leftColumnSubtitle && (
-                <p className={cn("text-xl", subtitleTextColorClass)}>{leftColumnSubtitle}</p>
+              {logoSrc ? (
+                <img
+                  src={logoSrc}
+                  alt={`${leftColumnTitle || title} logo`}
+                  className="mx-auto h-20 object-contain mb-2"
+                />
+              ) : (
+                <>
+                  {leftColumnTitle && (
+                    <h3 className={cn("text-4xl font-bold leading-tight", leftColumnTitleFontClass)}>{leftColumnTitle}</h3>
+                  )}
+                  {leftColumnSubtitle && (
+                    <p className={cn("text-xl", subtitleTextColorClass)}>{leftColumnSubtitle}</p>
+                  )}
+                </>
               )}
             </div>
 
