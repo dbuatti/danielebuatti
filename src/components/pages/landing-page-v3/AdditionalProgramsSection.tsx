@@ -37,7 +37,8 @@ const AdditionalProgramsSection: React.FC = () => {
           description="Join a welcoming community to sing, connect, and shine, with no experience needed."
           link="https://resonance-with-daniele.vercel.app"
           linkText="Join Resonance Choir"
-          backgroundImageSrc="/danielepianolaugh.jpeg" {/* Using a suitable image from public */}
+          {/* Using a suitable image from public */}
+          backgroundImageSrc="/danielepianolaugh.jpeg"
           className="max-w-6xl"
           buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
         />
