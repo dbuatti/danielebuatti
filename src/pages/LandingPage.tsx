@@ -19,7 +19,7 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
       <Navbar />
-      <main className="container mx-auto px-4 py-16 space-y-24">
+      <main className="container mx-auto px-4 py-12 space-y-16"> {/* Reduced overall padding */}
         {/* Hero Section */}
         <section id="home" className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto py-12">
           <div className="text-center md:text-left space-y-6">
@@ -141,21 +141,24 @@ const LandingPage = () => {
                   />
                 </div>
               </div>
-              {/* Greenroom Awards Image */}
-              <div className="mt-8 text-center">
-                <DynamicImage
-                  src="/greenroom.jpeg"
-                  alt="Daniele Buatti at the Greenroom Awards"
-                  className="w-full max-w-md h-auto rounded-xl shadow-2xl object-cover border-2 border-brand-secondary mx-auto"
-                  width={600}
-                  height={800}
-                />
-                <p className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-2">
-                  Daniele Buatti, part of the Greenroom Award Music Theatre panel.
-                </p>
-              </div>
             </div>
           </div>
+        </section>
+
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+
+        {/* Greenroom Awards Image - Moved to its own section */}
+        <section className="max-w-4xl mx-auto text-center py-8"> {/* Reduced padding */}
+          <DynamicImage
+            src="/greenroom.jpeg"
+            alt="Daniele Buatti at the Greenroom Awards"
+            className="w-full max-w-md h-auto rounded-xl shadow-2xl object-cover border-2 border-brand-secondary mx-auto"
+            width={600}
+            height={800}
+          />
+          <p className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-2">
+            Daniele Buatti, part of the Greenroom Award Music Theatre panel.
+          </p>
         </section>
 
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
@@ -165,7 +168,7 @@ const LandingPage = () => {
           <SectionHeading>Who I Work With</SectionHeading>
           <div className="flex justify-center mb-8">
             <DynamicImage
-              src="/danielepianolaugh.jpeg" // This image is now here
+              src="/danielepianolaugh.jpeg"
               alt="Daniele Buatti laughing at the piano during a performance"
               className="w-full max-w-2xl h-auto rounded-xl shadow-2xl object-cover border-2 border-brand-secondary mx-auto"
               width={800}
@@ -221,7 +224,7 @@ const LandingPage = () => {
         </section>
 
         {/* New Section for Daniele Smile Host BU Image */}
-        <section className="max-w-4xl mx-auto text-center py-12">
+        <section className="max-w-4xl mx-auto text-center py-8"> {/* Reduced padding */}
           <DynamicImage
             src="/daniele-smile-host-bu.jpeg"
             alt="Daniele Buatti smiling and interacting with a host at Broadway Unplugged"
@@ -234,7 +237,7 @@ const LandingPage = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
         {/* New Section for Daniele Calm at Piano Image */}
-        <section className="max-w-4xl mx-auto text-center py-12">
+        <section className="max-w-4xl mx-auto text-center py-8"> {/* Reduced padding */}
           <DynamicImage
             src="/danielecalmatpiano.jpeg"
             alt="Daniele Buatti playing piano with eyes closed, deeply in the moment"
@@ -276,7 +279,7 @@ const LandingPage = () => {
         </section>
 
         {/* New Section for Tulips Image */}
-        <section className="max-w-4xl mx-auto text-center py-12">
+        <section className="max-w-4xl mx-auto text-center py-8"> {/* Reduced padding */}
           <DynamicImage
             src="/tulips.jpeg"
             alt="Daniele Buatti smiling with tulips in a garden"
