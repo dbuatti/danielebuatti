@@ -48,9 +48,9 @@ const LandingPageV3 = () => {
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
       <Navbar />
-      <main className="container mx-auto px-4 space-y-16"> {/* Reduced overall spacing */}
+      <main className="container mx-auto px-4 space-y-12"> {/* Adjusted overall spacing */}
         {/* Hero Section - Split Layout with Image */}
-        <section id="home" className="grid md:grid-cols-2 gap-16 items-center max-w-7xl mx-auto py-16"> {/* Reduced padding */}
+        <section id="home" className="grid md:grid-cols-2 gap-16 items-center max-w-7xl mx-auto py-16">
           <div className="text-center md:text-left space-y-8">
             <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-tight text-brand-primary">
               Unlock Your True Voice. Master Your Presence.
@@ -267,24 +267,8 @@ const LandingPageV3 = () => {
 
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
-        {/* Image Section: Daniele Calm at Piano - with caption */}
-        <section className="max-w-6xl mx-auto text-center py-12 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-xl shadow-lg">
-          <DynamicImage
-            src="/danielecalmatpiano.jpeg"
-            alt="Daniele Buatti playing piano with eyes closed, deeply in the moment"
-            className="w-full max-w-2xl h-auto rounded-xl shadow-2xl object-cover border-4 border-brand-primary mx-auto transform rotate-2 hover:rotate-0 transition-transform duration-500"
-            width={800}
-            height={533}
-          />
-          <p className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-4">
-            Daniele Buatti deeply immersed in playing the piano.
-          </p>
-        </section>
-
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-
         {/* My Approach Section - Visualized with icons */}
-        <section id="approach" className="max-w-7xl mx-auto space-y-10 py-12"> {/* Changed py-16 to py-12 */}
+        <section id="approach" className="max-w-7xl mx-auto space-y-10 py-12">
           <SectionHeading>My Embodied Holistic Approach</SectionHeading>
           <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
             All my teachings are informed by Buddhist and yogic philosophies, fostering a heart-centred, process-oriented journey focused on truth and transformation, not just the destination.
@@ -317,18 +301,47 @@ const LandingPageV3 = () => {
           </p>
         </section>
 
-        {/* Image Section: Tulips - with caption */}
-        <section className="max-w-6xl mx-auto text-center py-8 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-xl shadow-lg"> {/* Changed py-12 to py-8 */}
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+
+        {/* Image Section: Daniele Calm at Piano - with caption */}
+        <section className="max-w-6xl mx-auto text-center py-12 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-xl shadow-lg">
           <DynamicImage
-            src="/tulips.jpeg"
-            alt="Daniele Buatti smiling with tulips in a garden"
-            className="w-full max-w-2xl h-auto rounded-xl shadow-2xl object-cover border-4 border-brand-primary mx-auto transform scale-105 hover:scale-100 transition-transform duration-500"
+            src="/danielecalmatpiano.jpeg"
+            alt="Daniele Buatti playing piano with eyes closed, deeply in the moment"
+            className="w-full max-w-2xl h-auto rounded-xl shadow-2xl object-cover border-4 border-brand-primary mx-auto transform rotate-2 hover:rotate-0 transition-transform duration-500"
             width={800}
             height={533}
           />
           <p className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-4">
-            Daniele Buatti enjoying a moment in a garden with tulips.
+            Daniele Buatti deeply immersed in playing the piano.
           </p>
+        </section>
+
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+
+        {/* Testimonials Section - Carousel */}
+        <section className="max-w-7xl mx-auto text-center space-y-10 py-16 bg-brand-secondary/20 dark:bg-brand-dark/50 rounded-xl shadow-lg">
+          <SectionHeading>What My Clients Say</SectionHeading>
+          <Carousel
+            opts={{
+              align: "start",
+            }}
+            className="w-full max-w-5xl mx-auto"
+          >
+            <CarouselContent className="-ml-4">
+              {testimonials.map((testimonial, index) => (
+                <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                  <TestimonialCard
+                    quote={testimonial.quote}
+                    author={testimonial.author}
+                    title={testimonial.title}
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-4" />
+            <CarouselNext className="right-4" />
+          </Carousel>
         </section>
 
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
@@ -411,29 +424,18 @@ const LandingPageV3 = () => {
 
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
-        {/* Testimonials Section - Carousel */}
-        <section className="max-w-7xl mx-auto text-center space-y-10 py-16 bg-brand-secondary/20 dark:bg-brand-dark/50 rounded-xl shadow-lg">
-          <SectionHeading>What My Clients Say</SectionHeading>
-          <Carousel
-            opts={{
-              align: "start",
-            }}
-            className="w-full max-w-5xl mx-auto"
-          >
-            <CarouselContent className="-ml-4">
-              {testimonials.map((testimonial, index) => (
-                <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                  <TestimonialCard
-                    quote={testimonial.quote}
-                    author={testimonial.author}
-                    title={testimonial.title}
-                  />
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="left-4" />
-            <CarouselNext className="right-4" />
-          </Carousel>
+        {/* Image Section: Tulips - with caption */}
+        <section className="max-w-6xl mx-auto text-center py-8 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-xl shadow-lg">
+          <DynamicImage
+            src="/tulips.jpeg"
+            alt="Daniele Buatti smiling with tulips in a garden"
+            className="w-full max-w-2xl h-auto rounded-xl shadow-2xl object-cover border-4 border-brand-primary mx-auto transform scale-105 hover:scale-100 transition-transform duration-500"
+            width={800}
+            height={533}
+          />
+          <p className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-4">
+            Daniele Buatti enjoying a moment in a garden with tulips.
+          </p>
         </section>
 
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
