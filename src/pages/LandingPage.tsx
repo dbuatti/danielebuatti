@@ -18,7 +18,7 @@ const LandingPage = () => {
               Daniele Buatti – Embodied Coaching for Performers & Communicators
             </h1>
             <p className="text-2xl md:text-3xl font-semibold text-brand-dark dark:text-brand-light">
-              Unlock Your Voice. Master Your Presence.
+              Refine Your Voice. Elevate Your Presence.
             </p>
             <p className="text-lg md:text-xl text-brand-dark/80 dark:text-brand-light/80 max-w-3xl md:max-w-none mx-auto">
               Whether you’re preparing for a performance, audition, presentation, or enhancing your on-camera presence, my coaching helps you perform and communicate with freedom, confidence, and ease. I combine world-class musical and performance training with deep body awareness and a powerful mindset approach, so you can achieve more without strain, stress, or burnout.
@@ -65,7 +65,7 @@ const LandingPage = () => {
                   <p>Australian Institute of Music (2014-2016)</p>
                   <p className="text-sm mt-2">Units in Arranging, Composition, Orchestration, and Piano.</p>
                   <p className="font-semibold mt-4">Diploma of Kinesiology</p>
-                  <p>Specializing in mind-body integration for performance.</p>
+                  <p>Specialising in mind-body integration for performance.</p>
                 </CardContent>
               </Card>
               <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary">
@@ -160,7 +160,7 @@ const LandingPage = () => {
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4">
               <CardTitle className="text-2xl text-brand-primary">2. Mindset & Performance Coaching</CardTitle>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Utilizing Mindfulness and therapeutic techniques, we manage nerves, setbacks, and creative blocks. Build consistency and unwavering confidence in practice, on stage, or on camera.
+                Utilising Mindfulness and therapeutic techniques, we manage nerves, setbacks, and creative blocks. Build consistency and unwavering confidence in practice, on stage, or on camera.
               </CardContent>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4">
@@ -189,7 +189,7 @@ const LandingPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Personalized sessions for voice, piano, public speaking, acting, or integrated coaching. Available in 30, 60, or 90-minute durations.
+                Personalised sessions for voice, piano, public speaking, acting, or integrated coaching. Available in 30, 60, or 90-minute durations.
               </CardContent>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
@@ -200,7 +200,7 @@ const LandingPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Join the "Body Voice Sound Workshop" for movement, improvisation, and sound exploration, or specialized group sessions for public speaking and on-camera presence.
+                Join the "Body Voice Sound Workshop" for movement, improvisation, and sound exploration, or specialised group sessions for public speaking and on-camera presence.
               </CardContent>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
