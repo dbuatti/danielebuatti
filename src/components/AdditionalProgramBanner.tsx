@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface AdditionalProgramBannerProps {
-  title: string; // Main title for the right column
+  title: React.ReactNode; // Main title for the right column
   description: string;
   link: string;
   linkText: string;
@@ -25,7 +25,7 @@ interface AdditionalProgramBannerProps {
   subtitle?: string; // Subtitle for the right column
   subtitleTextColorClass?: string; // New prop for subtitle text color
   // NEW PROPS for content specifically in the left column when titleInLeftColumn is true
-  leftColumnTitle?: string;
+  leftColumnTitle?: React.ReactNode;
   leftColumnSubtitle?: string;
 }
 
@@ -60,11 +60,11 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   );
 
   // Determine font class for the main title (right column)
-  const isMainTitleResonance = title.includes("Resonance with Daniele");
+  const isMainTitleResonance = typeof title === 'string' && title.includes("Resonance with Daniele");
   const mainTitleFontClass = isMainTitleResonance ? "font-display" : "";
 
   // Determine font class for the left column title
-  const isLeftColumnResonance = leftColumnTitle?.includes("Resonance with Daniele");
+  const isLeftColumnResonance = typeof leftColumnTitle === 'string' && leftColumnTitle?.includes("Resonance with Daniele");
   const leftColumnTitleFontClass = isLeftColumnResonance ? "font-display" : "";
 
   // Reusable content block for the main text and button area
@@ -73,7 +73,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
       {logoSrc && (
         <img
           src={logoSrc}
-          alt={`${title} logo`}
+          alt={`${typeof title === 'string' ? title : 'Program'} logo`}
           className="h-20 object-contain mb-4" // Removed mx-auto
         />
       )}
@@ -101,7 +101,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
             {logoSrc && !leftColumnTitle && !leftColumnSubtitle ? ( // Only show logo if no custom left column text
               <img
                 src={logoSrc}
-                alt={`${leftColumnTitle || title} logo`}
+                alt={`${typeof leftColumnTitle === 'string' ? leftColumnTitle : typeof title === 'string' ? title : 'Program'} logo`}
                 className="mx-auto h-20 object-contain mb-2"
               />
             ) : (
