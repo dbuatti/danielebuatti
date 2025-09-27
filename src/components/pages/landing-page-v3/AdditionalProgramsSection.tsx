@@ -26,7 +26,7 @@ const AdditionalProgramsSection: React.FC = () => {
 
         <AdditionalProgramBanner
           title="Professional Piano Backing Tracks"
-          description="For Musicals, Auditions & Performances. High-quality piano backing tracks for singers and performers."
+          description="" {/* Removed the description text */}
           link="https://pianobackingsbydaniele.vercel.app"
           linkText="Discover Piano Backings"
           bgColorClass="bg-brand-magenta"
