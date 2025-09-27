@@ -2,6 +2,8 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarDays, Users, Monitor } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
+import { Button } from "@/components/ui/button"; // Import Button
+import { Link } from "react-router-dom"; // Import Link
 
 const SessionsAvailabilitySection: React.FC = () => {
   return (
@@ -15,8 +17,18 @@ const SessionsAvailabilitySection: React.FC = () => {
               1:1 Coaching
             </CardTitle>
           </CardHeader>
-          <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-            Experience personalised 1:1 coaching tailored to your unique journey. Whether it's vocal mastery (breath work, body integration, repertoire, audition prep), supportive piano lessons (musicianship, theory), or integrated body-voice work, sessions are available in flexible 30, 45, 60, or 90-minute durations to perfectly fit your schedule and goals.
+          <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-4">
+            <p>
+              Experience personalised 1:1 coaching tailored to your unique journey. Whether it's vocal mastery (breath work, body integration, repertoire, audition prep), supportive piano lessons (musicianship, theory), or integrated body-voice work, sessions are available in flexible 30, 45, 60, or 90-minute durations to perfectly fit your schedule and goals.
+            </p>
+            <div className="flex flex-col gap-3 pt-4">
+              <Button asChild className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+                <Link to="/book-voice-piano">Book Voice & Piano</Link>
+              </Button>
+              <Button asChild variant="secondary" className="w-full bg-brand-secondary hover:bg-brand-secondary/90 text-brand-dark dark:text-brand-light">
+                <Link to="/book-healing">Book Healing Sessions</Link>
+              </Button>
+            </div>
           </CardContent>
         </Card>
         <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
