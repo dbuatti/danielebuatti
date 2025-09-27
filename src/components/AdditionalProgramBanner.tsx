@@ -68,7 +68,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
                   className="mx-auto h-20 object-contain mb-4"
                 />
               )}
-              <h3 className="text-5xl font-bold">{title}</h3> {/* Main title in left column */}
+              {!logoSrc && <h3 className="text-5xl font-bold">{title}</h3>} {/* Only show text title if no logoSrc */}
             </div>
 
             {/* Right Half (Description and Button) - Full width on mobile, 1/3 on md and up */}
