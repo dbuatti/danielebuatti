@@ -36,13 +36,11 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   const contentElements = (
     <>
       {logoSrc && (
-        <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-brand-magenta shadow-lg">
-          <img
-            src={logoSrc}
-            alt={`${title} logo`}
-            className="h-16 w-16 object-contain"
-          />
-        </div>
+        <img
+          src={logoSrc}
+          alt={`${title} logo`}
+          className="mx-auto h-20 object-contain mb-4"
+        />
       )}
       <h3 className="text-4xl font-bold">{title}</h3>
       <p className="text-lg max-w-3xl mx-auto">{description}</p>
