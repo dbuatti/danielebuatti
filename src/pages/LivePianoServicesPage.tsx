@@ -119,7 +119,7 @@ const LivePianoServicesPage: React.FC = () => {
   return (
     <div className="live-piano-theme min-h-screen bg-livePiano-background text-livePiano-light">
       {/* Header */}
-      <header className="bg-livePiano-darker py-4 px-6 md:px-12"> {/* Removed border-b */}
+      <header className="bg-livePiano-darker py-4 px-6 md:px-12">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Left section: Home and Back to Services */}
           <div className="flex items-center gap-4">
@@ -132,7 +132,7 @@ const LivePianoServicesPage: React.FC = () => {
           </div>
 
           {/* Right section: Logo and Title */}
-          <div className="flex flex-col items-end"> {/* Changed to items-end for right alignment */}
+          <div className="flex flex-col items-end">
             <img src="/gold-36.png" alt="Daniele Buatti Logo" className="h-16 md:h-20" />
             <h1 className="text-xl md:text-2xl font-montserrat font-light uppercase text-livePiano-light tracking-widest mt-2">
               Daniele Buatti
@@ -179,8 +179,8 @@ const LivePianoServicesPage: React.FC = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="-left-8 hidden md:flex" /> {/* Adjusted position and hidden on small screens */}
-            <CarouselNext className="-right-8 hidden md:flex" /> {/* Adjusted position and hidden on small screens */}
+            <CarouselPrevious className="-left-8 hidden md:flex" />
+            <CarouselNext className="-right-8 hidden md:flex" />
           </Carousel>
         </section>
 
@@ -195,7 +195,6 @@ const LivePianoServicesPage: React.FC = () => {
           <p className="text-lg font-libre-baskerville text-livePiano-light/80 max-w-2xl mx-auto mb-8">
             Daniele's versatile, refined performance creates an unforgettable atmosphere, with a repertoire spanning classical, jazz, and pop genres. Contact Daniele today to book his services and experience the unforgettable magic of live piano music at your event.
           </p>
-          {/* Removed broken links */}
         </section>
 
         {/* Contact Form */}
@@ -342,12 +341,27 @@ const LivePianoServicesPage: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-livePiano-darker py-8 text-center mt-12"> {/* Removed border-t */}
-        <div className="max-w-7xl mx-auto px-4">
-          <img src="/bowtie.avif" alt="Bowtie Logo" className="h-12 mx-auto mb-4" /> {/* Fixed image path */}
-          <p className="text-livePiano-light/80 text-lg flex items-center justify-center gap-4">
-            <Phone size={18} /> 0424 174 067
-            <Mail size={18} /> info@danielebuatti.com
+      <footer 
+        className="relative py-16 text-center mt-12 overflow-hidden"
+        style={{ backgroundImage: `url(/Piano Keys_edited_edited.avif)`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+      >
+        <div className="absolute inset-0 bg-black/60"></div> {/* Overlay for readability */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4">
+          <p className="text-livePiano-light text-2xl font-semibold flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+            <a 
+              href="https://wa.me/61424174067" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="flex items-center gap-2 hover:text-livePiano-primary transition-colors"
+            >
+              <Phone size={24} /> 0424 174 067
+            </a>
+            <a 
+              href="mailto:info@danielebuatti.com" 
+              className="flex items-center gap-2 hover:text-livePiano-primary transition-colors"
+            >
+              <Mail size={24} /> info@danielebuatti.com
+            </a>
           </p>
         </div>
       </footer>
