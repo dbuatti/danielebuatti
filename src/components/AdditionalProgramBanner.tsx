@@ -51,38 +51,31 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   leftColumnTitle, // New prop
   leftColumnSubtitle, // New prop
 }) => {
-  const buttonElement = (
-    <Button asChild size="lg" variant={buttonVariant} className={cn("text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
-      <a href={link} target="_blank" rel="noopener noreferrer">
-        {linkText}
-      </a>
-    </Button>
-  );
+  // Helper function to render the main content block
+  const renderContentBlock = (currentTitle: React.ReactNode, currentSubtitle?: string, currentLogoSrc?: string) => {
+    const isCurrentTitleResonance = typeof currentTitle === 'string' && currentTitle.includes("Resonance with Daniele");
+    const currentTitleFontClass = isCurrentTitleResonance ? "font-display" : "";
 
-  // Determine font class for the main title (right column)
-  const isMainTitleResonance = typeof title === 'string' && title.includes("Resonance with Daniele");
-  const mainTitleFontClass = isMainTitleResonance ? "font-display" : "";
-
-  // Determine font class for the left column title
-  const isLeftColumnResonance = typeof leftColumnTitle === 'string' && leftColumnTitle?.includes("Resonance with Daniele");
-  const leftColumnTitleFontClass = isLeftColumnResonance ? "font-display" : "";
-
-  // Reusable content block for the main text and button area
-  const contentBlock = (
-    <div className="space-y-2">
-      {logoSrc && (
-        <img
-          src={logoSrc}
-          alt={`${typeof title === 'string' ? title : 'Program'} logo`}
-          className="h-20 object-contain mb-4" // Removed mx-auto
-        />
-      )}
-      <h3 className={cn("text-4xl font-bold leading-tight", mainTitleFontClass)}>{title}</h3>
-      {subtitle && <p className={cn("text-xl", subtitleTextColorClass)}>{subtitle}</p>}
-      <p className="text-lg max-w-3xl">{description}</p> {/* Removed mx-auto */}
-      {buttonElement}
-    </div>
-  );
+    return (
+      <div className="space-y-2">
+        {currentLogoSrc && (
+          <img
+            src={currentLogoSrc}
+            alt={`${typeof currentTitle === 'string' ? currentTitle : 'Program'} logo`}
+            className="h-20 object-contain mb-4"
+          />
+        )}
+        <h3 className={cn("text-4xl font-bold leading-tight", currentTitleFontClass)}>{currentTitle}</h3>
+        {currentSubtitle && <p className={cn("text-xl", subtitleTextColorClass)}>{currentSubtitle}</p>}
+        <p className="text-lg max-w-3xl">{description}</p>
+        <Button asChild size="lg" variant={buttonVariant} className={cn("text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
+          <a href={link} target="_blank" rel="noopener noreferrer">
+            {linkText}
+          </a>
+        </Button>
+      </div>
+    );
+  };
 
   // Base classes for the content area, adjusted for left alignment when in right column
   const baseContentClasses = "relative z-10 flex flex-col justify-center p-8 space-y-6 h-full"; // Removed items-center and text-center
@@ -98,22 +91,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
             bgColorClass || "bg-brand-dark",
             leftColumnTextColorClass || textColorClass
           )}>
-            {logoSrc && !leftColumnTitle && !leftColumnSubtitle ? ( // Only show logo if no custom left column text
-              <img
-                src={logoSrc}
-                alt={`${typeof leftColumnTitle === 'string' ? leftColumnTitle : typeof title === 'string' ? title : 'Program'} logo`}
-                className="mx-auto h-20 object-contain mb-2"
-              />
-            ) : (
-              <>
-                {leftColumnTitle && (
-                  <h3 className={cn("text-4xl font-bold leading-tight", leftColumnTitleFontClass)}>{leftColumnTitle}</h3>
-                )}
-                {leftColumnSubtitle && (
-                  <p className={cn("text-xl", subtitleTextColorClass)}>{leftColumnSubtitle}</p>
-                )}
-              </>
-            )}
+            {renderContentBlock(leftColumnTitle || title, leftColumnSubtitle || subtitle, logoSrc)}
           </div>
           {/* Right 1/3 column (main content) */}
           <div className={cn(
@@ -123,7 +101,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
             rightColumnTextColorClass || textColorClass,
             "items-start text-left" // Added for left alignment in right column
           )}>
-            {contentBlock}
+            {renderContentBlock(title, subtitle, logoSrc)}
           </div>
         </div>
       ) : backgroundImageSrc ? (
@@ -139,7 +117,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
             textColorClass, // Text color for content on image background
             "items-start text-left" // Added for left alignment in right column
           )}>
-            {contentBlock}
+            {renderContentBlock(title, subtitle, logoSrc)}
           </div>
         </div>
       ) : (
@@ -151,7 +129,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
           textColorClass,
           "items-center text-center" // Default to center for full-width solid banners
         )}>
-          {contentBlock}
+          {renderContentBlock(title, subtitle, logoSrc)}
         </div>
       )}
       {/* Bottom Strip - Apply to all banners if present */}

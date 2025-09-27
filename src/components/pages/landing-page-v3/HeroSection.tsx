@@ -1,11 +1,13 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import DynamicImage from "@/components/DynamicImage";
+import SectionHeading from "@/components/SectionHeading"; // Import SectionHeading
 
 const HeroSection: React.FC = () => {
   return (
     <section id="home" className="grid md:grid-cols-2 gap-16 items-center max-w-7xl mx-auto py-16">
       <div className="text-center md:text-left space-y-8">
+        {/* Removed SectionHeading here as the H1 is the main title for this section */}
         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-tight text-brand-primary">
           Unlock Your True Voice. Master Your Presence.
         </h1>

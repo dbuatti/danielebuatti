@@ -25,7 +25,7 @@ const CallToActionSection: React.FC = () => {
         <a href="mailto:info@danielebuatti.com" className="flex items-center gap-2 hover:text-brand-primary transition-colors text-lg">
           <Mail className="h-6 w-6" /> daniele.buatti@gmail.com
         </a>
-        <a href="tel:+61424174067" className="flex items-center gap-2 hover:text-brand-primary transition-colors text-lg">
+        <a href="https://wa.me/61424174067" className="flex items-center gap-2 hover:text-brand-primary transition-colors text-lg">
           <Phone className="h-6 w-6" /> +61 424 174 067
         </a>
       </div>

@@ -19,7 +19,7 @@ const AboutMeSection: React.FC = () => {
         </div>
       </div>
       <div className="text-center md:text-left space-y-8">
-        <SectionHeading className="md:text-left">About Daniele Buatti</SectionHeading>
+        <SectionHeading>About Daniele Buatti</SectionHeading>
         <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
           For over 12 years, I've been a Music Director, Pianist, Arranger, Vocal Coach, and Educator. I offer a unique blend of artistic leadership and evidence-based methods, training versatile, industry-ready performers and communicators. My experience spans professional music theatre, vocal pedagogy, tertiary education, and holistic somatic practices. My focus is on high-quality, embodied coaching and innovative performance curricula, helping artists express themselves through a holistic approach that connects breath, body, and mind for truly embodied performance.
         </p>
