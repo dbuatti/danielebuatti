@@ -68,7 +68,7 @@ const Navbar = () => {
             }
           })}
           <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-            <Link to="/book-voice-piano">Book a Lesson</Link>
+            <a href="#sessions">Book a Lesson</a>
           </Button>
           <ThemeToggle />
         </nav>
@@ -114,7 +114,7 @@ const Navbar = () => {
                   }
                 })}
                 <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
-                  <Link to="/book-voice-piano">Book a Lesson</Link>
+                  <a href="#sessions">Book a Lesson</a>
                 </Button>
               </nav>
             </SheetContent>
