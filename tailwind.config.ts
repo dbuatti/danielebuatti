@@ -106,5 +106,23 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    function ({ addUtilities }) {
+      addUtilities({
+        '.text-shadow-sm': {
+          'text-shadow': '1px 1px 2px rgba(0, 0, 0, 0.6)',
+        },
+        '.text-shadow': {
+          'text-shadow': '2px 2px 4px rgba(0, 0, 0, 0.7)',
+        },
+        '.text-shadow-lg': {
+          'text-shadow': '3px 3px 6px rgba(0, 0, 0, 0.8)',
+        },
+        '.text-shadow-none': {
+          'text-shadow': 'none',
+        },
+      }, ['responsive', 'hover']);
+    },
+  ],
 } satisfies Config;
