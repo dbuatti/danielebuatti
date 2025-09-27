@@ -74,8 +74,16 @@ export default {
           secondary: "hsl(var(--brand-secondary))",
           blue: "hsl(var(--brand-blue))",
           magenta: "hsl(var(--brand-magenta))",
-          yellow: "hsl(var(--brand-yellow))", // Added brand-yellow
-          "dark-alt": "hsl(var(--brand-dark-alt))", // Added new color
+          yellow: "hsl(var(--brand-yellow))",
+          "dark-alt": "hsl(var(--brand-dark-alt))",
+        },
+        // New color palette specifically for Live Piano Services page
+        livePiano: {
+          background: "hsl(var(--live-piano-background))",
+          primary: "hsl(var(--live-piano-primary))",
+          light: "hsl(var(--live-piano-light))",
+          border: "hsl(var(--live-piano-border))",
+          darker: "hsl(var(--live-piano-darker))",
         },
       },
       borderRadius: {

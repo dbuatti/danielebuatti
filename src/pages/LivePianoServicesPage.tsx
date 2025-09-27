@@ -117,22 +117,22 @@ const LivePianoServicesPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-brand-dark text-brand-light">
+    <div className="live-piano-theme min-h-screen bg-livePiano-background text-livePiano-light">
       {/* Header */}
-      <header className="bg-brand-dark-alt py-4 px-6 md:px-12 border-b border-brand-secondary/20">
+      <header className="bg-livePiano-darker py-4 px-6 md:px-12 border-b border-livePiano-border/20">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-end gap-4">
-          <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light px-6 py-2">
+          <Button asChild className="bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light px-6 py-2">
             <Link to="/">Back to Services</Link>
           </Button>
         </div>
         {/* Main Header */}
         <div className="max-w-7xl mx-auto flex items-center justify-between mt-4">
-          <Link to="/" className="text-brand-light hover:text-brand-primary transition-colors">
+          <Link to="/" className="text-livePiano-light hover:text-livePiano-primary transition-colors">
             <Home size={24} />
           </Link>
           <div className="flex flex-col items-center">
             <img src="/gold-36.png" alt="Daniele Buatti Logo" className="h-16 md:h-20" />
-            <h1 className="text-xl md:text-2xl font-bold text-brand-light tracking-widest mt-2">DANIELE BUATTI</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-livePiano-light tracking-widest mt-2">DANIELE BUATTI</h1>
           </div>
           <div className="w-6"></div> {/* Spacer for alignment */}
         </div>
@@ -141,7 +141,7 @@ const LivePianoServicesPage: React.FC = () => {
       <main className="max-w-7xl mx-auto px-4 py-12">
         {/* Large Image Display */}
         <section className="mb-8">
-          <Card className="bg-brand-dark-alt border-brand-secondary/30 rounded-xl overflow-hidden shadow-lg">
+          <Card className="bg-livePiano-darker border-livePiano-border/30 rounded-xl overflow-hidden shadow-lg">
             <img
               src={galleryImages[selectedImageIndex]}
               alt={`Selected event image ${selectedImageIndex + 1}`}
@@ -166,8 +166,8 @@ const LivePianoServicesPage: React.FC = () => {
                 <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
                   <Card 
                     className={cn(
-                      "bg-brand-dark-alt border-brand-secondary/30 rounded-xl overflow-hidden shadow-lg cursor-pointer",
-                      selectedImageIndex === index ? "border-4 border-brand-primary" : ""
+                      "bg-livePiano-darker border-livePiano-border/30 rounded-xl overflow-hidden shadow-lg cursor-pointer",
+                      selectedImageIndex === index ? "border-4 border-livePiano-primary" : ""
                     )}
                     onClick={() => api?.scrollTo(index)}
                   >
@@ -183,24 +183,24 @@ const LivePianoServicesPage: React.FC = () => {
 
         {/* Main Content */}
         <section className="text-center mb-16">
-          <h2 className="text-5xl font-extrabold text-brand-primary mb-6 leading-tight">
+          <h2 className="text-5xl font-extrabold text-livePiano-primary mb-6 leading-tight">
             AN UNFORGETTABLE MUSICAL EXPERIENCE
           </h2>
-          <p className="text-xl text-brand-light/90 max-w-3xl mx-auto mb-8">
+          <p className="text-xl text-livePiano-light/90 max-w-3xl mx-auto mb-8">
             Indulge in the elegance of live piano music and elevate your wedding, corporate event, or private party to new heights with the incomparable talent of Daniele Buatti. Daniele's versatile, refined performance creates an unforgettable atmosphere, with a repertoire spanning classical, jazz, and pop genres.
           </p>
-          <p className="text-lg text-brand-light/80 max-w-2xl mx-auto mb-8">
+          <p className="text-lg text-livePiano-light/80 max-w-2xl mx-auto mb-8">
             CONTACT DANIELE TODAY TO BOOK HIS SERVICES AND EXPERIENCE THE UNFORGETTABLE MAGIC OF LIVE PIANO MUSIC AT YOUR EVENT.
           </p>
           <div className="space-y-2 text-lg">
-            <p>Explore Daniele's media <a href="https://example.com/media" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline">here</a></p>
-            <p>Discover the Blue Velvet Style <a href="https://example.com/blue-velvet" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline">here</a></p>
+            <p>Explore Daniele's media <a href="https://example.com/media" target="_blank" rel="noopener noreferrer" className="text-livePiano-primary hover:underline">here</a></p>
+            <p>Discover the Blue Velvet Style <a href="https://example.com/blue-velvet" target="_blank" rel="noopener noreferrer" className="text-livePiano-primary hover:underline">here</a></p>
           </div>
         </section>
 
         {/* Contact Form */}
-        <section className="max-w-2xl mx-auto bg-brand-dark-alt p-8 rounded-xl shadow-2xl border border-brand-secondary/30">
-          <h3 className="text-4xl font-bold text-center text-brand-light mb-8">Enquire now!</h3>
+        <section className="max-w-2xl mx-auto bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30">
+          <h3 className="text-4xl font-bold text-center text-livePiano-light mb-8">Enquire now!</h3>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleContactSubmit)} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -209,12 +209,12 @@ const LivePianoServicesPage: React.FC = () => {
                   name="firstName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-brand-light">First Name *</FormLabel>
+                      <FormLabel className="text-livePiano-light">First Name *</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Your First Name"
                           {...field}
-                          className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60"
+                          className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
                         />
                       </FormControl>
                       <FormMessage />
@@ -226,12 +226,12 @@ const LivePianoServicesPage: React.FC = () => {
                   name="lastName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-brand-light">Last Name *</FormLabel>
+                      <FormLabel className="text-livePiano-light">Last Name *</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Your Last Name"
                           {...field}
-                          className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60"
+                          className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
                         />
                       </FormControl>
                       <FormMessage />
@@ -244,13 +244,13 @@ const LivePianoServicesPage: React.FC = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-brand-light">Email *</FormLabel>
+                    <FormLabel className="text-livePiano-light">Email *</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
                         placeholder="your@email.com"
                         {...field}
-                        className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60"
+                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
                       />
                     </FormControl>
                     <FormMessage />
@@ -262,13 +262,13 @@ const LivePianoServicesPage: React.FC = () => {
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-brand-light">Phone</FormLabel>
+                    <FormLabel className="text-livePiano-light">Phone</FormLabel>
                     <FormControl>
                       <Input
                         type="tel"
                         placeholder="Your Phone Number"
                         {...field}
-                        className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60"
+                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
                       />
                     </FormControl>
                     <FormMessage />
@@ -280,12 +280,12 @@ const LivePianoServicesPage: React.FC = () => {
                 name="suburb"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-brand-light">Suburb</FormLabel>
+                    <FormLabel className="text-livePiano-light">Suburb</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Your Suburb"
                         {...field}
-                        className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60"
+                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
                       />
                     </FormControl>
                     <FormMessage />
@@ -297,13 +297,13 @@ const LivePianoServicesPage: React.FC = () => {
                 name="eventDescription"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-brand-light">Tell us about your event *</FormLabel>
+                    <FormLabel className="text-livePiano-light">Tell us about your event *</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Describe your event, date, time, and any special requests..."
                         {...field}
                         rows={5}
-                        className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60"
+                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
                       />
                     </FormControl>
                     <FormMessage />
@@ -315,14 +315,14 @@ const LivePianoServicesPage: React.FC = () => {
                 name="pianoType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-brand-light">What piano do you have at your home?</FormLabel>
+                    <FormLabel className="text-livePiano-light">What piano do you have at your home?</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger className="w-full bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60">
+                        <SelectTrigger className="w-full bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60">
                           <SelectValue placeholder="Select an option" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="bg-brand-dark border-brand-secondary text-brand-light">
+                      <SelectContent className="bg-livePiano-background border-livePiano-border text-livePiano-light">
                         <SelectItem value="grand-piano">Grand Piano</SelectItem>
                         <SelectItem value="upright-piano">Upright Piano</SelectItem>
                         <SelectItem value="digital-piano">Digital Piano</SelectItem>
@@ -333,7 +333,7 @@ const LivePianoServicesPage: React.FC = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" size="lg" className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg py-3 rounded-full" disabled={loading}>
+              <Button type="submit" size="lg" className="w-full bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light text-lg py-3 rounded-full" disabled={loading}>
                 {loading ? 'Sending...' : 'Send'}
               </Button>
             </form>
@@ -342,10 +342,10 @@ const LivePianoServicesPage: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-brand-dark-alt py-8 text-center border-t border-brand-secondary/20 mt-12">
+      <footer className="bg-livePiano-darker py-8 text-center border-t border-livePiano-border/20 mt-12">
         <div className="max-w-7xl mx-auto px-4">
           <img src="/bowtie-logo.png" alt="Bowtie Logo" className="h-12 mx-auto mb-4" />
-          <p className="text-brand-light/80 text-lg flex items-center justify-center gap-4">
+          <p className="text-livePiano-light/80 text-lg flex items-center justify-center gap-4">
             <Phone size={18} /> 0424 174 067
             <Mail size={18} /> info@danielebuatti.com
           </p>

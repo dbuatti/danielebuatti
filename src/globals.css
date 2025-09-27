@@ -102,6 +102,15 @@
     --brand-yellow: 48 100% 50%; /* Bright Yellow */
     --brand-dark-alt: 240 100% 5%; /* Slightly lighter dark blue for contrast */
   }
+
+  /* Live Piano Services Page Theme */
+  .live-piano-theme {
+    --live-piano-background: 0 0% 10.6%; /* #1b1b1b */
+    --live-piano-primary: 43 98% 53.3%; /* #fdb813 */
+    --live-piano-light: 0 0% 100%; /* #FFFFFF */
+    --live-piano-border: 0 0% 20%; /* Slightly lighter grey for borders */
+    --live-piano-darker: 0 0% 8%; /* Even darker for header/footer */
+  }
 }
 
 @layer base {
