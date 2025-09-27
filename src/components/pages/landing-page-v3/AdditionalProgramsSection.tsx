@@ -32,7 +32,7 @@ const AdditionalProgramsSection: React.FC = () => {
           textColorClass="text-brand-dark"
           buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
           className="max-w-6xl"
-          titleInLeftColumn={false}
+          titleInLeftColumn={false} // Explicitly set to false for full-width solid background
         />
 
         {/* AdditionalProgramBanner for Resonance with Daniele */}
@@ -45,7 +45,7 @@ const AdditionalProgramsSection: React.FC = () => {
           textColorClass="text-brand-light"
           buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
           className="max-w-6xl"
-          titleInLeftColumn={false}
+          titleInLeftColumn={false} // Explicitly set to false for full-width solid background
         />
 
         {/* Creative Exploration Pill Banner */}

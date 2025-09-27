@@ -67,92 +67,90 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   const isLeftColumnResonance = leftColumnTitle?.includes("Resonance with Daniele");
   const leftColumnTitleFontClass = isLeftColumnResonance ? "font-display" : "";
 
+  // Reusable content block for the main text and button area
+  const contentBlock = (
+    <div className="space-y-2">
+      {logoSrc && (
+        <img
+          src={logoSrc}
+          alt={`${title} logo`}
+          className="mx-auto h-20 object-contain mb-4"
+        />
+      )}
+      <h3 className={cn("text-4xl font-bold leading-tight", mainTitleFontClass)}>{title}</h3>
+      {subtitle && <p className={cn("text-xl", subtitleTextColorClass)}>{subtitle}</p>}
+      <p className="text-lg max-w-3xl mx-auto">{description}</p>
+      {buttonElement}
+    </div>
+  );
+
+  // Base classes for the content area, always centered
+  const baseContentClasses = "relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6 h-full";
+
   return (
     <div className={cn("relative w-full flex flex-col overflow-hidden", className)}>
-      <div className="flex-grow grid grid-cols-1 md:grid-cols-3 h-[280px]"> {/* Changed height from 350px to 280px */}
-        {titleInLeftColumn ? (
-          <>
-            {/* Left Half (Custom Content) - Visible on md and up, takes 2/3 width */}
-            <div className={cn(
-              "relative z-10 hidden md:flex flex-col items-center justify-center p-8 text-center space-y-4 md:col-span-2 h-full",
-              bgColorClass || "bg-brand-dark",
-              leftColumnTextColorClass || textColorClass
-            )}>
-              {logoSrc ? (
-                <img
-                  src={logoSrc}
-                  alt={`${leftColumnTitle || title} logo`}
-                  className="mx-auto h-20 object-contain mb-2"
-                />
-              ) : (
-                <>
-                  {leftColumnTitle && (
-                    <h3 className={cn("text-4xl font-bold leading-tight", leftColumnTitleFontClass)}>{leftColumnTitle}</h3>
-                  )}
-                  {leftColumnSubtitle && (
-                    <p className={cn("text-xl", subtitleTextColorClass)}>{leftColumnSubtitle}</p>
-                  )}
-                </>
-              )}
-            </div>
-
-            {/* Right Half (Main Title, Subtitle, Description and Button) - Full width on mobile, 1/3 on md and up */}
-            <div className={cn(
-              "relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6 md:col-span-1 h-full",
-              bgColorClass || "bg-brand-dark",
-              rightColumnTextColorClass || textColorClass
-            )}>
-              <div className="space-y-2">
-                {logoSrc && (
-                  <img
-                    src={logoSrc}
-                    alt={`${title} logo`}
-                    className="mx-auto h-16 object-contain md:hidden" // Only show logo on mobile in right column
-                  />
-                )}
-                {/* Main title and subtitle for the right column */}
-                <h3 className={cn("text-4xl font-bold leading-tight", mainTitleFontClass)} style={{ color: rightColumnTextColorClass ? undefined : 'inherit' }}>
-                  {title}
-                </h3>
-                {subtitle && <p className={cn("text-xl", subtitleTextColorClass)}>{subtitle}</p>}
-              </div>
-              <p className="text-lg max-w-3xl mx-auto">{description}</p>
-              {buttonElement}
-            </div>
-          </>
-        ) : (
-          <>
-            {/* Default Layout: Left 2/3 is image/solid, Right 1/3 is all content */}
-            {backgroundImageSrc ? (
-              <div
-                className="relative hidden md:block md:col-span-2 bg-cover bg-center h-full"
-                style={{ backgroundImage: `url(${backgroundImageSrc})`, backgroundPosition: 'left center', backgroundSize: 'cover' }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent to-brand-dark"></div>
-              </div>
+      {titleInLeftColumn ? (
+        // Case 1: Title in left column (split layout)
+        <div className="flex-grow grid grid-cols-1 md:grid-cols-3 h-[280px]">
+          {/* Left 2/3 column */}
+          <div className={cn(
+            "relative z-10 hidden md:flex flex-col items-center justify-center p-8 text-center space-y-4 md:col-span-2 h-full",
+            bgColorClass || "bg-brand-dark",
+            leftColumnTextColorClass || textColorClass
+          )}>
+            {logoSrc && !leftColumnTitle && !leftColumnSubtitle ? ( // Only show logo if no custom left column text
+              <img
+                src={logoSrc}
+                alt={`${leftColumnTitle || title} logo`}
+                className="mx-auto h-20 object-contain mb-2"
+              />
             ) : (
-              <div className={cn("hidden md:block md:col-span-2 h-full", bgColorClass || "bg-brand-dark")}></div>
+              <>
+                {leftColumnTitle && (
+                  <h3 className={cn("text-4xl font-bold leading-tight", leftColumnTitleFontClass)}>{leftColumnTitle}</h3>
+                )}
+                {leftColumnSubtitle && (
+                  <p className={cn("text-xl", subtitleTextColorClass)}>{leftColumnSubtitle}</p>
+                )}
+              </>
             )}
-
-            <div className={cn(
-              "relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6 md:col-span-1 h-full",
-              bgColorClass || "bg-brand-dark",
-              textColorClass
-            )}>
-              {logoSrc && (
-                <img
-                  src={logoSrc}
-                  alt={`${title} logo`}
-                  className="mx-auto h-20 object-contain mb-4"
-                />
-              )}
-              <h3 className={cn("text-4xl font-bold", mainTitleFontClass)}>{title}</h3>
-              <p className="text-lg max-w-3xl mx-auto">{description}</p>
-              {buttonElement}
-            </div>
-          </>
-        )}
-      </div>
+          </div>
+          {/* Right 1/3 column (main content) */}
+          <div className={cn(
+            baseContentClasses,
+            "md:col-span-1", // Confine to 1/3 width on md+
+            bgColorClass || "bg-brand-dark",
+            rightColumnTextColorClass || textColorClass
+          )}>
+            {contentBlock}
+          </div>
+        </div>
+      ) : backgroundImageSrc ? (
+        // Case 2: Image background (split layout)
+        <div
+          className={cn("flex-grow grid grid-cols-1 md:grid-cols-3 h-[280px]", bgColorClass)} // bgColorClass for the whole grid if needed
+          style={{ backgroundImage: `url(${backgroundImageSrc})`, backgroundPosition: 'left center', backgroundSize: 'cover' }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-brand-dark md:col-span-2"></div>
+          <div className={cn(
+            baseContentClasses,
+            "md:col-span-1", // Confine to 1/3 width on md+
+            textColorClass // Text color for content on image background
+          )}>
+            {contentBlock}
+          </div>
+        </div>
+      ) : (
+        // Case 3: Full-width solid color banner (default for Piano Backings, Resonance)
+        <div className={cn(
+          baseContentClasses,
+          "flex-grow", // Take full width
+          bgColorClass || "bg-brand-dark",
+          textColorClass
+        )}>
+          {contentBlock}
+        </div>
+      )}
       {/* Bottom Strip - Apply to all banners if present */}
       {bottomStripColorClass && <div className={cn("w-full h-8 flex-shrink-0", bottomStripColorClass)}></div>}
     </div>
