@@ -54,7 +54,7 @@ const AdditionalProgramsSection: React.FC = () => {
           className="max-w-6xl"
           buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
           overlayColorClass="bg-black/50"
-          backgroundPosition="center 85%" // Lower the image further
+          backgroundPosition="center 95%" // Lower the image even more
         />
       </div>
     </section>
