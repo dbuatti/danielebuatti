@@ -90,16 +90,17 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
         )}
       >
         <div className="container grid grid-cols-1 md:grid-cols-2 items-center gap-8">
-          {/* Left side: Logo and Title */}
+          {/* Left side: Logo or Title */}
           <div className="md:col-span-1 text-center md:text-left space-y-4">
-            {logoSrc && (
+            {logoSrc ? (
               <img
                 src={logoSrc}
                 alt={`${title} logo`}
                 className="mx-auto md:mx-0 h-20 object-contain mb-4"
               />
+            ) : (
+              <h3 className="text-4xl font-bold">{title}</h3>
             )}
-            <h3 className="text-4xl font-bold">{title}</h3>
           </div>
 
           {/* Right side: Description and Button */}
