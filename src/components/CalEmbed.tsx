@@ -1,14 +1,28 @@
 "use client";
 
 import React, { useEffect } from 'react';
+import { useTheme } from "next-themes"; // Import useTheme to get current theme
 
 interface CalEmbedProps {
-  calLink: string;
+  calLink: string; // Expected format: "danielebuatti/30min"
   layout?: "month_view" | "week_view" | "day_view";
 }
 
 const CalEmbed: React.FC<CalEmbedProps> = ({ calLink, layout = "month_view" }) => {
+  const { theme } = useTheme(); // Get the current theme
+
   useEffect(() => {
+    // Extract namespace from calLink (e.g., "30min" from "danielebuatti/30min")
+    const parts = calLink.split('/');
+    const namespace = parts[parts.length - 1];
+
+    if (!namespace) {
+      console.error("CalEmbed: Invalid calLink provided. Could not extract namespace.");
+      return;
+    }
+
+    const embedId = `my-cal-inline-${namespace}`;
+
     // Ensure Cal.com embed script is loaded
     (function (C: any, A: string, L: string) {
       let p = function (a: any, ar: any) { a.q.push(ar); };
@@ -24,12 +38,12 @@ const CalEmbed: React.FC<CalEmbedProps> = ({ calLink, layout = "month_view" }) =
         }
         if (ar[0] === L) {
           const api = function () { p(api, arguments); };
-          const namespace = ar[1];
+          const ns = ar[1];
           api.q = api.q || [];
-          if (typeof namespace === "string") {
-            cal.ns[namespace] = cal.ns[namespace] || api;
-            p(cal.ns[namespace], ar);
-            p(cal, ["initNamespace", namespace]);
+          if (typeof ns === "string") {
+            cal.ns[ns] = cal.ns[ns] || api;
+            p(cal.ns[ns], ar);
+            p(cal, ["initNamespace", ns]);
           } else p(cal, ar);
           return;
         }
@@ -37,29 +51,39 @@ const CalEmbed: React.FC<CalEmbedProps> = ({ calLink, layout = "month_view" }) =
       };
     })(window, "https://app.cal.com/embed/embed.js", "init");
 
-    // Initialize Cal.com embed
-    const namespace = calLink.split('/').pop(); // Extract namespace from calLink
-    if (namespace) {
-      (window as any).Cal("init", namespace, { origin: "https://app.cal.com" });
-      (window as any).Cal.ns[namespace]("inline", {
-        elementOrSelector: `#my-cal-inline-${namespace}`,
-        config: { layout: layout },
-        calLink: calLink,
-      });
-      (window as any).Cal.ns[namespace]("ui", { "hideEventTypeDetails": false, "layout": layout });
-    }
+    // Initialize Cal.com embed using the provided structure
+    (window as any).Cal("init", namespace, { origin: "https://app.cal.com" });
 
-    // Clean up function (optional, but good practice if component unmounts frequently)
+    (window as any).Cal.ns[namespace]("inline", {
+      elementOrSelector: `#${embedId}`,
+      config: { layout: layout },
+      calLink: calLink, // This is the relative path, e.g., "danielebuatti/30min"
+    });
+
+    (window as any).Cal.ns[namespace]("ui", {
+      cssVarsPerTheme: {
+        light: { "cal-brand": "#00022D" },
+        dark: { "cal-brand": "#fafafa" }
+      },
+      hideEventTypeDetails: false,
+      layout: layout
+    });
+
+    // Clean up function to clear the embed content when component unmounts
     return () => {
-      // You might want to remove the script or reset Cal.com state here if needed
-      // For a simple modal, it's often fine to leave it as is.
+      const embedElement = document.getElementById(embedId);
+      if (embedElement) {
+        embedElement.innerHTML = ''; // Clear content
+      }
     };
-  }, [calLink, layout]); // Re-run if calLink or layout changes
+  }, [calLink, layout, theme]); // Re-run if calLink, layout, or theme changes
 
-  const namespace = calLink.split('/').pop();
+  const parts = calLink.split('/');
+  const namespace = parts[parts.length - 1];
+  const embedId = `my-cal-inline-${namespace}`;
 
   return (
-    <div style={{ width: '100%', height: '100%', overflow: 'scroll' }} id={`my-cal-inline-${namespace}`}></div>
+    <div style={{ width: '100%', height: '100%', overflow: 'scroll' }} id={embedId}></div>
   );
 };
 
