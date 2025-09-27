@@ -59,20 +59,20 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
       <div className="flex-grow grid grid-cols-1 md:grid-cols-3">
         {titleInLeftColumn ? (
           <>
-            {/* Left Half (Title, Subtitle, and optional Image Logo) - Visible on md and up, takes 2/3 width */}
+            {/* Left Half (Logo) - Visible on md and up, takes 2/3 width */}
             <div className={cn(
-              "relative z-10 hidden md:flex flex-col items-center justify-center p-8 text-center space-y-4 md:col-span-2", // Adjusted space-y
+              "relative z-10 hidden md:flex flex-col items-center justify-center p-8 text-center space-y-4 md:col-span-2",
               bgColorClass || "bg-brand-dark",
-              leftColumnTextColorClass || textColorClass // Use specific left color or default
+              leftColumnTextColorClass || textColorClass
             )}>
-              {logoSrc && ( // If there's an image logo, display it above the title
+              {logoSrc && (
                 <img
                   src={logoSrc}
                   alt={`${title} logo`}
-                  className="mx-auto h-20 object-contain mb-2" // Adjusted margin
+                  className="mx-auto h-20 object-contain mb-2"
                 />
               )}
-              {/* Only render text title/subtitle if no logoSrc is provided, to avoid duplication */}
+              {/* If no logo, show text title/subtitle in left column */}
               {!logoSrc && (
                 <>
                   <h3 className="text-5xl font-bold">{title}</h3>
@@ -81,27 +81,24 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
               )}
             </div>
 
-            {/* Right Half (Description and Button) - Full width on mobile, 1/3 on md and up */}
+            {/* Right Half (Title, Subtitle, Description and Button) - Full width on mobile, 1/3 on md and up */}
             <div className={cn(
               "relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6 md:col-span-1",
               bgColorClass || "bg-brand-dark",
-              rightColumnTextColorClass || textColorClass // Use specific right color or default
+              rightColumnTextColorClass || textColorClass
             )}>
-              {/* On mobile, show title and subtitle here for consistency */}
-              <div className="md:hidden space-y-2">
+              {/* Always show title and subtitle in the right column */}
+              <div className="space-y-2">
+                {/* On mobile, also show logo if present */}
                 {logoSrc && (
                   <img
                     src={logoSrc}
                     alt={`${title} logo`}
-                    className="mx-auto h-16 object-contain"
+                    className="mx-auto h-16 object-contain md:hidden" // Only show logo on mobile in right column
                   />
                 )}
-                {!logoSrc && (
-                  <>
-                    <h3 className="text-4xl font-bold">{title}</h3>
-                    {subtitle && <p className={cn("text-xl font-medium", subtitleTextColorClass || rightColumnTextColorClass || textColorClass)}>{subtitle}</p>}
-                  </>
-                )}
+                <h3 className="text-4xl font-bold" style={{ color: leftColumnTextColorClass ? undefined : 'inherit' }}>{title}</h3> {/* Use leftColumnTextColorClass for title if available */}
+                {subtitle && <p className={cn("text-xl font-medium", subtitleTextColorClass || rightColumnTextColorClass || textColorClass)}>{subtitle}</p>}
               </div>
               <p className="text-lg max-w-3xl mx-auto">{description}</p>
               {buttonElement}
