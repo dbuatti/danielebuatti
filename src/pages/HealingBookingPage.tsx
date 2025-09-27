@@ -18,7 +18,7 @@ const HealingBookingPage: React.FC = () => {
 
   return (
     <BookingPageLayout pageTitle="Book Healing & Body-Voice Integration">
-      <div className="max-w-4xl mx-auto bg-brand-light dark:bg-brand-dark p-4 rounded-lg shadow-lg border border-brand-secondary">
+      <div className="max-w-7xl mx-auto"> {/* Changed to max-w-7xl and removed extra styling */}
         <iframe
           src="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:Healing%20%26%20Body-Voice%20Integration"
           width="100%"

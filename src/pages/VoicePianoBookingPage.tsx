@@ -18,7 +18,7 @@ const VoicePianoBookingPage: React.FC = () => {
 
   return (
     <BookingPageLayout pageTitle="Book Voice & Piano Sessions">
-      <div className="max-w-4xl mx-auto bg-brand-light dark:bg-brand-dark p-4 rounded-lg shadow-lg border border-brand-secondary">
+      <div className="max-w-7xl mx-auto"> {/* Changed to max-w-7xl and removed extra styling */}
         <iframe
           src="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:Voice%20%2B%20Piano"
           width="100%"
