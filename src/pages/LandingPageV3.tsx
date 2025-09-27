@@ -471,11 +471,10 @@ const LandingPageV3 = () => {
             link="https://pianobackingsbydaniele.vercel.app"
             linkText="Discover Piano Backings"
             bgColorClass="bg-brand-magenta"
-            textColorClass="text-brand-dark"
-            buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
+            textColorClass="text-black" // Changed to text-black
+            buttonBgClass="bg-black hover:bg-black/90 text-brand-light" // Changed to bg-black
             logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png"
             className="rounded-none"
-            // bottomStripColorClass="bg-brand-blue" // Removed from prop, will be rendered externally
           />
           {/* External strip for Piano Backings */}
           <div className="w-full h-8 bg-brand-blue"></div>
@@ -489,10 +488,9 @@ const LandingPageV3 = () => {
             textColorClass="text-brand-light"
             buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
             className="rounded-none"
-            // bottomStripColorClass="bg-brand-dark" // Removed from prop, will be rendered externally
           />
           {/* External strip for Resonance Choir */}
-          <div className="w-full h-8 bg-brand-dark"></div>
+          <div className="w-full h-8 bg-black"></div> {/* Changed to bg-black */}
         </div>
       </section>
       <Footer />
