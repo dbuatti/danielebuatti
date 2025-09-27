@@ -38,8 +38,9 @@ const LandingPage = () => {
           </div>
           <div className="flex justify-center md:justify-end">
             <DynamicImage
-              alt="Daniele Buatti coaching a performer"
-              className="w-full max-w-md h-auto rounded-xl shadow-2xl object-cover border-2 border-brand-secondary" // Added border
+              src="/danielepianolaugh.jpeg" // Updated image source
+              alt="Daniele Buatti laughing at the piano during a performance" // Updated alt text
+              className="w-full max-w-md h-auto rounded-xl shadow-2xl object-cover border-2 border-brand-secondary"
               width={600}
               height={400}
             />
