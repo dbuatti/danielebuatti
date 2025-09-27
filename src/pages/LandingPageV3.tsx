@@ -445,7 +445,7 @@ const LandingPageV3 = () => {
 
         {/* Additional Programs Section - New Banners */}
         <section className="max-w-7xl mx-auto space-y-8 py-16">
-          <SectionHeading>Daniele Also Does These Things...</SectionHeading>
+          <SectionHeading>Explore More from Daniele</SectionHeading>
           <div className="space-y-8">
             <AdditionalProgramBanner
               title="Explore Buattiverse: Sheet Music & Backing Tracks"
