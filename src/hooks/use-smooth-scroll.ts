@@ -15,22 +15,17 @@ export function useSmoothScroll() {
           const element = document.getElementById(id);
 
           if (element) {
-            // Only prevent default if not trying to open in a new tab (e.g., Ctrl/Cmd + click)
+            // Only prevent default and smooth scroll if it's a regular click (not Ctrl/Cmd + click)
             if (!event.ctrlKey && !event.metaKey) {
               event.preventDefault();
               element.scrollIntoView({
                 behavior: "smooth",
                 block: "start",
               });
-            } else {
-              // If Ctrl/Cmd is pressed, let the browser handle the default navigation
-              // to open in a new tab with the hash.
-              // We still want to scroll in the current tab if it's a regular click.
-              element.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-              });
             }
+            // If Ctrl/Cmd is pressed, we do NOT prevent default.
+            // We let the browser handle the navigation to the new tab with the hash,
+            // which will then automatically scroll to the element.
           }
         }
       }
