@@ -165,8 +165,8 @@ const LandingPage = () => {
           <SectionHeading>Who I Work With</SectionHeading>
           <div className="flex justify-center mb-8">
             <DynamicImage
-              src="/daniele-smile-host-bu.jpeg"
-              alt="Daniele Buatti smiling and interacting with a host at Broadway Unplugged"
+              src="/danielepianolaugh.jpeg" // Updated image source
+              alt="Daniele Buatti laughing at the piano during a performance" // Updated alt text
               className="w-full max-w-2xl h-auto rounded-xl shadow-2xl object-cover border-2 border-brand-secondary mx-auto"
               width={800}
               height={533}
