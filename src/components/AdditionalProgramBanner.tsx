@@ -33,8 +33,8 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   className,
   backgroundImageSrc,
 }) => {
-  const content = (
-    <div className={cn("relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6 h-full", textColorClass)}>
+  const contentElements = (
+    <>
       {logoSrc && (
         <img
           src={logoSrc}
@@ -49,27 +49,28 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
           {linkText}
         </a>
       </Button>
-    </div>
+    </>
   );
 
   if (backgroundImageSrc) {
     return (
-      <div className={cn("w-full grid grid-cols-1 md:grid-cols-2 min-h-[300px]", className)}>
-        {/* Image Side (Left) - Hidden on mobile, visible on md and up */}
-        <div
-          className="relative hidden md:block bg-cover bg-center min-h-[300px]"
-          style={{ backgroundImage: `url(${backgroundImageSrc})` }}
-        >
-          {/* No overlay needed here, as text is on the other side */}
-        </div>
+      <div
+        className={cn(
+          "relative w-full min-h-[400px] overflow-hidden flex items-center justify-center", // Added min-h and flex for centering
+          className
+        )}
+        style={{ backgroundImage: `url(${backgroundImageSrc})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+      >
+        {/* Subtle full-width gradient overlay for overall image darkening */}
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent/20 to-black/50"></div>
 
-        {/* Content Side (Right) - Takes full width on mobile, half on md and up */}
+        {/* Content container with its own background, positioned on the right */}
         <div className={cn(
-          "relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6 h-full",
-          bgColorClass || "bg-brand-dark", // Default background for content side
+          "relative z-10 w-full md:absolute md:right-0 md:w-1/2 h-full flex flex-col items-center justify-center p-8 text-center space-y-6",
+          bgColorClass || "bg-brand-dark", // Solid background for text area
           textColorClass
         )}>
-          {content}
+          {contentElements}
         </div>
       </div>
     );
@@ -83,7 +84,9 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
           className
         )}
       >
-        {content}
+        <div className={cn("relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6 h-full", textColorClass)}>
+          {contentElements}
+        </div>
       </div>
     );
   }
