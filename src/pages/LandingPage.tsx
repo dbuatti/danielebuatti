@@ -27,7 +27,7 @@ const LandingPage = () => {
               Daniele Buatti – Embodied Coaching for Performers & Communicators
             </p>
             <p className="text-lg md:text-xl text-brand-dark/80 dark:text-brand-light/80 max-w-3xl md:max-w-none mx-auto">
-              Got a big performance, audition, or presentation coming up? Need to nail your on-camera presence? My coaching helps you perform and communicate with freedom, confidence, and ease. I blend world-class musical and performance training with deep body awareness and a powerful mindset approach. The goal? To help you achieve more, without the usual strain, stress, or burnout. At the heart of creating sound is a willingness to express, and I'm here to guide you.
+              Facing a big performance, audition, or presentation? Need to master your on-camera presence? My coaching empowers you to perform and communicate with freedom, confidence, and ease. Blending world-class musical and performance training with deep body awareness and a powerful mindset approach, I help you achieve more without the usual strain, stress, or burnout. True expression begins with the willingness to voice it, and I'm here to guide that journey.
             </p>
             <Button size="lg" className="mt-8 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
               <a href="#contact">Book a Discovery Session</a>
@@ -206,7 +206,7 @@ const LandingPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Personalised sessions for vocal coaching (including breath work, body work, mind-body integration, repertoire, and audition prep), piano lessons (fun, supportive, improving musicianship and theory), or integrated body-voice work. Available in 30, 45, 60, or 90-minute durations to suit your journey.
+                Experience personalised 1:1 coaching tailored to your unique journey. Whether it's vocal mastery (breath work, body integration, repertoire, audition prep), supportive piano lessons (musicianship, theory), or integrated body-voice work, sessions are available in flexible 30, 45, 60, or 90-minute durations to perfectly fit your schedule and goals.
               </CardContent>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
@@ -228,7 +228,7 @@ const LandingPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Access world-class coaching from anywhere. Perfect for refining on-camera performance, mastering virtual presentations, quick online audition cut sessions, or Kinesiology to understand subconscious patterns and foster a holistic mind-body relationship. Complimentary 15-minute discovery calls are also available.
+                Receive world-class coaching from anywhere in the world. Ideal for refining on-camera performance, mastering virtual presentations, quick online audition cuts, or Kinesiology to uncover subconscious patterns and cultivate a holistic mind-body connection. Plus, complimentary 15-minute discovery calls are always available to explore your potential.
               </CardContent>
             </Card>
           </div>
@@ -324,7 +324,7 @@ const LandingPage = () => {
         <section id="contact" className="text-center max-w-4xl mx-auto space-y-8">
           <h2 className="text-4xl font-bold text-brand-primary">Ready to Transform Your Artistry & Presence?</h2>
           <p className="text-xl text-brand-dark/80 dark:text-brand-light/80">
-            Let’s chat about your goals and find the best coaching path for you. Take the first step towards unlocking your full potential.
+            Let’s chat about your goals and find the best coaching path for you. Take the first step towards unlocking your full potential. Your journey to embodied performance starts here.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
             <Button size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
