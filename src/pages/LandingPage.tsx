@@ -9,7 +9,8 @@ import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 import DynamicImage from "@/components/DynamicImage";
 import BackToTopButton from "@/components/BackToTopButton";
 import GumroadFollowForm from "@/components/GumroadFollowForm";
-import ExpertiseItemCard from "@/components/ExpertiseItemCard"; // Import the new component
+import ExpertiseItemCard from "@/components/ExpertiseItemCard";
+import ContactForm from "@/components/ContactForm"; // Import the new ContactForm component
 
 const LandingPage = () => {
   useSmoothScroll();
@@ -362,11 +363,9 @@ const LandingPage = () => {
                 Book Online
               </a>
             </Button>
-            <Button size="lg" variant="outline" className="border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-              <a href="mailto:daniele.buatti@gmail.com">
-                DM me
-              </a>
-            </Button>
+          </div>
+          <div className="mt-8">
+            <ContactForm /> {/* Integrate the new ContactForm here */}
           </div>
           <div className="flex flex-col sm:flex-row justify-center gap-6 mt-8 text-brand-dark/80 dark:text-brand-light/80">
             <a href="mailto:daniele.buatti@gmail.com" className="flex items-center gap-2 hover:text-brand-primary transition-colors text-lg">
