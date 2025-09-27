@@ -1,7 +1,5 @@
 import React from "react";
 import SectionHeading from "@/components/SectionHeading";
-import AdditionalProgramBanner from "@/components/AdditionalProgramBanner";
-import PillBanner from "@/components/PillBanner";
 import FeaturedProgramCard from "@/components/FeaturedProgramCard";
 
 const AdditionalProgramsSection: React.FC = () => {

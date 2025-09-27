@@ -23,7 +23,7 @@ const CallToActionSection: React.FC = () => {
       </div>
       <div className="flex flex-col sm:flex-row justify-center gap-6 mt-8 text-brand-dark/80 dark:text-brand-light/80">
         <a href="mailto:info@danielebuatti.com" className="flex items-center gap-2 hover:text-brand-primary transition-colors text-lg">
-          <Mail className="h-6 w-6" /> daniele.buatti@gmail.com
+          <Mail className="h-6 w-6" /> info@danielebuatti.com
         </a>
         <a href="https://wa.me/61424174067" className="flex items-center gap-2 hover:text-brand-primary transition-colors text-lg">
           <Phone className="h-6 w-6" /> +61 424 174 067
