@@ -11,7 +11,7 @@ const SessionsAvailabilitySection: React.FC = () => {
       <SectionHeading>Sessions & Availability</SectionHeading>
       <div className="space-y-8"> {/* Container for hero and smaller cards */}
         {/* Hero Card: 1:1 Coaching */}
-        <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"> {/* Removed max-w-3xl mx-auto */}
+        <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 max-w-3xl mx-auto"> {/* Removed max-w-3xl mx-auto */}
           <CardHeader className="p-0 pb-4">
             <CardTitle className="flex items-center gap-3 text-xl text-brand-primary justify-center md:justify-start"> {/* Centered title for hero card */}
               <CalendarDays className="h-6 w-6" />
@@ -26,7 +26,7 @@ const SessionsAvailabilitySection: React.FC = () => {
               <Button asChild className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
                 <Link to="/book-voice-piano">Book Voice & Piano</Link>
               </Button>
-              <Button asChild variant="secondary" className="w-full bg-brand-secondary hover:bg-brand-secondary/90 text-brand-dark dark:text-brand-light">
+              <Button asChild className="w-full bg-brand-secondary text-brand-dark hover:bg-brand-secondary/90 dark:bg-brand-dark-alt dark:text-brand-light dark:hover:bg-brand-dark">
                 <Link to="/book-healing">Book Healing Sessions</Link>
               </Button>
             </div>
