@@ -8,14 +8,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Home, Mail, Phone } from 'lucide-react';
+import { Mail, Phone } from 'lucide-react'; // Removed Home import
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
-import { useForm } from "react-hook-form"; // Import useForm
-import { zodResolver } from "@hookform/resolvers/zod"; // Import zodResolver
-import * as z from "zod"; // Import zod
-import { // Import form components
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
   Form,
   FormControl,
   FormField,
@@ -23,7 +23,7 @@ import { // Import form components
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import DynamicImage from "@/components/DynamicImage"; // Import DynamicImage
+import DynamicImage from "@/components/DynamicImage";
 
 // Define the form schema using zod
 const formSchema = z.object({
