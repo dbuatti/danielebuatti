@@ -4,7 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
-import LandingPageV2 from "./pages/LandingPageV2"; // Import the new V2 landing page
+import LandingPageV2 from "./pages/LandingPageV2";
+import LandingPageV3 from "./pages/LandingPageV3"; // Import the new V3 landing page
 import NotFound from "./pages/NotFound";
 import { ThemeProvider } from "./components/ThemeProvider"; // Import ThemeProvider
 
@@ -19,7 +20,8 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/v2" element={<LandingPageV2 />} /> {/* New route for V2 */}
+            <Route path="/v2" element={<LandingPageV2 />} />
+            <Route path="/v3" element={<LandingPageV3 />} /> {/* New route for V3 */}
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
