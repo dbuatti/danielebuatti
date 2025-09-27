@@ -35,7 +35,7 @@ const AdditionalProgramsSection: React.FC = () => {
           subtitleTextColorClass="text-brand-light" // Set to white for right column subtitle
           rightColumnTextColorClass="text-brand-light" // Set to white for description and button
           buttonBgClass="bg-black hover:bg-black/90 text-brand-light"
-          logoSrc="/logo-piano-white-44.png" // Re-added the piano logo
+          logoSrc="/piano-backings-text-logo.png" // Re-added the specific text-based piano backings logo
           className="rounded-none"
           bottomStripColorClass="bg-brand-magenta"
           titleInLeftColumn={true} // Title and logo in left column
