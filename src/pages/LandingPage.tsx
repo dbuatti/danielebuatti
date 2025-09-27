@@ -5,10 +5,11 @@ import { CheckCircle2, CalendarDays, Mic, Piano, Brain, HeartHandshake, Users, M
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TestimonialCard from "@/components/TestimonialCard";
-import { useSmoothScroll } from "@/hooks/use-smooth-scroll"; // Import the new hook
+import BackToTopButton from "@/components/BackToTopButton"; // Import BackToTopButton
+import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 
 const LandingPage = () => {
-  useSmoothScroll(); // Activate smooth scrolling for this page
+  useSmoothScroll();
 
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
@@ -311,6 +312,7 @@ const LandingPage = () => {
         </section>
       </main>
       <Footer />
+      <BackToTopButton /> {/* Add BackToTopButton here */}
     </div>
   );
 };
