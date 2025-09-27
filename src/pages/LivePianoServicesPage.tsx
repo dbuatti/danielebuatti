@@ -45,11 +45,9 @@ const LivePianoServicesPage: React.FC = () => {
   const galleryImages = [
     "/blacktie.avif",
     "/blacktie1.avif",
-    // Removed "/blacktie2.avif",
     "/blacktie3.avif",
     "/blacktie4.avif",
     "/other.avif",
-    // Removed "/426062_bc3659f68c1c4c6ca899497d7350a91f~mv2.avif",
   ];
 
   // Initialize react-hook-form
@@ -121,11 +119,9 @@ const LivePianoServicesPage: React.FC = () => {
       {/* Header */}
       <header className="bg-livePiano-darker py-4 px-6 md:px-12">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          {/* Left section: Home and Back to Services */}
+          {/* Left section: Back to Services */}
           <div className="flex items-center gap-4">
-            <Link to="/" className="text-livePiano-light hover:text-livePiano-primary transition-colors">
-              <Home size={24} />
-            </Link>
+            {/* Removed Home icon */}
             <Button asChild className="bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light px-4 py-2 text-sm">
               <Link to="/">Back to Services</Link>
             </Button>
@@ -343,7 +339,7 @@ const LivePianoServicesPage: React.FC = () => {
       {/* Footer */}
       <footer 
         className="relative py-16 text-center mt-12 overflow-hidden"
-        style={{ backgroundImage: `url(/Piano Keys_edited_edited.avif)`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+        style={{ backgroundImage: `url(/bowtie.avif)`, backgroundSize: 'cover', backgroundPosition: 'center' }}
       >
         <div className="absolute inset-0 bg-black/60"></div> {/* Overlay for readability */}
         <div className="relative z-10 max-w-7xl mx-auto px-4">
