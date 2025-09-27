@@ -4,7 +4,7 @@ import FeaturedProgramCard from "@/components/FeaturedProgramCard";
 
 const AdditionalProgramsSection: React.FC = () => {
   return (
-    <section className="pb-12">
+    <section className="py-12"> {/* Changed from pb-12 to py-12 */}
       <div className="container mx-auto px-4 mb-10">
         <SectionHeading>Explore More from Daniele</SectionHeading>
       </div>
