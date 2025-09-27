@@ -25,12 +25,12 @@ const AdditionalProgramsSection: React.FC = () => {
         />
 
         <AdditionalProgramBanner
-          title="Piano Backings" {/* Updated title */}
-          subtitle="by Daniele" {/* Added subtitle */}
+          title="Piano Backings"
+          subtitle="by Daniele"
           description="For Musicals, Auditions & Performances. High-quality piano backing tracks for singers and performers."
           link="https://pianobackingsbydaniele.vercel.app"
           linkText="Discover Piano Backings"
-          bgColorClass="bg-brand-magenta"
+          bgColorClass="bg-brand-magenta" // Reverted to pink background
           leftColumnTextColorClass="text-brand-yellow" // Set to yellow for title
           subtitleTextColorClass="text-brand-light" // Set to white for subtitle
           rightColumnTextColorClass="text-brand-light" // Set to white for description and button
