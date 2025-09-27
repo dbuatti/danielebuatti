@@ -462,19 +462,22 @@ const LandingPageV3 = () => {
             className="rounded-none"
             backgroundImageSrc="/sheetmusic.png"
             bottomStripColorClass="bg-brand-magenta" // Pass the bottom strip color here
+            titleInLeftColumn={false} // Default layout
           />
 
           <AdditionalProgramBanner
-            title="Piano Backings by Daniele"
+            title="Piano Backings"
             description="High-quality piano backing tracks for singers and performers."
             link="https://pianobackingsbydaniele.vercel.app"
             linkText="Discover Piano Backings"
-            bgColorClass="bg-brand-magenta" // This will be the background for the entire banner
-            textColorClass="text-brand-yellow" // Changed to brand-yellow
+            bgColorClass="bg-brand-magenta"
+            leftColumnTextColorClass="text-brand-yellow"
+            rightColumnTextColorClass="text-brand-light"
             buttonBgClass="bg-black hover:bg-black/90 text-brand-light"
-            logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png"
+            logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png" // Piano icon logo
             className="rounded-none"
-            bottomStripColorClass="bg-brand-blue" // Pass the bottom strip color here
+            bottomStripColorClass="bg-brand-blue"
+            titleInLeftColumn={true} // Title and logo in left column
           />
 
           <AdditionalProgramBanner
@@ -483,10 +486,12 @@ const LandingPageV3 = () => {
             link="https://resonance-with-daniele.vercel.app"
             linkText="Join Resonance Choir"
             bgColorClass="bg-brand-blue"
-            textColorClass="text-brand-light"
+            leftColumnTextColorClass="text-brand-light"
+            rightColumnTextColorClass="text-brand-light"
             buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
             className="rounded-none"
-            bottomStripColorClass="bg-black" // Pass the bottom strip color here
+            bottomStripColorClass="bg-black"
+            titleInLeftColumn={true} // Title in left column
           />
         </div>
       </section>
