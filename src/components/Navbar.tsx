@@ -42,7 +42,7 @@ const Navbar = () => {
                 // Check if it's a hash link and active section matches, or if it's a route link and path matches
                 (link.href.startsWith("#") && (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))) ||
                 (!link.href.startsWith("#") && location.pathname === link.href)
-                  ? "text-brand-primary dark:text-brand-primary border-b-2 border-brand-primary pb-1"
+                  ? "font-bold text-brand-primary dark:text-brand-primary border-b-[3px] border-brand-primary pb-2" // Enhanced active styling
                   : "text-brand-dark dark:text-brand-light"
               )}
             >
@@ -78,7 +78,7 @@ const Navbar = () => {
                       // Check if it's a hash link and active section matches, or if it's a route link and path matches
                       (link.href.startsWith("#") && (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))) ||
                       (!link.href.startsWith("#") && location.pathname === link.href)
-                        ? "text-brand-primary dark:text-brand-primary"
+                        ? "font-bold text-brand-primary dark:text-brand-primary" // Enhanced active styling for mobile
                         : "text-brand-dark dark:text-brand-light"
                     )}
                   >
