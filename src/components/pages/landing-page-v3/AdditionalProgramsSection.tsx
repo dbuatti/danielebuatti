@@ -27,11 +27,10 @@ const AdditionalProgramsSection: React.FC = () => {
           description="High-quality, meticulously crafted tracks for singers and performers, streamlining your preparation."
           link="https://pianobackingsbydaniele.vercel.app"
           linkText="Discover Piano Backings"
-          backgroundColorClass="bg-brand-magenta" // Solid pink background
-          logoSrc="/pianobackingslogo.png" // Logo placed on top of the pink background
+          backgroundColorClass="bg-brand-magenta"
+          logoSrc="/pianobackingslogo.png"
           className="max-w-6xl"
           buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
-          // Removed overlayColorClass as it's not needed with a solid background and separate logo
         />
 
         {/* FeaturedProgramCard for Resonance with Daniele */}
@@ -40,7 +39,7 @@ const AdditionalProgramsSection: React.FC = () => {
           description="Join a welcoming community to sing, connect, and shine, with no experience needed."
           link="https://resonance-with-daniele.vercel.app"
           linkText="Join Resonance Choir"
-          backgroundImageSrc="/blue-pink-ontrans.png"
+          backgroundImageSrc="/conduct.jpeg" // Updated to conduct.jpeg
           className="max-w-6xl"
           buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
         />
