@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Home, Mail, Phone } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner'; // Changed from react-hot-toast to sonner
 
 const LivePianoServicesPage: React.FC = () => {
   const navigate = useNavigate();
