@@ -8,9 +8,9 @@ const Footer = () => {
     { name: "Instagram", href: "https://instagram.com/daniele.buatti", icon: Instagram },
     { name: "YouTube", href: "http://youtube.com/danielebuatti", icon: Youtube },
     { name: "Twitch", href: "https://twitch.tv/danielebuatti", icon: Twitch },
-    { name: "Piano Backings", href: "https://pianobackingsbydaniele.vercel.app", icon: Piano },
+    // Removed Piano Backings as it's featured in AdditionalProgramsSection
     { name: "Substack", href: "https://substack.com/@danielebuatti", icon: LinkIcon },
-    { name: "Resonance Choir", href: "https://resonance-with-daniele.vercel.app", icon: Users },
+    // Removed Resonance Choir as it's featured in AdditionalProgramsSection
     { name: "Facebook", href: "http://www.facebook.com/danielebuatti", icon: Facebook },
     { name: "Patreon", href: "http://patreon.com/danielebuatti", icon: Heart },
     { name: "Discord", href: "https://discord.gg/pfW8B3Fy", icon: MessageSquare },
