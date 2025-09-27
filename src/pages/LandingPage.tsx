@@ -231,6 +231,17 @@ const LandingPage = () => {
           </p>
         </section>
 
+        {/* New Section for Tulips Image */}
+        <section className="max-w-4xl mx-auto text-center py-12">
+          <DynamicImage
+            src="/tulips.jpeg"
+            alt="Daniele Buatti smiling with tulips in a garden"
+            className="w-full max-w-2xl h-auto rounded-xl shadow-2xl object-cover border-2 border-brand-secondary mx-auto"
+            width={800}
+            height={533}
+          />
+        </section>
+
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
         {/* Sessions & Availability Section */}
