@@ -20,16 +20,16 @@ const Navbar = () => {
           <DynamicImage
             src="/blue-pink-ontrans.png"
             alt="Daniele Buatti Brand Symbol"
-            className="h-8 w-auto" // Adjust size as needed
-            width={32}
-            height={32}
+            className="h-8 w-auto"
+            width={32} // Explicit width
+            height={32} // Explicit height
           />
           <DynamicImage
             src="/logo-dark-blue-transparent-25.png"
             alt="Daniele Buatti Logo"
-            className="h-12 w-auto" // Increased height for better visibility
-            width={220} // Adjusted width for better visibility
-            height={48} // Adjusted height for better visibility
+            className="h-12 w-auto"
+            width={220} // Explicit width
+            height={48} // Explicit height
           />
         </Link>
         <nav className="hidden md:flex items-center space-x-6">

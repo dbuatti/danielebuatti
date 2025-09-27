@@ -17,8 +17,8 @@ const DynamicImage: React.FC<DynamicImageProps> = ({
   width = 600,
   height = 400,
 }) => {
-  const placeholderSrc = `https://picsum.photos/seed/${Math.random() * 1000}/${width}/${height}`;
-  const imageSource = src && src !== "/public/placeholder.svg" ? src : placeholderSrc;
+  // Use the local placeholder.svg if src is not provided or is the placeholder itself
+  const imageSource = src && src !== "/public/placeholder.svg" ? src : "/public/placeholder.svg";
 
   return (
     <img

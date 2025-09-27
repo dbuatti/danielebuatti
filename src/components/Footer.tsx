@@ -63,8 +63,8 @@ const Footer = () => {
             src="/logo-piano-white-44.png"
             alt="Daniele Buatti Brand Symbol"
             className="h-24 w-auto"
-            width={96}
-            height={96}
+            width={96} // Explicit width
+            height={96} // Explicit height
           />
         </div>
       </div>
