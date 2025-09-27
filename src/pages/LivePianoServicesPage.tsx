@@ -95,7 +95,7 @@ const LivePianoServicesPage: React.FC = () => {
             <Home size={24} />
           </Link>
           <div className="flex flex-col items-center">
-            <img src="/daniele-buatti-logo.png" alt="Daniele Buatti Logo" className="h-16 md:h-20" />
+            <img src="/gold-36.png" alt="Daniele Buatti Logo" className="h-16 md:h-20" />
             <h1 className="text-xl md:text-2xl font-bold text-brand-light tracking-widest mt-2">DANIELE BUATTI</h1>
           </div>
           <div className="w-6"></div> {/* Spacer for alignment */}
