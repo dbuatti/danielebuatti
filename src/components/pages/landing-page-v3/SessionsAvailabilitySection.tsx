@@ -4,6 +4,7 @@ import { CalendarDays, Users, Monitor } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { cn } from "@/lib/utils"; // Import cn for utility classes
 
 const SessionsAvailabilitySection: React.FC = () => {
   return (
@@ -11,9 +12,9 @@ const SessionsAvailabilitySection: React.FC = () => {
       <SectionHeading>Sessions & Availability</SectionHeading>
       <div className="space-y-8"> {/* Container for hero and smaller cards */}
         {/* Hero Card: 1:1 Coaching */}
-        <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"> {/* Removed max-w-3xl mx-auto */}
+        <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
           <CardHeader className="p-0 pb-4">
-            <CardTitle className="flex items-center gap-3 text-xl text-brand-primary justify-center md:justify-start"> {/* Centered title for hero card */}
+            <CardTitle className="flex items-center gap-3 text-xl text-brand-primary justify-center md:justify-start">
               <CalendarDays className="h-6 w-6" />
               1:1 Coaching
             </CardTitle>
@@ -22,13 +23,32 @@ const SessionsAvailabilitySection: React.FC = () => {
             <p>
               Experience personalised 1:1 coaching tailored to your unique journey. Whether it's vocal mastery (breath work, body integration, repertoire, audition prep), supportive piano lessons (musicianship, theory), or integrated body-voice work, sessions are available in flexible 30, 45, 60, or 90-minute durations to perfectly fit your schedule and goals.
             </p>
-            <div className="flex flex-col gap-3 pt-4">
-              <Button asChild className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-                <Link to="/book-voice-piano">Book Voice & Piano</Link>
-              </Button>
-              <Button asChild className="w-full bg-brand-secondary text-brand-dark hover:bg-brand-secondary/90 dark:bg-brand-dark-alt dark:text-brand-light dark:hover:bg-brand-dark">
-                <Link to="/book-healing">Book Healing Sessions</Link>
-              </Button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4"> {/* Changed to grid for side-by-side cards */}
+              {/* Book Voice & Piano Card */}
+              <Link to="/book-voice-piano" className="block">
+                <Card className={cn(
+                  "flex items-center justify-center h-40 p-6 rounded-xl shadow-lg",
+                  "bg-brand-primary text-brand-light",
+                  "hover:bg-brand-primary/90 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
+                )}>
+                  <CardContent className="p-0 text-3xl font-extrabold">
+                    Book Voice & Piano
+                  </CardContent>
+                </Card>
+              </Link>
+
+              {/* Book Healing Sessions Card */}
+              <Link to="/book-healing" className="block">
+                <Card className={cn(
+                  "flex items-center justify-center h-40 p-6 rounded-xl shadow-lg",
+                  "bg-brand-dark text-brand-light",
+                  "hover:bg-brand-dark-alt hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
+                )}>
+                  <CardContent className="p-0 text-3xl font-extrabold">
+                    Book Healing Sessions
+                  </CardContent>
+                </Card>
+              </Link>
             </div>
           </CardContent>
         </Card>
