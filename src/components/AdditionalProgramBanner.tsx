@@ -55,13 +55,13 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   );
 
   return (
-    <div className={cn("relative w-full h-[450px] overflow-hidden flex flex-col", className)}>
-      <div className="flex-grow grid grid-cols-1 md:grid-cols-3">
+    <div className={cn("relative w-full flex flex-col overflow-hidden", className)}> {/* Removed fixed height from here */}
+      <div className="flex-grow grid grid-cols-1 md:grid-cols-3 h-[450px]"> {/* Main content area fixed to 450px */}
         {titleInLeftColumn ? (
           <>
             {/* Left Half (Logo/Title) - Visible on md and up, takes 2/3 width */}
             <div className={cn(
-              "relative z-10 hidden md:flex flex-col items-center justify-center p-8 text-center space-y-4 md:col-span-2",
+              "relative z-10 hidden md:flex flex-col items-center justify-center p-8 text-center space-y-4 md:col-span-2 h-full",
               bgColorClass || "bg-brand-dark",
               leftColumnTextColorClass || textColorClass
             )}>
@@ -80,7 +80,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
 
             {/* Right Half (Title, Subtitle, Description and Button) - Full width on mobile, 1/3 on md and up */}
             <div className={cn(
-              "relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6 md:col-span-1",
+              "relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6 md:col-span-1 h-full",
               bgColorClass || "bg-brand-dark",
               rightColumnTextColorClass || textColorClass
             )}>
@@ -106,17 +106,17 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
             {/* Default Layout: Left 2/3 is image/solid, Right 1/3 is all content */}
             {backgroundImageSrc ? (
               <div
-                className="relative hidden md:block md:col-span-2 bg-cover bg-center"
+                className="relative hidden md:block md:col-span-2 bg-cover bg-center h-full"
                 style={{ backgroundImage: `url(${backgroundImageSrc})`, backgroundPosition: 'left center', backgroundSize: 'cover' }}
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent to-brand-dark"></div>
               </div>
             ) : (
-              <div className={cn("hidden md:block md:col-span-2", bgColorClass || "bg-brand-dark")}></div>
+              <div className={cn("hidden md:block md:col-span-2 h-full", bgColorClass || "bg-brand-dark")}></div>
             )}
 
             <div className={cn(
-              "relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6 md:col-span-1",
+              "relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6 md:col-span-1 h-full",
               bgColorClass || "bg-brand-dark",
               textColorClass
             )}>
@@ -135,7 +135,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
         )}
       </div>
       {/* Bottom Strip - Apply to all banners if present */}
-      {bottomStripColorClass && <div className={cn("w-full h-8", bottomStripColorClass)}></div>}
+      {bottomStripColorClass && <div className={cn("w-full h-8 flex-shrink-0", bottomStripColorClass)}></div>}
     </div>
   );
 };
