@@ -14,14 +14,14 @@ const AdditionalProgramsSection: React.FC = () => {
           description="Your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources."
           link="https://buattiverse.gumroad.com/"
           linkText="Visit Buattiverse Store"
-          bgColorClass="bg-brand-dark"
+          bgColorClass="bg-brand-dark" // Explicitly set dark background for text side
           textColorClass="text-brand-light"
           buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
           logoSrc="/gumroad.png"
           className="rounded-none"
           backgroundImageSrc="/sheetmusic.png"
-          bottomStripColorClass="bg-brand-magenta"
-          titleInLeftColumn={false}
+          bottomStripColorClass="bg-brand-magenta" // Pass the bottom strip color here
+          titleInLeftColumn={false} // Default layout
         />
 
         <AdditionalProgramBanner
@@ -29,14 +29,14 @@ const AdditionalProgramsSection: React.FC = () => {
           description="For Musicals, Auditions & Performances. High-quality piano backing tracks for singers and performers."
           link="https://pianobackingsbydaniele.vercel.app"
           linkText="Discover Piano Backings"
-          bgColorClass="bg-brand-dark"
-          leftColumnTextColorClass="text-brand-light"
-          rightColumnTextColorClass="text-brand-light"
+          bgColorClass="bg-brand-magenta" // Reverted to pink background
+          leftColumnTextColorClass="text-brand-yellow" // Set to yellow for title
+          rightColumnTextColorClass="text-brand-light" // Set to white for description and button
           buttonBgClass="bg-black hover:bg-black/90 text-brand-light"
-          logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png"
+          logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png" // Piano icon logo
           className="rounded-none"
-          bottomStripColorClass="bg-brand-blue"
-          titleInLeftColumn={true}
+          bottomStripColorClass="bg-brand-magenta" {/* Changed to magenta to match */}
+          titleInLeftColumn={true} // Title and logo in left column
         />
 
         <AdditionalProgramBanner
@@ -50,7 +50,7 @@ const AdditionalProgramsSection: React.FC = () => {
           buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
           className="rounded-none"
           bottomStripColorClass="bg-black"
-          titleInLeftColumn={true}
+          titleInLeftColumn={true} // Title in left column
         />
       </div>
     </section>
