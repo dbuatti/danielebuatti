@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Link } from "react-router-dom";
+import { ThemeToggle } from "./ThemeToggle"; // Import ThemeToggle
 
 const Navbar = () => {
   const navLinks = [
@@ -33,35 +34,39 @@ const Navbar = () => {
           <Button className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
             Book a Session
           </Button>
+          <ThemeToggle /> {/* Add ThemeToggle here */}
         </nav>
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden text-brand-dark dark:text-brand-light"
-            >
-              <Menu className="h-6 w-6" />
-              <span className="sr-only">Toggle Menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-brand-light dark:bg-brand-dark">
-            <nav className="flex flex-col gap-4 pt-6">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className="text-lg font-medium text-brand-dark dark:text-brand-light hover:text-brand-primary"
-                >
-                  {link.name}
-                </a>
-              ))}
-              <Button className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
-                Book a Session
+        <div className="flex items-center md:hidden"> {/* Wrap for mobile layout */}
+          <ThemeToggle /> {/* Add ThemeToggle for mobile */}
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-brand-dark dark:text-brand-light"
+              >
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Toggle Menu</span>
               </Button>
-            </nav>
-          </SheetContent>
-        </Sheet>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-brand-light dark:bg-brand-dark">
+              <nav className="flex flex-col gap-4 pt-6">
+                {navLinks.map((link) => (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    className="text-lg font-medium text-brand-dark dark:text-brand-light hover:text-brand-primary"
+                  >
+                    {link.name}
+                  </a>
+                ))}
+                <Button className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
+                  Book a Session
+                </Button>
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   );
