@@ -61,20 +61,18 @@ serve(async (req) => {
       Submitted On: ${new Date(created_at).toLocaleString()}
     `;
 
-    // Replace this with your actual email service API call
-    // Example using a generic email API (e.g., SendGrid, Mailgun, Resend)
+    // Resend API call
     const emailResponse = await fetch(EMAIL_SERVICE_ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${EMAIL_SERVICE_API_KEY}`, // Or 'x-api-key' depending on service
+        'Authorization': `Bearer ${EMAIL_SERVICE_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'no-reply@yourdomain.com', // Replace with your verified sender email
+        from: 'onboarding@resend.dev', // IMPORTANT: Replace with your VERIFIED Resend sender email (e.g., 'no-reply@danielebuatti.com' or 'info@danielebuatti.com')
         to: CONTACT_FORM_RECIPIENT_EMAIL,
         subject: subject,
         text: emailBody,
-        // html: `<p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Message:</strong><br/>${message}</p><p><strong>Submitted On:</strong> ${new Date(created_at).toLocaleString()}</p>`,
       }),
     });
 
