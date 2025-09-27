@@ -1,7 +1,7 @@
 import React from "react";
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import { Instagram, Youtube, Twitch, Mail, Phone, Link as LinkIcon, Piano, Users, Facebook, Heart, MessageSquare, Newspaper, Coffee } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import { Separator } => "@/components/ui/separator";
 import DynamicImage from "@/components/DynamicImage"; // Import DynamicImage
 
 const Footer = () => {
@@ -61,9 +61,9 @@ const Footer = () => {
           <DynamicImage
             src="/logo-piano-white-44.png"
             alt="Daniele Buatti Brand Symbol"
-            className="h-10 w-auto"
-            width={40}
-            height={40}
+            className="h-24 w-auto"
+            width={96}
+            height={96}
           />
         </div>
 
