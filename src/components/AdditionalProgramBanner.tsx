@@ -9,14 +9,14 @@ interface AdditionalProgramBannerProps {
   description: string;
   link: string;
   linkText: string;
-  bgColorClass?: string;
+  bgColorClass?: string; // Background for the text content area
   textColorClass?: string;
   buttonVariant?: "default" | "secondary" | "destructive" | "outline" | "ghost" | "link";
   buttonBgClass?: string;
   buttonTextClass?: string;
   logoSrc?: string;
   className?: string;
-  backgroundImageSrc?: string;
+  backgroundImageSrc?: string; // Full banner background image
 }
 
 const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
@@ -27,7 +27,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   bgColorClass,
   textColorClass = "text-brand-light",
   buttonVariant = "default",
-  buttonBgClass = "bg-brand-light hover:bg-brand-light/90 text-brand-dark",
+  buttonBgClass = "bg-brand-primary hover:bg-brand-primary/90 text-brand-light", // Default to pink button
   buttonTextClass = "",
   logoSrc,
   className,
@@ -54,24 +54,28 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
 
   if (backgroundImageSrc) {
     return (
-      <div
-        className={cn(
-          "relative w-full min-h-[400px] overflow-hidden flex items-center justify-center", // Added min-h and flex for centering
-          className
-        )}
-        style={{ backgroundImage: `url(${backgroundImageSrc})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-      >
-        {/* Subtle full-width gradient overlay for overall image darkening */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent/20 to-black/50"></div>
+      <div className={cn("relative w-full min-h-[400px] overflow-hidden flex flex-col", className)}>
+        <div className="flex-grow grid grid-cols-1 md:grid-cols-2">
+          {/* Left Half (Image with gradient) - Visible on md and up */}
+          <div
+            className="relative hidden md:block bg-cover bg-center"
+            style={{ backgroundImage: `url(${backgroundImageSrc})`, backgroundPosition: 'left center' }}
+          >
+            {/* Gradient overlay to blend into the right side */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-brand-dark/70"></div>
+          </div>
 
-        {/* Content container with its own background, positioned on the right */}
-        <div className={cn(
-          "relative z-10 w-full md:absolute md:right-0 md:w-1/2 h-full flex flex-col items-center justify-center p-8 text-center space-y-6",
-          bgColorClass || "bg-brand-dark", // Solid background for text area
-          textColorClass
-        )}>
-          {contentElements}
+          {/* Right Half (Content with solid background) - Full width on mobile, half on md and up */}
+          <div className={cn(
+            "relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6",
+            bgColorClass || "bg-brand-dark", // Solid background for text area
+            textColorClass
+          )}>
+            {contentElements}
+          </div>
         </div>
+        {/* Bottom Pink Strip */}
+        <div className="w-full h-8 bg-brand-magenta"></div>
       </div>
     );
   } else {
@@ -84,9 +88,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
           className
         )}
       >
-        <div className={cn("relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6 h-full", textColorClass)}>
-          {contentElements}
-        </div>
+        {contentElements}
       </div>
     );
   }
