@@ -11,7 +11,7 @@ const InstagramFeedSection: React.FC = () => {
           Due to Instagram's API restrictions, directly fetching and displaying your feed without a backend or specific API setup is not straightforward.
         </p>
         <p className="mb-4">
-          Popular services like <a href="https://lightwidget.com/" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline">LightWidget</a> or <a href="https://snapwidget.com/" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline">SnapWidget</a> can generate a simple HTML snippet (usually an `<iframe>` or `<script>` tag) that you can paste directly below this message.
+          Popular services like <a href="https://lightwidget.com/" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline">LightWidget</a> or <a href="https://snapwidget.com/" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline">SnapWidget</a> can generate a simple HTML snippet (usually an `&lt;iframe&gt;` or `&lt;script&gt;` tag) that you can paste directly below this message.
         </p>
         <p className="font-semibold">
           Once you have your embed code, replace this placeholder text with it.
