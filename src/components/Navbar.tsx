@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
@@ -8,24 +10,30 @@ import { navLinks } from "@/constants/navigation";
 import { useActiveSection } from "@/hooks/use-active-section";
 import { cn } from "@/lib/utils";
 import DynamicImage from "@/components/DynamicImage";
+import { useTheme } from "next-themes"; // Import useTheme
 
 const Navbar = () => {
   const activeSection = useActiveSection();
   const location = useLocation();
+  const { theme } = useTheme(); // Get the current theme
+
+  // Determine logo sources based on theme
+  const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
+  const textLogoSrc = theme === "dark" ? "/logo-pink-transparent-43.png" : "/logo-dark-blue-transparent-25.png";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
           <DynamicImage
-            src="/blue-pink-ontrans.png"
+            src={brandSymbolSrc} // Dynamic source
             alt="Daniele Buatti Brand Symbol"
             className="h-8 w-auto"
             width={32}
             height={32}
           />
           <DynamicImage
-            src="/logo-dark-blue-transparent-25.png"
+            src={textLogoSrc} // Dynamic source
             alt="Daniele Buatti Logo"
             className="h-12 w-auto"
             width={220}
