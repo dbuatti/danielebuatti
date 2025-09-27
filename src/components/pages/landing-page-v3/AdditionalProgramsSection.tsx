@@ -11,7 +11,7 @@ const AdditionalProgramsSection: React.FC = () => {
         <SectionHeading>Explore More from Daniele</SectionHeading>
       </div>
       <div className="space-y-12">
-        {/* NEW: FeaturedProgramCard for Buattiverse */}
+        {/* FeaturedProgramCard for Buattiverse */}
         <FeaturedProgramCard
           title="Buattiverse: Sheet Music & Backing Tracks"
           description="Your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources."
@@ -21,7 +21,7 @@ const AdditionalProgramsSection: React.FC = () => {
           className="max-w-6xl"
         />
 
-        {/* NEW: FeaturedProgramCard for Piano Backings */}
+        {/* FeaturedProgramCard for Piano Backings */}
         <FeaturedProgramCard
           title="Professional Piano Backing Tracks"
           description="High-quality, meticulously crafted tracks for singers and performers, streamlining your preparation."
@@ -31,20 +31,15 @@ const AdditionalProgramsSection: React.FC = () => {
           className="max-w-6xl"
         />
 
-        <AdditionalProgramBanner
-          title="Resonance with Daniele"
-          subtitle="A Joyful Pop-Up Choir for All Voices"
+        {/* NEW: FeaturedProgramCard for Resonance with Daniele */}
+        <FeaturedProgramCard
+          title="Resonance with Daniele: A Joyful Pop-Up Choir for All Voices"
           description="Join a welcoming community to sing, connect, and shine, with no experience needed."
           link="https://resonance-with-daniele.vercel.app"
           linkText="Join Resonance Choir"
-          bgColorClass="bg-brand-blue"
-          leftColumnTextColorClass="text-brand-light"
-          leftColumnTitle="Resonance with Daniele"
-          rightColumnTextColorClass="text-brand-light"
+          backgroundImageSrc="/danielepianolaugh.jpeg" {/* Using a suitable image from public */}
+          className="max-w-6xl"
           buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
-          className="rounded-none"
-          bottomStripColorClass="bg-brand-blue"
-          titleInLeftColumn={true}
         />
 
         {/* Creative Exploration Pill Banner */}
