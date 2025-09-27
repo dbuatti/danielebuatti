@@ -29,9 +29,9 @@ const AdditionalProgramsSection: React.FC = () => {
           description=""
           link="https://pianobackingsbydaniele.vercel.app"
           linkText="Discover Piano Backings"
-          bgColorClass="bg-brand-dark" {/* Changed to dark blue for better contrast */}
-          leftColumnTextColorClass="text-brand-light" {/* Changed to white */}
-          rightColumnTextColorClass="text-brand-light" {/* Changed to white */}
+          bgColorClass="bg-brand-dark"
+          leftColumnTextColorClass="text-brand-light"
+          rightColumnTextColorClass="text-brand-light"
           buttonBgClass="bg-black hover:bg-black/90 text-brand-light"
           logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png" // Piano icon logo
           className="rounded-none"
