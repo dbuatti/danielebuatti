@@ -25,8 +25,8 @@ const Navbar = () => {
             height={32}
           />
           <DynamicImage
-            src="/logo-pink-transparent-43.png"
-            alt="Daniele Buatti Cursive Logo"
+            src="/logo-dark-blue-transparent-25.png"
+            alt="Daniele Buatti Logo"
             className="h-10 w-auto" // Increased height for better visibility
             width={180} // Adjusted width for better visibility
             height={40} // Adjusted height for better visibility
