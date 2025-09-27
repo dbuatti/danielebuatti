@@ -7,6 +7,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import { navLinks } from "@/constants/navigation";
 import { useActiveSection } from "@/hooks/use-active-section";
 import { cn } from "@/lib/utils"; // Import cn utility
+import DynamicImage from "@/components/DynamicImage"; // Import DynamicImage
 
 const Navbar = () => {
   const activeSection = useActiveSection();
@@ -16,6 +17,13 @@ const Navbar = () => {
     <header className="sticky top-0 z-50 w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
+          <DynamicImage
+            src="/blue-pink-ontrans.png"
+            alt="Daniele Buatti Brand Symbol"
+            className="h-8 w-auto" // Adjust size as needed
+            width={32}
+            height={32}
+          />
           <span className="inline-block font-bold text-brand-primary text-xl">Daniele Buatti</span>
         </Link>
         <nav className="hidden md:flex items-center space-x-6">
