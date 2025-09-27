@@ -48,7 +48,6 @@ const AdditionalProgramsSection: React.FC = () => {
         <FeaturedProgramCard
           title="An Unforgettable Musical Experience"
           description="Elevate your wedding, corporate event, or private party with Daniele Buatti's live piano music. His versatile, refined performance spans classical, jazz, and pop, creating an unforgettable atmosphere for any occasion."
-          {/* Updated link to the new page */}
           link="/live-piano-services" 
           linkText="Enquire Now!"
           backgroundImageSrc="/blacktie.avif"
