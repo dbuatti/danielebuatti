@@ -21,6 +21,7 @@ import TulipsSection from "@/components/pages/landing-page-v3/TulipsSection";
 import CallToActionSection from "@/components/pages/landing-page-v3/CallToActionSection";
 import AdditionalProgramsSection from "@/components/pages/landing-page-v3/AdditionalProgramsSection";
 import FullBioSection from "@/components/pages/landing-page-v3/FullBioSection";
+import InstagramFeedSection from "@/components/pages/landing-page-v3/InstagramFeedSection"; // New import
 
 const LandingPageV3: React.FC = () => {
   useSmoothScroll();
@@ -58,6 +59,8 @@ const LandingPageV3: React.FC = () => {
         <CallToActionSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <AdditionalProgramsSection />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <InstagramFeedSection /> {/* New section for Instagram feed */}
       </main>
       <Footer />
       <BackToTopButton />
