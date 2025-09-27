@@ -25,7 +25,7 @@ const HeroSection: React.FC = () => {
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[800px] h-[90vh] p-0 overflow-hidden"> {/* Adjust max-width and height as needed */}
-            <CalEmbed calLink="daniele-buatti/30min" layout="month_view" />
+            <CalEmbed calLink="https://app.cal.com/daniele-buatti/30min" layout="month_view" />
           </DialogContent>
         </Dialog>
       </div>
