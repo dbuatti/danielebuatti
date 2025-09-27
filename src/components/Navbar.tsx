@@ -46,11 +46,13 @@ const Navbar = () => {
         const elementPosition = element.getBoundingClientRect().top + window.scrollY;
         const offsetPosition = elementPosition - headerOffset;
 
-        // Use window.scrollTo for precise offset control
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: "smooth"
-        });
+        // Use a small timeout to ensure the sheet has closed and DOM is stable before scrolling
+        setTimeout(() => {
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
+        }, 50); // 50ms delay
       }
     }
   };
