@@ -120,9 +120,9 @@ const LivePianoServicesPage: React.FC = () => {
     <div className="live-piano-theme min-h-screen bg-livePiano-background text-livePiano-light">
       {/* Header */}
       <header className="bg-livePiano-darker py-4 px-6 md:px-12"> {/* Removed border-b */}
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="max-w-7xl mx-auto flex items-center justify-between relative">
           {/* Left section: Home and Back to Services */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 z-10">
             <Link to="/" className="text-livePiano-light hover:text-livePiano-primary transition-colors">
               <Home size={24} />
             </Link>
@@ -131,16 +131,13 @@ const LivePianoServicesPage: React.FC = () => {
             </Button>
           </div>
 
-          {/* Center section: Logo and Title */}
-          <div className="flex flex-col items-center absolute left-1/2 -translate-x-1/2">
+          {/* Right section: Logo and Title */}
+          <div className="flex flex-col items-end z-10"> {/* Changed to items-end for right alignment */}
             <img src="/gold-36.png" alt="Daniele Buatti Logo" className="h-16 md:h-20" />
             <h1 className="text-xl md:text-2xl font-montserrat font-light uppercase text-livePiano-light tracking-widest mt-2">
               Daniele Buatti
             </h1>
           </div>
-
-          {/* Right section: Spacer (or future elements) */}
-          <div className="w-6"></div>
         </div>
       </header>
 
