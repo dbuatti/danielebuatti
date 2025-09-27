@@ -4,7 +4,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPageV3 from "./pages/LandingPageV3";
-import BuattiversePage from "./pages/BuattiversePage"; // Import the new Buattiverse page
 import NotFound from "./pages/NotFound";
 import { ThemeProvider } from "./components/ThemeProvider"; // Import ThemeProvider
 
@@ -19,7 +18,6 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<LandingPageV3 />} />
-            <Route path="/buattiverse" element={<BuattiversePage />} /> {/* New route for Buattiverse */}
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
