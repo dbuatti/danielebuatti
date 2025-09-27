@@ -28,9 +28,8 @@ const BookingPageLayout: React.FC<BookingPageLayoutProps> = ({ children, pageTit
               <ArrowLeft className="h-5 w-5 mr-2" /> Back to Home
             </Link>
           </Button>
-          <div className="flex items-center space-x-2">
-            <DynamicImage src="/blue-pink-ontrans.png" alt="Daniele Buatti Brand Symbol" className="h-8 w-auto" width={32} height={32} />
-            <DynamicImage src="/logo-dark-blue-transparent-25.png" alt="Daniele Buatti Logo" className="h-12 w-auto hidden sm:block" width={220} height={48} />
+          <div className="flex items-center">
+            <DynamicImage src="/logo-pinkwhite.png" alt="Daniele Buatti Logo" className="h-12 w-auto" width={220} height={48} />
           </div>
         </div>
       </header>
