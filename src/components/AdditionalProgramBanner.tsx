@@ -54,7 +54,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
 
   if (backgroundImageSrc) {
     return (
-      <div className={cn("relative w-full min-h-[400px] overflow-hidden flex flex-col", className)}>
+      <div className={cn("relative w-full min-h-[450px] overflow-hidden flex flex-col", className)}> {/* Increased min-h to 450px */}
         <div className="flex-grow grid grid-cols-1 md:grid-cols-2">
           {/* Left Half (Image with gradient) - Visible on md and up */}
           <div
