@@ -461,8 +461,10 @@ const LandingPageV3 = () => {
             logoSrc="/gumroad.png"
             className="rounded-none"
             backgroundImageSrc="/sheetmusic.png"
-            bottomStripColorClass="bg-brand-magenta" // Added bottom strip color
+            bottomStripColorClass="bg-brand-magenta" // This will be rendered internally by Buattiverse banner
           />
+          {/* No external strip needed here, as Buattiverse handles its own */}
+
           <AdditionalProgramBanner
             title="Piano Backings by Daniele"
             description="High-quality piano backing tracks for singers and performers."
@@ -473,8 +475,11 @@ const LandingPageV3 = () => {
             buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
             logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png"
             className="rounded-none"
-            bottomStripColorClass="bg-brand-blue" // Added bottom strip color
+            // bottomStripColorClass="bg-brand-blue" // Removed from prop, will be rendered externally
           />
+          {/* External strip for Piano Backings */}
+          <div className="w-full h-8 bg-brand-blue"></div>
+
           <AdditionalProgramBanner
             title="Resonance Choir with Daniele"
             description="Join a vibrant community exploring voice, movement, and sound."
@@ -484,8 +489,10 @@ const LandingPageV3 = () => {
             textColorClass="text-brand-light"
             buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
             className="rounded-none"
-            bottomStripColorClass="bg-brand-dark" // Added bottom strip color
+            // bottomStripColorClass="bg-brand-dark" // Removed from prop, will be rendered externally
           />
+          {/* External strip for Resonance Choir */}
+          <div className="w-full h-8 bg-brand-dark"></div>
         </div>
       </section>
       <Footer />

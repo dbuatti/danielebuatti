@@ -74,7 +74,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
             {buttonElement}
           </div>
         </div>
-        {/* Bottom Strip */}
+        {/* Bottom Strip - ONLY for image banners */}
         {bottomStripColorClass && <div className={cn("w-full h-8", bottomStripColorClass)}></div>}
       </div>
     );
@@ -109,8 +109,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
             {buttonElement}
           </div>
         </div>
-        {/* Bottom Strip */}
-        {bottomStripColorClass && <div className={cn("w-full h-8", bottomStripColorClass)}></div>}
+        {/* REMOVED: Bottom Strip for non-image banners - will be handled externally */}
       </div>
     );
   }
