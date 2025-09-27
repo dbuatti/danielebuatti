@@ -15,7 +15,7 @@ const AboutMeSection: React.FC = () => {
           height={500}
         />
         <div className="absolute -top-10 -right-10 bg-brand-primary/20 dark:bg-brand-primary/30 p-6 rounded-xl shadow-lg hidden md:block transform rotate-3">
-          <p className="text-sm text-brand-light italic">"My therapeutic approach fosters authentic connection."</p>
+          <p className="text-sm text-brand-dark dark:text-brand-light italic">"My therapeutic approach fosters authentic connection."</p>
         </div>
       </div>
       <div className="text-center md:text-left space-y-8">
