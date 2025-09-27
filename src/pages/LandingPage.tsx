@@ -5,9 +5,9 @@ import { CheckCircle2, CalendarDays, Mic, Piano, Brain, HeartHandshake, Users, M
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TestimonialCard from "@/components/TestimonialCard";
-import BackToTopButton from "@/components/BackToTopButton";
 import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
-import DynamicImage from "@/components/DynamicImage"; // Import DynamicImage
+import DynamicImage from "@/components/DynamicImage";
+import BackToTopButton from "@/components/BackToTopButton";
 
 const LandingPage = () => {
   useSmoothScroll();
@@ -196,7 +196,7 @@ const LandingPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Personalised sessions for voice, piano, public speaking, acting, or integrated coaching. Available in 30, 60, or 90-minute durations.
+                Personalised sessions for vocal coaching, piano lessons, kinesiology, or integrated body-voice work. Whether you're refining technique, preparing for an audition, or seeking deeper body-mind balance, we'll tailor a session just for you. Available in 30, 45, 60, or 90-minute durations.
               </CardContent>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
@@ -218,7 +218,7 @@ const LandingPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Access world-class coaching from anywhere in the world, perfectly suited for on-camera performance and virtual presentations.
+                Access world-class coaching from anywhere. Perfect for on-camera performance, virtual presentations, or a quick online audition cut session. We also offer complimentary 15-minute discovery calls to explore how I can best support you.
               </CardContent>
             </Card>
           </div>
