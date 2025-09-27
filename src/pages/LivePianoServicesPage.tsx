@@ -45,11 +45,11 @@ const LivePianoServicesPage: React.FC = () => {
   const galleryImages = [
     "/blacktie.avif",
     "/blacktie1.avif",
-    "/blacktie2.avif",
+    // Removed "/blacktie2.avif",
     "/blacktie3.avif",
     "/blacktie4.avif",
     "/other.avif",
-    "/426062_bc3659f68c1c4c6ca899497d7350a91f~mv2.avif",
+    // Removed "/426062_bc3659f68c1c4c6ca899497d7350a91f~mv2.avif",
   ];
 
   // Initialize react-hook-form
