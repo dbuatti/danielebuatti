@@ -25,9 +25,8 @@ const AdditionalProgramsSection: React.FC = () => {
         />
 
         <AdditionalProgramBanner
-          title="Piano Backings"
-          subtitle="by Daniele"
-          description="For Musicals, Auditions & Performances. High-quality piano backing tracks for singers and performers."
+          title="Professional Piano Backing Tracks by Daniele for Musicals, Auditions & Performances"
+          description="High-quality, meticulously crafted tracks for singers and performers, streamlining your preparation."
           link="https://pianobackingsbydaniele.vercel.app"
           linkText="Discover Piano Backings"
           bgColorClass="bg-brand-magenta" // Reverted to pink background
