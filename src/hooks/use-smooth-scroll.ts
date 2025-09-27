@@ -14,17 +14,23 @@ export function useSmoothScroll() {
           const id = href.substring(1);
           const element = document.getElementById(id);
 
-          console.log("useSmoothScroll: Anchor clicked!", { href, id, elementFound: !!element });
-
           if (element) {
-            event.preventDefault();
-            element.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-            console.log(`useSmoothScroll: Scrolled to #${id}`);
-          } else {
-            console.warn(`useSmoothScroll: Element with ID ${id} not found.`);
+            // Only prevent default if not trying to open in a new tab (e.g., Ctrl/Cmd + click)
+            if (!event.ctrlKey && !event.metaKey) {
+              event.preventDefault();
+              element.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+            } else {
+              // If Ctrl/Cmd is pressed, let the browser handle the default navigation
+              // to open in a new tab with the hash.
+              // We still want to scroll in the current tab if it's a regular click.
+              element.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+            }
           }
         }
       }
