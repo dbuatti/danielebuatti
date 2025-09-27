@@ -14,7 +14,8 @@ interface AdditionalProgramBannerProps {
   buttonVariant?: "default" | "secondary" | "destructive" | "outline" | "ghost" | "link";
   buttonBgClass?: string;
   buttonTextClass?: string;
-  logoSrc?: string; // New prop for the logo image source
+  logoSrc?: string;
+  className?: string; // Added className to props
 }
 
 const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
@@ -27,16 +28,17 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   buttonVariant = "default",
   buttonBgClass = "bg-brand-light hover:bg-brand-light/90 text-brand-dark",
   buttonTextClass = "",
-  logoSrc, // Destructure new prop
+  logoSrc,
+  className, // Destructure className
 }) => {
   return (
-    <div className={cn("w-full py-16 px-4 text-center rounded-xl shadow-lg", bgColorClass, textColorClass)}>
+    <div className={cn("w-full py-16 px-4 text-center", bgColorClass, textColorClass, className)}>
       <div className="container mx-auto space-y-6">
         {logoSrc && (
           <img
             src={logoSrc}
             alt={`${title} logo`}
-            className="mx-auto mb-4 h-20 object-contain" // Adjust height and styling as needed
+            className="mx-auto mb-4 h-20 object-contain"
           />
         )}
         <h3 className="text-4xl font-bold">{title}</h3>
