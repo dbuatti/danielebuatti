@@ -46,8 +46,8 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   return (
     <div className={cn("relative w-full min-h-[450px] overflow-hidden flex flex-col", className)}>
       <div className="flex-grow grid grid-cols-1 md:grid-cols-3">
+        {/* Left Half (Image or Solid Color) - Visible on md and up, takes 2/3 width */}
         {backgroundImageSrc ? (
-          // Layout for banners with a background image
           <div
             className="relative hidden md:block md:col-span-2 bg-cover bg-center"
             style={{ backgroundImage: `url(${backgroundImageSrc})`, backgroundPosition: 'left center', backgroundSize: 'cover' }}
@@ -56,7 +56,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
             <div className="absolute inset-0 bg-gradient-to-r from-transparent to-brand-dark"></div>
           </div>
         ) : (
-          // Layout for banners without a background image (solid color left side)
+          // If no background image, use the bgColorClass for the left 2/3
           <div className={cn("hidden md:block md:col-span-2", bgColorClass || "bg-brand-dark")}></div>
         )}
 
