@@ -62,6 +62,13 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Custom Brand Colors
+        brand: {
+          primary: "hsl(var(--brand-primary))",
+          dark: "hsl(var(--brand-dark))",
+          light: "hsl(var(--brand-light))",
+          secondary: "hsl(var(--brand-secondary))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
