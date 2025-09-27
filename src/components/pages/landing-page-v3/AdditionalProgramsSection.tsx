@@ -4,7 +4,7 @@ import FeaturedProgramCard from "@/components/FeaturedProgramCard";
 
 const AdditionalProgramsSection: React.FC = () => {
   return (
-    <section className="mt-8 pb-12">
+    <section className="pb-12">
       <div className="container mx-auto px-4 mb-10">
         <SectionHeading>Explore More from Daniele</SectionHeading>
       </div>
