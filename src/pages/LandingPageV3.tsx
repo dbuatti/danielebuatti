@@ -434,7 +434,7 @@ const LandingPageV3 = () => {
             <ContactForm />
           </div>
           <div className="flex flex-col sm:flex-row justify-center gap-6 mt-8 text-brand-dark/80 dark:text-brand-light/80">
-            <a href="mailto:daniele.buatti@gmail.com" className="flex items-center gap-2 hover:text-brand-primary transition-colors text-lg">
+            <a href="mailto:info@danielebuatti.com" className="flex items-center gap-2 hover:text-brand-primary transition-colors text-lg">
               <Mail className="h-6 w-6" /> daniele.buatti@gmail.com
             </a>
             <a href="tel:+61424174067" className="flex items-center gap-2 hover:text-brand-primary transition-colors text-lg">
@@ -442,46 +442,48 @@ const LandingPageV3 = () => {
             </a>
           </div>
         </section>
-
-        {/* Additional Programs Section - New Banners */}
-        <section className="max-w-7xl mx-auto space-y-8 py-16">
-          <SectionHeading>Explore More from Daniele</SectionHeading>
-          <div className="space-y-0 shadow-lg rounded-xl overflow-hidden">
-            <AdditionalProgramBanner
-              title="Explore Buattiverse: Sheet Music & Backing Tracks"
-              description="Your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources."
-              link="https://buattiverse.gumroad.com/"
-              linkText="Visit Buattiverse Store"
-              bgColorClass="bg-brand-dark"
-              textColorClass="text-brand-light"
-              buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-              logoSrc="/gumroad.png"
-              className="rounded-t-xl"
-            />
-            <AdditionalProgramBanner
-              title="Piano Backings by Daniele"
-              description="High-quality piano backing tracks for singers and performers."
-              link="https://pianobackingsbydaniele.vercel.app"
-              linkText="Discover Piano Backings"
-              bgColorClass="bg-brand-magenta"
-              textColorClass="text-brand-dark"
-              buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
-              logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png"
-              className="!rounded-none"
-            />
-            <AdditionalProgramBanner
-              title="Resonance Choir with Daniele"
-              description="Join a vibrant community exploring voice, movement, and sound."
-              link="https://resonance-with-daniele.vercel.app"
-              linkText="Join Resonance Choir"
-              bgColorClass="bg-brand-blue"
-              textColorClass="text-brand-light"
-              buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
-              className="rounded-b-xl"
-            />
-          </div>
-        </section>
       </main>
+
+      {/* Additional Programs Section - Moved outside <main> */}
+      <section className="mt-12"> {/* Removed space-y-0 shadow-lg overflow-hidden rounded-xl */}
+        <div className="container mx-auto px-4 mb-10">
+          <SectionHeading>Explore More from Daniele</SectionHeading>
+        </div>
+        <div className="space-y-0"> {/* Removed shadow-lg rounded-xl overflow-hidden */}
+          <AdditionalProgramBanner
+            title="Explore Buattiverse: Sheet Music & Backing Tracks"
+            description="Your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources."
+            link="https://buattiverse.gumroad.com/"
+            linkText="Visit Buattiverse Store"
+            bgColorClass="bg-brand-dark"
+            textColorClass="text-brand-light"
+            buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
+            logoSrc="/gumroad.png"
+            className="rounded-none"
+          />
+          <AdditionalProgramBanner
+            title="Piano Backings by Daniele"
+            description="High-quality piano backing tracks for singers and performers."
+            link="https://pianobackingsbydaniele.vercel.app"
+            linkText="Discover Piano Backings"
+            bgColorClass="bg-brand-magenta"
+            textColorClass="text-brand-dark"
+            buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
+            logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png"
+            className="rounded-none"
+          />
+          <AdditionalProgramBanner
+            title="Resonance Choir with Daniele"
+            description="Join a vibrant community exploring voice, movement, and sound."
+            link="https://resonance-with-daniele.vercel.app"
+            linkText="Join Resonance Choir"
+            bgColorClass="bg-brand-blue"
+            textColorClass="text-brand-light"
+            buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
+            className="rounded-none"
+          />
+        </div>
+      </section>
       <Footer />
       <BackToTopButton />
     </div>
