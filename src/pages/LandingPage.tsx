@@ -2,7 +2,7 @@ import { MadeWithDyad } from "@/components/made-with-dyad";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle2, CalendarDays, Mic, Piano, Brain, HeartHandshake } from "lucide-react";
+import { CheckCircle2, CalendarDays, Mic, Piano, Brain, HeartHandshake, Users, Monitor } from "lucide-react";
 
 const LandingPage = () => {
   return (
