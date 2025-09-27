@@ -19,6 +19,7 @@ interface FeaturedProgramCardProps {
   buttonBgClass?: string;
   buttonTextClass?: string;
   overlayColorClass?: string; // Still useful for background images
+  backgroundPosition?: string; // New prop for background-position
 }
 
 const FeaturedProgramCard: React.FC<FeaturedProgramCardProps> = ({
@@ -33,6 +34,7 @@ const FeaturedProgramCard: React.FC<FeaturedProgramCardProps> = ({
   buttonBgClass = "bg-brand-primary hover:bg-brand-primary/90 text-brand-light",
   buttonTextClass = "",
   overlayColorClass = "bg-black/30", // Default to black overlay
+  backgroundPosition = "center", // Default to center
 }) => {
   const hasBackgroundImage = !!backgroundImageSrc;
   const hasSolidBackgroundWithLogo = !!backgroundColorClass && !!logoSrc;
@@ -46,7 +48,7 @@ const FeaturedProgramCard: React.FC<FeaturedProgramCardProps> = ({
         hasSolidBackgroundWithLogo ? backgroundColorClass : "", // Apply solid background if present
         className
       )}
-      style={hasBackgroundImage ? { backgroundImage: `url(${backgroundImageSrc})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+      style={hasBackgroundImage ? { backgroundImage: `url(${backgroundImageSrc})`, backgroundSize: 'cover', backgroundPosition: backgroundPosition } : {}}
     >
       {/* Overlay for background images */}
       {hasBackgroundImage && <div className={cn("absolute inset-0", overlayColorClass)}></div>}
