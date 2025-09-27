@@ -13,6 +13,7 @@ import ExpertiseItemCard from "@/components/ExpertiseItemCard";
 import ContactForm from "@/components/ContactForm";
 import SectionHeading from "@/components/SectionHeading";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import AdditionalProgramBanner from "@/components/AdditionalProgramBanner"; // Import the new component
 
 const LandingPageV3 = () => {
   useSmoothScroll();
@@ -113,6 +114,8 @@ const LandingPageV3 = () => {
             </Button>
           </div>
         </section>
+
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
         {/* Education & Expertise - Combined Section with dynamic image */}
         <section className="max-w-7xl mx-auto py-16 grid lg:grid-cols-3 gap-12">
@@ -398,31 +401,6 @@ const LandingPageV3 = () => {
 
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
-        {/* Buattiverse Section - Full-width dark strip (Moved here) */}
-        <section id="buattiverse" className="w-full bg-brand-dark text-brand-light py-16">
-          <div className="container mx-auto px-4 text-center space-y-10">
-            <SectionHeading className="flex items-center justify-center gap-3 text-brand-light">
-              <Music className="h-8 w-8 text-brand-primary" />
-              Explore Buattiverse: Sheet Music & Backing Tracks
-            </SectionHeading>
-            <p className="text-lg text-brand-light/80">
-              Welcome to Buattiverse — your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources tailored for performers, educators, and creatives. Whether you're looking for detailed backing vocal arrangements or resources to bring your ensemble to life, you're in the right place to elevate your musical projects.
-            </p>
-            <GumroadFollowForm />
-            <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
-              <Button size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-                <a href="https://buattiverse.gumroad.com/" target="_blank" rel="noopener noreferrer">
-                  Visit Buattiverse Store
-                </a>
-              </Button>
-            </div>
-            <p className="text-md text-brand-light/70 mt-4">
-              Have a custom request or question? Get in touch: <a href="mailto:info@danielebuatti.com" className="underline hover:text-brand-primary">info@danielebuatti.com</a>
-            </p>
-          </div>
-        </section>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-
         {/* Image Section: Tulips - with caption */}
         <section className="max-w-6xl mx-auto text-center py-8 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-xl shadow-lg">
           <DynamicImage
@@ -462,6 +440,40 @@ const LandingPageV3 = () => {
             <a href="tel:+61424174067" className="flex items-center gap-2 hover:text-brand-primary transition-colors text-lg">
               <Phone className="h-6 w-6" /> +61 424 174 067
             </a>
+          </div>
+        </section>
+
+        {/* Additional Programs Section - New Banners */}
+        <section className="max-w-7xl mx-auto space-y-8 py-16">
+          <SectionHeading>Daniele Also Does These Things...</SectionHeading>
+          <div className="space-y-8">
+            <AdditionalProgramBanner
+              title="Explore Buattiverse: Sheet Music & Backing Tracks"
+              description="Your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources."
+              link="https://buattiverse.gumroad.com/"
+              linkText="Visit Buattiverse Store"
+              bgColorClass="bg-brand-dark"
+              textColorClass="text-brand-light"
+              buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
+            />
+            <AdditionalProgramBanner
+              title="Piano Backings by Daniele"
+              description="High-quality piano backing tracks for singers and performers."
+              link="https://pianobackingsbydaniele.vercel.app"
+              linkText="Discover Piano Backings"
+              bgColorClass="bg-brand-secondary dark:bg-brand-secondary/30"
+              textColorClass="text-brand-dark dark:text-brand-light"
+              buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
+            />
+            <AdditionalProgramBanner
+              title="Resonance Choir with Daniele"
+              description="Join a vibrant community exploring voice, movement, and sound."
+              link="https://resonance-with-daniele.vercel.app"
+              linkText="Join Resonance Choir"
+              bgColorClass="bg-brand-primary dark:bg-brand-primary/30"
+              textColorClass="text-brand-light dark:text-brand-dark"
+              buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
+            />
           </div>
         </section>
       </main>
