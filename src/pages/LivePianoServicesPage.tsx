@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Home, Mail, Phone } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner'; // Changed from react-hot-toast to sonner
+import { toast } from 'sonner';
 
 const LivePianoServicesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -23,7 +23,6 @@ const LivePianoServicesPage: React.FC = () => {
     eventDescription: '',
     pianoType: '',
   });
-  const [newsletterEmail, setNewsletterEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -81,49 +80,11 @@ const LivePianoServicesPage: React.FC = () => {
     setLoading(false);
   };
 
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Placeholder for newsletter submission logic
-    if (newsletterEmail) {
-      toast.success(`Subscribed ${newsletterEmail} to newsletter! (Placeholder)`);
-      setNewsletterEmail('');
-    } else {
-      toast.error("Please enter your email for the newsletter.");
-    }
-  };
-
   return (
     <div className="min-h-screen bg-brand-dark text-brand-light">
       {/* Header */}
       <header className="bg-brand-dark-alt py-4 px-6 md:px-12 border-b border-brand-secondary/20">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          {/* Top Bar */}
-          <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-            <form onSubmit={handleNewsletterSubmit} className="flex flex-wrap items-center gap-2">
-              <span className="text-sm text-brand-light/80">Join my Newsletter</span>
-              <Input
-                type="text"
-                placeholder="Enter first name"
-                className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60 w-32"
-              />
-              <Input
-                type="text"
-                placeholder="Enter last name"
-                className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60 w-32"
-              />
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                value={newsletterEmail}
-                onChange={(e) => setNewsletterEmail(e.target.value)}
-                className="bg-brand-dark border-brand-secondary/50 text-brand-light placeholder:text-brand-light/60 w-32"
-                required
-              />
-              <Button type="submit" size="sm" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-                Subscribe
-              </Button>
-            </form>
-          </div>
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-end gap-4">
           <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light px-6 py-2">
             <Link to="/">Back to Services</Link>
           </Button>
