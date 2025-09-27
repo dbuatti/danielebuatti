@@ -22,6 +22,8 @@ interface AdditionalProgramBannerProps {
   bottomStripColorClass?: string;
   // New prop to indicate if the main title should be in the left 2/3 column
   titleInLeftColumn?: boolean;
+  subtitle?: string; // New prop for subtitle
+  subtitleTextColorClass?: string; // New prop for subtitle text color
 }
 
 const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
@@ -41,6 +43,8 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   backgroundImageSrc,
   bottomStripColorClass,
   titleInLeftColumn = false,
+  subtitle, // Destructure new prop
+  subtitleTextColorClass, // Destructure new prop
 }) => {
   const buttonElement = (
     <Button asChild size="lg" variant={buttonVariant} className={cn("text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
@@ -55,9 +59,9 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
       <div className="flex-grow grid grid-cols-1 md:grid-cols-3">
         {titleInLeftColumn ? (
           <>
-            {/* Left Half (Title and optional Image Logo) - Visible on md and up, takes 2/3 width */}
+            {/* Left Half (Title, Subtitle, and optional Image Logo) - Visible on md and up, takes 2/3 width */}
             <div className={cn(
-              "relative z-10 hidden md:flex flex-col items-center justify-center p-8 text-center space-y-6 md:col-span-2",
+              "relative z-10 hidden md:flex flex-col items-center justify-center p-8 text-center space-y-4 md:col-span-2", // Adjusted space-y
               bgColorClass || "bg-brand-dark",
               leftColumnTextColorClass || textColorClass // Use specific left color or default
             )}>
@@ -65,10 +69,11 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
                 <img
                   src={logoSrc}
                   alt={`${title} logo`}
-                  className="mx-auto h-20 object-contain mb-4"
+                  className="mx-auto h-20 object-contain mb-2" // Adjusted margin
                 />
               )}
-              {!logoSrc && <h3 className="text-5xl font-bold">{title}</h3>} {/* Only show text title if no logoSrc */}
+              <h3 className="text-5xl font-bold">{title}</h3> {/* Always show text title */}
+              {subtitle && <p className={cn("text-2xl font-medium", subtitleTextColorClass || leftColumnTextColorClass || textColorClass)}>{subtitle}</p>} {/* New subtitle */}
             </div>
 
             {/* Right Half (Description and Button) - Full width on mobile, 1/3 on md and up */}
@@ -77,8 +82,18 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
               bgColorClass || "bg-brand-dark",
               rightColumnTextColorClass || textColorClass // Use specific right color or default
             )}>
-              {/* On mobile, show title here as well for consistency */}
-              <h3 className={cn("text-4xl font-bold md:hidden", rightColumnTextColorClass || textColorClass)}>{title}</h3>
+              {/* On mobile, show title and subtitle here for consistency */}
+              <div className="md:hidden space-y-2">
+                {logoSrc && (
+                  <img
+                    src={logoSrc}
+                    alt={`${title} logo`}
+                    className="mx-auto h-16 object-contain"
+                  />
+                )}
+                <h3 className="text-4xl font-bold">{title}</h3>
+                {subtitle && <p className={cn("text-xl font-medium", subtitleTextColorClass || rightColumnTextColorClass || textColorClass)}>{subtitle}</p>}
+              </div>
               <p className="text-lg max-w-3xl mx-auto">{description}</p>
               {buttonElement}
             </div>
