@@ -120,9 +120,9 @@ const LivePianoServicesPage: React.FC = () => {
     <div className="live-piano-theme min-h-screen bg-livePiano-background text-livePiano-light">
       {/* Header */}
       <header className="bg-livePiano-darker py-4 px-6 md:px-12"> {/* Removed border-b */}
-        <div className="max-w-7xl mx-auto flex items-center justify-between relative">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Left section: Home and Back to Services */}
-          <div className="flex items-center gap-4 z-10">
+          <div className="flex items-center gap-4">
             <Link to="/" className="text-livePiano-light hover:text-livePiano-primary transition-colors">
               <Home size={24} />
             </Link>
@@ -132,7 +132,7 @@ const LivePianoServicesPage: React.FC = () => {
           </div>
 
           {/* Right section: Logo and Title */}
-          <div className="flex flex-col items-end z-10"> {/* Changed to items-end for right alignment */}
+          <div className="flex flex-col items-end"> {/* Changed to items-end for right alignment */}
             <img src="/gold-36.png" alt="Daniele Buatti Logo" className="h-16 md:h-20" />
             <h1 className="text-xl md:text-2xl font-montserrat font-light uppercase text-livePiano-light tracking-widest mt-2">
               Daniele Buatti
@@ -344,7 +344,7 @@ const LivePianoServicesPage: React.FC = () => {
       {/* Footer */}
       <footer className="bg-livePiano-darker py-8 text-center mt-12"> {/* Removed border-t */}
         <div className="max-w-7xl mx-auto px-4">
-          <img src="/bowtie-logo.png" alt="Bowtie Logo" className="h-12 mx-auto mb-4" />
+          <img src="/bowtie.avif" alt="Bowtie Logo" className="h-12 mx-auto mb-4" /> {/* Fixed image path */}
           <p className="text-livePiano-light/80 text-lg flex items-center justify-center gap-4">
             <Phone size={18} /> 0424 174 067
             <Mail size={18} /> info@danielebuatti.com
