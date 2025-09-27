@@ -5,7 +5,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 
 const testimonials = [
   {
-    quote: "I absolutely froth your email. I love parameters, I love clear direct communication. I'm in absolute heaven. I wish every creative worked this way. Thank you for laying it out with such concise, clear, and thoughtful clarity for me. It makes me very excited to work with you on this project.",
+    quote: "Daniele's clear, direct, and thoughtful communication is truly exceptional. I deeply appreciate the concise clarity and transparency, which makes working together an absolute pleasure. This approach not only benefits our current project but also sets a wonderful foundation for future collaborations. I wish every creative worked with such professionalism and insight.",
     author: "Em",
     title: "Creative Collaborator",
   },
