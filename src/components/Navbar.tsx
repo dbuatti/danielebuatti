@@ -5,7 +5,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
 import { navLinks } from "@/constants/navigation";
-import { useActiveSection } from "@/hooks/use-active-section"; // Import the new hook
+import { useActiveSection } from "@/hooks/use-active-section";
+import { cn } from "@/lib/utils"; // Import cn utility
 
 const Navbar = () => {
   const activeSection = useActiveSection();
@@ -21,11 +22,12 @@ const Navbar = () => {
             <a
               key={link.name}
               href={link.href}
-              className={`text-sm font-medium transition-colors hover:text-brand-primary ${
+              className={cn(
+                "text-sm font-medium transition-colors hover:text-brand-primary",
                 activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home")
                   ? "text-brand-primary dark:text-brand-primary"
                   : "text-brand-dark dark:text-brand-light"
-              }`}
+              )}
             >
               {link.name}
             </a>
@@ -54,11 +56,12 @@ const Navbar = () => {
                   <a
                     key={link.name}
                     href={link.href}
-                    className={`text-lg font-medium hover:text-brand-primary ${
+                    className={cn(
+                      "text-lg font-medium hover:text-brand-primary",
                       activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home")
                         ? "text-brand-primary dark:text-brand-primary"
                         : "text-brand-dark dark:text-brand-light"
-                    }`}
+                    )}
                   >
                     {link.name}
                   </a>
