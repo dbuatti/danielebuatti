@@ -52,7 +52,8 @@ const LandingPage = () => {
         <section id="about" className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
           <div className="flex justify-center md:justify-start">
             <DynamicImage
-              alt="Daniele Buatti professional headshot"
+              src="/pinkcarpet.jpg" // Updated image source
+              alt="Daniele Buatti professional headshot on pink carpet" // Updated alt text
               className="w-full max-w-sm h-auto rounded-xl shadow-2xl object-cover border-2 border-brand-secondary" // Added border
               width={400}
               height={500}
