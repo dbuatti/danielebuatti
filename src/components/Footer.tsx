@@ -1,7 +1,7 @@
 import React from "react";
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import { Instagram, Youtube, Twitch, Mail, Phone, Link as LinkIcon, Piano, Users, Facebook, Heart, MessageSquare, Newspaper, Coffee } from "lucide-react";
-import { Separator } => "@/components/ui/separator";
+import { Separator } from "@/components/ui/separator";
 import DynamicImage from "@/components/DynamicImage"; // Import DynamicImage
 
 const Footer = () => {
