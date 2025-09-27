@@ -35,7 +35,7 @@ const AdditionalProgramsSection: React.FC = () => {
           buttonBgClass="bg-black hover:bg-black/90 text-brand-light"
           logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png" // Piano icon logo
           className="rounded-none"
-          bottomStripColorClass="bg-brand-magenta" // Changed to magenta to match
+          bottomStripColorClass="bg-brand-magenta"
           titleInLeftColumn={true} // Title and logo in left column
         />
 
@@ -44,12 +44,12 @@ const AdditionalProgramsSection: React.FC = () => {
           description="Join a vibrant community exploring voice, movement, and sound."
           link="https://resonance-with-daniele.vercel.app"
           linkText="Join Resonance Choir"
-          bgColorClass="bg-brand-magenta" {/* Changed to magenta */}
+          bgColorClass="bg-brand-magenta"
           leftColumnTextColorClass="text-brand-light"
           rightColumnTextColorClass="text-brand-light"
-          buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light" {/* Adjusted button for contrast */}
+          buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
           className="rounded-none"
-          bottomStripColorClass="bg-brand-magenta" {/* Changed to magenta */}
+          bottomStripColorClass="bg-brand-magenta"
           titleInLeftColumn={true} // Title in left column
         />
       </div>
