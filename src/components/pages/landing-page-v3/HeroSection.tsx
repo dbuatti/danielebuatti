@@ -9,7 +9,7 @@ const HeroSection: React.FC = () => {
   return (
     <section id="home" className="grid md:grid-cols-2 gap-16 items-center max-w-7xl mx-auto py-12">
       <div className="text-center md:text-left space-y-8">
-        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight leading-tight font-display text-brand-primary">
+        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-brand-primary">
           Unlock Your True Voice. Master Your Presence.
         </h1>
         <p className="text-2xl md:text-3xl font-semibold text-brand-dark dark:text-brand-light">
