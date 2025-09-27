@@ -1,13 +1,14 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import DynamicImage from "@/components/DynamicImage";
-import SectionHeading from "@/components/SectionHeading"; // Import SectionHeading
+import SectionHeading from "@/components/SectionHeading";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"; // Import Dialog components
+import CalEmbed from "@/components/CalEmbed"; // Import the new CalEmbed component
 
 const HeroSection: React.FC = () => {
   return (
     <section id="home" className="grid md:grid-cols-2 gap-16 items-center max-w-7xl mx-auto py-16">
       <div className="text-center md:text-left space-y-8">
-        {/* Removed SectionHeading here as the H1 is the main title for this section */}
         <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-brand-primary">
           Unlock Your True Voice. Master Your Presence.
         </h1>
@@ -17,9 +18,16 @@ const HeroSection: React.FC = () => {
         <p className="text-lg md:text-xl text-brand-dark/80 dark:text-brand-light/80 max-w-3xl md:max-w-none mx-auto">
           Facing a big performance, audition, or presentation? Need to master your on-camera presence? My coaching empowers you to perform and communicate with freedom, confidence, and ease. Blending world-class musical and performance training with deep body awareness and a powerful mindset approach, I help you achieve more without the usual strain, stress, or burnout. True expression begins with the willingness to voice it, and I'm here to guide that journey.
         </p>
-        <Button size="lg" className="mt-8 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-          <a href="#contact">Book a Discovery Session</a>
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button size="lg" className="mt-8 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+              Book a Discovery Session
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[800px] h-[90vh] p-0 overflow-hidden"> {/* Adjust max-width and height as needed */}
+            <CalEmbed calLink="daniele-buatti/30min" layout="month_view" />
+          </DialogContent>
+        </Dialog>
       </div>
       <div className="relative flex justify-center md:justify-end">
         <DynamicImage
