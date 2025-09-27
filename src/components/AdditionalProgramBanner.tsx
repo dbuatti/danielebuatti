@@ -3,6 +3,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import DynamicImage from "@/components/DynamicImage"; // Ensure DynamicImage is imported
 
 interface AdditionalProgramBannerProps {
   title: React.ReactNode; // Main title for the right column
@@ -46,10 +47,10 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   backgroundImageSrc,
   bottomStripColorClass,
   titleInLeftColumn = false,
-  subtitle, // Destructure new prop
-  subtitleTextColorClass, // Destructure new prop
-  leftColumnTitle, // New prop
-  leftColumnSubtitle, // New prop
+  subtitle,
+  subtitleTextColorClass,
+  leftColumnTitle,
+  leftColumnSubtitle,
 }) => {
   // Helper function to render the main content block
   const renderContentBlock = (currentTitle: React.ReactNode, currentSubtitle?: string, currentLogoSrc?: string) => {
@@ -59,10 +60,12 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
     return (
       <div className="space-y-2">
         {currentLogoSrc && (
-          <img
+          <DynamicImage // Using DynamicImage here
             src={currentLogoSrc}
             alt={`${typeof currentTitle === 'string' ? currentTitle : 'Program'} logo`}
             className="h-20 object-contain mb-4"
+            width={80} // Provide explicit width/height for DynamicImage
+            height={80}
           />
         )}
         <h3 className={cn("text-4xl font-bold leading-tight", currentTitleFontClass)}>{currentTitle}</h3>
@@ -78,7 +81,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   };
 
   // Base classes for the content area, adjusted for left alignment when in right column
-  const baseContentClasses = "relative z-10 flex flex-col justify-center p-8 space-y-6 h-full"; // Removed items-center and text-center
+  const baseContentClasses = "relative z-10 flex flex-col justify-center p-8 space-y-6 h-full";
 
   return (
     <div className={cn("relative w-full flex flex-col overflow-hidden", className)}>
@@ -96,10 +99,10 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
           {/* Right 1/3 column (main content) */}
           <div className={cn(
             baseContentClasses,
-            "md:col-span-1", // Confine to 1/3 width on md+
+            "md:col-span-1",
             bgColorClass || "bg-brand-dark",
             rightColumnTextColorClass || textColorClass,
-            "items-start text-left" // Added for left alignment in right column
+            "items-start text-left"
           )}>
             {renderContentBlock(title, subtitle, logoSrc)}
           </div>
@@ -107,15 +110,15 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
       ) : backgroundImageSrc ? (
         // Case 2: Image background (split layout)
         <div
-          className={cn("flex-grow grid grid-cols-1 md:grid-cols-3 h-[280px]", bgColorClass)} // bgColorClass for the whole grid if needed
+          className={cn("flex-grow grid grid-cols-1 md:grid-cols-3 h-[280px]", bgColorClass)}
           style={{ backgroundImage: `url(${backgroundImageSrc})`, backgroundPosition: 'left center', backgroundSize: 'cover' }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-transparent to-brand-dark md:col-span-2"></div>
           <div className={cn(
             baseContentClasses,
-            "md:col-span-1", // Confine to 1/3 width on md+
-            textColorClass, // Text color for content on image background
-            "items-start text-left" // Added for left alignment in right column
+            "md:col-span-1",
+            textColorClass,
+            "items-start text-left"
           )}>
             {renderContentBlock(title, subtitle, logoSrc)}
           </div>
@@ -124,10 +127,10 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
         // Case 3: Full-width solid color banner (default for Piano Backings, Resonance)
         <div className={cn(
           baseContentClasses,
-          "flex-grow", // Take full width
+          "flex-grow",
           bgColorClass || "bg-brand-dark",
           textColorClass,
-          "items-center text-center" // Default to center for full-width solid banners
+          "items-center text-center"
         )}>
           {renderContentBlock(title, subtitle, logoSrc)}
         </div>
