@@ -54,7 +54,7 @@ const AdditionalProgramsSection: React.FC = () => {
           className="max-w-6xl"
           buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
           overlayColorClass="bg-black/50"
-          backgroundPosition="center 95%" // Lower the image even more
+          backgroundPosition="center 40%" // Adjusted to bring the face into view
         />
       </div>
     </section>
