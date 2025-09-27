@@ -67,7 +67,7 @@ const Footer = () => {
           />
         </div>
 
-        <MadeWithDyad />
+        {/* <MadeWithDyad /> */} {/* Removed this line */}
       </div>
     </footer>
   );
