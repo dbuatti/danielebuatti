@@ -40,11 +40,11 @@ const Footer = () => {
         <div className="space-y-2">
           <p className="text-lg font-semibold">Contact Me</p>
           <a
-            href="mailto:daniele.buatti@gmail.com"
+            href="mailto:info@danielebuatti.com"
             className="flex items-center justify-center gap-2 text-brand-light hover:text-brand-primary transition-colors"
           >
             <Mail className="h-5 w-5" />
-            daniele.buatti@gmail.com
+            info@danielebuatti.com
           </a>
           <a
             href="tel:+61424174067"
