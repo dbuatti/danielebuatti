@@ -2,6 +2,7 @@ import React from "react";
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import { Instagram, Youtube, Twitch, Mail, Phone, Link as LinkIcon, Piano, Users, Facebook, Heart, MessageSquare, Newspaper, Coffee } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import DynamicImage from "@/components/DynamicImage"; // Import DynamicImage
 
 const Footer = () => {
   const socialLinks = [
@@ -55,6 +56,16 @@ const Footer = () => {
         </div>
 
         <Separator className="max-w-md mx-auto bg-brand-secondary" />
+
+        <div className="flex justify-center py-4">
+          <DynamicImage
+            src="/blue-pink-ontrans.png"
+            alt="Daniele Buatti Brand Symbol"
+            className="h-10 w-auto"
+            width={40}
+            height={40}
+          />
+        </div>
 
         <MadeWithDyad />
       </div>
