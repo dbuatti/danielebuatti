@@ -445,11 +445,11 @@ const LandingPageV3 = () => {
       </main>
 
       {/* Additional Programs Section - Moved outside <main> */}
-      <section className="space-y-0 shadow-lg rounded-xl overflow-hidden mt-12"> {/* Added mt-12 for spacing */}
+      <section className="space-y-0 shadow-lg overflow-hidden mt-12"> {/* Removed rounded-xl */}
         <div className="container mx-auto px-4 mb-10"> {/* Added container for heading */}
           <SectionHeading>Explore More from Daniele</SectionHeading>
         </div>
-        <div className="space-y-0 shadow-lg rounded-xl overflow-hidden">
+        <div className="space-y-0 shadow-lg overflow-hidden"> {/* Removed rounded-xl */}
           <AdditionalProgramBanner
             title="Explore Buattiverse: Sheet Music & Backing Tracks"
             description="Your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources."
@@ -459,7 +459,7 @@ const LandingPageV3 = () => {
             textColorClass="text-brand-light"
             buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
             logoSrc="/gumroad.png"
-            className="rounded-t-xl"
+            className="rounded-none" {/* Changed to rounded-none */}
           />
           <AdditionalProgramBanner
             title="Piano Backings by Daniele"
@@ -470,7 +470,7 @@ const LandingPageV3 = () => {
             textColorClass="text-brand-dark"
             buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
             logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png"
-            className="!rounded-none"
+            className="rounded-none" {/* Changed to rounded-none */}
           />
           <AdditionalProgramBanner
             title="Resonance Choir with Daniele"
@@ -480,7 +480,7 @@ const LandingPageV3 = () => {
             bgColorClass="bg-brand-blue"
             textColorClass="text-brand-light"
             buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
-            className="rounded-b-xl"
+            className="rounded-none" {/* Changed to rounded-none */}
           />
         </div>
       </section>
