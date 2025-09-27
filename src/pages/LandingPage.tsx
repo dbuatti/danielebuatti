@@ -150,6 +150,15 @@ const LandingPage = () => {
         {/* Who I Work With Section */}
         <section className="max-w-6xl mx-auto text-center space-y-10">
           <SectionHeading>Who I Work With</SectionHeading>
+          <div className="flex justify-center mb-8">
+            <DynamicImage
+              src="/daniele-smile-host-bu.jpeg"
+              alt="Daniele Buatti smiling and interacting with a host at Broadway Unplugged"
+              className="w-full max-w-2xl h-auto rounded-xl shadow-2xl object-cover border-2 border-brand-secondary mx-auto"
+              width={800}
+              height={533}
+            />
+          </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
               <CardHeader className="p-0 pb-4">
