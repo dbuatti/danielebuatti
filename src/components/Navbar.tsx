@@ -4,7 +4,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom"; // Import useNavigate
 import { ThemeToggle } from "./ThemeToggle";
 import { navLinks } from "@/constants/navigation";
 import { useActiveSection } from "@/hooks/use-active-section";
@@ -15,15 +15,34 @@ import { useTheme } from "next-themes"; // Import useTheme
 const Navbar = () => {
   const activeSection = useActiveSection();
   const location = useLocation();
+  const navigate = useNavigate(); // Initialize useNavigate
   const { theme } = useTheme(); // Get the current theme
   const [isSheetOpen, setIsSheetOpen] = React.useState(false); // State to control sheet visibility
 
   // Determine logo sources based on theme
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
-  const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png"; // Corrected this line
+  const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
 
-  const handleLinkClick = () => {
-    setIsSheetOpen(false); // Close the sheet when a link is clicked
+  const handleLinkClick = (href: string) => {
+    setIsSheetOpen(false); // Close the sheet first
+
+    // Add a small delay to allow the sheet to close before attempting to scroll/navigate
+    setTimeout(() => {
+      if (href.startsWith('/')) {
+        navigate(href); // Use navigate for internal routes
+      } else if (href.startsWith('#')) {
+        const id = href.substring(1);
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        } else if (href === "#home" || href === "/") { // Handle home explicitly if it's an anchor
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      }
+    }, 100); // 100ms delay
   };
 
   return (
@@ -79,7 +98,7 @@ const Navbar = () => {
         </nav>
         <div className="flex items-center md:hidden">
           <ThemeToggle />
-          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}> {/* Control sheet state */}
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
@@ -106,20 +125,20 @@ const Navbar = () => {
 
                   if (link.href.startsWith('/')) {
                     return (
-                      <Link key={link.name} to={link.href} className={commonClasses} onClick={handleLinkClick}>
+                      <Link key={link.name} to={link.href} className={commonClasses} onClick={() => handleLinkClick(link.href)}>
                         {link.name}
                       </Link>
                     );
                   } else {
                     return (
-                      <a key={link.name} href={link.href} className={commonClasses} onClick={handleLinkClick}>
+                      <a key={link.name} href={link.href} className={commonClasses} onClick={() => handleLinkClick(link.href)}>
                         {link.name}
                       </a>
                     );
                   }
                 })}
                 <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
-                  <a href="#sessions" onClick={handleLinkClick}>Book a Lesson</a>
+                  <a href="#sessions" onClick={() => handleLinkClick("#sessions")}>Book a Lesson</a>
                 </Button>
               </nav>
             </SheetContent>
