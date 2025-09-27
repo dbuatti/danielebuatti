@@ -6,7 +6,7 @@ import FeaturedProgramCard from "@/components/FeaturedProgramCard";
 
 const AdditionalProgramsSection: React.FC = () => {
   return (
-    <section className="mt-12 pb-16"> {/* Added pb-16 here */}
+    <section className="mt-12 pb-16">
       <div className="container mx-auto px-4 mb-10">
         <SectionHeading>Explore More from Daniele</SectionHeading>
       </div>
@@ -44,17 +44,23 @@ const AdditionalProgramsSection: React.FC = () => {
           buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
         />
 
-        {/* NEW: FeaturedProgramCard for Live Piano Services */}
-        <FeaturedProgramCard
-          title="An Unforgettable Musical Experience"
+        {/* NEW: AdditionalProgramBanner for Live Piano Services */}
+        <AdditionalProgramBanner
+          title={
+            <>
+              An Unforgettable Musical
+              <br />
+              Experience
+            </>
+          }
           description="Indulge in the elegance of live piano music and elevate your wedding, corporate event, or private party to new heights with the incomparable talent of Daniele Buatti. Daniele's versatile, refined performance creates an unforgettable atmosphere, with a repertoire spanning classical, jazz, and pop genres."
-          // Linking to contact section for inquiries
           link="#contact"
           linkText="Enquire Now!"
           backgroundImageSrc="/piano-landingpageV2_edited.jpg"
-          className="max-w-6xl"
+          className="max-w-6xl h-[300px]"
+          bgColorClass="bg-brand-dark"
+          textColorClass="text-brand-light"
           buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-          overlayColorClass="bg-black/50" // Slightly darker overlay for better text contrast
         />
       </div>
     </section>

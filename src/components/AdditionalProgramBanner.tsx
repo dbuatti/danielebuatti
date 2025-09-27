@@ -74,18 +74,18 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
         <img
           src={logoSrc}
           alt={`${title} logo`}
-          className="mx-auto h-20 object-contain mb-4"
+          className="h-20 object-contain mb-4" // Removed mx-auto
         />
       )}
       <h3 className={cn("text-4xl font-bold leading-tight", mainTitleFontClass)}>{title}</h3>
       {subtitle && <p className={cn("text-xl", subtitleTextColorClass)}>{subtitle}</p>}
-      <p className="text-lg max-w-3xl mx-auto">{description}</p>
+      <p className="text-lg max-w-3xl">{description}</p> {/* Removed mx-auto */}
       {buttonElement}
     </div>
   );
 
-  // Base classes for the content area, always centered
-  const baseContentClasses = "relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6 h-full";
+  // Base classes for the content area, adjusted for left alignment when in right column
+  const baseContentClasses = "relative z-10 flex flex-col justify-center p-8 space-y-6 h-full"; // Removed items-center and text-center
 
   return (
     <div className={cn("relative w-full flex flex-col overflow-hidden", className)}>
@@ -120,7 +120,8 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
             baseContentClasses,
             "md:col-span-1", // Confine to 1/3 width on md+
             bgColorClass || "bg-brand-dark",
-            rightColumnTextColorClass || textColorClass
+            rightColumnTextColorClass || textColorClass,
+            "items-start text-left" // Added for left alignment in right column
           )}>
             {contentBlock}
           </div>
@@ -135,7 +136,8 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
           <div className={cn(
             baseContentClasses,
             "md:col-span-1", // Confine to 1/3 width on md+
-            textColorClass // Text color for content on image background
+            textColorClass, // Text color for content on image background
+            "items-start text-left" // Added for left alignment in right column
           )}>
             {contentBlock}
           </div>
@@ -146,7 +148,8 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
           baseContentClasses,
           "flex-grow", // Take full width
           bgColorClass || "bg-brand-dark",
-          textColorClass
+          textColorClass,
+          "items-center text-center" // Default to center for full-width solid banners
         )}>
           {contentBlock}
         </div>
