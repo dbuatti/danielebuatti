@@ -209,6 +209,17 @@ const LandingPage = () => {
 
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
+        {/* New Section for Daniele Calm at Piano Image */}
+        <section className="max-w-4xl mx-auto text-center py-12">
+          <DynamicImage
+            src="/danielecalmatpiano.jpeg"
+            alt="Daniele Buatti playing piano with eyes closed, deeply in the moment"
+            className="w-full max-w-2xl h-auto rounded-xl shadow-2xl object-cover border-2 border-brand-secondary mx-auto"
+            width={800}
+            height={533}
+          />
+        </section>
+
         {/* My Approach Section */}
         <section id="approach" className="max-w-4xl mx-auto space-y-10">
           <SectionHeading>My Embodied Holistic Approach</SectionHeading>
