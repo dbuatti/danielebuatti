@@ -10,7 +10,7 @@ interface SectionHeadingProps {
 const SectionHeading: React.FC<SectionHeadingProps> = ({ children, className }) => {
   return (
     <div className={cn("text-center space-y-4", className)}>
-      <h2 className="text-4xl font-bold text-brand-primary">{children}</h2>
+      <h2 className="text-4xl font-bold font-display text-brand-primary">{children}</h2>
       <Separator className="max-w-xs mx-auto bg-brand-secondary" />
     </div>
   );

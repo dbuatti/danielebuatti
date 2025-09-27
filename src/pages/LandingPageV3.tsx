@@ -28,35 +28,35 @@ const LandingPageV3: React.FC = () => {
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
       <Navbar />
-      <main className="mx-auto px-4"> {/* Removed 'container' class */}
+      <main>
         <HeroSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-12" />
         <AboutMeSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-12" />
         <EducationExpertiseSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-12" />
         <GreenroomAwardsSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-12" />
         <WhoIWorkWithSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-12" />
         <DanieleSmileHostSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-12" />
         <EmbodiedApproachSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-12" />
         <DanieleCalmAtPianoSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-12" />
         <TestimonialsSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-12" />
         <SessionsAvailabilitySection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-12" />
         <WhyWorkWithMeSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-12" />
         <TulipsSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-12" />
         <FullBioSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-12" />
         <CallToActionSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-12" />
         <AdditionalProgramsSection />
       </main>
       <Footer />
