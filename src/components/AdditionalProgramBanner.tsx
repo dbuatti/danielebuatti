@@ -79,35 +79,27 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
       </div>
     );
   } else {
-    // Layout for banners without a background image
+    // Layout for banners without a background image - now a single centered column
     return (
       <div
         className={cn(
-          "relative w-full py-16 overflow-hidden flex flex-col",
+          "relative w-full py-16 overflow-hidden flex flex-col items-center justify-center text-center", // Added items-center, justify-center, text-center
           bgColorClass || "bg-brand-dark",
           textColorClass,
           className
         )}
       >
-        <div className="container grid grid-cols-1 md:grid-cols-2 items-center gap-8">
-          {/* Left side: Logo or Title */}
-          <div className="md:col-span-1 text-center md:text-left space-y-4">
-            {logoSrc ? (
-              <img
-                src={logoSrc}
-                alt={`${title} logo`}
-                className="mx-auto md:mx-0 h-20 object-contain mb-4"
-              />
-            ) : (
-              <h3 className="text-4xl font-bold">{title}</h3>
-            )}
-          </div>
-
-          {/* Right side: Description and Button */}
-          <div className="md:col-span-1 text-center md:text-center space-y-6"> {/* Changed md:text-right to md:text-center */}
-            <p className="text-lg max-w-3xl mx-auto">{description}</p> {/* Changed md:max-w-prose md:ml-auto to max-w-3xl mx-auto */}
-            {buttonElement}
-          </div>
+        <div className="container space-y-6"> {/* Removed grid, col-span, etc. */}
+          {logoSrc && (
+            <img
+              src={logoSrc}
+              alt={`${title} logo`}
+              className="mx-auto h-20 object-contain mb-4"
+            />
+          )}
+          <h3 className="text-4xl font-bold">{title}</h3>
+          <p className="text-lg max-w-3xl mx-auto">{description}</p> {/* Keep max-w-3xl mx-auto for centering and width */}
+          {buttonElement}
         </div>
       </div>
     );
