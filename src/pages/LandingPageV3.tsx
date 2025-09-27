@@ -48,7 +48,7 @@ const LandingPageV3 = () => {
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
       <Navbar />
-      <main className="container mx-auto px-4 space-y-12"> {/* Adjusted overall spacing */}
+      <main className="container mx-auto px-4 space-y-12">
         {/* Hero Section - Split Layout with Image */}
         <section id="home" className="grid md:grid-cols-2 gap-16 items-center max-w-7xl mx-auto py-16">
           <div className="text-center md:text-left space-y-8">
@@ -80,32 +80,6 @@ const LandingPageV3 = () => {
         </section>
 
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-
-        {/* Buattiverse Section - Full-width dark strip */}
-        <section id="buattiverse" className="w-full bg-brand-dark text-brand-light py-16">
-          <div className="container mx-auto px-4 text-center space-y-10">
-            <SectionHeading className="flex items-center justify-center gap-3 text-brand-light">
-              <Music className="h-8 w-8 text-brand-primary" />
-              Explore Buattiverse: Sheet Music & Backing Tracks
-            </SectionHeading>
-            <p className="text-lg text-brand-light/80">
-              Welcome to Buattiverse — your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources tailored for performers, educators, and creatives. Whether you're looking for detailed backing vocal arrangements or resources to bring your ensemble to life, you're in the right place to elevate your musical projects.
-            </p>
-            <GumroadFollowForm />
-            <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
-              <Button size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-                <a href="https://buattiverse.gumroad.com/" target="_blank" rel="noopener noreferrer">
-                  Visit Buattiverse Store
-                </a>
-              </Button>
-            </div>
-            <p className="text-md text-brand-light/70 mt-4">
-              Have a custom request or question? Get in touch: <a href="mailto:info@danielebuatti.com" className="underline hover:text-brand-primary">info@danielebuatti.com</a>
-            </p>
-          </div>
-        </section>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-
 
         {/* About Me Section - Image on left, text on right, with quote */}
         <section id="about" className="grid md:grid-cols-2 gap-16 items-center max-w-7xl mx-auto py-16">
@@ -267,7 +241,7 @@ const LandingPageV3 = () => {
 
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
-        {/* My Approach Section - Visualized with icons */}
+        {/* My Embodied Holistic Approach Section - Visualized with icons */}
         <section id="approach" className="max-w-7xl mx-auto space-y-10 py-12">
           <SectionHeading>My Embodied Holistic Approach</SectionHeading>
           <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
@@ -320,7 +294,7 @@ const LandingPageV3 = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
         {/* Testimonials Section - Carousel */}
-        <section className="max-w-7xl mx-auto text-center space-y-10 py-16 bg-brand-secondary/20 dark:bg-brand-dark/50 rounded-xl shadow-lg">
+        <section id="testimonials" className="max-w-7xl mx-auto text-center space-y-10 py-16 bg-brand-secondary/20 dark:bg-brand-dark/50 rounded-xl shadow-lg">
           <SectionHeading>What My Clients Say</SectionHeading>
           <Carousel
             opts={{
@@ -422,6 +396,31 @@ const LandingPageV3 = () => {
           </ul>
         </section>
 
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+
+        {/* Buattiverse Section - Full-width dark strip (Moved here) */}
+        <section id="buattiverse" className="w-full bg-brand-dark text-brand-light py-16">
+          <div className="container mx-auto px-4 text-center space-y-10">
+            <SectionHeading className="flex items-center justify-center gap-3 text-brand-light">
+              <Music className="h-8 w-8 text-brand-primary" />
+              Explore Buattiverse: Sheet Music & Backing Tracks
+            </SectionHeading>
+            <p className="text-lg text-brand-light/80">
+              Welcome to Buattiverse — your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources tailored for performers, educators, and creatives. Whether you're looking for detailed backing vocal arrangements or resources to bring your ensemble to life, you're in the right place to elevate your musical projects.
+            </p>
+            <GumroadFollowForm />
+            <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+              <Button size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+                <a href="https://buattiverse.gumroad.com/" target="_blank" rel="noopener noreferrer">
+                  Visit Buattiverse Store
+                </a>
+              </Button>
+            </div>
+            <p className="text-md text-brand-light/70 mt-4">
+              Have a custom request or question? Get in touch: <a href="mailto:info@danielebuatti.com" className="underline hover:text-brand-primary">info@danielebuatti.com</a>
+            </p>
+          </div>
+        </section>
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
         {/* Image Section: Tulips - with caption */}
