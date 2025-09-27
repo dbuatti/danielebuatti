@@ -27,10 +27,11 @@ const AdditionalProgramsSection: React.FC = () => {
           description="High-quality, meticulously crafted tracks for singers and performers, streamlining your preparation."
           link="https://pianobackingsbydaniele.vercel.app"
           linkText="Discover Piano Backings"
-          backgroundImageSrc="/pianobackingslogo.png"
+          backgroundColorClass="bg-brand-magenta" // Solid pink background
+          logoSrc="/pianobackingslogo.png" // Logo placed on top of the pink background
           className="max-w-6xl"
           buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
-          overlayColorClass="bg-brand-magenta/30" // Applied the updated brand-magenta overlay
+          // Removed overlayColorClass as it's not needed with a solid background and separate logo
         />
 
         {/* FeaturedProgramCard for Resonance with Daniele */}

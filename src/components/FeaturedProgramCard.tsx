@@ -10,11 +10,15 @@ interface FeaturedProgramCardProps {
   description: string;
   link: string;
   linkText: string;
-  backgroundImageSrc: string;
+  // Either backgroundImageSrc (for full background images)
+  // OR backgroundColorClass + logoSrc (for solid color background with a logo)
+  backgroundImageSrc?: string;
+  backgroundColorClass?: string; // New prop for solid background color
+  logoSrc?: string; // New prop for logo image when using solid background
   className?: string;
   buttonBgClass?: string;
   buttonTextClass?: string;
-  overlayColorClass?: string; // New prop for custom overlay color
+  overlayColorClass?: string; // Still useful for background images
 }
 
 const FeaturedProgramCard: React.FC<FeaturedProgramCardProps> = ({
@@ -23,23 +27,38 @@ const FeaturedProgramCard: React.FC<FeaturedProgramCardProps> = ({
   link,
   linkText,
   backgroundImageSrc,
+  backgroundColorClass, // New
+  logoSrc, // New
   className,
   buttonBgClass = "bg-brand-primary hover:bg-brand-primary/90 text-brand-light",
   buttonTextClass = "",
   overlayColorClass = "bg-black/30", // Default to black overlay
 }) => {
+  const hasBackgroundImage = !!backgroundImageSrc;
+  const hasSolidBackgroundWithLogo = !!backgroundColorClass && !!logoSrc;
+
   return (
     <div
       className={cn(
         "relative w-full max-w-6xl mx-auto h-[300px] rounded-xl overflow-hidden",
         "flex items-center justify-center text-center",
         "shadow-xl transition-all duration-300 ease-in-out transform hover:scale-[1.01]",
+        hasSolidBackgroundWithLogo ? backgroundColorClass : "", // Apply solid background if present
         className
       )}
-      style={{ backgroundImage: `url(${backgroundImageSrc})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+      style={hasBackgroundImage ? { backgroundImage: `url(${backgroundImageSrc})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
     >
-      {/* Subtle Overlay for background image */}
-      <div className={cn("absolute inset-0", overlayColorClass)}></div>
+      {/* Overlay for background images */}
+      {hasBackgroundImage && <div className={cn("absolute inset-0", overlayColorClass)}></div>}
+
+      {/* Logo for solid backgrounds, positioned behind the content card */}
+      {hasSolidBackgroundWithLogo && logoSrc && (
+        <img
+          src={logoSrc}
+          alt={`${title} logo`}
+          className="absolute inset-0 w-full h-full object-contain z-0" // Position logo behind content
+        />
+      )}
 
       {/* Content Card */}
       <Card className="relative z-10 bg-brand-dark/80 dark:bg-brand-dark/90 text-brand-light p-6 md:p-8 max-w-md mx-auto border-brand-secondary shadow-lg">
