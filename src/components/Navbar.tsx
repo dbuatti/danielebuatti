@@ -16,10 +16,15 @@ const Navbar = () => {
   const activeSection = useActiveSection();
   const location = useLocation();
   const { theme } = useTheme(); // Get the current theme
+  const [isSheetOpen, setIsSheetOpen] = React.useState(false); // State to control sheet visibility
 
   // Determine logo sources based on theme
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png"; // Corrected this line
+
+  const handleLinkClick = () => {
+    setIsSheetOpen(false); // Close the sheet when a link is clicked
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
@@ -74,7 +79,7 @@ const Navbar = () => {
         </nav>
         <div className="flex items-center md:hidden">
           <ThemeToggle />
-          <Sheet>
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}> {/* Control sheet state */}
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
@@ -101,20 +106,20 @@ const Navbar = () => {
 
                   if (link.href.startsWith('/')) {
                     return (
-                      <Link key={link.name} to={link.href} className={commonClasses}>
+                      <Link key={link.name} to={link.href} className={commonClasses} onClick={handleLinkClick}>
                         {link.name}
                       </Link>
                     );
                   } else {
                     return (
-                      <a key={link.name} href={link.href} className={commonClasses}>
+                      <a key={link.name} href={link.href} className={commonClasses} onClick={handleLinkClick}>
                         {link.name}
                       </a>
                     );
                   }
                 })}
                 <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
-                  <a href="#sessions">Book a Lesson</a>
+                  <a href="#sessions" onClick={handleLinkClick}>Book a Lesson</a>
                 </Button>
               </nav>
             </SheetContent>
