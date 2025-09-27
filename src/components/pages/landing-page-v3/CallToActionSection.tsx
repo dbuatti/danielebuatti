@@ -6,7 +6,7 @@ import SectionHeading from "@/components/SectionHeading";
 
 const CallToActionSection: React.FC = () => {
   return (
-    <section id="contact" className="text-center max-w-7xl mx-auto space-y-8 py-16 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-xl shadow-lg">
+    <section id="contact" className="text-center max-w-7xl mx-auto space-y-8 py-12 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-xl shadow-lg"> {/* Changed from py-16 to py-12 */}
       <SectionHeading>Ready to Transform Your Artistry & Presence?</SectionHeading>
       <p className="text-xl text-brand-dark/80 dark:text-brand-light/80 max-w-3xl mx-auto">
         Let’s chat about your goals and find the best coaching path for you. Take the first step towards unlocking your full potential. Your journey to embodied performance starts here.

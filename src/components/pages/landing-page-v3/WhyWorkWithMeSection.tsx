@@ -4,7 +4,7 @@ import SectionHeading from "@/components/SectionHeading";
 
 const WhyWorkWithMeSection: React.FC = () => {
   return (
-    <section id="why-me" className="max-w-6xl mx-auto text-center space-y-10 py-16">
+    <section id="why-me" className="max-w-6xl mx-auto text-center space-y-10 py-12"> {/* Changed from py-16 to py-12 */}
       <SectionHeading>Why Work With Me?</SectionHeading>
       <ul className="grid md:grid-cols-2 gap-6 text-left text-lg text-brand-dark/80 dark:text-brand-light/80">
         <li className="flex items-start gap-3 p-4 bg-brand-light dark:bg-brand-dark shadow-md rounded-lg border border-brand-secondary hover:shadow-xl hover:scale-[1.02] transition-all duration-300">

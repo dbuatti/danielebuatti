@@ -7,7 +7,7 @@ import { Link } from "react-router-dom"; // Import Link
 
 const SessionsAvailabilitySection: React.FC = () => {
   return (
-    <section id="sessions" className="max-w-7xl mx-auto text-center space-y-10 py-16">
+    <section id="sessions" className="max-w-7xl mx-auto text-center space-y-10 py-12"> {/* Changed from py-16 to py-12 */}
       <SectionHeading>Sessions & Availability</SectionHeading>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
         <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">

@@ -5,7 +5,7 @@ import SectionHeading from "@/components/SectionHeading";
 
 const AboutMeSection: React.FC = () => {
   return (
-    <section id="about" className="grid md:grid-cols-2 gap-16 items-center max-w-7xl mx-auto py-16">
+    <section id="about" className="grid md:grid-cols-2 gap-16 items-center max-w-7xl mx-auto py-12"> {/* Changed from py-16 to py-12 */}
       <div className="relative flex justify-center md:justify-start">
         <DynamicImage
           src="/pinkcarpet.jpg"

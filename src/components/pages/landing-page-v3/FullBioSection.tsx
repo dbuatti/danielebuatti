@@ -4,7 +4,7 @@ import DynamicImage from "@/components/DynamicImage";
 
 const FullBioSection: React.FC = () => {
   return (
-    <section className="max-w-4xl mx-auto text-center space-y-8 py-16">
+    <section className="max-w-4xl mx-auto text-center space-y-8 py-12"> {/* Changed from py-16 to py-12 */}
       <SectionHeading>Daniele Buatti's Story</SectionHeading>
       <DynamicImage
         src="/daniele simple.jpeg"

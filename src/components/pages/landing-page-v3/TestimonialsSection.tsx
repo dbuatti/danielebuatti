@@ -33,7 +33,7 @@ const testimonials = [
 
 const TestimonialsSection: React.FC = () => {
   return (
-    <section id="testimonials" className="max-w-7xl mx-auto text-center space-y-10 py-16 bg-brand-secondary/20 dark:bg-brand-dark/50 rounded-xl shadow-lg">
+    <section id="testimonials" className="max-w-7xl mx-auto text-center space-y-10 py-12 bg-brand-secondary/20 dark:bg-brand-dark/50 rounded-xl shadow-lg"> {/* Changed from py-16 to py-12 */}
       <SectionHeading>What My Clients Say</SectionHeading>
       <Carousel
         opts={{

@@ -5,7 +5,7 @@ import ExpertiseItemCard from "@/components/ExpertiseItemCard";
 
 const EducationExpertiseSection: React.FC = () => {
   return (
-    <section className="max-w-7xl mx-auto py-16 grid lg:grid-cols-3 gap-12">
+    <section className="max-w-7xl mx-auto py-12 grid lg:grid-cols-3 gap-12"> {/* Changed from py-16 to py-12 */}
       <Card className="lg:col-span-1 bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary hover:shadow-xl hover:scale-[1.01] transition-all duration-300 p-8">
         <CardHeader className="p-0 pb-6">
           <CardTitle className="flex items-center gap-4 text-2xl text-brand-primary">
