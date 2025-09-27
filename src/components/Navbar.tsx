@@ -3,7 +3,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"; // Import SheetClose
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Link, useLocation } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
 import { navLinks } from "@/constants/navigation";
@@ -101,27 +101,21 @@ const Navbar = () => {
 
                   if (link.href.startsWith('/')) {
                     return (
-                      <SheetClose asChild key={link.name}> {/* Wrap with SheetClose */}
-                        <Link to={link.href} className={commonClasses}>
-                          {link.name}
-                        </Link>
-                      </SheetClose>
+                      <Link key={link.name} to={link.href} className={commonClasses}>
+                        {link.name}
+                      </Link>
                     );
                   } else {
                     return (
-                      <SheetClose asChild key={link.name}> {/* Wrap with SheetClose */}
-                        <a href={link.href} className={commonClasses}>
-                          {link.name}
-                        </a>
-                      </SheetClose>
+                      <a key={link.name} href={link.href} className={commonClasses}>
+                        {link.name}
+                      </a>
                     );
                   }
                 })}
-                <SheetClose asChild> {/* Wrap the button with SheetClose */}
-                  <Button className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
-                    <a href="#sessions">Book a Lesson</a>
-                  </Button>
-                </SheetClose>
+                <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
+                  <a href="#sessions">Book a Lesson</a>
+                </Button>
               </nav>
             </SheetContent>
           </Sheet>
