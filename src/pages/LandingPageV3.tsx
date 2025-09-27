@@ -15,7 +15,7 @@ import WhoIWorkWithSection from "@/components/pages/landing-page-v3/WhoIWorkWith
 import DanieleSmileHostSection from "@/components/pages/landing-page-v3/DanieleSmileHostSection";
 import EmbodiedApproachSection from "@/components/pages/landing-page-v3/EmbodiedApproachSection";
 import DanieleCalmAtPianoSection from "@/components/pages/landing-page-v3/DanieleCalmAtPianoSection";
-import TestimonialsSection from "@/components/pages/landing-page-v3/TestimonialCard";
+import TestimonialsSection from "@/components/pages/landing-page-v3/TestimonialsSection"; // Corrected import path
 import SessionsAvailabilitySection from "@/components/pages/landing-page-v3/SessionsAvailabilitySection";
 import WhyWorkWithMeSection from "@/components/pages/landing-page-v3/WhyWorkWithMeSection";
 import TulipsSection from "@/components/pages/landing-page-v3/TulipsSection";
