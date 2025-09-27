@@ -32,11 +32,11 @@ const PillBanner: React.FC<PillBannerProps> = ({
       )}
       style={{ backgroundImage: `url(${backgroundImageSrc})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
-      {/* Gradient Overlay - Made darker for better text contrast */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-black/40"></div>
+      {/* Gradient Overlay - Reverted to original */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
 
-      {/* Content - Increased font weight */}
-      <div className="relative z-10 p-4 text-brand-light space-y-2">
+      {/* Content - Changed text color to dark */}
+      <div className="relative z-10 p-4 text-brand-dark dark:text-brand-light space-y-2">
         <h3 className="text-3xl font-extrabold leading-tight">{title}</h3>
         <p className="text-lg font-semibold max-w-md mx-auto">{description}</p>
       </div>
