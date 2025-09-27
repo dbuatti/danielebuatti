@@ -41,7 +41,8 @@ const AdditionalProgramsSection: React.FC = () => {
         />
 
         <AdditionalProgramBanner
-          title="Resonance with Daniele A Joyful Pop-Up Choir for All Voices"
+          title="Resonance with Daniele"
+          subtitle="A Joyful Pop-Up Choir for All Voices"
           description="Join a welcoming community to sing, connect, and shine, with no experience needed."
           link="https://resonance-with-daniele.vercel.app"
           linkText="Join Resonance Choir"

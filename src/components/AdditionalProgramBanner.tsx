@@ -72,7 +72,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
                   className="mx-auto h-20 object-contain mb-2"
                 />
               )}
-              {/* If no logo, show text title/subtitle in left column */}
+              {/* Show only the main title in the left column */}
               {!logoSrc && (
                 <h3 className="text-5xl font-bold leading-tight">{title}</h3>
               )}
@@ -84,7 +84,6 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
               bgColorClass || "bg-brand-dark",
               rightColumnTextColorClass || textColorClass
             )}>
-              {/* Always show title and subtitle in the right column */}
               <div className="space-y-2">
                 {logoSrc && (
                   <img
@@ -93,9 +92,9 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
                     className="mx-auto h-16 object-contain md:hidden" // Only show logo on mobile in right column
                   />
                 )}
-                {/* Combined title and subtitle into a single heading */}
-                <h3 className="text-5xl font-bold leading-tight" style={{ color: leftColumnTextColorClass ? undefined : 'inherit' }}>
-                  {title}
+                {/* Combine title and subtitle for the right column header */}
+                <h3 className="text-5xl font-bold leading-tight" style={{ color: rightColumnTextColorClass ? undefined : 'inherit' }}>
+                  {title} {subtitle && <span className={cn(subtitleTextColorClass)}>{subtitle}</span>}
                 </h3>
               </div>
               <p className="text-lg max-w-3xl mx-auto">{description}</p>
