@@ -50,6 +50,7 @@
     --brand-secondary: 210 40% 90%; /* A6CCE8 */
     --brand-blue: 227 63% 33%; /* New blue from image */
     --brand-magenta: 300 100% 50%; /* New pink from image */
+    --brand-yellow: 48 100% 50%; /* Bright Yellow */
   }
 
   .dark {
@@ -97,6 +98,7 @@
     --brand-secondary: 210 40% 90%; /* A6CCE8 */
     --brand-blue: 227 63% 33%; /* New blue from image */
     --brand-magenta: 300 100% 50%; /* New pink from image */
+    --brand-yellow: 48 100% 50%; /* Bright Yellow */
   }
 }
 

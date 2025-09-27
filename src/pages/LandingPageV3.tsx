@@ -470,7 +470,7 @@ const LandingPageV3 = () => {
             link="https://pianobackingsbydaniele.vercel.app"
             linkText="Discover Piano Backings"
             bgColorClass="bg-brand-magenta" // This will be the background for the entire banner
-            textColorClass="text-black"
+            textColorClass="text-brand-yellow" // Changed to brand-yellow
             buttonBgClass="bg-black hover:bg-black/90 text-brand-light"
             logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png"
             className="rounded-none"

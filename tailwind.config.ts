@@ -73,6 +73,7 @@ export default {
           secondary: "hsl(var(--brand-secondary))",
           blue: "hsl(var(--brand-blue))",
           magenta: "hsl(var(--brand-magenta))",
+          yellow: "hsl(var(--brand-yellow))", // Added brand-yellow
         },
       },
       borderRadius: {
