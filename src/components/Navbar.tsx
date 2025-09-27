@@ -22,23 +22,31 @@ const Navbar = () => {
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
 
-  const handleLinkClick = (href: string) => {
-    setIsSheetOpen(false); // Close the sheet first
+  const handleLinkClick = (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    event.preventDefault(); // Prevent default <a> tag navigation for all mobile menu links
+    setIsSheetOpen(false); // Close the sheet immediately
 
-    // For internal routes, navigate immediately after a small delay to allow sheet to close.
-    // For anchor links, we let the default <a> tag behavior (and useSmoothScroll) handle it.
-    if (href.startsWith('/')) {
-      setTimeout(() => {
+    // Add a small delay to allow the sheet to visually close before navigating/scrolling
+    setTimeout(() => {
+      if (href.startsWith('/')) {
+        // For internal routes (e.g., /, /live-piano-services)
         if (href === '/' && location.pathname === '/') {
           window.scrollTo({ top: 0, behavior: "smooth" });
         } else {
           navigate(href);
         }
-      }, 100); // Small delay for visual closing of sheet before navigation
-    }
-    // If it's an anchor link (href.startsWith('#')), no explicit action needed here
-    // beyond closing the sheet. The browser's default <a> tag behavior will trigger
-    // the hash change, which the useSmoothScroll hook will then intercept and make smooth.
+      } else if (href.startsWith('#')) {
+        // For anchor links (e.g., #about)
+        const id = href.substring(1);
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      }
+    }, 100); // 100ms delay for visual closing of sheet
   };
 
   return (
@@ -119,25 +127,22 @@ const Navbar = () => {
                       : "text-brand-dark dark:text-brand-light"
                   );
 
-                  // For all links in the mobile menu, call handleLinkClick to close the sheet.
-                  // The actual navigation/scrolling for anchor links will be handled by the <a> tag's default behavior
-                  // and the useSmoothScroll hook.
                   if (link.href.startsWith('/')) {
                     return (
-                      <Link key={link.name} to={link.href} className={commonClasses} onClick={() => handleLinkClick(link.href)}>
+                      <Link key={link.name} to={link.href} className={commonClasses} onClick={(e) => handleLinkClick(e, link.href)}>
                         {link.name}
                       </Link>
                     );
                   } else {
                     return (
-                      <a key={link.name} href={link.href} className={commonClasses} onClick={() => handleLinkClick(link.href)}>
+                      <a key={link.name} href={link.href} className={commonClasses} onClick={(e) => handleLinkClick(e, link.href)}>
                         {link.name}
                       </a>
                     );
                   }
                 })}
                 <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
-                  <a href="#sessions" onClick={() => handleLinkClick("#sessions")}>Book a Lesson</a>
+                  <a href="#sessions" onClick={(e) => handleLinkClick(e, "#sessions")}>Book a Lesson</a>
                 </Button>
               </nav>
             </SheetContent>
