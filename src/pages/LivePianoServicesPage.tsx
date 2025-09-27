@@ -23,6 +23,7 @@ import { // Import form components
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import DynamicImage from "@/components/DynamicImage"; // Import DynamicImage
 
 // Define the form schema using zod
 const formSchema = z.object({
@@ -121,7 +122,6 @@ const LivePianoServicesPage: React.FC = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Left section: Back to Services */}
           <div className="flex items-center gap-4">
-            {/* Removed Home icon */}
             <Button asChild className="bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light px-4 py-2 text-sm">
               <Link to="/">Back to Services</Link>
             </Button>
@@ -129,7 +129,7 @@ const LivePianoServicesPage: React.FC = () => {
 
           {/* Right section: Logo and Title */}
           <div className="flex flex-col items-end">
-            <img src="/gold-36.png" alt="Daniele Buatti Logo" className="h-16 md:h-20" />
+            <DynamicImage src="/gold-36.png" alt="Daniele Buatti Logo" className="h-16 md:h-20" width={80} height={80} />
             <h1 className="text-xl md:text-2xl font-montserrat font-light uppercase text-livePiano-light tracking-widest mt-2">
               Daniele Buatti
             </h1>
