@@ -461,6 +461,7 @@ const LandingPageV3 = () => {
             logoSrc="/gumroad.png"
             className="rounded-none"
             backgroundImageSrc="/sheetmusic.png"
+            bottomStripColorClass="bg-brand-magenta" // Added bottom strip color
           />
           <AdditionalProgramBanner
             title="Piano Backings by Daniele"
@@ -472,6 +473,7 @@ const LandingPageV3 = () => {
             buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
             logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png"
             className="rounded-none"
+            bottomStripColorClass="bg-brand-blue" // Added bottom strip color
           />
           <AdditionalProgramBanner
             title="Resonance Choir with Daniele"
@@ -482,6 +484,7 @@ const LandingPageV3 = () => {
             textColorClass="text-brand-light"
             buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
             className="rounded-none"
+            bottomStripColorClass="bg-brand-dark" // Added bottom strip color
           />
         </div>
       </section>

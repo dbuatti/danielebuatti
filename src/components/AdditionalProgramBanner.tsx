@@ -17,6 +17,7 @@ interface AdditionalProgramBannerProps {
   logoSrc?: string;
   className?: string;
   backgroundImageSrc?: string; // Full banner background image
+  bottomStripColorClass?: string; // New prop for the bottom strip color
 }
 
 const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
@@ -32,24 +33,14 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   logoSrc,
   className,
   backgroundImageSrc,
+  bottomStripColorClass, // Destructure new prop
 }) => {
-  const contentElements = (
-    <>
-      {logoSrc && (
-        <img
-          src={logoSrc}
-          alt={`${title} logo`}
-          className="mx-auto h-20 object-contain mb-4"
-        />
-      )}
-      <h3 className="text-4xl font-bold">{title}</h3>
-      <p className="text-lg max-w-3xl mx-auto">{description}</p>
-      <Button asChild size="lg" variant={buttonVariant} className={cn("text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
-        <a href={link} target="_blank" rel="noopener noreferrer">
-          {linkText}
-        </a>
-      </Button>
-    </>
+  const buttonElement = (
+    <Button asChild size="lg" variant={buttonVariant} className={cn("text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
+      <a href={link} target="_blank" rel="noopener noreferrer">
+        {linkText}
+      </a>
+    </Button>
   );
 
   if (backgroundImageSrc) {
@@ -71,24 +62,54 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
             bgColorClass || "bg-brand-dark", // Solid background for text area
             textColorClass
           )}>
-            {contentElements}
+            {logoSrc && (
+              <img
+                src={logoSrc}
+                alt={`${title} logo`}
+                className="mx-auto h-20 object-contain mb-4"
+              />
+            )}
+            <h3 className="text-4xl font-bold">{title}</h3>
+            <p className="text-lg max-w-3xl mx-auto">{description}</p>
+            {buttonElement}
           </div>
         </div>
-        {/* Bottom Pink Strip */}
-        <div className="w-full h-8 bg-brand-magenta"></div>
+        {/* Bottom Strip */}
+        {bottomStripColorClass && <div className={cn("w-full h-8", bottomStripColorClass)}></div>}
       </div>
     );
   } else {
-    // Single column layout if no background image
+    // Layout for banners without a background image
     return (
       <div
         className={cn(
-          "relative w-full py-16 overflow-hidden flex items-center justify-center",
-          bgColorClass || "bg-brand-dark", // Apply bgColorClass to the whole banner
+          "relative w-full py-16 overflow-hidden flex flex-col",
+          bgColorClass || "bg-brand-dark",
+          textColorClass,
           className
         )}
       >
-        {contentElements}
+        <div className="container grid grid-cols-1 md:grid-cols-3 items-center gap-8">
+          {/* Left side: Logo and Title */}
+          <div className="md:col-span-2 text-center md:text-left space-y-4">
+            {logoSrc && (
+              <img
+                src={logoSrc}
+                alt={`${title} logo`}
+                className="mx-auto md:mx-0 h-20 object-contain mb-4"
+              />
+            )}
+            <h3 className="text-4xl font-bold">{title}</h3>
+          </div>
+
+          {/* Right side: Description and Button */}
+          <div className="md:col-span-1 text-center md:text-right space-y-6">
+            <p className="text-lg max-w-prose mx-auto md:mx-0">{description}</p>
+            {buttonElement}
+          </div>
+        </div>
+        {/* Bottom Strip */}
+        {bottomStripColorClass && <div className={cn("w-full h-8", bottomStripColorClass)}></div>}
       </div>
     );
   }
