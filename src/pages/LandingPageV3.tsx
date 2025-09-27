@@ -20,7 +20,7 @@ import WhyWorkWithMeSection from "@/components/pages/landing-page-v3/WhyWorkWith
 import TulipsSection from "@/components/pages/landing-page-v3/TulipsSection";
 import CallToActionSection from "@/components/pages/landing-page-v3/CallToActionSection";
 import AdditionalProgramsSection from "@/components/pages/landing-page-v3/AdditionalProgramsSection";
-import FullBioSection from "@/components/pages/landing-page-v3/FullBioSection"; // New import
+import FullBioSection from "@/components/pages/landing-page-v3/FullBioSection";
 
 const LandingPageV3: React.FC = () => {
   useSmoothScroll();
@@ -53,11 +53,12 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <TulipsSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <FullBioSection />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <AdditionalProgramsSection />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" /> {/* Added separator before the moved CallToActionSection */}
         <CallToActionSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" /> {/* Added separator before full bio */}
-        <FullBioSection /> {/* Added the new full bio section */}
       </main>
-      <AdditionalProgramsSection />
       <Footer />
       <BackToTopButton />
     </div>
