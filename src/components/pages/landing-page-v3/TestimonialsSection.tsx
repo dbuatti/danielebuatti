@@ -5,29 +5,9 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 
 const testimonials = [
   {
-    quote: "Daniele's coaching transformed my vocal stamina and stage presence. Truly holistic!",
-    author: "Sarah L.",
-    title: "Musical Theatre Performer",
-  },
-  {
-    quote: "I finally understand how to connect my body and voice. No more tension!",
-    author: "Mark T.",
-    title: "Concert Pianist",
-  },
-  {
-    quote: "His approach to performance anxiety is a game-changer. I feel so much more confident.",
-    author: "Emily R.",
-    title: "Emerging Singer-Songwriter",
-  },
-  {
-    quote: "Working with Daniele helped me find my authentic voice for public speaking. Highly recommend!",
-    author: "Jessica P.",
-    title: "Corporate Trainer",
-  },
-  {
-    quote: "The blend of Kinesiology and vocal technique was revolutionary for my performance.",
-    author: "David K.",
-    title: "Opera Singer",
+    quote: "I absolutely froth your email. I love parameters, I love clear direct communication. I'm in absolute heaven. I wish every creative worked this way. Thank you for laying it out with such concise, clear, and thoughtful clarity for me. It makes me very excited to work with you on this project.",
+    author: "Em",
+    title: "Creative Collaborator",
   },
 ];
 
