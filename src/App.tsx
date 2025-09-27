@@ -1,30 +1,21 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import LandingPageV3 from "./pages/LandingPageV3";
-import NotFound from "./pages/NotFound";
-import { ThemeProvider } from "./components/ThemeProvider"; // Import ThemeProvider
+"use client";
 
-const queryClient = new QueryClient();
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Index from './pages/Index';
+import LivePianoServicesPage from './pages/LivePianoServicesPage'; // Import the new page
+import { Toaster } from 'react-hot-toast';
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<LandingPageV3 />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <Router>
+      <Toaster />
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/live-piano-services" element={<LivePianoServicesPage />} /> {/* New route */}
+      </Routes>
+    </Router>
+  );
+}
 
 export default App;

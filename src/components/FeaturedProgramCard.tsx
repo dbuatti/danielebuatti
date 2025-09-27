@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { Link } from 'react-router-dom'; // Import Link for internal navigation
 
 interface FeaturedProgramCardProps {
   title: string;
@@ -38,6 +39,9 @@ const FeaturedProgramCard: React.FC<FeaturedProgramCardProps> = ({
 }) => {
   const hasBackgroundImage = !!backgroundImageSrc;
   const hasSolidBackgroundWithLogo = !!backgroundColorClass && !!logoSrc;
+
+  // Determine if the link is internal or external
+  const isInternalLink = link.startsWith('/') || link.startsWith('#');
 
   return (
     <div
@@ -74,9 +78,15 @@ const FeaturedProgramCard: React.FC<FeaturedProgramCardProps> = ({
             {description}
           </p>
           <Button asChild size="lg" className={cn("text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
-            <a href={link} target="_blank" rel="noopener noreferrer">
-              {linkText}
-            </a>
+            {isInternalLink ? (
+              <Link to={link}>
+                {linkText}
+              </Link>
+            ) : (
+              <a href={link} target="_blank" rel="noopener noreferrer">
+                {linkText}
+              </a>
+            )}
           </Button>
         </CardContent>
       </Card>
