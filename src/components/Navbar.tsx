@@ -4,22 +4,21 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Link, useLocation, useNavigate } from "react-router-dom"; // Import useNavigate
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
 import { navLinks } from "@/constants/navigation";
 import { useActiveSection } from "@/hooks/use-active-section";
 import { cn } from "@/lib/utils";
 import DynamicImage from "@/components/DynamicImage";
-import { useTheme } from "next-themes"; // Import useTheme
+import { useTheme } from "next-themes";
 
 const Navbar = () => {
   const activeSection = useActiveSection();
   const location = useLocation();
-  const navigate = useNavigate(); // Initialize useNavigate
-  const { theme } = useTheme(); // Get the current theme
-  const [isSheetOpen, setIsSheetOpen] = React.useState(false); // State to control sheet visibility
+  const navigate = useNavigate();
+  const { theme } = useTheme();
+  const [isSheetOpen, setIsSheetOpen] = React.useState(false);
 
-  // Determine logo sources based on theme
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
 
@@ -28,24 +27,20 @@ const Navbar = () => {
 
     // Add a small delay to allow the sheet to close before attempting to scroll/navigate
     setTimeout(() => {
-      if (href.startsWith('/')) {
-        // For internal routes like / or /live-piano-services
-        if (href === '/') {
+      if (href === '/') {
+        // If already on the home page, just scroll to top
+        if (location.pathname === '/') {
           window.scrollTo({ top: 0, behavior: "smooth" });
         } else {
-          navigate(href);
+          // Otherwise, navigate to home
+          navigate('/');
         }
-      } else if (href.startsWith('#')) {
-        // For anchor links like #about
-        const id = href.substring(1);
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        }
+      } else if (href.startsWith('/')) {
+        // For other internal routes (e.g., /live-piano-services)
+        navigate(href);
       }
+      // For anchor links (href.startsWith('#')), the useSmoothScroll hook will handle it
+      // because we are not preventing default here. The <a> tag's default behavior will trigger it.
     }, 100); // 100ms delay
   };
 
@@ -54,14 +49,14 @@ const Navbar = () => {
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
           <DynamicImage
-            src={brandSymbolSrc} // Dynamic source
+            src={brandSymbolSrc}
             alt="Daniele Buatti Brand Symbol"
             className="h-8 w-auto"
             width={32}
             height={32}
           />
           <DynamicImage
-            src={textLogoSrc} // Dynamic source
+            src={textLogoSrc}
             alt="Daniele Buatti Logo"
             className="h-12 w-auto"
             width={220}
@@ -127,6 +122,9 @@ const Navbar = () => {
                       : "text-brand-dark dark:text-brand-light"
                   );
 
+                  // For all links in the mobile menu, call handleLinkClick to close the sheet
+                  // The actual navigation/scrolling will then be handled by the Link/a tag's default behavior
+                  // and the useSmoothScroll hook for anchors.
                   if (link.href.startsWith('/')) {
                     return (
                       <Link key={link.name} to={link.href} className={commonClasses} onClick={() => handleLinkClick(link.href)}>
