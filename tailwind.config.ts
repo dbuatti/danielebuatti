@@ -20,6 +20,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Outfit", "sans-serif"], // Add Outfit to the sans-serif font stack
+        display: ["Roboto Slab", "serif"], // Add Roboto Slab for display text
       },
       colors: {
         border: "hsl(var(--border))",

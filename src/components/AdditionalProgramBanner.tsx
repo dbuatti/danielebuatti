@@ -54,12 +54,12 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
     </Button>
   );
 
-  const isResonanceBanner = title === "Resonance with Daniele A Joyful Pop-Up Choir for All Voices";
-  const titleFontClass = isResonanceBanner ? "font-serif" : "";
+  const isResonanceBanner = title.includes("Resonance with Daniele"); // Check for "Resonance with Daniele" in the title
+  const titleFontClass = isResonanceBanner ? "font-display" : "";
 
   return (
-    <div className={cn("relative w-full flex flex-col overflow-hidden", className)}> {/* Removed fixed height from here */}
-      <div className="flex-grow grid grid-cols-1 md:grid-cols-3 h-[450px]"> {/* Main content area fixed to 450px */}
+    <div className={cn("relative w-full flex flex-col overflow-hidden", className)}>
+      <div className="flex-grow grid grid-cols-1 md:grid-cols-3 h-[450px]">
         {titleInLeftColumn ? (
           <>
             {/* Left Half (Logo/Title) - Visible on md and up, takes 2/3 width */}
