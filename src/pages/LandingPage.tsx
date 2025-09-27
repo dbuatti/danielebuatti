@@ -141,6 +141,19 @@ const LandingPage = () => {
                   />
                 </div>
               </div>
+              {/* Greenroom Awards Image */}
+              <div className="mt-8 text-center">
+                <DynamicImage
+                  src="/greenroom.jpeg"
+                  alt="Daniele Buatti at the Greenroom Awards"
+                  className="w-full max-w-md h-auto rounded-xl shadow-2xl object-cover border-2 border-brand-secondary mx-auto"
+                  width={600}
+                  height={800}
+                />
+                <p className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-2">
+                  Daniele Buatti, part of the Greenroom Award Music Theatre panel.
+                </p>
+              </div>
             </div>
           </div>
         </section>
