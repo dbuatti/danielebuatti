@@ -24,7 +24,13 @@ const Navbar = () => {
             width={32}
             height={32}
           />
-          <span className="inline-block font-bold text-brand-primary text-xl">Daniele Buatti</span>
+          <DynamicImage
+            src="/logo-pink-transparent-43.png"
+            alt="Daniele Buatti Cursive Logo"
+            className="h-6 w-auto" // Adjust size as needed for the cursive text
+            width={150} // Approximate width for the cursive logo
+            height={24} // Approximate height for the cursive logo
+          />
         </Link>
         <nav className="hidden md:flex items-center space-x-6">
           {navLinks.map((link) => (
