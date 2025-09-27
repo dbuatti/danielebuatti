@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle2, CalendarDays, Mic, Piano, Brain, HeartHandshake, Users, Monitor, Mail, Phone, GraduationCap, Award } from "lucide-react";
+import { CheckCircle2, CalendarDays, Mic, Piano, Brain, HeartHandshake, Users, Monitor, Mail, Phone, GraduationCap, Award, Lightbulb, Camera, Volume2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TestimonialCard from "@/components/TestimonialCard";
@@ -15,13 +15,13 @@ const LandingPage = () => {
         <section className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto py-12">
           <div className="text-center md:text-left space-y-6">
             <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-brand-primary">
-              Daniele Buatti – Embodied Coaching for Singers & Pianists
+              Daniele Buatti – Embodied Coaching for Performers & Communicators
             </h1>
             <p className="text-2xl md:text-3xl font-semibold text-brand-dark dark:text-brand-light">
-              Unlock Your Voice. Unlock Your Potential.
+              Unlock Your Voice. Master Your Presence.
             </p>
             <p className="text-lg md:text-xl text-brand-dark/80 dark:text-brand-light/80 max-w-3xl md:max-w-none mx-auto">
-              Whether you’re preparing for a performance, audition, or your personal growth as a musician, my coaching helps you perform with freedom, confidence, and ease. I combine world-class musical training with body awareness and performance mindset, so you can achieve more without strain, stress, or burnout.
+              Whether you’re preparing for a performance, audition, presentation, or enhancing your on-camera presence, my coaching helps you perform and communicate with freedom, confidence, and ease. I combine world-class musical and performance training with deep body awareness and a powerful mindset approach, so you can achieve more without strain, stress, or burnout.
             </p>
             <Button size="lg" className="mt-8 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
               Book a Discovery Session
@@ -30,7 +30,7 @@ const LandingPage = () => {
           <div className="flex justify-center md:justify-end">
             <img
               src="/public/placeholder.svg"
-              alt="Daniele Buatti performing"
+              alt="Daniele Buatti coaching a performer"
               className="w-full max-w-md h-auto rounded-xl shadow-2xl object-cover"
             />
           </div>
@@ -50,20 +50,22 @@ const LandingPage = () => {
           <div className="text-center md:text-left space-y-8">
             <h2 className="text-4xl font-bold text-brand-primary">About Daniele Buatti</h2>
             <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-              As an accomplished Music Director, Pianist, Arranger, Vocal Coach, and Educator with over 12 years of experience, I bring a unique blend of artistic leadership and evidence-based approaches to training versatile, industry-ready performers. My work spans professional music theatre, vocal pedagogy, and tertiary/adolescent education, always with an emphasis on high-quality, embodied vocal coaching and innovative music theatre curricula.
+              As an accomplished Music Director, Pianist, Arranger, Vocal Coach, and Educator with over 12 years of experience, I bring a unique blend of artistic leadership and evidence-based approaches to training versatile, industry-ready performers and communicators. My work spans professional music theatre, vocal pedagogy, tertiary/adolescent education, and holistic somatic practices, always with an emphasis on high-quality, embodied coaching and innovative performance curricula.
             </p>
             <div className="grid grid-cols-1 gap-6 text-left">
               <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
                     <GraduationCap className="h-6 w-6" />
-                    Education
+                    Education & Certifications
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-brand-dark/80 dark:text-brand-light/80">
                   <p className="font-semibold">Bachelor of Music</p>
                   <p>Australian Institute of Music (2014-2016)</p>
                   <p className="text-sm mt-2">Units in Arranging, Composition, Orchestration, and Piano.</p>
+                  <p className="font-semibold mt-4">Diploma of Kinesiology</p>
+                  <p>Specializing in mind-body integration for performance.</p>
                 </CardContent>
               </Card>
               <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary">
@@ -77,8 +79,11 @@ const LandingPage = () => {
                   <ul className="list-disc list-inside space-y-1">
                     <li>Vocal Coaching (Contemporary, Classical, Musical Theatre)</li>
                     <li>Music Direction & Conducting</li>
-                    <li>Holistic Voice & Somatic Techniques (Kinesiology, Breath-Body-Mind)</li>
+                    <li>Holistic Voice & Somatic Techniques (Kinesiology, Breath-Body-Mind, Yoga, Mindfulness)</li>
                     <li>Piano & Keyboard Performance</li>
+                    <li>Public Speaking & Presentation Coaching</li>
+                    <li>Acting & Film Performance Coaching</li>
+                    <li>On-Camera & Streaming Presence</li>
                     <li>Score Preparation & Technology Integration</li>
                   </ul>
                 </CardContent>
@@ -90,51 +95,51 @@ const LandingPage = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
         {/* Who I Work With Section */}
-        <section className="max-w-4xl mx-auto text-center space-y-10">
+        <section className="max-w-6xl mx-auto text-center space-y-10">
           <h2 className="text-4xl font-bold text-brand-primary">Who I Work With</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
               <CardHeader className="p-0 pb-4">
                 <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
                   <Mic className="h-6 w-6" />
-                  Singers & Pianists
+                  Singers & Musicians
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Seeking technical mastery and expressive freedom.
+                Seeking technical mastery, expressive freedom, and integrated musical skill.
               </CardContent>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
               <CardHeader className="p-0 pb-4">
                 <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
-                  <Brain className="h-6 w-6" />
-                  Performers
+                  <Lightbulb className="h-6 w-6" />
+                  Public Speakers & Presenters
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Dealing with stage anxiety or creative blocks.
+                Aiming for confident, impactful communication and authentic stage presence.
               </CardContent>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
               <CardHeader className="p-0 pb-4">
                 <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
-                  <Piano className="h-6 w-6" />
-                  Integrated Musicians
+                  <Camera className="h-6 w-6" />
+                  Actors & On-Camera Talent
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Who want voice, piano, composition, and arranging—all in one place.
+                Refining performance for film, stage, auditions, and streaming platforms.
               </CardContent>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
               <CardHeader className="p-0 pb-4">
                 <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
                   <HeartHandshake className="h-6 w-6" />
-                  Committed Artists
+                  Committed Professionals
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Committed to a sustainable, long-term practice that protects their body and their voice.
+                Dedicated to a sustainable, long-term practice that protects their body, voice, and mental well-being.
               </CardContent>
             </Card>
           </div>
@@ -144,29 +149,29 @@ const LandingPage = () => {
 
         {/* My Approach Section */}
         <section id="approach" className="max-w-4xl mx-auto space-y-10">
-          <h2 className="text-4xl font-bold text-center text-brand-primary">My Approach</h2>
+          <h2 className="text-4xl font-bold text-center text-brand-primary">My Embodied Holistic Approach</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4">
               <CardTitle className="text-2xl text-brand-primary">1. Embodiment & Alignment</CardTitle>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Release tension, improve posture, and find effortless breath control. Free your body to support your voice and piano playing naturally.
+                Rooted in Kinesiology, Yoga, and Somatic Therapy, we release tension, improve posture, and find effortless breath control. Free your body to support your voice, instrument, and presence naturally.
               </CardContent>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4">
               <CardTitle className="text-2xl text-brand-primary">2. Mindset & Performance Coaching</CardTitle>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Manage nerves, setbacks, and creative blocks. Build consistency and confidence in practice and on stage.
+                Utilizing Mindfulness and therapeutic techniques, we manage nerves, setbacks, and creative blocks. Build consistency and unwavering confidence in practice, on stage, or on camera.
               </CardContent>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4">
-              <CardTitle className="text-2xl text-brand-primary">3. Integrated Musical Skill Development</CardTitle>
+              <CardTitle className="text-2xl text-brand-primary">3. Integrated Skill Development</CardTitle>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Voice, piano, composition, arranging—tailored to your goals. Coaching is practical, creative, and always aligned with your vision.
+                Voice, piano, public speaking, acting, on-camera presence—tailored to your goals. Coaching is practical, creative, and always aligned with your unique vision and desired impact.
               </CardContent>
             </Card>
           </div>
           <p className="text-center text-xl italic text-brand-dark/70 dark:text-brand-light/70 mt-8">
-            “Daniele doesn’t just teach technique—he teaches how to inhabit your artistry fully.”
+            “Daniele doesn’t just teach technique—he teaches how to inhabit your artistry and presence fully.”
           </p>
         </section>
 
@@ -184,7 +189,7 @@ const LandingPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Personalized sessions for voice, piano, or integrated coaching. Available in 30, 60, or 90-minute durations.
+                Personalized sessions for voice, piano, public speaking, acting, or integrated coaching. Available in 30, 60, or 90-minute durations.
               </CardContent>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
@@ -195,7 +200,7 @@ const LandingPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Join the "Body Voice Sound Workshop" for movement, improvisation, and sound exploration.
+                Join the "Body Voice Sound Workshop" for movement, improvisation, and sound exploration, or specialized group sessions for public speaking and on-camera presence.
               </CardContent>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
@@ -206,7 +211,7 @@ const LandingPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Access world-class coaching from anywhere in the world.
+                Access world-class coaching from anywhere in the world, perfectly suited for on-camera performance and virtual presentations.
               </CardContent>
             </Card>
           </div>
@@ -224,25 +229,25 @@ const LandingPage = () => {
             <li className="flex items-start gap-3 p-4 bg-brand-light dark:bg-brand-dark shadow-md rounded-lg border border-brand-secondary">
               <CheckCircle2 className="h-6 w-6 text-brand-primary flex-shrink-0 mt-1" />
               <div>
-                <strong className="text-brand-primary">Holistic Expertise:</strong> Voice, piano, performance coaching, kinesiology, mindset.
+                <strong className="text-brand-primary">Holistic Expertise:</strong> Voice, piano, public speaking, acting, on-camera, performance coaching, kinesiology, mindset.
               </div>
             </li>
             <li className="flex items-start gap-3 p-4 bg-brand-light dark:bg-brand-dark shadow-md rounded-lg border border-brand-secondary">
               <CheckCircle2 className="h-6 w-6 text-brand-primary flex-shrink-0 mt-1" />
               <div>
-                <strong className="text-brand-primary">Embodiment-Based:</strong> Build strength and skill without tension or burnout.
+                <strong className="text-brand-primary">Embodiment-Based:</strong> Build strength and skill without tension or burnout, rooted in Kinesiology, Yoga, and Somatic Therapy.
               </div>
             </li>
             <li className="flex items-start gap-3 p-4 bg-brand-light dark:bg-brand-dark shadow-md rounded-lg border border-brand-secondary">
               <CheckCircle2 className="h-6 w-6 text-brand-primary flex-shrink-0 mt-1" />
               <div>
-                <strong className="text-brand-primary">Results-Oriented:</strong> Students leave feeling more confident, expressive, and capable.
+                <strong className="text-brand-primary">Results-Oriented:</strong> Clients leave feeling more confident, expressive, and capable across all performance and communication domains.
               </div>
             </li>
             <li className="flex items-start gap-3 p-4 bg-brand-light dark:bg-brand-dark shadow-md rounded-lg border border-brand-secondary">
               <CheckCircle2 className="h-6 w-6 text-brand-primary flex-shrink-0 mt-1" />
               <div>
-                <strong className="text-brand-primary">Creative Freedom:</strong> Integrates technique with improvisation and artistry.
+                <strong className="text-brand-primary">Creative Freedom:</strong> Integrates technique with improvisation, artistry, and authentic self-expression for any medium.
               </div>
             </li>
           </ul>
@@ -276,7 +281,7 @@ const LandingPage = () => {
 
         {/* Call to Action / Booking */}
         <section id="contact" className="text-center max-w-4xl mx-auto space-y-8">
-          <h2 className="text-4xl font-bold text-brand-primary">Ready to Transform Your Artistry?</h2>
+          <h2 className="text-4xl font-bold text-brand-primary">Ready to Transform Your Artistry & Presence?</h2>
           <p className="text-xl text-brand-dark/80 dark:text-brand-light/80">
             Let’s chat about your goals and find the best coaching path for you.
           </p>
