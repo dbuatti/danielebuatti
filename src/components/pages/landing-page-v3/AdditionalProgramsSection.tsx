@@ -58,13 +58,22 @@ const AdditionalProgramsSection: React.FC = () => {
           titleInLeftColumn={true} // Title in left column
         />
 
-        {/* New Pill Banner for trial */}
+        {/* New Pill Banner for Buattiverse */}
         <PillBanner
           title="Explore Buattiverse: Sheet Music & Backing Tracks"
           description="Your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources."
           link="https://buattiverse.gumroad.com/"
           backgroundImageSrc="/sheetmusic.png"
           className="max-w-6xl" // Adjusted max-width
+        />
+
+        {/* NEW: Creative Exploration Pill Banner */}
+        <PillBanner
+          title="Ignite Your Creative Spark"
+          description="Discover personalized coaching to unleash your passion for music, performance, and authentic self-expression."
+          link="#contact" // Link to the contact section on the current page
+          backgroundImageSrc="/danielepianolaugh.jpeg"
+          className="max-w-6xl"
         />
       </div>
     </section>
