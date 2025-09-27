@@ -20,7 +20,7 @@ const LandingPage = () => {
       <Navbar />
       <main className="container mx-auto px-4 py-16 space-y-24">
         {/* Hero Section */}
-        <section className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto py-12">
+        <section id="home" className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto py-12">
           <div className="text-center md:text-left space-y-6">
             <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-brand-primary">
               Unlock Your True Voice. Master Your Presence.

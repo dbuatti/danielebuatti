@@ -4,9 +4,12 @@ import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
-import { navLinks } from "@/constants/navigation"; // Import navLinks
+import { navLinks } from "@/constants/navigation";
+import { useActiveSection } from "@/hooks/use-active-section"; // Import the new hook
 
 const Navbar = () => {
+  const activeSection = useActiveSection();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
       <div className="container flex h-16 items-center justify-between">
@@ -18,7 +21,11 @@ const Navbar = () => {
             <a
               key={link.name}
               href={link.href}
-              className="text-sm font-medium transition-colors hover:text-brand-primary text-brand-dark dark:text-brand-light dark:hover:text-brand-primary"
+              className={`text-sm font-medium transition-colors hover:text-brand-primary ${
+                activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home")
+                  ? "text-brand-primary dark:text-brand-primary"
+                  : "text-brand-dark dark:text-brand-light"
+              }`}
             >
               {link.name}
             </a>
@@ -47,7 +54,11 @@ const Navbar = () => {
                   <a
                     key={link.name}
                     href={link.href}
-                    className="text-lg font-medium text-brand-dark dark:text-brand-light hover:text-brand-primary"
+                    className={`text-lg font-medium hover:text-brand-primary ${
+                      activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home")
+                        ? "text-brand-primary dark:text-brand-primary"
+                        : "text-brand-dark dark:text-brand-light"
+                    }`}
                   >
                     {link.name}
                   </a>
