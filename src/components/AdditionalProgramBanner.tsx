@@ -59,7 +59,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
       <div className="flex-grow grid grid-cols-1 md:grid-cols-3">
         {titleInLeftColumn ? (
           <>
-            {/* Left Half (Logo) - Visible on md and up, takes 2/3 width */}
+            {/* Left Half (Logo/Title) - Visible on md and up, takes 2/3 width */}
             <div className={cn(
               "relative z-10 hidden md:flex flex-col items-center justify-center p-8 text-center space-y-4 md:col-span-2",
               bgColorClass || "bg-brand-dark",
@@ -74,10 +74,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
               )}
               {/* If no logo, show text title/subtitle in left column */}
               {!logoSrc && (
-                <>
-                  <h3 className="text-5xl font-bold">{title}</h3>
-                  {subtitle && <p className={cn("text-2xl font-medium", subtitleTextColorClass || leftColumnTextColorClass || textColorClass)}>{subtitle}</p>}
-                </>
+                <h3 className="text-5xl font-bold leading-tight">{title}</h3>
               )}
             </div>
 
@@ -97,9 +94,8 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
                   />
                 )}
                 {/* Combined title and subtitle into a single heading */}
-                <h3 className="text-4xl font-bold" style={{ color: leftColumnTextColorClass ? undefined : 'inherit' }}>
+                <h3 className="text-5xl font-bold leading-tight" style={{ color: leftColumnTextColorClass ? undefined : 'inherit' }}>
                   {title}
-                  {subtitle && <span className={cn("text-xl font-medium ml-2", subtitleTextColorClass || rightColumnTextColorClass || textColorClass)}>{subtitle}</span>}
                 </h3>
               </div>
               <p className="text-lg max-w-3xl mx-auto">{description}</p>
