@@ -8,7 +8,7 @@ import TestimonialCard from "@/components/TestimonialCard";
 import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 import DynamicImage from "@/components/DynamicImage";
 import BackToTopButton from "@/components/BackToTopButton";
-import GumroadFollowForm from "@/components/GumroadFollowForm"; // Import the new component
+import GumroadFollowForm from "@/components/GumroadFollowForm";
 
 const LandingPage = () => {
   useSmoothScroll();
@@ -21,13 +21,13 @@ const LandingPage = () => {
         <section className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto py-12">
           <div className="text-center md:text-left space-y-6">
             <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-brand-primary">
-              Daniele Buatti – Embodied Coaching for Performers & Communicators
+              Unlock Your True Voice. Master Your Presence.
             </h1>
             <p className="text-2xl md:text-3xl font-semibold text-brand-dark dark:text-brand-light">
-              Refine Your Voice. Elevate Your Presence.
+              Daniele Buatti – Embodied Coaching for Performers & Communicators
             </p>
             <p className="text-lg md:text-xl text-brand-dark/80 dark:text-brand-light/80 max-w-3xl md:max-w-none mx-auto">
-              Got a big performance coming up? An audition, presentation, or need to nail your on-camera presence? My coaching is all about helping you perform and communicate with freedom, confidence, and ease. I blend world-class musical and performance training with deep body awareness and a powerful mindset approach. The goal? To help you achieve more, without the usual strain, stress, or burnout. At the heart of creating sound is a willingness to express, and I'm here to guide you.
+              Got a big performance, audition, or presentation coming up? Need to nail your on-camera presence? My coaching helps you perform and communicate with freedom, confidence, and ease. I blend world-class musical and performance training with deep body awareness and a powerful mindset approach. The goal? To help you achieve more, without the usual strain, stress, or burnout. At the heart of creating sound is a willingness to express, and I'm here to guide you.
             </p>
             <Button size="lg" className="mt-8 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
               <a href="#contact">Book a Discovery Session</a>
@@ -35,7 +35,6 @@ const LandingPage = () => {
           </div>
           <div className="flex justify-center md:justify-end">
             <DynamicImage
-              src="https://scontent.fmel12-1.fna.fbcdn.net/v/t39.30808-1/376884772_798640958930779_2251241659304515045_n.jpg?stp=dst-jpg_s480x480_tt6&_nc_cat=109&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=-WC8aNAE4MUQ7kNvwERnIpB&_nc_oc=Adntu0Yj-Lxtg9OoUkFrZB9V2tVn_pnaLnntkI30UMxoKrpXsmUCPaycLJpaynQmtUE&_nc_zt=24&_nc_ht=scontent.fmel12-1.fna&_nc_gid=GDLJEd82FhU4kRC4yEQCwQ&oh=00_Afa11DBpB2BeSiciRFN1euXdXQKZb58Dtq-DplQ_D_J2TQ&oe=68DD6C14"
               alt="Daniele Buatti coaching a performer"
               className="w-full max-w-md h-auto rounded-xl shadow-2xl object-cover"
               width={600}
@@ -50,7 +49,6 @@ const LandingPage = () => {
         <section id="about" className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
           <div className="flex justify-center md:justify-start">
             <DynamicImage
-              src="https://static.wixstatic.com/media/4d07bb_028b826b468b4f6f872d87d2dd0b5006~mv2.jpg/v1/fill/w_2400,h_2400,al_c,q_90/DanieleBuatti_0194_edited.jpg"
               alt="Daniele Buatti professional headshot"
               className="w-full max-w-sm h-auto rounded-xl shadow-2xl object-cover"
               width={400}
@@ -60,12 +58,12 @@ const LandingPage = () => {
           <div className="text-center md:text-left space-y-8">
             <h2 className="text-4xl font-bold text-brand-primary">About Daniele Buatti</h2>
             <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-              For over 12 years, I've been working as a Music Director, Pianist, Arranger, Vocal Coach, and Educator. What I bring to the table is a unique mix of artistic leadership and evidence-based methods, all aimed at training versatile, industry-ready performers and communicators. My experience covers everything from professional music theatre and vocal pedagogy to tertiary education and holistic somatic practices. My focus is always on high-quality, embodied coaching and innovative performance curricula. I hold a great passion for helping artists express themselves, taking a unique and holistic approach to the voice, connecting breath, body, and mind to help create an embodied performance.
+              For over 12 years, I've been a Music Director, Pianist, Arranger, Vocal Coach, and Educator. I offer a unique blend of artistic leadership and evidence-based methods, training versatile, industry-ready performers and communicators. My experience spans professional music theatre, vocal pedagogy, tertiary education, and holistic somatic practices. My focus is on high-quality, embodied coaching and innovative performance curricula, helping artists express themselves through a holistic approach that connects breath, body, and mind for truly embodied performance.
             </p>
             <div className="space-y-2">
               <p className="text-xl font-semibold text-brand-primary">THOUGHT • INTENTION • BREATH • EXPRESSION</p>
               <p className="text-md text-brand-dark/70 dark:text-brand-light/70">
-                I believe expression truly happens when the thought arises to express. My therapeutic approach helps students not only inform the characters they portray but also gain a deeper understanding of their own mannerisms, expressions, and thoughts.
+                I believe expression truly happens when the thought arises to express. My therapeutic approach helps students not only inform the characters they portray but also gain a deeper understanding of their own mannerisms, expressions, and thoughts, fostering authentic connection.
               </p>
             </div>
             <div className="grid grid-cols-1 gap-6 text-left">
@@ -93,14 +91,14 @@ const LandingPage = () => {
                 </CardHeader>
                 <CardContent className="text-brand-dark/80 dark:text-brand-light/80">
                   <ul className="list-disc list-inside space-y-1">
-                    <li>Vocal Coaching (Contemporary, Classical, Musical Theatre)</li>
-                    <li>Music Direction & Conducting</li>
-                    <li>Holistic Voice & Somatic Techniques (Kinesiology, Breath-Body-Mind, Yoga, Mindfulness)</li>
-                    <li>Piano & Keyboard Performance</li>
-                    <li>Public Speaking & Presentation Coaching</li>
-                    <li>Acting & Film Performance Coaching</li>
-                    <li>On-Camera & Streaming Presence</li>
-                    <li>Score Preparation & Technology Integration</li>
+                    <li>**Vocal Coaching:** Elevate your technique across contemporary, classical, and musical theatre genres.</li>
+                    <li>**Music Direction & Conducting:** Master the art of leading and inspiring musical ensembles.</li>
+                    <li>**Holistic Voice & Somatic Techniques:** Integrate Kinesiology, Breath-Body-Mind, Yoga, and Mindfulness for profound vocal freedom.</li>
+                    <li>**Piano & Keyboard Performance:** Enhance your instrumental skills and musicality.</li>
+                    <li>**Public Speaking & Presentation Coaching:** Cultivate confident, impactful communication.</li>
+                    <li>**Acting & Film Performance Coaching:** Refine your presence for stage and screen.</li>
+                    <li>**On-Camera & Streaming Presence:** Develop authentic and engaging virtual communication.</li>
+                    <li>**Score Preparation & Technology Integration:** Streamline your musical workflow with modern tools.</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -122,7 +120,7 @@ const LandingPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Seeking technical mastery, expressive freedom, and integrated musical skill.
+                Achieve technical mastery, expressive freedom, and integrated musical skill to truly shine.
               </CardContent>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
@@ -133,7 +131,7 @@ const LandingPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Aiming for confident, impactful communication and authentic stage presence.
+                Cultivate confident, impactful communication and authentic stage presence that captivates your audience.
               </CardContent>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
@@ -144,7 +142,7 @@ const LandingPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Refining performance for film, stage, auditions, and streaming platforms.
+                Refine performances for film, stage, auditions, and streaming platforms with nuanced presence and authenticity.
               </CardContent>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
@@ -155,7 +153,7 @@ const LandingPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Dedicated to a sustainable, long-term practice that protects their body, voice, and mental well-being.
+                Dedicated to a sustainable, long-term practice that protects their body, voice, and mental well-being, preventing burnout.
               </CardContent>
             </Card>
           </div>
@@ -208,7 +206,7 @@ const LandingPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Personalised sessions for vocal coaching (including breath work, body work, mind-body integration, repertoire, and audition prep), piano lessons (fun, supportive, improving musicianship and theory), or integrated body-voice work. Available in 30, 45, 60, or 90-minute durations.
+                Personalised sessions for vocal coaching (including breath work, body work, mind-body integration, repertoire, and audition prep), piano lessons (fun, supportive, improving musicianship and theory), or integrated body-voice work. Available in 30, 45, 60, or 90-minute durations to suit your journey.
               </CardContent>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
@@ -230,12 +228,12 @@ const LandingPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Access world-class coaching from anywhere. Perfect for on-camera performance, virtual presentations, quick online audition cut sessions, or Kinesiology to understand subconscious patterns and create a holistic mind-body relationship. We also offer complimentary 15-minute discovery calls.
+                Access world-class coaching from anywhere. Perfect for refining on-camera performance, mastering virtual presentations, quick online audition cut sessions, or Kinesiology to understand subconscious patterns and foster a holistic mind-body relationship. Complimentary 15-minute discovery calls are also available.
               </CardContent>
             </Card>
           </div>
           <p className="text-xl font-medium text-brand-primary mt-8">
-            📅 November spots are now open. DM to claim your session or schedule a discovery session.
+            📅 Limited November spots are now open. DM to claim your session or schedule a complimentary discovery call.
           </p>
         </section>
 
@@ -248,9 +246,9 @@ const LandingPage = () => {
             Explore Buattiverse: Sheet Music & Backing Tracks
           </h2>
           <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
-            Welcome to Buattiverse — your source for professional vocal transcriptions, SATB arrangements, and music resources tailored for performers, educators, and creatives. Whether you're looking for detailed backing vocal arrangements or resources to bring your ensemble to life, you're in the right place.
+            Welcome to Buattiverse — your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources tailored for performers, educators, and creatives. Whether you're looking for detailed backing vocal arrangements or resources to bring your ensemble to life, you're in the right place to elevate your musical projects.
           </p>
-          <GumroadFollowForm /> {/* Integrated Gumroad follow form here */}
+          <GumroadFollowForm />
           <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
             <Button size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
               <a href="https://buattiverse.gumroad.com/" target="_blank" rel="noopener noreferrer">
@@ -326,7 +324,7 @@ const LandingPage = () => {
         <section id="contact" className="text-center max-w-4xl mx-auto space-y-8">
           <h2 className="text-4xl font-bold text-brand-primary">Ready to Transform Your Artistry & Presence?</h2>
           <p className="text-xl text-brand-dark/80 dark:text-brand-light/80">
-            Let’s chat about your goals and find the best coaching path for you.
+            Let’s chat about your goals and find the best coaching path for you. Take the first step towards unlocking your full potential.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
             <Button size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
