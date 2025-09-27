@@ -1,6 +1,7 @@
 import React from "react";
 import { MadeWithDyad } from "@/components/made-with-dyad";
-import { Instagram, Youtube, Twitch, Mail, Phone, Link as LinkIcon } from "lucide-react";
+import { Instagram, Youtube, Twitch, Mail, Phone, Link as LinkIcon, Piano } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 const Footer = () => {
   const socialLinks = [
