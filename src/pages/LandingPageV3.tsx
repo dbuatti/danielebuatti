@@ -444,22 +444,23 @@ const LandingPageV3 = () => {
         </section>
       </main>
 
-      {/* Additional Programs Section - Moved outside <main> */}
-      <section className="mt-12"> {/* Removed space-y-0 shadow-lg overflow-hidden rounded-xl */}
+      {/* Additional Programs Section */}
+      <section className="mt-12">
         <div className="container mx-auto px-4 mb-10">
           <SectionHeading>Explore More from Daniele</SectionHeading>
         </div>
-        <div className="space-y-0"> {/* Removed shadow-lg rounded-xl overflow-hidden */}
+        <div className="space-y-0">
           <AdditionalProgramBanner
             title="Explore Buattiverse: Sheet Music & Backing Tracks"
             description="Your curated source for professional vocal transcriptions, SATB arrangements, and essential music resources."
             link="https://buattiverse.gumroad.com/"
             linkText="Visit Buattiverse Store"
-            bgColorClass="bg-brand-dark"
+            // Removed bgColorClass
             textColorClass="text-brand-light"
             buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
             logoSrc="/gumroad.png"
             className="rounded-none"
+            backgroundImageSrc="/sheetmusic.png" // Added background image
           />
           <AdditionalProgramBanner
             title="Piano Backings by Daniele"
