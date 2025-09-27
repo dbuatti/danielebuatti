@@ -89,22 +89,20 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
           className
         )}
       >
-        <div className="container grid grid-cols-1 md:grid-cols-3 items-center gap-8"> {/* Changed to md:grid-cols-3 */}
-          {/* Left side: Logo or Title - now takes 2/3 of the space on md+ */}
-          <div className="md:col-span-2 text-center md:text-left space-y-4"> {/* Changed to md:col-span-2 */}
-            {logoSrc ? (
+        <div className="container grid grid-cols-1 md:grid-cols-3 items-center gap-8">
+          {/* Empty div to push content to the right on md and up, aligning with image banner's content */}
+          <div className="hidden md:block md:col-span-2"></div>
+
+          {/* Content for non-image banners - now takes 1/3 of the space on md+ and is centered */}
+          <div className="md:col-span-1 text-center space-y-6">
+            {logoSrc && (
               <img
                 src={logoSrc}
                 alt={`${title} logo`}
-                className="mx-auto md:mx-0 h-20 object-contain mb-4"
+                className="mx-auto h-20 object-contain mb-4"
               />
-            ) : (
-              <h3 className="text-4xl font-bold">{title}</h3>
             )}
-          </div>
-
-          {/* Right side: Description and Button - now takes 1/3 of the space on md+ */}
-          <div className="md:col-span-1 text-center space-y-6"> {/* Changed to md:col-span-1, kept text-center */}
+            <h3 className="text-4xl font-bold">{title}</h3>
             <p className="text-lg max-w-3xl mx-auto">{description}</p>
             {buttonElement}
           </div>
