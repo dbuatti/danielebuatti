@@ -130,15 +130,13 @@ const LivePianoServicesPage: React.FC = () => {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-12">
-        {/* Main Video Section (removed) */}
-
         {/* Large Image Display */}
         <section className="mb-8">
           <Card className="bg-brand-dark-alt border-brand-secondary/30 rounded-xl overflow-hidden shadow-lg">
             <img
               src={galleryImages[selectedImageIndex]}
               alt={`Selected event image ${selectedImageIndex + 1}`}
-              className="w-full h-[400px] md:h-[600px] object-cover object-center"
+              className="w-full h-[500px] md:h-[700px] object-cover object-center"
             />
           </Card>
         </section>
