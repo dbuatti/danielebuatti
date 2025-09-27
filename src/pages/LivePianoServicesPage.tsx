@@ -130,17 +130,7 @@ const LivePianoServicesPage: React.FC = () => {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-12">
-        {/* Main Video Section (kept as placeholder) */}
-        <section className="mb-16">
-          <div className="relative w-full h-[400px] md:h-[600px] bg-gray-800 rounded-xl overflow-hidden shadow-2xl flex items-center justify-center">
-            {/* Placeholder for video - removed the specific blacktie.avif img tag */}
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-              <Button variant="ghost" className="text-white text-6xl opacity-80 hover:opacity-100 transition-opacity">
-                ▶
-              </Button>
-            </div>
-          </div>
-        </section>
+        {/* Main Video Section (removed) */}
 
         {/* Large Image Display */}
         <section className="mb-8">
@@ -148,7 +138,7 @@ const LivePianoServicesPage: React.FC = () => {
             <img
               src={galleryImages[selectedImageIndex]}
               alt={`Selected event image ${selectedImageIndex + 1}`}
-              className="w-full h-[300px] md:h-[500px] object-cover object-center"
+              className="w-full h-[400px] md:h-[600px] object-cover object-center"
             />
           </Card>
         </section>
