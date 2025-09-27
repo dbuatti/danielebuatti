@@ -91,14 +91,14 @@ const LandingPage = () => {
                 </CardHeader>
                 <CardContent className="text-brand-dark/80 dark:text-brand-light/80">
                   <ul className="list-disc list-inside space-y-1">
-                    <li>**Vocal Coaching:** Elevate your technique across contemporary, classical, and musical theatre genres.</li>
-                    <li>**Music Direction & Conducting:** Master the art of leading and inspiring musical ensembles.</li>
-                    <li>**Holistic Voice & Somatic Techniques:** Integrate Kinesiology, Breath-Body-Mind, Yoga, and Mindfulness for profound vocal freedom.</li>
-                    <li>**Piano & Keyboard Performance:** Enhance your instrumental skills and musicality.</li>
-                    <li>**Public Speaking & Presentation Coaching:** Cultivate confident, impactful communication.</li>
-                    <li>**Acting & Film Performance Coaching:** Refine your presence for stage and screen.</li>
-                    <li>**On-Camera & Streaming Presence:** Develop authentic and engaging virtual communication.</li>
-                    <li>**Score Preparation & Technology Integration:** Streamline your musical workflow with modern tools.</li>
+                    <li>Vocal Coaching: Elevate your technique across contemporary, classical, and musical theatre genres.</li>
+                    <li>Music Direction & Conducting: Master the art of leading and inspiring musical ensembles.</li>
+                    <li>Holistic Voice & Somatic Techniques: Integrate Kinesiology, Breath-Body-Mind, Yoga, and Mindfulness for profound vocal freedom.</li>
+                    <li>Piano & Keyboard Performance: Enhance your instrumental skills and musicality.</li>
+                    <li>Public Speaking & Presentation Coaching: Cultivate confident, impactful communication.</li>
+                    <li>Acting & Film Performance Coaching: Refine your presence for stage and screen.</li>
+                    <li>On-Camera & Streaming Presence: Develop authentic and engaging virtual communication.</li>
+                    <li>Score Preparation & Technology Integration: Streamline your musical workflow with modern tools.</li>
                   </ul>
                 </CardContent>
               </Card>
