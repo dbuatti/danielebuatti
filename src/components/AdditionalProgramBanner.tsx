@@ -74,7 +74,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
               )}
               {/* Show only the main title in the left column */}
               {!logoSrc && (
-                <h3 className="text-5xl font-bold leading-tight">{title}</h3>
+                <h3 className="text-4xl font-bold leading-tight">{title}</h3>
               )}
             </div>
 
@@ -93,7 +93,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
                   />
                 )}
                 {/* Combine title and subtitle for the right column header */}
-                <h3 className="text-5xl font-bold leading-tight" style={{ color: rightColumnTextColorClass ? undefined : 'inherit' }}>
+                <h3 className="text-4xl font-bold leading-tight" style={{ color: rightColumnTextColorClass ? undefined : 'inherit' }}>
                   {title} {subtitle && <span className={cn(subtitleTextColorClass)}>{subtitle}</span>}
                 </h3>
               </div>
