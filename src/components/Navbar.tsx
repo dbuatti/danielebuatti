@@ -25,7 +25,7 @@ const Navbar = () => {
               className={cn(
                 "text-sm font-medium transition-colors hover:text-brand-primary",
                 activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home")
-                  ? "text-brand-primary dark:text-brand-primary"
+                  ? "text-brand-primary dark:text-brand-primary border-b-2 border-brand-primary pb-1" // Added border-b-2 and pb-1 for active state
                   : "text-brand-dark dark:text-brand-light"
               )}
             >

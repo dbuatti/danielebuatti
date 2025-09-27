@@ -39,7 +39,7 @@ const LandingPage = () => {
           <div className="flex justify-center md:justify-end">
             <DynamicImage
               alt="Daniele Buatti coaching a performer"
-              className="w-full max-w-md h-auto rounded-xl shadow-2xl object-cover"
+              className="w-full max-w-md h-auto rounded-xl shadow-2xl object-cover border-2 border-brand-secondary" // Added border
               width={600}
               height={400}
             />
@@ -53,7 +53,7 @@ const LandingPage = () => {
           <div className="flex justify-center md:justify-start">
             <DynamicImage
               alt="Daniele Buatti professional headshot"
-              className="w-full max-w-sm h-auto rounded-xl shadow-2xl object-cover"
+              className="w-full max-w-sm h-auto rounded-xl shadow-2xl object-cover border-2 border-brand-secondary" // Added border
               width={400}
               height={500}
             />
