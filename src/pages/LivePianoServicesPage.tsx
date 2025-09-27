@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { Home, Mail, Phone } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"; // Import Carousel components
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel"; // Import Carousel components and CarouselApi type
 
 const LivePianoServicesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -25,6 +25,31 @@ const LivePianoServicesPage: React.FC = () => {
     pianoType: '',
   });
   const [loading, setLoading] = useState(false);
+
+  const [api, setApi] = useState<CarouselApi>();
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0); // New state for the large image index
+
+  const galleryImages = [
+    "/blacktie1.avif",
+    "/blacktie2.avif",
+    "/blacktie3.avif",
+    "/blacktie4.avif",
+    "/other.avif",
+    "/426062_bc3659f68c1c4c6ca899497d7350a91f~mv2.avif",
+  ];
+
+  // Effect to update selectedImageIndex when carousel API changes
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    setSelectedImageIndex(api.selectedScrollSnap());
+
+    api.on("select", () => {
+      setSelectedImageIndex(api.selectedScrollSnap());
+    });
+  }, [api]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -81,15 +106,6 @@ const LivePianoServicesPage: React.FC = () => {
     setLoading(false);
   };
 
-  const galleryImages = [
-    "/blacktie1.avif",
-    "/blacktie2.avif",
-    "/blacktie3.avif",
-    "/blacktie4.avif",
-    "/other.avif",
-    "/426062_bc3659f68c1c4c6ca899497d7350a91f~mv2.avif",
-  ];
-
   return (
     <div className="min-h-screen bg-brand-dark text-brand-light">
       {/* Header */}
@@ -113,7 +129,7 @@ const LivePianoServicesPage: React.FC = () => {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-12">
-        {/* Main Video Section */}
+        {/* Main Video Section (kept as placeholder) */}
         <section className="mb-16">
           <div className="relative w-full h-[400px] md:h-[600px] bg-gray-800 rounded-xl overflow-hidden shadow-2xl flex items-center justify-center">
             {/* Placeholder for video */}
@@ -130,6 +146,17 @@ const LivePianoServicesPage: React.FC = () => {
           </div>
         </section>
 
+        {/* Large Image Display */}
+        <section className="mb-8">
+          <Card className="bg-brand-dark-alt border-brand-secondary/30 rounded-xl overflow-hidden shadow-lg">
+            <img
+              src={galleryImages[selectedImageIndex]}
+              alt={`Selected event image ${selectedImageIndex + 1}`}
+              className="w-full h-[300px] md:h-[500px] object-cover object-center"
+            />
+          </Card>
+        </section>
+
         {/* Image Carousel */}
         <section className="mb-16">
           <Carousel
@@ -137,12 +164,19 @@ const LivePianoServicesPage: React.FC = () => {
               align: "start",
               loop: true,
             }}
+            setApi={setApi} // Set the API instance
             className="w-full"
           >
             <CarouselContent className="-ml-4">
               {galleryImages.map((imageSrc, index) => (
                 <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                  <Card className="bg-brand-dark-alt border-brand-secondary/30 rounded-xl overflow-hidden shadow-lg">
+                  <Card 
+                    className={cn(
+                      "bg-brand-dark-alt border-brand-secondary/30 rounded-xl overflow-hidden shadow-lg cursor-pointer",
+                      selectedImageIndex === index ? "border-4 border-brand-primary" : "" // Highlight selected image
+                    )}
+                    onClick={() => api?.scrollTo(index)} // Click to select and scroll
+                  >
                     <img src={imageSrc} alt={`Event ${index + 1}`} className="w-full h-48 object-cover" />
                   </Card>
                 </CarouselItem>
