@@ -89,9 +89,9 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
           className
         )}
       >
-        <div className="container grid grid-cols-1 md:grid-cols-3 items-center gap-8">
+        <div className="container grid grid-cols-1 md:grid-cols-2 items-center gap-8">
           {/* Left side: Logo and Title */}
-          <div className="md:col-span-2 text-center md:text-left space-y-4">
+          <div className="md:col-span-1 text-center md:text-left space-y-4">
             {logoSrc && (
               <img
                 src={logoSrc}
