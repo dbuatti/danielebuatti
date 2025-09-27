@@ -1,25 +1,36 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { navLinks } from "@/constants/navigation";
 
 export function useActiveSection() {
   const [activeSection, setActiveSection] = useState<string | null>(null);
-  const observer = useRef<IntersectionObserver | null>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const activeSectionStateRef = useRef<string | null>(null); // Ref to hold the current activeSection state for the observer callback
+
+  // Update the ref whenever activeSection state changes
+  useEffect(() => {
+    activeSectionStateRef.current = activeSection;
+  }, [activeSection]);
+
+  const handleIntersect = useCallback((entries: IntersectionObserverEntry[]) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        setActiveSection(entry.target.id);
+      }
+    });
+  }, []); // No dependencies, so this function is stable
 
   useEffect(() => {
-    observer.current = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      {
-        root: null, // viewport
-        rootMargin: "-50% 0px -50% 0px", // Trigger when 50% of the section is in view
-        threshold: 0,
-      },
-    );
+    // Initialize observer only once
+    if (!observerRef.current) {
+      observerRef.current = new IntersectionObserver(
+        handleIntersect, // Use the stable callback
+        {
+          root: null, // viewport
+          rootMargin: "-50% 0px -50% 0px", // Trigger when 50% of the section is in view
+          threshold: 0,
+        },
+      );
+    }
 
     const sections = navLinks
       .filter((link) => link.href.startsWith("#"))
@@ -27,14 +38,14 @@ export function useActiveSection() {
       .filter(Boolean) as HTMLElement[];
 
     sections.forEach((section) => {
-      if (observer.current) {
-        observer.current.observe(section);
+      if (observerRef.current) {
+        observerRef.current.observe(section);
       }
     });
 
     // Handle initial load if no section is intersecting (e.g., at the very top)
     const handleScroll = () => {
-      if (window.scrollY === 0 && activeSection !== "home") {
+      if (window.scrollY === 0 && activeSectionStateRef.current !== "home") { // Use ref here
         setActiveSection("home");
       }
     };
@@ -42,16 +53,16 @@ export function useActiveSection() {
     handleScroll(); // Call once on mount
 
     return () => {
-      if (observer.current) {
+      if (observerRef.current) {
         sections.forEach((section) => {
-          if (observer.current) {
-            observer.current.unobserve(section);
+          if (observerRef.current) {
+            observerRef.current.unobserve(section);
           }
         });
       }
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [activeSection]); // Re-run if activeSection changes to ensure correct initial state
+  }, [handleIntersect]); // Dependency on handleIntersect, which is stable due to useCallback
 
   return activeSection;
 }

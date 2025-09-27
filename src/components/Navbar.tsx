@@ -33,22 +33,26 @@ const Navbar = () => {
           />
         </Link>
         <nav className="hidden md:flex items-center space-x-6">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-brand-primary",
-                // Check if it's a hash link and active section matches, or if it's a route link and path matches
-                (link.href.startsWith("#") && (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))) ||
-                (!link.href.startsWith("#") && location.pathname === link.href)
-                  ? "font-bold text-brand-primary dark:text-brand-primary border-b-[3px] border-brand-primary pb-2" // Enhanced active styling
-                  : "text-brand-dark dark:text-brand-light"
-              )}
-            >
-              {link.name}
-            </a>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = link.href.startsWith("#")
+              ? (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))
+              : location.pathname === link.href;
+
+            return (
+              <a
+                key={link.name}
+                href={link.href}
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-brand-primary",
+                  isActive
+                    ? "font-bold text-brand-primary dark:text-brand-primary border-b-[3px] border-brand-primary pb-2" // Enhanced active styling
+                    : "text-brand-dark dark:text-brand-light"
+                )}
+              >
+                {link.name}
+              </a>
+            );
+          })}
           <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
             <a href="#contact">Book a Session</a>
           </Button>
@@ -69,22 +73,26 @@ const Navbar = () => {
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-brand-light dark:bg-brand-dark">
               <nav className="flex flex-col gap-4 pt-6">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    className={cn(
-                      "text-lg font-medium hover:text-brand-primary",
-                      // Check if it's a hash link and active section matches, or if it's a route link and path matches
-                      (link.href.startsWith("#") && (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))) ||
-                      (!link.href.startsWith("#") && location.pathname === link.href)
-                        ? "font-bold text-brand-primary dark:text-brand-primary" // Enhanced active styling for mobile
-                        : "text-brand-dark dark:text-brand-light"
-                    )}
-                  >
-                    {link.name}
-                  </a>
-                ))}
+                {navLinks.map((link) => {
+                  const isActive = link.href.startsWith("#")
+                    ? (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))
+                    : location.pathname === link.href;
+
+                  return (
+                    <a
+                      key={link.name}
+                      href={link.href}
+                      className={cn(
+                        "text-lg font-medium hover:text-brand-primary",
+                        isActive
+                          ? "font-bold text-brand-primary dark:text-brand-primary" // Enhanced active styling for mobile
+                          : "text-brand-dark dark:text-brand-light"
+                      )}
+                    >
+                      {link.name}
+                    </a>
+                  );
+                })}
                 <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
                   <a href="#contact">Book a Session</a>
                 </Button>
