@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Separator } from "@/components/ui/separator";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -24,6 +24,20 @@ import FullBioSection from "@/components/pages/landing-page-v3/FullBioSection";
 
 const LandingPageV3: React.FC = () => {
   useSmoothScroll();
+
+  useEffect(() => {
+    // Check for hash on initial load
+    if (window.location.hash) {
+      const id = window.location.hash.substring(1);
+      const element = document.getElementById(id);
+      if (element) {
+        // Use a timeout to ensure the element has rendered and the layout is stable
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100); // Small delay
+      }
+    }
+  }, []); // Run only once on mount
 
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
