@@ -14,6 +14,7 @@ interface FeaturedProgramCardProps {
   className?: string;
   buttonBgClass?: string;
   buttonTextClass?: string;
+  overlayColorClass?: string; // New prop for custom overlay color
 }
 
 const FeaturedProgramCard: React.FC<FeaturedProgramCardProps> = ({
@@ -25,6 +26,7 @@ const FeaturedProgramCard: React.FC<FeaturedProgramCardProps> = ({
   className,
   buttonBgClass = "bg-brand-primary hover:bg-brand-primary/90 text-brand-light",
   buttonTextClass = "",
+  overlayColorClass = "bg-black/30", // Default to black overlay
 }) => {
   return (
     <div
@@ -37,7 +39,7 @@ const FeaturedProgramCard: React.FC<FeaturedProgramCardProps> = ({
       style={{ backgroundImage: `url(${backgroundImageSrc})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
       {/* Subtle Overlay for background image */}
-      <div className="absolute inset-0 bg-black/30"></div>
+      <div className={cn("absolute inset-0", overlayColorClass)}></div>
 
       {/* Content Card */}
       <Card className="relative z-10 bg-brand-dark/80 dark:bg-brand-dark/90 text-brand-light p-6 md:p-8 max-w-md mx-auto border-brand-secondary shadow-lg">
