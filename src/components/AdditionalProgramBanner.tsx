@@ -79,27 +79,35 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
       </div>
     );
   } else {
-    // Layout for banners without a background image - now a single centered column
+    // Layout for banners without a background image - now using a 3-column grid for alignment
     return (
       <div
         className={cn(
-          "relative w-full py-16 overflow-hidden flex flex-col items-center justify-center text-center", // Added items-center, justify-center, text-center
+          "relative w-full py-16 overflow-hidden flex flex-col", // Keep flex-col for mobile stacking
           bgColorClass || "bg-brand-dark",
           textColorClass,
           className
         )}
       >
-        <div className="container space-y-6"> {/* Removed grid, col-span, etc. */}
-          {logoSrc && (
-            <img
-              src={logoSrc}
-              alt={`${title} logo`}
-              className="mx-auto h-20 object-contain mb-4"
-            />
-          )}
-          <h3 className="text-4xl font-bold">{title}</h3>
-          <p className="text-lg max-w-3xl mx-auto">{description}</p> {/* Keep max-w-3xl mx-auto for centering and width */}
-          {buttonElement}
+        <div className="container grid grid-cols-1 md:grid-cols-3 items-center gap-8"> {/* Changed to md:grid-cols-3 */}
+          {/* Left side: Logo or Title - now takes 2/3 of the space on md+ */}
+          <div className="md:col-span-2 text-center md:text-left space-y-4"> {/* Changed to md:col-span-2 */}
+            {logoSrc ? (
+              <img
+                src={logoSrc}
+                alt={`${title} logo`}
+                className="mx-auto md:mx-0 h-20 object-contain mb-4"
+              />
+            ) : (
+              <h3 className="text-4xl font-bold">{title}</h3>
+            )}
+          </div>
+
+          {/* Right side: Description and Button - now takes 1/3 of the space on md+ */}
+          <div className="md:col-span-1 text-center space-y-6"> {/* Changed to md:col-span-1, kept text-center */}
+            <p className="text-lg max-w-3xl mx-auto">{description}</p>
+            {buttonElement}
+          </div>
         </div>
       </div>
     );
