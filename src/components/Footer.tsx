@@ -59,7 +59,7 @@ const Footer = () => {
 
         <div className="flex justify-center py-4">
           <DynamicImage
-            src="/blue-pink-ontrans.png"
+            src="/logo-piano-white-44.png"
             alt="Daniele Buatti Brand Symbol"
             className="h-10 w-auto"
             width={40}
