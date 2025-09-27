@@ -461,23 +461,21 @@ const LandingPageV3 = () => {
             logoSrc="/gumroad.png"
             className="rounded-none"
             backgroundImageSrc="/sheetmusic.png"
-            bottomStripColorClass="bg-brand-magenta" // This will be rendered internally by Buattiverse banner
+            bottomStripColorClass="bg-brand-magenta" // Pass the bottom strip color here
           />
-          {/* No external strip needed here, as Buattiverse handles its own */}
 
           <AdditionalProgramBanner
             title="Piano Backings by Daniele"
             description="High-quality piano backing tracks for singers and performers."
             link="https://pianobackingsbydaniele.vercel.app"
             linkText="Discover Piano Backings"
-            bgColorClass="bg-brand-magenta"
-            textColorClass="text-black" // Changed to text-black
-            buttonBgClass="bg-black hover:bg-black/90 text-brand-light" // Changed to bg-black
+            bgColorClass="bg-brand-magenta" // This will be the background for the entire banner
+            textColorClass="text-black"
+            buttonBgClass="bg-black hover:bg-black/90 text-brand-light"
             logoSrc="https://pianobackingsbydaniele.vercel.app/pasted-image-2025-09-19T05-15-20-729Z.png"
             className="rounded-none"
+            bottomStripColorClass="bg-brand-blue" // Pass the bottom strip color here
           />
-          {/* External strip for Piano Backings */}
-          <div className="w-full h-8 bg-brand-blue"></div>
 
           <AdditionalProgramBanner
             title="Resonance Choir with Daniele"
@@ -488,9 +486,8 @@ const LandingPageV3 = () => {
             textColorClass="text-brand-light"
             buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
             className="rounded-none"
+            bottomStripColorClass="bg-black" // Pass the bottom strip color here
           />
-          {/* External strip for Resonance Choir */}
-          <div className="w-full h-8 bg-black"></div> {/* Changed to bg-black */}
         </div>
       </section>
       <Footer />

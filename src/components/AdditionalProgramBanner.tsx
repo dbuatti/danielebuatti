@@ -43,11 +43,11 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
     </Button>
   );
 
-  if (backgroundImageSrc) {
-    return (
-      <div className={cn("relative w-full min-h-[450px] overflow-hidden flex flex-col", className)}>
-        <div className="flex-grow grid grid-cols-1 md:grid-cols-3">
-          {/* Left Half (Image with gradient) - Visible on md and up, takes 2/3 width */}
+  return (
+    <div className={cn("relative w-full min-h-[450px] overflow-hidden flex flex-col", className)}>
+      <div className="flex-grow grid grid-cols-1 md:grid-cols-3">
+        {backgroundImageSrc ? (
+          // Layout for banners with a background image
           <div
             className="relative hidden md:block md:col-span-2 bg-cover bg-center"
             style={{ backgroundImage: `url(${backgroundImageSrc})`, backgroundPosition: 'left center', backgroundSize: 'cover' }}
@@ -55,53 +55,33 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
             {/* Gradient overlay to blend into the right side */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent to-brand-dark"></div>
           </div>
+        ) : (
+          // Layout for banners without a background image (solid color left side)
+          <div className={cn("hidden md:block md:col-span-2", bgColorClass || "bg-brand-dark")}></div>
+        )}
 
-          {/* Right Half (Content with solid background) - Full width on mobile, 1/3 on md and up */}
-          <div className={cn(
-            "relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6 md:col-span-1",
-            bgColorClass || "bg-brand-dark", // Solid background for text area
-            textColorClass
-          )}>
-            {logoSrc && (
-              <img
-                src={logoSrc}
-                alt={`${title} logo`}
-                className="mx-auto h-20 object-contain mb-4"
-              />
-            )}
-            <h3 className="text-4xl font-bold">{title}</h3>
-            <p className="text-lg max-w-3xl mx-auto">{description}</p>
-            {buttonElement}
-          </div>
+        {/* Right Half (Content with solid background) - Full width on mobile, 1/3 on md and up */}
+        <div className={cn(
+          "relative z-10 flex flex-col items-center justify-center p-8 text-center space-y-6 md:col-span-1",
+          bgColorClass || "bg-brand-dark", // Solid background for text area
+          textColorClass
+        )}>
+          {logoSrc && (
+            <img
+              src={logoSrc}
+              alt={`${title} logo`}
+              className="mx-auto h-20 object-contain mb-4"
+            />
+          )}
+          <h3 className="text-4xl font-bold">{title}</h3>
+          <p className="text-lg max-w-3xl mx-auto">{description}</p>
+          {buttonElement}
         </div>
-        {/* Bottom Strip - ONLY for image banners */}
-        {bottomStripColorClass && <div className={cn("w-full h-8", bottomStripColorClass)}></div>}
       </div>
-    );
-  } else {
-    // Original layout for banners without a background image: centered content
-    return (
-      <div
-        className={cn(
-          "relative w-full py-16 overflow-hidden flex flex-col items-center justify-center text-center space-y-6",
-          bgColorClass || "bg-brand-dark",
-          textColorClass,
-          className
-        )}
-      >
-        {logoSrc && (
-          <img
-            src={logoSrc}
-            alt={`${title} logo`}
-            className="mx-auto h-20 object-contain mb-4"
-          />
-        )}
-        <h3 className="text-4xl font-bold">{title}</h3>
-        <p className="text-lg max-w-3xl mx-auto">{description}</p>
-        {buttonElement}
-      </div>
-    );
-  }
+      {/* Bottom Strip - Apply to all banners if present */}
+      {bottomStripColorClass && <div className={cn("w-full h-8", bottomStripColorClass)}></div>}
+    </div>
+  );
 };
 
 export default AdditionalProgramBanner;
