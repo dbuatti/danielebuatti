@@ -29,8 +29,14 @@ const Navbar = () => {
     // Add a small delay to allow the sheet to close before attempting to scroll/navigate
     setTimeout(() => {
       if (href.startsWith('/')) {
-        navigate(href); // Use navigate for internal routes
+        // For internal routes like / or /live-piano-services
+        if (href === '/') {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+          navigate(href);
+        }
       } else if (href.startsWith('#')) {
+        // For anchor links like #about
         const id = href.substring(1);
         const element = document.getElementById(id);
         if (element) {
@@ -38,8 +44,6 @@ const Navbar = () => {
             behavior: "smooth",
             block: "start",
           });
-        } else if (href === "#home" || href === "/") { // Handle home explicitly if it's an anchor
-          window.scrollTo({ top: 0, behavior: "smooth" });
         }
       }
     }, 100); // 100ms delay
