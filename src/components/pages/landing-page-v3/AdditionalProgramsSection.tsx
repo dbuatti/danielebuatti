@@ -30,7 +30,7 @@ const AdditionalProgramsSection: React.FC = () => {
           backgroundImageSrc="/pianobackingslogo.png"
           className="max-w-6xl"
           buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
-          overlayColorClass="bg-pink-500/30" // Added pink overlay
+          overlayColorClass="bg-brand-magenta/30" // Applied the updated brand-magenta overlay
         />
 
         {/* FeaturedProgramCard for Resonance with Daniele */}
