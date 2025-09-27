@@ -5,8 +5,11 @@ import { CheckCircle2, CalendarDays, Mic, Piano, Brain, HeartHandshake, Users, M
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TestimonialCard from "@/components/TestimonialCard";
+import { useSmoothScroll } from "@/hooks/use-smooth-scroll"; // Import the new hook
 
 const LandingPage = () => {
+  useSmoothScroll(); // Activate smooth scrolling for this page
+
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
       <Navbar />
@@ -24,7 +27,7 @@ const LandingPage = () => {
               Got a big performance coming up? An audition, presentation, or need to nail your on-camera presence? My coaching is all about helping you perform and communicate with freedom, confidence, and ease. I blend world-class musical and performance training with deep body awareness and a powerful mindset approach. The goal? To help you achieve more, without the usual strain, stress, or burnout.
             </p>
             <Button size="lg" className="mt-8 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-              Book a Discovery Session
+              <a href="#contact">Book a Discovery Session</a>
             </Button>
           </div>
           <div className="flex justify-center md:justify-end">

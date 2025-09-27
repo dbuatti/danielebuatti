@@ -31,8 +31,8 @@ const Navbar = () => {
               {link.name}
             </a>
           ))}
-          <Button className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-            Book a Session
+          <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+            <a href="#contact">Book a Session</a>
           </Button>
           <ThemeToggle /> {/* Add ThemeToggle here */}
         </nav>
@@ -60,8 +60,8 @@ const Navbar = () => {
                     {link.name}
                   </a>
                 ))}
-                <Button className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
-                  Book a Session
+                <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
+                  <a href="#contact">Book a Session</a>
                 </Button>
               </nav>
             </SheetContent>
