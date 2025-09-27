@@ -35,6 +35,7 @@ const LandingPage = () => {
           </div>
           <div className="flex justify-center md:justify-end">
             <DynamicImage
+              src="https://scontent.fmel12-1.fna.fbcdn.net/v/t39.30808-1/376884772_798640958930779_2251241659304515045_n.jpg?stp=dst-jpg_s480x480_tt6&_nc_cat=109&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=-WC8aNAE4MUQ7kNvwERnIpB&_nc_oc=Adntu0Yj-Lxtg9OoUkFrZB9V2tVn_pnaLnntkI30UMxoKrpXsmUCPaycLJpaynQmtUE&_nc_zt=24&_nc_ht=scontent.fmel12-1.fna&_nc_gid=GDLJEd82FhU4kRC4yEQCwQ&oh=00_Afa11DBpB2BeSiciRFN1euXdXQKZb58Dtq-DplQ_D_J2TQ&oe=68DD6C14"
               alt="Daniele Buatti coaching a performer"
               className="w-full max-w-md h-auto rounded-xl shadow-2xl object-cover"
               width={600}
@@ -49,6 +50,7 @@ const LandingPage = () => {
         <section id="about" className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
           <div className="flex justify-center md:justify-start">
             <DynamicImage
+              src="https://static.wixstatic.com/media/4d07bb_028b826b468b4f6f872d87d2dd0b5006~mv2.jpg/v1/fill/w_2400,h_2400,al_c,q_90/DanieleBuatti_0194_edited.jpg"
               alt="Daniele Buatti professional headshot"
               className="w-full max-w-sm h-auto rounded-xl shadow-2xl object-cover"
               width={400}
