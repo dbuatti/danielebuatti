@@ -92,7 +92,7 @@ const Navbar = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               {isAnyServicePageActive ? (
-                <ActiveServiceButton> {/* Use the new component here */}
+                <ActiveServiceButton className="text-white" style={{ color: 'white' }}> {/* Pass text-white and inline style directly */}
                   Services
                 </ActiveServiceButton>
               ) : (
@@ -169,7 +169,7 @@ const Navbar = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     {isAnyServicePageActive ? (
-                      <ActiveServiceButton className="justify-start w-full px-4 py-2 rounded-md"> {/* Use the new component here */}
+                      <ActiveServiceButton className="justify-start w-full px-4 py-2 rounded-md text-white" style={{ color: 'white' }}> {/* Pass text-white and inline style directly */}
                         Services
                       </ActiveServiceButton>
                     ) : (

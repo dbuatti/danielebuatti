@@ -15,19 +15,16 @@ const ActiveServiceButton: React.FC<ActiveServiceButtonProps> = ({
 }) => {
   return (
     <button
-      // Explicitly define all styles for the active state on a native button
       className={cn(
         "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium",
         "ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         "disabled:pointer-events-none disabled:opacity-50 h-9 px-3 py-2", // Mimic shadcn button sizing
         "bg-brand-primary hover:bg-brand-primary/90", // Background and hover background
-        className
+        className // className from parent will be applied here
       )}
       {...props}
     >
-      <span className="!text-white hover:!text-white"> {/* Force text color to white using !important */}
-        {children}
-      </span>
+      {children}
     </button>
   );
 };
