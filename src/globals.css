@@ -127,7 +127,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans; /* Apply the new font here */
+    @apply bg-[var(--background)] text-[var(--foreground)] font-sans; /* Apply the new font here */
   }
 }
 
