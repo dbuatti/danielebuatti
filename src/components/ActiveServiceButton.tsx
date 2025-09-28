@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-// Removed import for shadcn/ui Button to avoid style conflicts
 import { cn } from "@/lib/utils";
 
 interface ActiveServiceButtonProps extends React.ComponentPropsWithoutRef<'button'> {
@@ -21,9 +20,10 @@ const ActiveServiceButton: React.FC<ActiveServiceButtonProps> = ({
         "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium",
         "ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         "disabled:pointer-events-none disabled:opacity-50 h-9 px-3 py-2", // Mimic shadcn button sizing
-        "bg-brand-primary text-brand-light hover:bg-brand-primary/90 hover:text-brand-light", // Force pink background, white text, and correct hover
+        "bg-brand-primary hover:bg-brand-primary/90", // Background and hover background
         className
       )}
+      style={{ color: 'white' }} // Force text color to white using inline style
       {...props}
     >
       {children}
