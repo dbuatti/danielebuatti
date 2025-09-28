@@ -42,7 +42,7 @@ const ServicesPage: React.FC = () => {
         {/* Introduction Text Section with subtle background */}
         <section className="bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-8 rounded-xl shadow-inner space-y-6">
           <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-            <strong className="text-brand-primary">Welcome! I’m Daniele Buatti, a vocal coach and musician passionate about helping artists connect deeply with their voice and body.</strong> My holistic approach recognizes that true expression and well-being are deeply intertwined.
+            <strong className="text-brand-primary">Welcome! I’m Daniele Buatti, a vocal coach and musician passionate about helping artists connect deeply with their voice and body.</strong> My holistic approach <strong className="text-brand-primary">recognises</strong> that true expression and well-being are deeply intertwined.
           </p>
           <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
             Whether you're looking for private coaching, vocal technique, or body-mind integration sessions, you’ll find a space here to explore, grow, and refine your artistry through an embodied connection.
