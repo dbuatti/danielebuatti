@@ -3,22 +3,21 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger, SheetOverlay } from "@/components/ui/sheet"; // Import SheetOverlay
+import { Sheet, SheetContent, SheetTrigger, SheetOverlay } from "@/components/ui/sheet";
 import { Link, useLocation } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
 import { navLinks } from "@/constants/navigation";
 import { useActiveSection } from "@/hooks/use-active-section";
 import { cn } from "@/lib/utils";
 import DynamicImage from "@/components/DynamicImage";
-import { useTheme } from "next-themes"; // Import useTheme
+import { useTheme } from "next-themes";
 
 const Navbar = () => {
   const activeSection = useActiveSection();
   const location = useLocation();
-  const { theme } = useTheme(); // Get the current theme
-  const [isSheetOpen, setIsSheetOpen] = React.useState(false); // State to control sheet visibility
+  const { theme } = useTheme();
+  const [isSheetOpen, setIsSheetOpen] = React.useState(false);
 
-  // Determine logo sources based on theme
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
 
@@ -27,14 +26,14 @@ const Navbar = () => {
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
           <DynamicImage
-            src={brandSymbolSrc} // Dynamic source
+            src={brandSymbolSrc}
             alt="Daniele Buatti Brand Symbol"
             className="h-8 w-auto"
             width={32}
             height={32}
           />
           <DynamicImage
-            src={textLogoSrc} // Dynamic source
+            src={textLogoSrc}
             alt="Daniele Buatti Logo"
             className="h-12 w-auto"
             width={220}
@@ -68,9 +67,10 @@ const Navbar = () => {
               );
             }
           })}
-          <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-            <Link to="/voice-piano-services">Book a Lesson</Link> {/* Updated link */}
-          </Button>
+          {/* Directly style the Link as a button */}
+          <Link to="/voice-piano-services" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+            Book a Lesson
+          </Link>
           <ThemeToggle />
         </nav>
         <div className="flex items-center md:hidden">
@@ -86,7 +86,7 @@ const Navbar = () => {
                 <span className="sr-only">Toggle Menu</span>
               </Button>
             </SheetTrigger>
-            <SheetOverlay className="bg-black/60 dark:bg-black/90 z-[999]" /> {/* Direct styling for overlay */}
+            <SheetOverlay className="bg-black/60 dark:bg-black/90 z-[999]" />
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-brand-light dark:bg-brand-dark">
               <nav className="flex flex-col gap-4 pt-6">
                 {navLinks.map((link) => {
@@ -115,9 +115,10 @@ const Navbar = () => {
                     );
                   }
                 })}
-                <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
-                  <Link to="/voice-piano-services" onClick={() => setIsSheetOpen(false)}>Book a Lesson</Link> {/* Updated link */}
-                </Button>
+                {/* Directly style the Link as a button */}
+                <Link to="/voice-piano-services" onClick={() => setIsSheetOpen(false)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-lg font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-12 px-6 py-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
+                  Book a Lesson
+                </Link>
               </nav>
             </SheetContent>
           </Sheet>
