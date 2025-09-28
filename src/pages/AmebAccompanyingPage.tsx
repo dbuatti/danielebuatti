@@ -31,7 +31,7 @@ const AmebAccompanyingPage: React.FC = () => {
           <DynamicImage
             src="/danieleatkeyboard.jpeg"
             alt="Daniele Buatti playing keyboard"
-            className="w-full h-96 md:h-[450px] object-cover object-[50%_70%]" {/* Adjusted object-position to show more of the bottom */}
+            className="w-full h-96 md:h-[450px] object-cover object-[50%_70%]"
             width={800}
             height={533}
           />
