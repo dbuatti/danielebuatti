@@ -72,44 +72,50 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   return (
     <div
       className={cn(
-        "relative flex flex-col overflow-hidden min-h-[400px] md:min-h-[450px]", // Reduced height
+        "relative flex flex-col overflow-hidden", // Removed min-h to allow height to adapt
         bgColorClass,
         className
       )}
+      // Apply background image style only if not left-aligned with a separate image element
       style={!isLeftAlignedWithImage && backgroundImageSrc ? { backgroundImage: `url(${backgroundImageSrc})`, backgroundSize: 'cover', backgroundPosition: backgroundPosition } : {}}
     >
+      {/* Overlay for full background images (when not left-aligned with image) */}
       {!isLeftAlignedWithImage && backgroundImageSrc && (
         <div className={cn("absolute inset-0", imageOverlayClass)}></div>
       )}
 
+      {/* Content Wrapper */}
       <div className="relative z-10 flex-grow w-full py-12 px-4">
         {isLeftAlignedWithImage ? (
+          // Two-column layout for content when left-aligned with image
           <div className="grid grid-cols-1 md:grid-cols-2 w-full h-full">
             {/* Left column for text content */}
-            <div className="flex flex-col justify-center max-w-3xl px-4 md:px-8"> {/* Added horizontal padding */}
+            <div className="flex flex-col justify-center max-w-3xl px-8 md:px-16"> {/* Increased horizontal padding */}
               {renderContent}
+              {/* Availability info */}
               <div className="mt-6 flex items-center gap-2 text-brand-light/80">
                 <CalendarDays className="h-5 w-5" />
                 <span>MON - FRI Subject to availability</span>
               </div>
             </div>
             {/* Right column for the image */}
-            <div className="relative hidden md:flex items-center justify-end h-full"> {/* Ensure right column takes full height */}
-              <img
-                src={backgroundImageSrc}
-                alt="Program background"
-                className={cn(
-                  "absolute inset-0 h-full w-full object-cover", // Ensure image fills its container
-                  "object-right"
-                )}
-              />
-              <div className={cn(
-                "absolute inset-y-0 left-0 w-full h-full",
-                `bg-gradient-to-r from-[var(--brand-dark)] to-transparent`
-              )}></div>
+            <div className="relative hidden md:flex items-center justify-end h-full p-4"> {/* Added padding to the right column */}
+              <div className="relative w-[500px] h-[350px] overflow-hidden rounded-xl shadow-lg"> {/* Container for the image and gradient */}
+                <img
+                  src={backgroundImageSrc}
+                  alt="Program background"
+                  className="absolute inset-0 h-full w-full object-cover object-right"
+                />
+                {/* Gradient overlay on the left side of the image to blend with text */}
+                <div className={cn(
+                  "absolute inset-y-0 left-0 w-full h-full", // Covers the entire image container
+                  `bg-gradient-to-r from-[var(--brand-dark)] to-transparent` // Blend from dark background to transparent over image
+                )}></div>
+              </div>
             </div>
           </div>
         ) : (
+          // Fallback for solid color or full background image (centered content)
           <div className="flex flex-col justify-center items-center text-center w-full max-w-7xl mx-auto">
             {renderContent}
           </div>
