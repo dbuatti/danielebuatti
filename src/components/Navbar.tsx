@@ -17,21 +17,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu"; // Import DropdownMenu components
+} from "@/components/ui/dropdown-menu";
+import ServicesDropdownTrigger from "./ServicesDropdownTrigger"; // Import the new component
 
 const Navbar = () => {
   const activeSection = useActiveSection();
   const location = useLocation();
   const { theme } = useTheme();
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
-  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = React.useState(false); // State for hover dropdown
+  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = React.useState(false);
 
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
 
-  // Define service links for the dropdown
   const serviceLinks = [
-    { name: "Services Overview", href: "/services" }, // New consolidated services page
+    { name: "Services Overview", href: "/services" },
     { name: "Live Piano Services", href: "/live-piano-services" },
     { name: "Voice & Piano Coaching", href: "/voice-piano-services" },
     { name: "AMEB Accompanying", href: "/ameb-accompanying" },
@@ -39,11 +39,10 @@ const Navbar = () => {
 
   const isAnyServicePageActive = serviceLinks.some(service => location.pathname === service.href);
 
-  // Function to handle mouse leave with a slight delay
   const handleMouseLeave = () => {
     setTimeout(() => {
       setIsServicesDropdownOpen(false);
-    }, 150); // Small delay to allow moving to dropdown content
+    }, 150);
   };
 
   return (
@@ -67,7 +66,7 @@ const Navbar = () => {
         </Link>
         <nav className="hidden md:flex items-center space-x-6">
           {navLinks
-            .filter(link => !serviceLinks.some(service => service.href === link.href) && link.name !== "Services") // Filter out service links and the old 'Services' entry
+            .filter(link => !serviceLinks.some(service => service.href === link.href) && link.name !== "Services")
             .map((link) => {
               const isActive = link.href.startsWith("#")
                 ? (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))
@@ -98,25 +97,18 @@ const Navbar = () => {
           {/* Services Dropdown for Desktop */}
           <DropdownMenu open={isServicesDropdownOpen} onOpenChange={setIsServicesDropdownOpen}>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost" // Always use ghost variant for consistent base styling
-                className={cn(
-                  "text-sm font-medium transition-colors px-3 py-2 rounded-md",
-                  isAnyServicePageActive
-                    ? "font-bold text-brand-primary dark:text-brand-primary border-b-[3px] border-brand-primary pb-2" // Apply active link styling
-                    : "text-brand-dark dark:text-brand-light hover:text-brand-primary"
-                )}
-                style={isAnyServicePageActive ? { backgroundColor: 'transparent', '--tw-bg-opacity': '0' } : {}} // Force transparent background
+              <ServicesDropdownTrigger
+                isActive={isAnyServicePageActive}
                 onMouseEnter={() => setIsServicesDropdownOpen(true)}
                 onMouseLeave={handleMouseLeave}
               >
                 Services
-              </Button>
+              </ServicesDropdownTrigger>
             </DropdownMenuTrigger>
             <DropdownMenuContent 
               align="end" 
               className="bg-brand-light dark:bg-brand-dark border-brand-secondary"
-              onMouseEnter={() => setIsServicesDropdownOpen(true)} // Keep open if mouse enters dropdown content
+              onMouseEnter={() => setIsServicesDropdownOpen(true)}
               onMouseLeave={handleMouseLeave}
             >
               {serviceLinks.map((service) => (
@@ -129,7 +121,7 @@ const Navbar = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Link to="/services" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 px-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light"> {/* Adjusted size */}
+          <Link to="/services" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 px-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
             Book a session
           </Link>
           <ThemeToggle />
@@ -151,7 +143,7 @@ const Navbar = () => {
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-brand-light dark:bg-brand-dark">
               <nav className="flex flex-col gap-4 pt-6">
                 {navLinks
-                  .filter(link => !serviceLinks.some(service => service.href === link.href) && link.name !== "Services") // Filter out service links and the old 'Services' entry
+                  .filter(link => !serviceLinks.some(service => service.href === link.href) && link.name !== "Services")
                   .map((link) => {
                     const isActive = link.href.startsWith("#")
                       ? (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))
@@ -183,14 +175,13 @@ const Navbar = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
-                      variant="ghost" // Always use ghost variant for consistent base styling
+                      variant="ghost"
                       className={cn(
                         "text-lg font-medium justify-start w-full px-4 py-2 rounded-md",
                         isAnyServicePageActive
-                          ? "font-bold text-brand-primary dark:text-brand-primary" // Apply active link styling
+                          ? "font-bold text-brand-primary dark:text-brand-primary bg-transparent hover:bg-transparent"
                           : "text-brand-dark dark:text-brand-light hover:text-brand-primary"
                       )}
-                      style={isAnyServicePageActive ? { backgroundColor: 'transparent', '--tw-bg-opacity': '0' } : {}} // Force transparent background
                       onClick={() => { /* Keep sheet open for dropdown */ }}
                     >
                       Services
