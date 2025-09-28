@@ -74,8 +74,8 @@ const ServicesPage: React.FC = () => {
               </CardContent>
               <div className="mt-6 text-center">
                 <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-                  <Link to="/voice-piano-services"> {/* Changed link here */}
-                    Learn More
+                  <Link to="/book-voice-piano"> {/* Changed link here */}
+                    Book Voice & Piano Session
                   </Link>
                 </Button>
               </div>

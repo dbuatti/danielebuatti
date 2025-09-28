@@ -35,7 +35,7 @@ const Navbar = () => {
 
   const serviceLinks = [
     { name: "Services Overview", href: "/services" },
-    { name: "Voice & Piano Coaching", href: "/voice-piano-services" },
+    { name: "Voice & Piano Coaching", href: "/book-voice-piano" }, // Updated link
     { name: "Healing & Body-Voice Integration", href: "/book-healing" },
     { name: "AMEB Accompanying", href: "/ameb-accompanying" },
     { name: "Live Piano Services", href: "/live-piano-services" },
