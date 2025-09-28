@@ -125,11 +125,11 @@
 
 /* Custom CSS to ensure SheetOverlay is dark and themed */
 .radix-dialog-overlay[data-state="open"] {
-  background-color: hsl(var(--background)) !important; /* Use themed background */
-  opacity: 0.8 !important; /* Ensure semi-transparency */
+  /* In light mode, use a semi-transparent dark color */
+  background-color: hsl(var(--brand-dark) / 0.6) !important; /* Use brand-dark with opacity */
 }
 
 .dark .radix-dialog-overlay[data-state="open"] {
-  background-color: hsl(var(--brand-dark)) !important; /* Darker in dark mode */
-  opacity: 0.9 !important;
+  /* In dark mode, use a slightly darker semi-transparent color */
+  background-color: hsl(var(--brand-dark) / 0.9) !important; /* Use brand-dark with higher opacity */
 }
