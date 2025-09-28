@@ -123,6 +123,7 @@ const Navbar = () => {
                 tabIndex={0}
                 onPointerEnter={handleMouseEnter}
                 onPointerLeave={handleMouseLeave}
+                aria-label="Toggle services menu"
               >
                 Services
               </span>
@@ -156,6 +157,7 @@ const Navbar = () => {
                 variant="ghost"
                 size="icon"
                 className="text-brand-dark dark:text-brand-light"
+                aria-label="Open main menu"
               >
                 <Menu className="h-6 w-6" />
                 <span className="sr-only">Toggle Menu</span>
@@ -202,6 +204,7 @@ const Navbar = () => {
                       )}
                       role="button"
                       tabIndex={0}
+                      aria-label="Toggle services menu"
                     >
                       Services
                     </span>
