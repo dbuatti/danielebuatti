@@ -6,17 +6,39 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Piano, FileText, CalendarDays, Download } from 'lucide-react'; // Added Download icon
+import DynamicImage from '@/components/DynamicImage'; // Import DynamicImage
+import SectionHeading from '@/components/SectionHeading'; // Import SectionHeading
 
 const AmebAccompanyingPage: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const pdfLink = "https://file.notion.so/f/f/8d90b4b2-f024-421e-b020-5d3e63481a43/17cf3257-f164-4512-a83a-c821cd02331f/_AMEB_Accompanying_Services_(1).pdf?table=block&id=1e6aad21-cd09-80a4-92d1-cccae463785c&spaceId=8d90b4b2-f024-421e-b020-5d3e63481a43&expirationTimestamp=1759046400000&signature=_0-ZXF1yZ6Z9HvBvPD_A9ctdpUtZZeFs7JizMuTMenc&downloadName=%F0%9F%8E%B9+AMEB+Accompanying+Services+%281%29.pdf";
+  const pdfLink = "https://file.notion.so/f/f/8d90b4b2-f024-421e-b020-5d3e63481a43/17cf3257-f164-4512-a83a-c821cd02331f/_AMEB_Accompanying_Services_(1).pdf?table=block&id=1e6aad21-cd09-80a4-92d1-cccae46378c&spaceId=8d90b4b2-f024-421e-b020-5d3e63481a43&expirationTimestamp=1759046400000&signature=_0-ZXF1yZ6Z9HvBvPD_A9ctdpUtZZeFs7JizMuTMenc&downloadName=%F0%9F%8E%B9+AMEB+Accompanying+Services+%281%29.pdf";
 
   return (
     <BookingPageLayout pageTitle="AMEB Accompanying Services">
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="max-w-4xl mx-auto space-y-10">
+        <SectionHeading className="mb-4">
+          AMEB Accompanying Services
+        </SectionHeading>
+        <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 text-center mt-2">
+          Professional & Supportive Piano Accompaniment for Your Exams
+        </p>
+
+        {/* Hero Image Section */}
+        <section className="relative mt-8 mb-8 rounded-xl overflow-hidden shadow-lg border-4 border-brand-secondary">
+          <DynamicImage
+            src="/danieleatkeyboard.jpeg"
+            alt="Daniele Buatti playing keyboard"
+            className="w-full h-96 md:h-[450px] object-cover object-center"
+            width={800}
+            height={533}
+          />
+          {/* Gradient Overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/50 to-transparent"></div>
+        </section>
+
         <p className="text-lg text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
           As a dedicated accompanist, I offer my services for AMEB exams, providing a professional and supportive environment for your exam. I offer a supportive attitude whilst ensuring the student feels grounded and supported when taking their exam.
         </p>
