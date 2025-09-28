@@ -38,7 +38,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   className,
   backgroundImageSrc,
   backgroundPosition = "center right", // Default to show Daniele on the right
-  imageOverlayClass = "bg-gradient-to-r from-brand-dark via-brand-dark/70 to-transparent", // Default gradient
+  imageOverlayClass = "bg-gradient-to-r from-brand-dark via-brand-dark/80 to-transparent", // Adjusted gradient for better contrast
   titleClassName,
   subtitle,
   subtitleTextColorClass,
@@ -68,11 +68,11 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
               height={80}
             />
           )}
-          <h3 className={cn("text-5xl md:text-6xl font-extrabold leading-tight", titleClassName)}>
+          <h3 className={cn("text-5xl md:text-6xl font-extrabold leading-tight text-shadow-sm", titleClassName)}>
             {title}
           </h3>
-          {subtitle && <p className={cn("text-xl md:text-2xl font-semibold", subtitleTextColorClass)}>{subtitle}</p>}
-          <div className="text-lg md:text-xl leading-relaxed">
+          {subtitle && <p className={cn("text-xl md:text-2xl font-semibold text-shadow-sm", subtitleTextColorClass)}>{subtitle}</p>}
+          <div className="text-lg md:text-xl leading-relaxed font-medium text-shadow-sm"> {/* Increased font size and weight for description */}
             {description}
           </div>
           <Button asChild size="lg" className={cn("text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
@@ -80,7 +80,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
               {linkText}
             </a>
           </Button>
-          <div className="mt-6 flex items-center gap-2 text-brand-light/80 text-sm md:text-base">
+          <div className="mt-6 flex items-center gap-2 text-brand-light/80 text-sm md:text-base text-shadow-sm">
             <CalendarDays className="h-5 w-5" />
             <span>MON - FRI Subject to availability</span>
           </div>
