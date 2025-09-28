@@ -24,7 +24,7 @@ const Navbar = () => {
   const location = useLocation();
   const { theme } = useTheme();
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
-  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = React.useState(false);
+  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = React.useState(false); // Keep state for controlled component
 
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
@@ -38,11 +38,7 @@ const Navbar = () => {
 
   const isAnyServicePageActive = serviceLinks.some(service => location.pathname === service.href);
 
-  const handleMouseLeave = () => {
-    setTimeout(() => {
-      setIsServicesDropdownOpen(false);
-    }, 150);
-  };
+  // Removed handleMouseLeave as it's no longer needed with simplified state management
 
   // Define common classes for the custom trigger
   const servicesTriggerClasses = cn(
@@ -108,8 +104,6 @@ const Navbar = () => {
             <DropdownMenuTrigger asChild>
               <span
                 className={servicesTriggerClasses}
-                onMouseEnter={() => setIsServicesDropdownOpen(true)}
-                onMouseLeave={handleMouseLeave}
                 role="button"
                 tabIndex={0}
               >
@@ -119,8 +113,6 @@ const Navbar = () => {
             <DropdownMenuContent
               align="end"
               className="bg-brand-light dark:bg-brand-dark border-brand-secondary"
-              onMouseEnter={() => setIsServicesDropdownOpen(true)}
-              onMouseLeave={handleMouseLeave}
             >
               {serviceLinks.map((service) => (
                 <DropdownMenuItem key={service.name} asChild>
@@ -195,7 +187,6 @@ const Navbar = () => {
                       )}
                       role="button"
                       tabIndex={0}
-                      // No onMouseEnter/onMouseLeave for mobile dropdown in sheet, it's click-based
                     >
                       Services
                     </span>
