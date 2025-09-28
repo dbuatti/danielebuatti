@@ -21,16 +21,16 @@ const ServicesPage: React.FC = () => {
           <DynamicImage
             src="/danielecalmatpiano.jpeg"
             alt="Daniele Buatti playing piano with eyes closed, deeply in the moment"
-            className="w-full h-80 md:h-96 object-cover rounded-xl shadow-lg border-4 border-brand-secondary" // Adjusted height
+            className="w-full h-80 md:h-96 object-cover rounded-xl shadow-lg border-4 border-brand-secondary object-[25%_center]" // Adjusted object-position
             width={800}
             height={533}
           />
         </section>
 
-        <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed mb-6"> {/* Removed font-libre-baskerville */}
+        <p className="text-xl text-center font-libre-baskerville text-brand-dark/80 dark:text-brand-light/80 leading-relaxed mb-6">
           Welcome! I’m Daniele Buatti, a vocal coach and musician passionate about helping artists connect deeply with their voice and body. My holistic approach recognizes that true expression and well-being are deeply intertwined. Whether you're looking for private coaching, vocal technique, or body-mind integration sessions, you’ll find a space here to explore, grow, and refine your artistry through an embodied connection.
         </p>
-        <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed mb-8"> {/* Removed font-libre-baskerville */}
+        <p className="text-xl text-center font-libre-baskerville text-brand-dark/80 dark:text-brand-light/80 leading-relaxed mb-8">
           Bookings are available for vocal coaching, kinesiology sessions, and body-voice work. Choose a session that suits your needs, and let’s create something wonderful together, fostering both your artistic and personal growth.
         </p>
 
