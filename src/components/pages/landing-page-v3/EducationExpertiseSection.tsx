@@ -1,26 +1,47 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Award, Mic, Music, Leaf, Piano, Megaphone, Theater, Webcam, FileText } from "lucide-react";
+import { Award, Mic, Music, Leaf, Piano, Megaphone, Theater, Webcam, FileText, Users, Brain, Volume2 } from "lucide-react"; // Added more icons for categories
 import ExpertiseItemCard from "@/components/ExpertiseItemCard";
+import SectionHeading from "@/components/SectionHeading"; // Import SectionHeading
 
 const EducationExpertiseSection: React.FC = () => {
   return (
-    <section className="max-w-7xl mx-auto py-12 grid lg:grid-cols-2 gap-12"> {/* Adjusted grid to 2 columns */}
-      <div className="lg:col-span-2 space-y-6"> {/* Removed lg:col-span-2 as it's now a 2-column grid */}
-        <h3 className="flex items-center gap-3 text-2xl font-bold text-brand-primary justify-center md:justify-start">
-          <Award className="h-7 w-7" />
-          My Key Expertise
-        </h3>
-        <div className="grid md:grid-cols-2 gap-6">
-          <ExpertiseItemCard icon={Mic} title="Vocal Coaching" description="Elevate your technique across contemporary, classical, and musical theatre genres." />
-          <ExpertiseItemCard icon={Music} title="Music Direction & Conducting" description="Master the art of leading and inspiring musical ensembles." />
-          <ExpertiseItemCard icon={Leaf} title="Holistic Voice & Somatic Techniques" description="Integrate Kinesiology, Breath-Body-Mind, Yoga, and Mindfulness for profound vocal freedom." />
-          <ExpertiseItemCard icon={Piano} title="Piano & Keyboard Performance" description="Enhance your instrumental skills and musicality." />
-          <ExpertiseItemCard icon={Megaphone} title="Public Speaking & Presentation Coaching" description="Cultivate confident, impactful communication." />
-          <ExpertiseItemCard icon={Theater} title="Acting & Film Performance Coaching" description="Refine your presence for stage and screen." />
-          <ExpertiseItemCard icon={Webcam} title="On-Camera & Streaming Presence" description="Develop authentic and engaging virtual communication." />
-          <ExpertiseItemCard icon={FileText} title="Score Preparation & Technology Integration" description="Streamline your musical workflow with modern tools." />
-        </div>
+    <section className="max-w-7xl mx-auto py-12 space-y-10">
+      <SectionHeading>My Key Expertise</SectionHeading> {/* Using SectionHeading */}
+      <div className="grid md:grid-cols-3 gap-8">
+        {/* Category 1: Performance & Musicianship */}
+        <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+          <Music className="h-12 w-12 text-brand-primary mx-auto mb-4" />
+          <CardTitle className="text-2xl text-brand-primary">Performance & Musicianship</CardTitle>
+          <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3">
+            <p><strong>Vocal Coaching:</strong> Elevate your technique across contemporary, classical, and musical theatre genres.</p>
+            <p><strong>Piano & Keyboard Performance:</strong> Enhance your instrumental skills and musicality.</p>
+            <p><strong>Music Direction & Conducting:</strong> Master the art of leading and inspiring musical ensembles.</p>
+            <p><strong>Score Preparation & Technology:</strong> Streamline your musical workflow with modern tools.</p>
+          </CardContent>
+        </Card>
+
+        {/* Category 2: Embodiment & Somatic Work */}
+        <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+          <Leaf className="h-12 w-12 text-brand-primary mx-auto mb-4" />
+          <CardTitle className="text-2xl text-brand-primary">Embodiment & Somatic Work</CardTitle>
+          <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3">
+            <p><strong>Holistic Voice & Somatic Techniques:</strong> Integrate Kinesiology, Breath-Body-Mind, Yoga, and Mindfulness for profound vocal freedom.</p>
+            <p><strong>Tension Release:</strong> Learn to soften the body and free the breath for effortless control.</p>
+            <p><strong>Mind-Body Connection:</strong> Cultivate a deeper awareness to support your voice and presence naturally.</p>
+          </CardContent>
+        </Card>
+
+        {/* Category 3: Presence & Communication */}
+        <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+          <Megaphone className="h-12 w-12 text-brand-primary mx-auto mb-4" />
+          <CardTitle className="text-2xl text-brand-primary">Presence & Communication</CardTitle>
+          <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3">
+            <p><strong>Public Speaking & Presentation:</strong> Cultivate confident, impactful communication and authentic stage presence.</p>
+            <p><strong>Acting & Film Performance:</strong> Refine your presence for stage, screen, and auditions.</p>
+            <p><strong>On-Camera & Streaming:</strong> Develop authentic and engaging virtual communication.</p>
+          </CardContent>
+        </Card>
       </div>
     </section>
   );

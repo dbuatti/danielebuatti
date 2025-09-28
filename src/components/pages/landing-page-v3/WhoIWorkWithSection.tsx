@@ -12,7 +12,7 @@ const WhoIWorkWithSection: React.FC = () => {
           <CardHeader className="p-0 pb-4">
             <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
               <Mic className="h-6 w-6" />
-              Singers & Musicians
+              Singers & Aspiring Musicians
             </CardTitle>
           </CardHeader>
           <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
@@ -23,7 +23,7 @@ const WhoIWorkWithSection: React.FC = () => {
           <CardHeader className="p-0 pb-4">
             <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
               <Lightbulb className="h-6 w-6" />
-              Public Speakers & Presenters
+              Dynamic Public Speakers
             </CardTitle>
           </CardHeader>
           <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
@@ -34,7 +34,7 @@ const WhoIWorkWithSection: React.FC = () => {
           <CardHeader className="p-0 pb-4">
             <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
               <Camera className="h-6 w-6" />
-              Actors & On-Camera Talent
+              Film & Streaming Performers
             </CardTitle>
           </CardHeader>
           <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">

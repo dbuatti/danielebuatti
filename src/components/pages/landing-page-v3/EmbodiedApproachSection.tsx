@@ -15,21 +15,21 @@ const EmbodiedApproachSection: React.FC = () => {
           <Brain className="h-12 w-12 text-brand-primary mx-auto mb-4" />
           <CardTitle className="text-2xl text-brand-primary">1. Embodiment & Alignment</CardTitle>
           <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-            Rooted in Kinesiology, Yoga, and Somatic Therapy, we release tension, improve posture, and find effortless breath control. Free your body to support your voice, instrument, and presence naturally, cultivating a deeper connection between mind and body.
+            Rooted in Kinesiology, Yoga, and Somatic Therapy, we soften the body, lift posture, and free the breath so it supports your voice with ease. Cultivate a deeper connection between mind and body.
           </CardContent>
         </Card>
         <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
           <Lightbulb className="h-12 w-12 text-brand-primary mx-auto mb-4" />
           <CardTitle className="text-2xl text-brand-primary">2. Mindset & Performance Coaching</CardTitle>
           <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-            Utilising Mindfulness and therapeutic techniques, we manage nerves, setbacks, and creative blocks. Build consistency and unwavering confidence in practice, on stage, or on camera, understanding your mind to overcome performance anxiety.
+            Utilising Mindfulness and therapeutic techniques, we manage nerves, setbacks, and creative blocks. Build unwavering confidence in practice, on stage, or on camera, understanding your mind to overcome performance anxiety.
           </CardContent>
         </Card>
         <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
           <Volume2 className="h-12 w-12 text-brand-primary mx-auto mb-4" />
           <CardTitle className="text-2xl text-brand-primary">3. Integrated Skill Development</CardTitle>
           <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-            Voice, piano, public speaking, acting, on-camera presence—tailored to your goals. Coaching is practical, creative, and always aligned with your unique vision and desired impact, helping you refine repertoire and improve musicianship.
+            Voice, piano, public speaking, acting, on-camera presence—tailored to your goals. Coaching is practical, creative, and always aligned with your unique vision, helping you refine repertoire and improve musicianship.
           </CardContent>
         </Card>
       </div>
