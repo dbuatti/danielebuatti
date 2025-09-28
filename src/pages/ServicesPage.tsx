@@ -16,22 +16,20 @@ const ServicesPage: React.FC = () => {
 
   return (
     <BookingPageLayout>
-      <div className="max-w-4xl mx-auto space-y-10"> {/* Reduced space-y from 12 to 10 */}
+      <div className="max-w-4xl mx-auto space-y-10">
         <SectionHeading className="mb-8">
-          <h2 className="text-5xl md:text-6xl font-bold text-brand-primary leading-tight">
-            My Services
-          </h2>
-          <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 mt-2">
-            Holistic Coaching for Your Voice, Body, and Performance
-          </p>
+          My Services {/* Pass only the text to SectionHeading */}
         </SectionHeading>
+        <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 text-center mt-2">
+          Holistic Coaching for Your Voice, Body, and Performance {/* Render subtitle separately */}
+        </p>
 
         {/* Hero Image Section */}
-        <section className="relative mb-8 rounded-xl overflow-hidden shadow-lg border-4 border-brand-secondary"> {/* Added relative for overlay positioning */}
+        <section className="relative mb-8 rounded-xl overflow-hidden shadow-lg border-4 border-brand-secondary">
           <DynamicImage
             src="/danielecalmatpiano.jpeg"
             alt="Daniele Buatti playing piano with eyes closed, deeply in the moment"
-            className="w-full h-96 md:h-[450px] object-cover object-[5%_20%]" // Reduced height from 500px to 450px for md screens
+            className="w-full h-96 md:h-[450px] object-cover object-[5%_20%]"
             width={800}
             height={533}
           />
@@ -54,7 +52,7 @@ const ServicesPage: React.FC = () => {
 
         <div className="grid md:grid-cols-2 gap-8">
           {/* Voice & Piano Coaching Card */}
-          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] hover:border-brand-primary transition-all duration-300"> {/* Added hover:border-brand-primary */}
+          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] hover:border-brand-primary transition-all duration-300">
             <CardHeader className="p-0 pb-4">
               <CardTitle className="flex items-center gap-3 text-2xl text-brand-primary">
                 <Mic className="h-7 w-7" />
@@ -79,7 +77,7 @@ const ServicesPage: React.FC = () => {
           </Card>
 
           {/* Healing & Body-Voice Integration Card */}
-          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] hover:border-brand-primary transition-all duration-300"> {/* Added hover:border-brand-primary */}
+          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] hover:border-brand-primary transition-all duration-300">
             <CardHeader className="p-0 pb-4">
               <CardTitle className="flex items-center gap-3 text-2xl text-brand-primary">
                 <HeartHandshake className="h-7 w-7" />

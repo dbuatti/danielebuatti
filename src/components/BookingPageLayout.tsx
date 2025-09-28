@@ -22,9 +22,11 @@ const BookingPageLayout: React.FC<BookingPageLayoutProps> = ({ children }) => {
       {/* Header */}
       <header className="bg-brand-dark py-4 px-6 md:px-12 shadow-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Button asChild variant="ghost" className="text-brand-light hover:bg-brand-primary hover:text-brand-light"> {/* Updated hover styles */}
+          <Button asChild variant="ghost" className="text-brand-light hover:bg-brand-primary hover:text-brand-light">
             <Link to="/">
-              <ArrowLeft className="h-5 w-5 mr-2" /> Back to Home
+              <span> {/* Wrap icon and text in a span */}
+                <ArrowLeft className="h-5 w-5 mr-2" /> Back to Home
+              </span>
             </Link>
           </Button>
           <div className="flex items-center">
@@ -34,7 +36,7 @@ const BookingPageLayout: React.FC<BookingPageLayoutProps> = ({ children }) => {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-12"> {/* Changed py-8 to py-12 */}
+      <main className="container mx-auto px-4 py-12">
         {children}
       </main>
 
