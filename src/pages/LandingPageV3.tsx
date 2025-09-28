@@ -4,11 +4,11 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
 import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
-import SeoStructuredData from "@/components/SeoStructuredData"; // New import
+import SeoStructuredData from "@/components/SeoStructuredData";
 
 // Import new modular sections
 import HeroSection from "@/components/pages/landing-page-v3/HeroSection";
-import AboutMeSection from "@/components/pages/landing-page-v3/AboutMeSection";
+import UnifiedAboutSection from "@/components/pages/landing-page-v3/UnifiedAboutSection"; // New import
 import EducationExpertiseSection from "@/components/pages/landing-page-v3/EducationExpertiseSection";
 import GreenroomAwardsSection from "@/components/pages/landing-page-v3/GreenroomAwardsSection";
 import WhoIWorkWithSection from "@/components/pages/landing-page-v3/WhoIWorkWithSection";
@@ -22,7 +22,6 @@ import TulipsSection from "@/components/pages/landing-page-v3/TulipsSection";
 import CallToActionSection from "@/components/pages/landing-page-v3/CallToActionSection";
 import AdditionalProgramsSection from "@/components/pages/landing-page-v3/AdditionalProgramsSection";
 import InstagramFeedSection from "@/components/pages/landing-page-v3/InstagramFeedSection";
-import FullBioSection from "@/components/pages/landing-page-v3/FullBioSection";
 import AdditionalProgramBanner from "@/components/AdditionalProgramBanner";
 
 const LandingPageV3: React.FC = () => {
@@ -30,14 +29,14 @@ const LandingPageV3: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
-      <SeoStructuredData /> {/* Add structured data here */}
+      <SeoStructuredData />
       <Navbar />
       <main className="mx-auto px-4">
         <HeroSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <AboutMeSection />
+        <UnifiedAboutSection /> {/* Using the new unified section */}
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <EducationExpertiseSection />
+        <EducationExpertiseSection /> {/* This will be updated in a later step to only contain expertise */}
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <GreenroomAwardsSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
@@ -52,8 +51,7 @@ const LandingPageV3: React.FC = () => {
         <TestimonialsSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <SessionsAvailabilitySection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" /> {/* Separator before the banner */}
-        {/* Online Drop-In Audition Cut Sessions Banner - Moved Here */}
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <AdditionalProgramBanner
           title={<span className="text-brand-primary">AUDITION CUT PLAYTHROUGH</span>}
           subtitle="Live run through of your audition cut"
@@ -75,12 +73,10 @@ const LandingPageV3: React.FC = () => {
           backgroundImageSrc="/danielepianolaugh.jpeg"
           backgroundPosition="80% center"
         />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" /> {/* Separator after the banner */}
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
         <WhyWorkWithMeSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <TulipsSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <FullBioSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <CallToActionSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
