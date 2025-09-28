@@ -1,5 +1,5 @@
 import React from "react";
-import { Instagram, Youtube, Twitch, Mail, Phone, Link as LinkIcon, Piano, Users, Facebook, Heart, MessageSquare, Newspaper, Coffee } from "lucide-react";
+import { Instagram, Youtube, Mail, Phone, Link as LinkIcon, Newspaper } from "lucide-react"; // Removed Twitch, Facebook, Heart, MessageSquare, Coffee
 import { Separator } from "@/components/ui/separator";
 import DynamicImage from "@/components/DynamicImage"; // Import DynamicImage
 
@@ -7,15 +7,8 @@ const Footer = () => {
   const socialLinks = [
     { name: "Instagram", href: "https://instagram.com/daniele.buatti", icon: Instagram },
     { name: "YouTube", href: "http://youtube.com/danielebuatti", icon: Youtube },
-    { name: "Twitch", href: "https://twitch.tv/danielebuatti", icon: Twitch },
-    // Removed Piano Backings as it's featured in AdditionalProgramsSection
-    { name: "Substack", href: "https://substack.com/@danielebuatti", icon: LinkIcon },
-    // Removed Resonance Choir as it's featured in AdditionalProgramsSection
-    { name: "Facebook", href: "http://www.facebook.com/danielebuatti", icon: Facebook },
-    { name: "Patreon", href: "http://patreon.com/danielebuatti", icon: Heart },
-    { name: "Discord", href: "https://discord.gg/pfW8B3Fy", icon: MessageSquare },
-    { name: "Mailing List", href: "http://eepurl.com/hg2ptX", icon: Newspaper },
-    { name: "Buy Me a Coffee", href: "http://Buymeacoffee.com/danielebuatti", icon: Coffee },
+    { name: "Substack", href: "https://substack.com/@danielebuatti", icon: Newspaper }, // Changed icon to Newspaper for Substack
+    { name: "Mailing List", href: "http://eepurl.com/hg2ptX", icon: LinkIcon }, // Changed icon to LinkIcon for Mailing List
   ];
 
   return (
