@@ -80,7 +80,9 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
       {backgroundImageSrc && (
         <div className={cn(
           "absolute inset-0",
-          contentAlignment === 'left' ? "bg-gradient-to-r from-brand-dark/70 to-transparent" : imageOverlayClass // Use gradient for left alignment
+          // If content is left-aligned, create a gradient from the solid background color to transparent
+          // Otherwise, use the default imageOverlayClass (e.g., bg-black/50)
+          contentAlignment === 'left' ? `bg-gradient-to-r from-[var(--brand-dark)] to-transparent` : imageOverlayClass
         )}></div>
       )}
 
