@@ -4,8 +4,8 @@ import { CalendarDays, Users, Monitor } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { cn } from "@/lib/utils"; // Import cn for utility classes
-import AdditionalProgramBanner from "@/components/AdditionalProgramBanner"; // Import AdditionalProgramBanner
+import { cn } from "@/lib/utils";
+import AdditionalProgramBanner from "@/components/AdditionalProgramBanner";
 
 const SessionsAvailabilitySection: React.FC = () => {
   return (
@@ -84,18 +84,30 @@ const SessionsAvailabilitySection: React.FC = () => {
         📅 Limited November spots are now open. DM to claim your session or schedule a complimentary discovery call.
       </p>
 
-      {/* Pink header */}
+      {/* NEW: Online Drop-In Audition Cut Sessions Banner */}
       <AdditionalProgramBanner
-        title={<span className="text-brand-primary">Online Drop-In Audition Cut Sessions</span>}
-        description="A quick, focused 15-minute online session to run through your 16–32 bar audition cut with an experienced pianist and vocal coach. Get immediate feedback to ensure you're polished and performance-ready for only A$30."
+        title={<span className="text-brand-primary">AUDITION CUT PLAYTHROUGH</span>}
+        subtitle="Live run through of your audition cut"
+        description={
+          <ul className="list-disc list-inside space-y-2 text-lg text-brand-light">
+            <li>15 minute online drop-in</li>
+            <li>Run your 16–32 bar cut with an experienced audition pianist</li>
+            <li>Live playthrough + practical feedback</li>
+            <li>Perfect for auditions & self-tapes</li>
+            <li>Upload your clear PDF when booking</li>
+          </ul>
+        }
         link="https://danielebuatti.as.me/audition-cut-playthrough-15"
         linkText="Book a Playthrough"
-        bgColorClass="bg-brand-dark" // Dark blue background
-        textColorClass="text-brand-light" // Light text for description
+        bgColorClass="bg-brand-dark" // Fallback background color
+        textColorClass="text-brand-light"
         buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-        // Make it full width and add more vertical padding
         className="w-screen -mx-4 py-16" // Full width, negative margins, increased padding
-        titleClassName="text-5xl md:text-6xl font-extrabold" // Larger, bolder title
+        titleClassName="text-5xl md:text-6xl font-extrabold uppercase" // Larger, bolder, uppercase title
+        backgroundImageSrc="/danielepianolaugh.jpeg" // Image for the background
+        backgroundPosition="right center" // Position image to show Daniele on the right
+        imageOverlayClass="bg-brand-dark/70" // Darker overlay for contrast
+        contentAlignment="left" // Align content to the left
       />
     </section>
   );
