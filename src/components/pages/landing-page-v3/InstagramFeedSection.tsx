@@ -14,7 +14,7 @@ const InstagramFeedSection: React.FC = () => {
             scrolling="no"
             allowTransparency={true}
             className="lightwidget-widget"
-            style={{ width: '100%', border: 0, overflow: 'hidden', height: '2000px' }} // Set height to 2000px
+            style={{ width: '100%', border: 0, overflow: 'hidden', height: '1600px' }} // Set height to 1600px
             title="Instagram Feed"
           ></iframe>
         </div>
