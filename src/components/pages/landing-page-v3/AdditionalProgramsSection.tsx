@@ -54,6 +54,19 @@ const AdditionalProgramsSection: React.FC = () => {
           overlayColorClass="bg-black/50"
           backgroundPosition="center 40%"
         />
+
+        {/* NEW: FeaturedProgramCard for AMEB Accompanying Services */}
+        <FeaturedProgramCard
+          title="AMEB Accompanying Services"
+          description="Professional and supportive piano accompaniment for your AMEB exams, ensuring you feel confident and ready."
+          link="/ameb-accompanying"
+          linkText="Learn More"
+          backgroundImageSrc="/Piano Keys_edited_edited.avif"
+          className="max-w-6xl"
+          buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
+          overlayColorClass="bg-black/60"
+          backgroundPosition="center"
+        />
       </div>
     </section>
   );
