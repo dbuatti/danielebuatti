@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone } from "lucide-react";
-import ContactForm from "@/components/ContactForm";
+import ContactForm from "@/components/ContactForm"; // Keep import for now, but it won't be rendered
 import SectionHeading from "@/components/SectionHeading";
 
 const CallToActionSection: React.FC = () => {
@@ -19,15 +19,13 @@ const CallToActionSection: React.FC = () => {
         <Button
           size="lg"
           className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
-          onClick={handleBookOnlineClick} // Use onClick handler
+          onClick={handleBookOnlineClick}
         >
           Book Online
         </Button>
       </div>
-      <div className="mt-8 p-8 bg-brand-light dark:bg-brand-dark rounded-xl shadow-lg max-w-lg mx-auto border border-brand-secondary">
-        <ContactForm />
-      </div>
-      {/* Removed the duplicate contact information here */}
+      {/* The main ContactForm is now removed from this section. 
+          A newsletter signup is available in the footer, and direct contact info is also there. */}
     </section>
   );
 };

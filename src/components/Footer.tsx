@@ -1,7 +1,8 @@
 import React from "react";
-import { Instagram, Youtube, Mail, Phone, Link as LinkIcon, Newspaper, Twitch, Facebook } from "lucide-react"; // Removed Patreon and Discord
+import { Instagram, Youtube, Mail, Phone, Link as LinkIcon, Newspaper, Twitch, Facebook } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import DynamicImage from "@/components/DynamicImage";
+import NewsletterSignup from "@/components/NewsletterSignup"; // Import NewsletterSignup
 
 const Footer = () => {
   const socialLinks = [
@@ -10,14 +11,23 @@ const Footer = () => {
     { name: "Twitch", href: "https://twitch.tv/danielebuatti", icon: Twitch },
     { name: "Substack", href: "https://substack.com/@danielebuatti", icon: Newspaper },
     { name: "Facebook", href: "http://www.facebook.com/danielebuatti", icon: Facebook },
-    // { name: "Patreon", href: "http://patreon.com/danielebuatti", icon: Patreon }, // Patreon icon removed
-    // { name: "Discord", href: "https://discord.gg/pfW8B3Fy", icon: Discord }, // Discord icon removed
     { name: "Mailing List", href: "http://eepurl.com/hg2ptX", icon: LinkIcon },
   ];
 
   return (
     <footer className="bg-brand-dark text-brand-light py-12">
       <div className="container mx-auto px-4 text-center space-y-8">
+        {/* Newsletter Signup Section */}
+        <div className="space-y-4">
+          <h3 className="text-2xl font-bold text-brand-light">Stay Connected</h3>
+          <p className="text-brand-light/80 max-w-md mx-auto">
+            Join my newsletter for exclusive insights, updates, and special offers.
+          </p>
+          <NewsletterSignup />
+        </div>
+
+        <Separator className="max-w-md mx-auto bg-brand-secondary" />
+
         <div className="flex flex-wrap justify-center gap-8">
           {socialLinks.map((link) => (
             <a
