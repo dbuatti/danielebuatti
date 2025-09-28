@@ -28,6 +28,8 @@ interface AdditionalProgramBannerProps {
   // NEW PROPS for content specifically in the left column when titleInLeftColumn is true
   leftColumnTitle?: React.ReactNode;
   leftColumnSubtitle?: string;
+  // NEW: Prop for specific title styling
+  titleClassName?: string; // Added for specific title styling
 }
 
 const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
@@ -51,6 +53,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   subtitleTextColorClass,
   leftColumnTitle,
   leftColumnSubtitle,
+  titleClassName, // Destructure new prop
 }) => {
   // Helper function to render the main content block
   const renderContentBlock = (currentTitle: React.ReactNode, currentSubtitle?: string, currentLogoSrc?: string) => {
@@ -68,7 +71,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
             height={80}
           />
         )}
-        <h3 className={cn("text-4xl font-bold leading-tight", currentTitleFontClass)}>{currentTitle}</h3>
+        <h3 className={cn("text-4xl font-bold leading-tight", currentTitleFontClass, titleClassName)}>{currentTitle}</h3> {/* Apply titleClassName here */}
         {currentSubtitle && <p className={cn("text-xl", subtitleTextColorClass)}>{currentSubtitle}</p>}
         <p className="text-lg max-w-3xl">{description}</p>
         <Button asChild size="lg" variant={buttonVariant} className={cn("text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
@@ -84,7 +87,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   const baseContentClasses = "relative z-10 flex flex-col justify-center p-8 space-y-6 h-full";
 
   return (
-    <div className={cn("relative w-full flex flex-col overflow-hidden", className)}>
+    <div className={cn("relative w-full flex flex-col overflow-hidden", className)}> {/* Removed max-w-6xl mx-auto from here */}
       {titleInLeftColumn ? (
         // Case 1: Title in left column (split layout)
         <div className="flex-grow grid grid-cols-1 md:grid-cols-3 h-[280px]">

@@ -86,14 +86,16 @@ const SessionsAvailabilitySection: React.FC = () => {
 
       {/* NEW: Online Drop-In Audition Cut Sessions Banner */}
       <AdditionalProgramBanner
-        title="Online Drop-In Audition Cut Sessions"
+        title={<span className="text-brand-primary">Online Drop-In Audition Cut Sessions</span>} {/* Pink header */}
         description="A quick, focused 15-minute online session to run through your 16–32 bar audition cut with an experienced pianist and vocal coach. Get immediate feedback to ensure you're polished and performance-ready for only A$30."
         link="https://danielebuatti.as.me/audition-cut-playthrough-15"
         linkText="Book a Playthrough"
-        bgColorClass="bg-brand-dark"
-        textColorClass="text-brand-light"
+        bgColorClass="bg-brand-dark" // Dark blue background
+        textColorClass="text-brand-light" // Light text for description
         buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-        className="max-w-full mx-auto mt-10" // Ensure it's full width within the section
+        // Make it full width and add more vertical padding
+        className="w-screen -mx-4 py-16" // Full width, negative margins, increased padding
+        titleClassName="text-5xl md:text-6xl font-extrabold" // Larger, bolder title
       />
     </section>
   );
