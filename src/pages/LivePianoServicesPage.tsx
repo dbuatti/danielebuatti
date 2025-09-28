@@ -317,11 +317,11 @@ const LivePianoServicesPage: React.FC = () => {
                           <SelectValue placeholder="Select an option" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="bg-livePiano-background border-livePiano-border text-livePiano-light">
-                        <SelectItem value="grand-piano">Grand Piano</SelectItem>
-                        <SelectItem value="upright-piano">Upright Piano</SelectItem>
-                        <SelectItem value="digital-piano">Digital Piano</SelectItem>
-                        <SelectItem value="none">None (I need one provided)</SelectItem>
+                      <SelectContent className="z-50 bg-livePiano-background border-livePiano-border text-livePiano-light">
+                        <SelectItem value="grand-piano" className="focus:bg-livePiano-primary focus:text-livePiano-light data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-light">Grand Piano</SelectItem>
+                        <SelectItem value="upright-piano" className="focus:bg-livePiano-primary focus:text-livePiano-light data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-light">Upright Piano</SelectItem>
+                        <SelectItem value="digital-piano" className="focus:bg-livePiano-primary focus:text-livePiano-light data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-light">Digital Piano</SelectItem>
+                        <SelectItem value="none" className="focus:bg-livePiano-primary focus:text-livePiano-light data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-light">None (I need one provided)</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
