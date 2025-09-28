@@ -43,9 +43,7 @@ const Navbar = () => {
     "text-sm font-medium transition-colors hover:text-brand-primary",
     "px-3 py-2 rounded-md cursor-pointer", // Added cursor-pointer for better UX
     "bg-transparent hover:bg-transparent", // Ensure no background
-    isAnyServicePageActive || isServicesDropdownOpen // Apply active styles if any service page is active OR dropdown is open
-      ? "font-bold text-brand-primary dark:text-brand-primary border-2 border-brand-primary" // Pink stroke
-      : "text-brand-dark dark:text-brand-light"
+    "font-bold text-brand-primary dark:text-brand-primary border-2 border-brand-primary" // Always apply pink stroke
   );
 
   return (
@@ -179,9 +177,7 @@ const Navbar = () => {
                       className={cn(
                         "text-lg font-medium justify-start w-full px-4 py-2 rounded-md cursor-pointer",
                         "bg-transparent hover:bg-transparent", // Ensure no background
-                        isAnyServicePageActive || isServicesDropdownOpen // Apply active styles if any service page is active OR dropdown is open
-                          ? "font-bold text-brand-primary dark:text-brand-primary border-2 border-brand-primary" // Pink stroke
-                          : "text-brand-dark dark:text-brand-light hover:text-brand-primary"
+                        "font-bold text-brand-primary dark:text-brand-primary border-2 border-brand-primary" // Always apply pink stroke
                       )}
                       role="button"
                       tabIndex={0}
