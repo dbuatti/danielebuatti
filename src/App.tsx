@@ -4,7 +4,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPageV3 from './pages/LandingPageV3';
 import LivePianoServicesPage from './pages/LivePianoServicesPage';
-import VoicePianoServicesPage from './pages/VoicePianoServicesPage'; // New import
+import VoicePianoServicesPage from './pages/VoicePianoServicesPage';
 import VoicePianoBookingPage from './pages/VoicePianoBookingPage';
 import HealingBookingPage from './pages/HealingBookingPage';
 import AmebAccompanyingPage from './pages/AmebAccompanyingPage';
@@ -13,13 +13,13 @@ import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
-    <Router>
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}> {/* Added future flags */}
       <Toaster />
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<LandingPageV3 />} />
         <Route path="/live-piano-services" element={<LivePianoServicesPage />} />
-        <Route path="/voice-piano-services" element={<VoicePianoServicesPage />} /> {/* New route */}
+        <Route path="/voice-piano-services" element={<VoicePianoServicesPage />} />
         <Route path="/book-voice-piano" element={<VoicePianoBookingPage />} />
         <Route path="/book-healing" element={<HealingBookingPage />} />
         <Route path="/ameb-accompanying" element={<AmebAccompanyingPage />} />
