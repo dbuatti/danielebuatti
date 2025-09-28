@@ -67,10 +67,14 @@ const Navbar = () => {
     }, 150);
   };
 
+  const scrollToTop = () => {
+    window.scrollTo(0, 0);
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
       <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center space-x-2">
+        <Link to="/" className="flex items-center space-x-2" onClick={scrollToTop}> {/* Added onClick={scrollToTop} */}
           <DynamicImage
             src={brandSymbolSrc}
             alt="Daniele Buatti Brand Symbol"
@@ -101,7 +105,7 @@ const Navbar = () => {
 
               if (link.href.startsWith('/')) {
                 return (
-                  <Link key={link.name} to={link.href} className={commonClasses}>
+                  <Link key={link.name} to={link.href} className={commonClasses} onClick={link.href === "/" ? scrollToTop : undefined}> {/* Added onClick for Home link */}
                     {link.name}
                   </Link>
                 );
@@ -180,7 +184,7 @@ const Navbar = () => {
 
                     if (link.href.startsWith('/')) {
                       return (
-                        <Link key={link.name} to={link.href} className={commonClasses} onClick={() => setIsSheetOpen(false)}>
+                        <Link key={link.name} to={link.href} className={commonClasses} onClick={link.href === "/" ? () => { scrollToTop(); setIsSheetOpen(false); } : () => setIsSheetOpen(false)}> {/* Added onClick for Home link and close sheet */}
                           {link.name}
                         </Link>
                       );
