@@ -30,6 +30,7 @@ const Navbar = () => {
 
   // Define service links for the dropdown
   const serviceLinks = [
+    { name: "Services Overview", href: "/services" }, // New consolidated services page
     { name: "Live Piano Services", href: "/live-piano-services" },
     { name: "Voice & Piano Coaching", href: "/voice-piano-services" },
     { name: "AMEB Accompanying", href: "/ameb-accompanying" },
@@ -56,7 +57,7 @@ const Navbar = () => {
         </Link>
         <nav className="hidden md:flex items-center space-x-6">
           {navLinks
-            .filter(link => !serviceLinks.some(service => service.href === link.href)) // Filter out service links
+            .filter(link => !serviceLinks.some(service => service.href === link.href) && link.name !== "Services") // Filter out service links and the old 'Services' entry
             .map((link) => {
               const isActive = link.href.startsWith("#")
                 ? (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))
@@ -132,7 +133,7 @@ const Navbar = () => {
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-brand-light dark:bg-brand-dark">
               <nav className="flex flex-col gap-4 pt-6">
                 {navLinks
-                  .filter(link => !serviceLinks.some(service => service.href === link.href)) // Filter out service links
+                  .filter(link => !serviceLinks.some(service => service.href === link.href) && link.name !== "Services") // Filter out service links and the old 'Services' entry
                   .map((link) => {
                     const isActive = link.href.startsWith("#")
                       ? (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))

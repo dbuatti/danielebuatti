@@ -8,6 +8,7 @@ import VoicePianoServicesPage from './pages/VoicePianoServicesPage';
 import VoicePianoBookingPage from './pages/VoicePianoBookingPage';
 import HealingBookingPage from './pages/HealingBookingPage';
 import AmebAccompanyingPage from './pages/AmebAccompanyingPage';
+import ServicesPage from './pages/ServicesPage'; // New import
 import { Toaster } from 'sonner';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -18,6 +19,7 @@ function App() {
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<LandingPageV3 />} />
+        <Route path="/services" element={<ServicesPage />} /> {/* New route */}
         <Route path="/live-piano-services" element={<LivePianoServicesPage />} />
         <Route path="/voice-piano-services" element={<VoicePianoServicesPage />} />
         <Route path="/book-voice-piano" element={<VoicePianoBookingPage />} />
