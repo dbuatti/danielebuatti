@@ -16,9 +16,9 @@ const ServicesPage: React.FC = () => {
 
   return (
     <BookingPageLayout>
-      <div className="max-w-4xl mx-auto space-y-12"> {/* Increased space-y for better separation */}
+      <div className="max-w-4xl mx-auto space-y-10"> {/* Reduced space-y from 12 to 10 */}
         <SectionHeading className="mb-8">
-          <h2 className="text-5xl md:text-6xl font-bold text-brand-primary leading-tight"> {/* Removed font-libre-baskerville */}
+          <h2 className="text-5xl md:text-6xl font-bold text-brand-primary leading-tight">
             My Services
           </h2>
           <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 mt-2">
@@ -31,7 +31,7 @@ const ServicesPage: React.FC = () => {
           <DynamicImage
             src="/danielecalmatpiano.jpeg"
             alt="Daniele Buatti playing piano with eyes closed, deeply in the moment"
-            className="w-full h-96 md:h-[500px] object-cover object-[5%_20%]" // Increased height for more impact
+            className="w-full h-96 md:h-[450px] object-cover object-[5%_20%]" // Reduced height from 500px to 450px for md screens
             width={800}
             height={533}
           />
