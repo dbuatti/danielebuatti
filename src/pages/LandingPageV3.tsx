@@ -21,6 +21,7 @@ import TulipsSection from "@/components/pages/landing-page-v3/TulipsSection";
 import CallToActionSection from "@/components/pages/landing-page-v3/CallToActionSection";
 import AdditionalProgramsSection from "@/components/pages/landing-page-v3/AdditionalProgramsSection";
 import InstagramFeedSection from "@/components/pages/landing-page-v3/InstagramFeedSection";
+import FullBioSection from "@/components/pages/landing-page-v3/FullBioSection"; // Ensure this import is present
 import AdditionalProgramBanner from "@/components/AdditionalProgramBanner"; // Import the banner component
 
 const LandingPageV3: React.FC = () => {
