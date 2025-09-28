@@ -3,7 +3,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetOverlay } from "@/components/ui/sheet"; // Import SheetOverlay
 import { Link, useLocation } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
 import { navLinks } from "@/constants/navigation";
@@ -20,7 +20,7 @@ const Navbar = () => {
 
   // Determine logo sources based on theme
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
-  const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png"; // Corrected this line
+  const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
@@ -75,7 +75,7 @@ const Navbar = () => {
         </nav>
         <div className="flex items-center md:hidden">
           <ThemeToggle />
-          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}> {/* Control sheet state */}
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
@@ -86,6 +86,7 @@ const Navbar = () => {
                 <span className="sr-only">Toggle Menu</span>
               </Button>
             </SheetTrigger>
+            <SheetOverlay className="bg-black/60 dark:bg-black/90 z-[999]" /> {/* Direct styling for overlay */}
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-brand-light dark:bg-brand-dark">
               <nav className="flex flex-col gap-4 pt-6">
                 {navLinks.map((link) => {
@@ -102,20 +103,20 @@ const Navbar = () => {
 
                   if (link.href.startsWith('/')) {
                     return (
-                      <Link key={link.name} to={link.href} className={commonClasses} onClick={() => setIsSheetOpen(false)}> {/* Close sheet on click */}
+                      <Link key={link.name} to={link.href} className={commonClasses} onClick={() => setIsSheetOpen(false)}>
                         {link.name}
                       </Link>
                     );
                   } else {
                     return (
-                      <a key={link.name} href={link.href} className={commonClasses} onClick={() => setIsSheetOpen(false)}> {/* Close sheet on click */}
+                      <a key={link.name} href={link.href} className={commonClasses} onClick={() => setIsSheetOpen(false)}>
                         {link.name}
                       </a>
                     );
                   }
                 })}
                 <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
-                  <a href="#sessions" onClick={() => setIsSheetOpen(false)}>Book a Lesson</a> {/* Close sheet on click */}
+                  <a href="#sessions" onClick={() => setIsSheetOpen(false)}>Book a Lesson</a>
                 </Button>
               </nav>
             </SheetContent>
