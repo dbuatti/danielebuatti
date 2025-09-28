@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Mic, HeartHandshake } from 'lucide-react';
 import DynamicImage from '@/components/DynamicImage'; // Import DynamicImage
+import SectionHeading from '@/components/SectionHeading'; // Import SectionHeading for consistent styling
 
 const ServicesPage: React.FC = () => {
   useEffect(() => {
@@ -14,17 +15,21 @@ const ServicesPage: React.FC = () => {
   }, []);
 
   return (
-    <BookingPageLayout pageTitle="My Services">
-      <div className="max-w-4xl mx-auto space-y-8"> {/* Reduced space-y from 10 to 8 */}
+    <BookingPageLayout> {/* Removed pageTitle prop */}
+      <div className="max-w-4xl mx-auto space-y-10"> {/* Increased space-y for better separation */}
+        <SectionHeading className="mb-8">My Services</SectionHeading> {/* Using SectionHeading for consistent title styling */}
+
         {/* Hero Image Section */}
-        <section className="mb-8"> {/* Reduced mb from 12 to 8 */}
+        <section className="relative mb-8 rounded-xl overflow-hidden shadow-lg border-4 border-brand-secondary"> {/* Added relative for overlay positioning */}
           <DynamicImage
             src="/danielecalmatpiano.jpeg"
             alt="Daniele Buatti playing piano with eyes closed, deeply in the moment"
-            className="w-full h-80 md:h-96 object-cover rounded-xl shadow-lg border-4 border-brand-secondary object-[5%_15%]" // Adjusted object-position to 5% from left, 15% from top
+            className="w-full h-80 md:h-96 object-cover object-[5%_15%]"
             width={800}
             height={533}
           />
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/50 to-transparent"></div>
         </section>
 
         <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed mb-6">
@@ -36,7 +41,7 @@ const ServicesPage: React.FC = () => {
 
         <div className="grid md:grid-cols-2 gap-8">
           {/* Voice & Piano Coaching Card */}
-          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] hover:border-brand-primary transition-all duration-300"> {/* Added hover:border-brand-primary */}
             <CardHeader className="p-0 pb-4">
               <CardTitle className="flex items-center gap-3 text-2xl text-brand-primary">
                 <Mic className="h-7 w-7" />
@@ -61,7 +66,7 @@ const ServicesPage: React.FC = () => {
           </Card>
 
           {/* Healing & Body-Voice Integration Card */}
-          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] hover:border-brand-primary transition-all duration-300"> {/* Added hover:border-brand-primary */}
             <CardHeader className="p-0 pb-4">
               <CardTitle className="flex items-center gap-3 text-2xl text-brand-primary">
                 <HeartHandshake className="h-7 w-7" />

@@ -9,10 +9,10 @@ import Footer from '@/components/Footer'; // Import Footer
 
 interface BookingPageLayoutProps {
   children: React.ReactNode;
-  pageTitle: string;
+  // pageTitle: string; // Removed pageTitle prop
 }
 
-const BookingPageLayout: React.FC<BookingPageLayoutProps> = ({ children, pageTitle }) => {
+const BookingPageLayout: React.FC<BookingPageLayoutProps> = ({ children }) => { // Removed pageTitle from destructuring
   // Scroll to top on page load
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -36,7 +36,7 @@ const BookingPageLayout: React.FC<BookingPageLayoutProps> = ({ children, pageTit
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center text-brand-primary mb-8">{pageTitle}</h1>
+        {/* <h1 className="text-4xl font-bold text-center text-brand-primary mb-8">{pageTitle}</h1> Removed h1 */}
         {children}
       </main>
 
