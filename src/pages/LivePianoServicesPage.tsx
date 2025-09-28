@@ -123,7 +123,7 @@ const LivePianoServicesPage: React.FC = () => {
           {/* Left section: Back to Services */}
           <div className="flex items-center gap-4">
             <Button asChild className="bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light px-4 py-2 text-sm">
-              <Link to="/">Back to Services</Link>
+              <Link to="/">Back to Home</Link>
             </Button>
           </div>
 
@@ -175,8 +175,8 @@ const LivePianoServicesPage: React.FC = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="-left-8 hidden md:flex" />
-            <CarouselNext className="-right-8 hidden md:flex" />
+            <CarouselPrevious className="-left-8 flex" /> {/* Changed from hidden md:flex to flex */}
+            <CarouselNext className="-right-8 flex" /> {/* Changed from hidden md:flex to flex */}
           </Carousel>
         </section>
 
