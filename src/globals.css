@@ -4,7 +4,8 @@
 
 @layer base {
   html, body {
-    height: 100%; /* Added for consistent scrollbar behavior */
+    height: 100%; /* Ensure html and body take full viewport height */
+    overflow-y: auto; /* Explicitly manage vertical scrolling */
   }
 
   :root {
