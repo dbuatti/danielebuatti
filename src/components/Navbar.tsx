@@ -111,8 +111,8 @@ const Navbar = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Link to="/book-voice-piano" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 px-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light"> {/* Adjusted size */}
-            Book a Lesson
+          <Link to="/services" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 px-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light"> {/* Adjusted size */}
+            Book a session
           </Link>
           <ThemeToggle />
         </nav>
@@ -187,8 +187,8 @@ const Navbar = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
 
-                <Link to="/book-voice-piano" onClick={() => setIsSheetOpen(false)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-lg font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-12 px-6 py-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
-                  Book a Lesson
+                <Link to="/services" onClick={() => setIsSheetOpen(false)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-lg font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-12 px-6 py-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
+                  Book a session
                 </Link>
               </nav>
             </SheetContent>
