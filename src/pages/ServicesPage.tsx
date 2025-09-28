@@ -27,10 +27,10 @@ const ServicesPage: React.FC = () => {
           />
         </section>
 
-        <p className="text-xl text-center font-libre-baskerville text-brand-dark/80 dark:text-brand-light/80 leading-relaxed mb-6"> {/* Added mb-6 */}
+        <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed mb-6"> {/* Removed font-libre-baskerville */}
           Welcome! I’m Daniele Buatti, a vocal coach and musician passionate about helping artists connect deeply with their voice and body. My holistic approach recognizes that true expression and well-being are deeply intertwined. Whether you're looking for private coaching, vocal technique, or body-mind integration sessions, you’ll find a space here to explore, grow, and refine your artistry through an embodied connection.
         </p>
-        <p className="text-xl text-center font-libre-baskerville text-brand-dark/80 dark:text-brand-light/80 leading-relaxed mb-8"> {/* Added mb-8 */}
+        <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed mb-8"> {/* Removed font-libre-baskerville */}
           Bookings are available for vocal coaching, kinesiology sessions, and body-voice work. Choose a session that suits your needs, and let’s create something wonderful together, fostering both your artistic and personal growth.
         </p>
 
@@ -45,7 +45,7 @@ const ServicesPage: React.FC = () => {
             </CardHeader>
             <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 flex-grow space-y-4">
               <p>
-                Unlock your full vocal and musical potential with personalized 1:1 coaching. My holistic approach integrates technical mastery with body awareness and mindset strategies to help you achieve authentic, confident expression. We'll explore how physical and emotional freedom directly enhances your vocal performance.
+                Unlock your full vocal and musical potential with personalised 1:1 coaching. My holistic approach integrates technical mastery with body awareness and mindset strategies to help you achieve authentic, confident expression. We'll explore how physical and emotional freedom directly enhances your vocal performance.
               </p>
               <p>
                 Sessions are available in flexible 30, 45, 60, or 90-minute durations to perfectly fit your schedule and goals.
