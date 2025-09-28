@@ -163,7 +163,7 @@ const Navbar = () => {
                 <span className="sr-only">Toggle Menu</span>
               </Button>
             </SheetTrigger>
-            <SheetOverlay className="bg-black/60 dark:bg-black/90 z-[999]" />
+            <SheetOverlay className="bg-black/60 dark:bg-black/90" /> {/* Removed z-[999] */}
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-brand-light dark:bg-brand-dark">
               <nav className="flex flex-col gap-4 pt-6">
                 {mainNavLinks.map((link) => {
