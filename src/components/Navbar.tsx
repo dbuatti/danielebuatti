@@ -36,6 +36,8 @@ const Navbar = () => {
     { name: "AMEB Accompanying", href: "/ameb-accompanying" },
   ];
 
+  const isAnyServicePageActive = serviceLinks.some(service => location.pathname === service.href);
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
       <div className="container flex h-16 items-center justify-between">
@@ -89,12 +91,12 @@ const Navbar = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
-                variant="ghost"
+                // Removed variant="ghost" to allow direct background styling
                 className={cn(
-                  "text-sm font-medium transition-colors hover:text-brand-primary",
-                  serviceLinks.some(service => location.pathname === service.href)
-                    ? "font-bold text-brand-primary dark:text-brand-primary border-b-[3px] border-brand-primary pb-2"
-                    : "text-brand-dark dark:text-brand-light"
+                  "text-sm font-medium transition-colors",
+                  isAnyServicePageActive
+                    ? "bg-brand-primary hover:bg-brand-primary/90 text-brand-light px-3 py-2 rounded-md" // Pink background, white text, similar padding/rounding to other buttons
+                    : "text-brand-dark dark:text-brand-light hover:text-brand-primary" // Default link style
                 )}
               >
                 Services
@@ -165,13 +167,14 @@ const Navbar = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
-                      variant="ghost"
+                      // Removed variant="ghost" for mobile as well
                       className={cn(
                         "text-lg font-medium justify-start w-full px-4 py-2 hover:text-brand-primary",
-                        serviceLinks.some(service => location.pathname === service.href)
-                          ? "font-bold text-brand-primary dark:text-brand-primary"
-                          : "text-brand-dark dark:text-brand-light"
+                        isAnyServicePageActive
+                          ? "bg-brand-primary hover:bg-brand-primary/90 text-brand-light rounded-md" // Pink background, white text
+                          : "text-brand-dark dark:text-brand-light" // Default link style
                       )}
+                      onClick={() => { /* Keep sheet open for dropdown */ }}
                     >
                       Services
                     </Button>
