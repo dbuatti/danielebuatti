@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from "next-themes"; // Import useTheme to get current theme
+import { Loader2 } from 'lucide-react'; // Import a loading icon
 
 interface CalEmbedProps {
   calLink: string; // Expected format: "danielebuatti/30min"
@@ -10,6 +11,7 @@ interface CalEmbedProps {
 
 const CalEmbed: React.FC<CalEmbedProps> = ({ calLink, layout = "month_view" }) => {
   const { theme } = useTheme(); // Get the current theme
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     // Extract namespace from calLink (e.g., "30min" from "danielebuatti/30min")
@@ -18,6 +20,7 @@ const CalEmbed: React.FC<CalEmbedProps> = ({ calLink, layout = "month_view" }) =
 
     if (!namespace) {
       console.error("CalEmbed: Invalid calLink provided. Could not extract namespace.");
+      setIsLoading(false); // Stop loading if invalid link
       return;
     }
 
@@ -69,8 +72,15 @@ const CalEmbed: React.FC<CalEmbedProps> = ({ calLink, layout = "month_view" }) =
       layout: layout
     });
 
+    // Set loading to false after a short delay to ensure the embed has time to render
+    // A small delay helps prevent flickering if the embed loads very quickly
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500); // Adjust delay as needed
+
     // Clean up function to clear the embed content when component unmounts
     return () => {
+      clearTimeout(timer);
       const embedElement = document.getElementById(embedId);
       if (embedElement) {
         embedElement.innerHTML = ''; // Clear content
@@ -83,7 +93,14 @@ const CalEmbed: React.FC<CalEmbedProps> = ({ calLink, layout = "month_view" }) =
   const embedId = `my-cal-inline-${namespace}`;
 
   return (
-    <div style={{ width: '100%', height: '100%', overflow: 'scroll' }} id={embedId}></div>
+    <div style={{ width: '100%', height: '100%', overflow: 'scroll', position: 'relative' }} id={embedId}>
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-brand-light dark:bg-brand-dark z-10">
+          <Loader2 className="h-10 w-10 animate-spin text-brand-primary" />
+          <span className="sr-only">Loading calendar...</span>
+        </div>
+      )}
+    </div>
   );
 };
 
