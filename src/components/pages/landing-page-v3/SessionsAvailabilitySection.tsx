@@ -5,6 +5,7 @@ import SectionHeading from "@/components/SectionHeading";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils"; // Import cn for utility classes
+import AdditionalProgramBanner from "@/components/AdditionalProgramBanner"; // Import AdditionalProgramBanner
 
 const SessionsAvailabilitySection: React.FC = () => {
   return (
@@ -82,6 +83,18 @@ const SessionsAvailabilitySection: React.FC = () => {
       <p className="text-xl font-medium text-brand-primary mt-8">
         📅 Limited November spots are now open. DM to claim your session or schedule a complimentary discovery call.
       </p>
+
+      {/* NEW: Online Drop-In Audition Cut Sessions Banner */}
+      <AdditionalProgramBanner
+        title="Online Drop-In Audition Cut Sessions"
+        description="A quick, focused 15-minute online session to run through your 16–32 bar audition cut with an experienced pianist and vocal coach. Get immediate feedback to ensure you're polished and performance-ready for only A$30."
+        link="https://danielebuatti.as.me/audition-cut-playthrough-15"
+        linkText="Book a Playthrough"
+        bgColorClass="bg-brand-dark"
+        textColorClass="text-brand-light"
+        buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
+        className="max-w-full mx-auto mt-10" // Ensure it's full width within the section
+      />
     </section>
   );
 };
