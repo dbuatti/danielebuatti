@@ -25,6 +25,11 @@ const Navbar = () => {
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
   const [isServicesDropdownOpen, setIsServicesDropdownOpen] = React.useState(false);
 
+  // Close the mobile sheet whenever the route changes
+  React.useEffect(() => {
+    setIsSheetOpen(false);
+  }, [location.pathname]);
+
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
 
