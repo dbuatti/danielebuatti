@@ -1,14 +1,18 @@
 import React from "react";
-import { Instagram, Youtube, Mail, Phone, Link as LinkIcon, Newspaper } from "lucide-react"; // Removed Twitch, Facebook, Heart, MessageSquare, Coffee
+import { Instagram, Youtube, Mail, Phone, Link as LinkIcon, Newspaper, Twitch, Facebook, Patreon, Discord } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import DynamicImage from "@/components/DynamicImage"; // Import DynamicImage
+import DynamicImage from "@/components/DynamicImage";
 
 const Footer = () => {
   const socialLinks = [
     { name: "Instagram", href: "https://instagram.com/daniele.buatti", icon: Instagram },
     { name: "YouTube", href: "http://youtube.com/danielebuatti", icon: Youtube },
-    { name: "Substack", href: "https://substack.com/@danielebuatti", icon: Newspaper }, // Changed icon to Newspaper for Substack
-    { name: "Mailing List", href: "http://eepurl.com/hg2ptX", icon: LinkIcon }, // Changed icon to LinkIcon for Mailing List
+    { name: "Twitch", href: "https://twitch.tv/danielebuatti", icon: Twitch },
+    { name: "Substack", href: "https://substack.com/@danielebuatti", icon: Newspaper },
+    { name: "Facebook", href: "http://www.facebook.com/danielebuatti", icon: Facebook },
+    { name: "Patreon", href: "http://patreon.com/danielebuatti", icon: Patreon },
+    { name: "Discord", href: "https://discord.gg/pfW8B3Fy", icon: Discord },
+    { name: "Mailing List", href: "http://eepurl.com/hg2ptX", icon: LinkIcon },
   ];
 
   return (
@@ -56,8 +60,8 @@ const Footer = () => {
             src="/logo-piano-white-44.png"
             alt="Daniele Buatti Brand Symbol"
             className="h-24 w-auto"
-            width={96} // Explicit width
-            height={96} // Explicit height
+            width={96}
+            height={96}
           />
         </div>
       </div>
