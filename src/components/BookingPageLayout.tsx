@@ -9,9 +9,10 @@ import Footer from '@/components/Footer'; // Import Footer
 
 interface BookingPageLayoutProps {
   children: React.ReactNode;
+  pageTitle: string; // Added pageTitle prop
 }
 
-const BookingPageLayout: React.FC<BookingPageLayoutProps> = ({ children }) => {
+const BookingPageLayout: React.FC<BookingPageLayoutProps> = ({ children, pageTitle }) => {
   // Scroll to top on page load
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -24,12 +25,13 @@ const BookingPageLayout: React.FC<BookingPageLayoutProps> = ({ children }) => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Button asChild variant="ghost" className="text-brand-light hover:bg-brand-primary hover:text-brand-light">
             <Link to="/">
-              <span> {/* Wrap icon and text in a span */}
+              <span>
                 <ArrowLeft className="h-5 w-5 mr-2" /> Back to Home
               </span>
             </Link>
           </Button>
-          <div className="flex items-center">
+          <div className="flex items-center space-x-4"> {/* Added space-x-4 for spacing */}
+            <h1 className="text-2xl md:text-3xl font-bold text-brand-light">{pageTitle}</h1> {/* Display pageTitle */}
             <DynamicImage src="/logo-pinkwhite.png" alt="Daniele Buatti Logo" className="h-12 w-auto" width={220} height={48} />
           </div>
         </div>
