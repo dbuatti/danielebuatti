@@ -122,3 +122,14 @@
     @apply bg-background text-foreground font-sans; /* Apply the new font here */
   }
 }
+
+/* Custom CSS to ensure SheetOverlay is dark and themed */
+.radix-dialog-overlay[data-state="open"] {
+  background-color: hsl(var(--background)) !important; /* Use themed background */
+  opacity: 0.8 !important; /* Ensure semi-transparency */
+}
+
+.dark .radix-dialog-overlay[data-state="open"] {
+  background-color: hsl(var(--brand-dark)) !important; /* Darker in dark mode */
+  opacity: 0.9 !important;
+}
