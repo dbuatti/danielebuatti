@@ -24,7 +24,7 @@ const Navbar = () => {
   const location = useLocation();
   const { theme } = useTheme();
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
-  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = React.useState(false); // Keep state for controlled component
+  // Removed isServicesDropdownOpen state as DropdownMenu will manage its own open state
 
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
@@ -96,7 +96,7 @@ const Navbar = () => {
             })}
 
           {/* Services Dropdown for Desktop */}
-          <DropdownMenu open={isServicesDropdownOpen} onOpenChange={setIsServicesDropdownOpen}>
+          <DropdownMenu> {/* Removed open and onOpenChange */}
             <DropdownMenuTrigger asChild>
               <span
                 className={servicesTriggerClasses}
@@ -171,7 +171,7 @@ const Navbar = () => {
                   })}
 
                 {/* Services Dropdown for Mobile (inside Sheet) */}
-                <DropdownMenu>
+                <DropdownMenu> {/* Removed open and onOpenChange */}
                   <DropdownMenuTrigger asChild>
                     <span
                       className={cn(
