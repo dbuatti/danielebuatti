@@ -67,18 +67,6 @@ const AdditionalProgramsSection: React.FC = () => {
           overlayColorClass="bg-black/60"
           backgroundPosition="center"
         />
-
-        {/* NEW: FeaturedProgramCard for Online Drop-In Audition Cut Sessions */}
-        <FeaturedProgramCard
-          title="Online Drop-In Audition Cut Sessions"
-          description="A quick, focused 15-minute online session to run through your 16–32 bar audition cut with an experienced pianist and vocal coach."
-          link="https://danielebuatti.as.me/audition-cut-playthrough-15"
-          linkText="Book a Playthrough"
-          backgroundColorClass="bg-brand-blue"
-          logoSrc="/logo-piano-white-44.png"
-          className="max-w-6xl"
-          buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
-        />
       </div>
     </section>
   );

@@ -50,7 +50,30 @@ const LandingPageV3: React.FC = () => {
         <TestimonialsSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <SessionsAvailabilitySection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" /> {/* Separator before the banner */}
+        {/* Online Drop-In Audition Cut Sessions Banner - Moved Here */}
+        <AdditionalProgramBanner
+          title={<span className="text-brand-primary">AUDITION CUT PLAYTHROUGH</span>}
+          subtitle="Live run through of your audition cut"
+          description={
+            <ul className="list-disc list-inside space-y-2 text-lg text-brand-light">
+              <li>15 minute online drop-in</li>
+              <li>Run your 16–32 bar cut with an experienced audition pianist</li>
+              <li>Live playthrough + practical feedback</li>
+              <li>Perfect for auditions & self-tapes</li>
+              <li>Upload your clear PDF when booking</li>
+            </ul>
+          }
+          link="https://danielebuatti.as.me/audition-cut-playthrough-15"
+          linkText="Book a Playthrough"
+          bgColorClass="bg-brand-dark"
+          textColorClass="text-brand-light"
+          buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
+          titleClassName="text-5xl md:text-6xl font-extrabold uppercase"
+          backgroundImageSrc="/danielepianolaugh.jpeg"
+          backgroundPosition="80% center"
+        />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" /> {/* Separator after the banner */}
         <WhyWorkWithMeSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <TulipsSection />
@@ -63,31 +86,6 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <InstagramFeedSection />
       </main>
-
-      {/* Online Drop-In Audition Cut Sessions Banner */}
-      <AdditionalProgramBanner
-        title={<span className="text-brand-primary">AUDITION CUT PLAYTHROUGH</span>}
-        subtitle="Live run through of your audition cut"
-        description={
-          <ul className="list-disc list-inside space-y-2 text-lg text-brand-light">
-            <li>15 minute online drop-in</li>
-            <li>Run your 16–32 bar cut with an experienced audition pianist</li>
-            <li>Live playthrough + practical feedback</li>
-            <li>Perfect for auditions & self-tapes</li>
-            <li>Upload your clear PDF when booking</li>
-          </ul>
-        }
-        link="https://danielebuatti.as.me/audition-cut-playthrough-15"
-        linkText="Book a Playthrough"
-        bgColorClass="bg-brand-dark"
-        textColorClass="text-brand-light"
-        buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-        titleClassName="text-5xl md:text-6xl font-extrabold uppercase"
-        backgroundImageSrc="/danielepianolaugh.jpeg"
-        backgroundPosition="80% center" // Adjusted to better display Daniele on the right
-        // The imageOverlayClass and contentAlignment props are now handled by the component's default or new logic
-      />
-      <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
 
       <Footer />
       <BackToTopButton />
