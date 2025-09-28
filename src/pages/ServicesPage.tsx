@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Mic, HeartHandshake } from 'lucide-react';
+import DynamicImage from '@/components/DynamicImage'; // Import DynamicImage
 
 const ServicesPage: React.FC = () => {
   useEffect(() => {
@@ -15,16 +16,27 @@ const ServicesPage: React.FC = () => {
   return (
     <BookingPageLayout pageTitle="My Services">
       <div className="max-w-4xl mx-auto space-y-10">
-        <p className="text-lg text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
+        {/* Hero Image Section */}
+        <section className="mb-12">
+          <DynamicImage
+            src="/danielecalmatpiano.jpeg"
+            alt="Daniele Buatti playing piano with eyes closed, deeply in the moment"
+            className="w-full h-96 object-cover rounded-xl shadow-lg border-4 border-brand-secondary"
+            width={800}
+            height={533}
+          />
+        </section>
+
+        <p className="text-xl text-center font-libre-baskerville text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
           Welcome! I’m Daniele Buatti, a vocal coach and musician passionate about helping artists connect deeply with their voice and body. My holistic approach recognizes that true expression and well-being are deeply intertwined. Whether you're looking for private coaching, vocal technique, or body-mind integration sessions, you’ll find a space here to explore, grow, and refine your artistry through an embodied connection.
         </p>
-        <p className="text-lg text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
+        <p className="text-xl text-center font-libre-baskerville text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
           Bookings are available for vocal coaching, kinesiology sessions, and body-voice work. Choose a session that suits your needs, and let’s create something wonderful together, fostering both your artistic and personal growth.
         </p>
 
         <div className="grid md:grid-cols-2 gap-8">
           {/* Voice & Piano Coaching Card */}
-          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between">
+          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
             <CardHeader className="p-0 pb-4">
               <CardTitle className="flex items-center gap-3 text-2xl text-brand-primary">
                 <Mic className="h-7 w-7" />
@@ -49,7 +61,7 @@ const ServicesPage: React.FC = () => {
           </Card>
 
           {/* Healing & Body-Voice Integration Card */}
-          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between">
+          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
             <CardHeader className="p-0 pb-4">
               <CardTitle className="flex items-center gap-3 text-2xl text-brand-primary">
                 <HeartHandshake className="h-7 w-7" />
