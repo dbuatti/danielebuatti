@@ -159,7 +159,7 @@ const Navbar = () => {
         </nav>
         <div className="flex items-center md:hidden">
           <ThemeToggle />
-          <Sheet key={location.pathname} open={isSheetOpen} onOpenChange={setIsSheetOpen}> {/* Added key={location.pathname} */}
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}> {/* Removed key={location.pathname} */}
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
