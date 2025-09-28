@@ -44,6 +44,16 @@ const Navbar = () => {
     }, 150);
   };
 
+  // Define common classes for the custom trigger
+  const servicesTriggerClasses = cn(
+    "text-sm font-medium transition-colors hover:text-brand-primary",
+    "px-3 py-2 rounded-md cursor-pointer", // Added cursor-pointer for better UX
+    "bg-transparent hover:bg-transparent", // Ensure no background
+    isAnyServicePageActive
+      ? "font-bold text-brand-primary dark:text-brand-primary border-b-[3px] border-brand-primary pb-2"
+      : "text-brand-dark dark:text-brand-light"
+  );
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
       <div className="container flex h-16 items-center justify-between">
@@ -96,22 +106,18 @@ const Navbar = () => {
           {/* Services Dropdown for Desktop */}
           <DropdownMenu open={isServicesDropdownOpen} onOpenChange={setIsServicesDropdownOpen}>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className={cn(
-                  "text-sm font-medium transition-colors px-3 py-2 rounded-md",
-                  isAnyServicePageActive
-                    ? "font-bold text-brand-primary dark:text-brand-primary border-b-[3px] border-brand-primary pb-2 !bg-transparent !hover:bg-transparent" // Aggressive transparent background
-                    : "text-brand-dark dark:text-brand-light hover:text-brand-primary"
-                )}
+              <span
+                className={servicesTriggerClasses}
                 onMouseEnter={() => setIsServicesDropdownOpen(true)}
                 onMouseLeave={handleMouseLeave}
+                role="button"
+                tabIndex={0}
               >
                 Services
-              </Button>
+              </span>
             </DropdownMenuTrigger>
-            <DropdownMenuContent 
-              align="end" 
+            <DropdownMenuContent
+              align="end"
               className="bg-brand-light dark:bg-brand-dark border-brand-secondary"
               onMouseEnter={() => setIsServicesDropdownOpen(true)}
               onMouseLeave={handleMouseLeave}
@@ -176,21 +182,23 @@ const Navbar = () => {
                     }
                   })}
 
-                {/* Services Dropdown for Mobile (still click-based for sheet) */}
+                {/* Services Dropdown for Mobile (inside Sheet) */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
+                    <span
                       className={cn(
-                        "text-lg font-medium justify-start w-full px-4 py-2 rounded-md",
+                        "text-lg font-medium justify-start w-full px-4 py-2 rounded-md cursor-pointer",
+                        "bg-transparent hover:bg-transparent", // Ensure no background
                         isAnyServicePageActive
-                          ? "font-bold text-brand-primary dark:text-brand-primary !bg-transparent !hover:bg-transparent" // Aggressive transparent background
+                          ? "font-bold text-brand-primary dark:text-brand-primary"
                           : "text-brand-dark dark:text-brand-light hover:text-brand-primary"
                       )}
-                      onClick={() => { /* Keep sheet open for dropdown */ }}
+                      role="button"
+                      tabIndex={0}
+                      // No onMouseEnter/onMouseLeave for mobile dropdown in sheet, it's click-based
                     >
                       Services
-                    </Button>
+                    </span>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="bg-brand-light dark:bg-brand-dark border-brand-secondary w-[calc(100%-2rem)] ml-4">
                     {serviceLinks.map((service) => (
