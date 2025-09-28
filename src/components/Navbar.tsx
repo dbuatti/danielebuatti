@@ -69,7 +69,7 @@ const Navbar = () => {
             }
           })}
           <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-            <a href="#sessions">Book a Lesson</a>
+            <Link to="/voice-piano-services">Book a Lesson</Link> {/* Updated link */}
           </Button>
           <ThemeToggle />
         </nav>
@@ -116,7 +116,7 @@ const Navbar = () => {
                   }
                 })}
                 <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
-                  <a href="#sessions" onClick={() => setIsSheetOpen(false)}>Book a Lesson</a>
+                  <Link to="/voice-piano-services" onClick={() => setIsSheetOpen(false)}>Book a Lesson</Link> {/* Updated link */}
                 </Button>
               </nav>
             </SheetContent>
