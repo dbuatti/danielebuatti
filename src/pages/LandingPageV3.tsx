@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
 import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
+import SeoStructuredData from "@/components/SeoStructuredData"; // New import
 
 // Import new modular sections
 import HeroSection from "@/components/pages/landing-page-v3/HeroSection";
@@ -29,6 +30,7 @@ const LandingPageV3: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
+      <SeoStructuredData /> {/* Add structured data here */}
       <Navbar />
       <main className="mx-auto px-4">
         <HeroSection />
