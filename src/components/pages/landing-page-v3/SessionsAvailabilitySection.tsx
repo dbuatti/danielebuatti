@@ -25,15 +25,15 @@ const SessionsAvailabilitySection: React.FC = () => {
               Experience personalised 1:1 coaching tailored to your unique journey. Whether it's vocal mastery (breath work, body integration, repertoire, audition prep), supportive piano lessons (musicianship, theory), or integrated body-voice work, sessions are available in flexible 30, 45, 60, or 90-minute durations to perfectly fit your schedule and goals.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4"> {/* Changed to grid for side-by-side cards */}
-              {/* Book Voice & Piano Card */}
-              <Link to="/book-voice-piano" className="block">
+              {/* Link to Voice & Piano Services Page */}
+              <Link to="/voice-piano-services" className="block">
                 <Card className={cn(
                   "flex items-center justify-center h-40 p-6 rounded-xl shadow-lg",
                   "bg-brand-primary text-brand-light",
                   "hover:bg-brand-primary/90 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
                 )}>
                   <CardContent className="p-0 text-3xl font-extrabold">
-                    Book Voice & Piano
+                    Voice & Piano Coaching
                   </CardContent>
                 </Card>
               </Link>
