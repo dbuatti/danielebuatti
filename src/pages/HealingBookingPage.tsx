@@ -12,7 +12,7 @@ const HealingBookingPage: React.FC = () => {
           These sessions are designed to restore balance, ease stress and tension, and release unhelpful patterns, fostering a profound connection between your inner self and your expressive voice. By addressing the root causes of physical and emotional blocks, we unlock greater freedom and authenticity in all forms of communication and performance.
         </p>
         <AcuityEmbed
-          src="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:Healing%20%2B%20Body-Voice%20Integration"
+          src="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:Healing%20%26%20Body-Voice%20Integration"
           title="Healing & Body-Voice Integration Booking"
         />
       </div>
