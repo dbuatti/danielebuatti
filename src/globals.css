@@ -3,8 +3,12 @@
 @tailwind utilities;
 
 @layer base {
-  html, body {
-    height: 100%; /* Added for consistent scrollbar behavior */
+  html, body, #root { /* Added #root here */
+    height: 100%;
+  }
+
+  body {
+    overflow-x-hidden; /* Added to prevent horizontal overflow from affecting vertical scroll */
   }
 
   :root {
