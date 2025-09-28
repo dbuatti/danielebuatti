@@ -103,9 +103,10 @@ const Navbar = () => {
                 className={cn(
                   "text-sm font-medium transition-colors px-3 py-2 rounded-md",
                   isAnyServicePageActive
-                    ? "font-bold text-brand-primary dark:text-brand-primary border-b-[3px] border-brand-primary pb-2 bg-transparent hover:bg-transparent" // Explicitly set transparent background
+                    ? "font-bold text-brand-primary dark:text-brand-primary border-b-[3px] border-brand-primary pb-2" // Apply active link styling
                     : "text-brand-dark dark:text-brand-light hover:text-brand-primary"
                 )}
+                style={isAnyServicePageActive ? { backgroundColor: 'transparent', '--tw-bg-opacity': '0' } : {}} // Force transparent background
                 onMouseEnter={() => setIsServicesDropdownOpen(true)}
                 onMouseLeave={handleMouseLeave}
               >
@@ -186,9 +187,10 @@ const Navbar = () => {
                       className={cn(
                         "text-lg font-medium justify-start w-full px-4 py-2 rounded-md",
                         isAnyServicePageActive
-                          ? "font-bold text-brand-primary dark:text-brand-primary bg-transparent hover:bg-transparent" // Explicitly set transparent background
+                          ? "font-bold text-brand-primary dark:text-brand-primary" // Apply active link styling
                           : "text-brand-dark dark:text-brand-light hover:text-brand-primary"
                       )}
+                      style={isAnyServicePageActive ? { backgroundColor: 'transparent', '--tw-bg-opacity': '0' } : {}} // Force transparent background
                       onClick={() => { /* Keep sheet open for dropdown */ }}
                     >
                       Services
