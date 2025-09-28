@@ -24,6 +24,7 @@ const Navbar = () => {
   const location = useLocation();
   const { theme } = useTheme();
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
+  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = React.useState(false); // State for hover dropdown
 
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
@@ -37,6 +38,13 @@ const Navbar = () => {
   ];
 
   const isAnyServicePageActive = serviceLinks.some(service => location.pathname === service.href);
+
+  // Function to handle mouse leave with a slight delay
+  const handleMouseLeave = () => {
+    setTimeout(() => {
+      setIsServicesDropdownOpen(false);
+    }, 150); // Small delay to allow moving to dropdown content
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
@@ -88,21 +96,28 @@ const Navbar = () => {
             })}
 
           {/* Services Dropdown for Desktop */}
-          <DropdownMenu>
+          <DropdownMenu open={isServicesDropdownOpen} onOpenChange={setIsServicesDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <Button
-                variant={isAnyServicePageActive ? "default" : "ghost"} // Use default variant for active state
+                variant="ghost" // Always use ghost variant for consistent base styling
                 className={cn(
                   "text-sm font-medium transition-colors px-3 py-2 rounded-md",
                   isAnyServicePageActive
-                    ? "bg-brand-primary hover:bg-brand-primary/90 !text-white" // Force white text with !important
+                    ? "font-bold text-brand-primary dark:text-brand-primary border-b-[3px] border-brand-primary pb-2" // Apply active link styling
                     : "text-brand-dark dark:text-brand-light hover:text-brand-primary"
                 )}
+                onMouseEnter={() => setIsServicesDropdownOpen(true)}
+                onMouseLeave={handleMouseLeave}
               >
                 Services
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-brand-light dark:bg-brand-dark border-brand-secondary">
+            <DropdownMenuContent 
+              align="end" 
+              className="bg-brand-light dark:bg-brand-dark border-brand-secondary"
+              onMouseEnter={() => setIsServicesDropdownOpen(true)} // Keep open if mouse enters dropdown content
+              onMouseLeave={handleMouseLeave}
+            >
               {serviceLinks.map((service) => (
                 <DropdownMenuItem key={service.name} asChild>
                   <Link to={service.href} className="text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark-alt">
@@ -163,15 +178,15 @@ const Navbar = () => {
                     }
                   })}
 
-                {/* Services Dropdown for Mobile */}
+                {/* Services Dropdown for Mobile (still click-based for sheet) */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
-                      variant={isAnyServicePageActive ? "default" : "ghost"} // Use default variant for active state
+                      variant="ghost" // Always use ghost variant for consistent base styling
                       className={cn(
                         "text-lg font-medium justify-start w-full px-4 py-2 rounded-md",
                         isAnyServicePageActive
-                          ? "bg-brand-primary hover:bg-brand-primary/90 !text-white" // Force white text with !important
+                          ? "font-bold text-brand-primary dark:text-brand-primary" // Apply active link styling
                           : "text-brand-dark dark:text-brand-light hover:text-brand-primary"
                       )}
                       onClick={() => { /* Keep sheet open for dropdown */ }}
