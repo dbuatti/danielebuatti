@@ -78,18 +78,24 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
       )}
       style={backgroundImageSrc ? { backgroundImage: `url(${backgroundImageSrc})`, backgroundSize: 'cover', backgroundPosition: backgroundPosition } : {}}
     >
-      {backgroundImageSrc && <div className={cn("absolute inset-0", imageOverlayClass)}></div>}
+      {/* Dynamic Overlay */}
+      {backgroundImageSrc && (
+        <div className={cn(
+          "absolute inset-0",
+          contentAlignment === 'left' ? "bg-gradient-to-r from-brand-dark/70 to-transparent" : imageOverlayClass // Use gradient for left alignment
+        )}></div>
+      )}
 
+      {/* Content Wrapper - now full width, but uses grid for internal layout */}
       <div className={cn(
-        "relative z-10 flex flex-grow",
-        contentAlignmentClass, // Apply content alignment here
-        "container mx-auto px-4 py-12" // Ensure content is within container
+        "relative z-10 flex flex-grow w-full px-4 py-12", // Removed container mx-auto
+        contentAlignmentClass
       )}>
         {backgroundImageSrc ? (
-          // Two-column layout when backgroundImageSrc is present
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+          // Two-column layout for content when backgroundImageSrc is present
+          <div className="grid grid-cols-1 md:grid-cols-2 w-full max-w-7xl mx-auto"> {/* Max width for content, centered */}
             {/* Left column for text content */}
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col justify-center md:col-span-1"> {/* Take 1/2 on md screens */}
               {renderContent}
               {/* Availability info */}
               <div className="mt-6 flex items-center gap-2 text-brand-light/80">
@@ -97,12 +103,12 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
                 <span>MON - FRI Subject to availability</span>
               </div>
             </div>
-            {/* Right column is implicitly the background image, so this div is empty */}
-            <div className="hidden md:block"></div>
+            {/* Right column is empty, allowing background image to show */}
+            <div className="hidden md:block md:col-span-1"></div> {/* Take 1/2 on md screens */}
           </div>
         ) : (
           // Fallback for solid color or no image, centered content
-          <div className="flex flex-col justify-center items-center text-center w-full">
+          <div className="flex flex-col justify-center items-center text-center w-full max-w-7xl mx-auto">
             {renderContent}
           </div>
         )}
