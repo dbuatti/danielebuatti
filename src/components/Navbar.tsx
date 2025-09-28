@@ -11,6 +11,13 @@ import { useActiveSection } from "@/hooks/use-active-section";
 import { cn } from "@/lib/utils";
 import DynamicImage from "@/components/DynamicImage";
 import { useTheme } from "next-themes";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu"; // Import DropdownMenu components
 
 const Navbar = () => {
   const activeSection = useActiveSection();
@@ -20,6 +27,13 @@ const Navbar = () => {
 
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
+
+  // Define service links for the dropdown
+  const serviceLinks = [
+    { name: "Live Piano Services", href: "/live-piano-services" },
+    { name: "Voice & Piano Coaching", href: "/voice-piano-services" },
+    { name: "AMEB Accompanying", href: "/ameb-accompanying" },
+  ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
@@ -41,34 +55,62 @@ const Navbar = () => {
           />
         </Link>
         <nav className="hidden md:flex items-center space-x-6">
-          {navLinks.map((link) => {
-            const isActive = link.href.startsWith("#")
-              ? (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))
-              : location.pathname === link.href;
+          {navLinks
+            .filter(link => !serviceLinks.some(service => service.href === link.href)) // Filter out service links
+            .map((link) => {
+              const isActive = link.href.startsWith("#")
+                ? (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))
+                : location.pathname === link.href;
 
-            const commonClasses = cn(
-              "text-sm font-medium transition-colors hover:text-brand-primary",
-              isActive
-                ? "font-bold text-brand-primary dark:text-brand-primary border-b-[3px] border-brand-primary pb-2"
-                : "text-brand-dark dark:text-brand-light"
-            );
+              const commonClasses = cn(
+                "text-sm font-medium transition-colors hover:text-brand-primary",
+                isActive
+                  ? "font-bold text-brand-primary dark:text-brand-primary border-b-[3px] border-brand-primary pb-2"
+                  : "text-brand-dark dark:text-brand-light"
+              );
 
-            if (link.href.startsWith('/')) {
-              return (
-                <Link key={link.name} to={link.href} className={commonClasses}>
-                  {link.name}
-                </Link>
-              );
-            } else {
-              return (
-                <a key={link.name} href={link.href} className={commonClasses}>
-                  {link.name}
-                </a>
-              );
-            }
-          })}
-          {/* Directly style the Link as a button */}
-          <Link to="/voice-piano-services" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+              if (link.href.startsWith('/')) {
+                return (
+                  <Link key={link.name} to={link.href} className={commonClasses}>
+                    {link.name}
+                  </Link>
+                );
+              } else {
+                return (
+                  <a key={link.name} href={link.href} className={commonClasses}>
+                    {link.name}
+                  </a>
+                );
+              }
+            })}
+
+          {/* Services Dropdown for Desktop */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-brand-primary",
+                  serviceLinks.some(service => location.pathname === service.href)
+                    ? "font-bold text-brand-primary dark:text-brand-primary border-b-[3px] border-brand-primary pb-2"
+                    : "text-brand-dark dark:text-brand-light"
+                )}
+              >
+                Services
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="bg-brand-light dark:bg-brand-dark border-brand-secondary">
+              {serviceLinks.map((service) => (
+                <DropdownMenuItem key={service.name} asChild>
+                  <Link to={service.href} className="text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark-alt">
+                    {service.name}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Link to="/voice-piano-services" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 px-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light"> {/* Adjusted size */}
             Book a Lesson
           </Link>
           <ThemeToggle />
@@ -115,7 +157,6 @@ const Navbar = () => {
                     );
                   }
                 })}
-                {/* Directly style the Link as a button */}
                 <Link to="/voice-piano-services" onClick={() => setIsSheetOpen(false)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-lg font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-12 px-6 py-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
                   Book a Lesson
                 </Link>
