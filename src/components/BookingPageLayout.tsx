@@ -22,7 +22,7 @@ const BookingPageLayout: React.FC<BookingPageLayoutProps> = ({ children }) => {
       {/* Header */}
       <header className="bg-brand-dark py-4 px-6 md:px-12 shadow-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Button asChild variant="ghost" className="text-brand-light hover:text-brand-primary">
+          <Button asChild variant="ghost" className="text-brand-light hover:bg-brand-primary hover:text-brand-light"> {/* Updated hover styles */}
             <Link to="/">
               <ArrowLeft className="h-5 w-5 mr-2" /> Back to Home
             </Link>
