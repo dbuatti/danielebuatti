@@ -25,7 +25,7 @@ const ActiveServiceButton: React.FC<ActiveServiceButtonProps> = ({
       )}
       {...props}
     >
-      <span className="text-white hover:text-white"> {/* Apply text-white directly to span, and on hover */}
+      <span className="!text-white hover:!text-white"> {/* Force text color to white using !important */}
         {children}
       </span>
     </button>
