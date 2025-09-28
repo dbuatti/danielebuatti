@@ -95,7 +95,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
           // Two-column layout for content when backgroundImageSrc is present
           <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8"> {/* Removed max-w-7xl mx-auto here */}
             {/* Left column for text content */}
-            <div className="flex flex-col justify-center px-4 md:col-span-1 max-w-3xl mx-auto md:ml-0 md:mr-auto"> {/* Added px-4, max-w, and ml-0 for left alignment */}
+            <div className="flex flex-col justify-center px-4 md:col-span-1 max-w-3xl md:ml-0 md:mr-auto"> {/* Removed mx-auto */}
               {renderContent}
               {/* Availability info */}
               <div className="mt-6 flex items-center gap-2 text-brand-light/80">
