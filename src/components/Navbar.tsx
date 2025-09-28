@@ -16,6 +16,7 @@ const Navbar = () => {
   const activeSection = useActiveSection();
   const location = useLocation();
   const { theme } = useTheme(); // Get the current theme
+  const [isSheetOpen, setIsSheetOpen] = React.useState(false); // State to control sheet visibility
 
   // Determine logo sources based on theme
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
@@ -74,7 +75,7 @@ const Navbar = () => {
         </nav>
         <div className="flex items-center md:hidden">
           <ThemeToggle />
-          <Sheet>
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}> {/* Control sheet state */}
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
@@ -101,20 +102,20 @@ const Navbar = () => {
 
                   if (link.href.startsWith('/')) {
                     return (
-                      <Link key={link.name} to={link.href} className={commonClasses}>
+                      <Link key={link.name} to={link.href} className={commonClasses} onClick={() => setIsSheetOpen(false)}> {/* Close sheet on click */}
                         {link.name}
                       </Link>
                     );
                   } else {
                     return (
-                      <a key={link.name} href={link.href} className={commonClasses}>
+                      <a key={link.name} href={link.href} className={commonClasses} onClick={() => setIsSheetOpen(false)}> {/* Close sheet on click */}
                         {link.name}
                       </a>
                     );
                   }
                 })}
                 <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
-                  <a href="#sessions">Book a Lesson</a>
+                  <a href="#sessions" onClick={() => setIsSheetOpen(false)}>Book a Lesson</a> {/* Close sheet on click */}
                 </Button>
               </nav>
             </SheetContent>
