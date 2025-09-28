@@ -131,32 +131,61 @@ const Navbar = () => {
             <SheetOverlay className="bg-black/60 dark:bg-black/90 z-[999]" />
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-brand-light dark:bg-brand-dark">
               <nav className="flex flex-col gap-4 pt-6">
-                {navLinks.map((link) => {
-                  const isActive = link.href.startsWith("#")
-                    ? (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))
-                    : location.pathname === link.href;
+                {navLinks
+                  .filter(link => !serviceLinks.some(service => service.href === link.href)) // Filter out service links
+                  .map((link) => {
+                    const isActive = link.href.startsWith("#")
+                      ? (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))
+                      : location.pathname === link.href;
 
-                  const commonClasses = cn(
-                    "text-lg font-medium hover:text-brand-primary",
-                    isActive
-                      ? "font-bold text-brand-primary dark:text-brand-primary"
-                      : "text-brand-dark dark:text-brand-light"
-                  );
+                    const commonClasses = cn(
+                      "text-lg font-medium hover:text-brand-primary",
+                      isActive
+                        ? "font-bold text-brand-primary dark:text-brand-primary"
+                        : "text-brand-dark dark:text-brand-light"
+                    );
 
-                  if (link.href.startsWith('/')) {
-                    return (
-                      <Link key={link.name} to={link.href} className={commonClasses} onClick={() => setIsSheetOpen(false)}>
-                        {link.name}
-                      </Link>
-                    );
-                  } else {
-                    return (
-                      <a key={link.name} href={link.href} className={commonClasses} onClick={() => setIsSheetOpen(false)}>
-                        {link.name}
-                      </a>
-                    );
-                  }
-                })}
+                    if (link.href.startsWith('/')) {
+                      return (
+                        <Link key={link.name} to={link.href} className={commonClasses} onClick={() => setIsSheetOpen(false)}>
+                          {link.name}
+                        </Link>
+                      );
+                    } else {
+                      return (
+                        <a key={link.name} href={link.href} className={commonClasses} onClick={() => setIsSheetOpen(false)}>
+                          {link.name}
+                        </a>
+                      );
+                    }
+                  })}
+
+                {/* Services Dropdown for Mobile */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className={cn(
+                        "text-lg font-medium justify-start w-full px-4 py-2 hover:text-brand-primary",
+                        serviceLinks.some(service => location.pathname === service.href)
+                          ? "font-bold text-brand-primary dark:text-brand-primary"
+                          : "text-brand-dark dark:text-brand-light"
+                      )}
+                    >
+                      Services
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="bg-brand-light dark:bg-brand-dark border-brand-secondary w-[calc(100%-2rem)] ml-4">
+                    {serviceLinks.map((service) => (
+                      <DropdownMenuItem key={service.name} asChild>
+                        <Link to={service.href} className="text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark-alt" onClick={() => setIsSheetOpen(false)}>
+                          {service.name}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
                 <Link to="/voice-piano-services" onClick={() => setIsSheetOpen(false)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-lg font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-12 px-6 py-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
                   Book a Lesson
                 </Link>
