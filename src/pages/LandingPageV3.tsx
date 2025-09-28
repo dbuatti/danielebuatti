@@ -21,7 +21,7 @@ import WhyWorkWithMeSection from "@/components/pages/landing-page-v3/WhyWorkWith
 import TulipsSection from "@/components/pages/landing-page-v3/TulipsSection";
 import CallToActionSection from "@/components/pages/landing-page-v3/CallToActionSection";
 import AdditionalProgramsSection from "@/components/pages/landing-page-v3/AdditionalProgramsSection";
-import InstagramFeedSection from "@/components/pages/landing-page-v3/InstagramFeedSection";
+// import InstagramFeedSection from "@/components/pages/landing-page-v3/InstagramFeedSection"; // Temporarily removed
 import AdditionalProgramBanner from "@/components/AdditionalProgramBanner";
 
 const LandingPageV3: React.FC = () => {
@@ -82,7 +82,7 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <AdditionalProgramsSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <InstagramFeedSection />
+        {/* <InstagramFeedSection /> */} {/* Temporarily commented out */}
       </main>
 
       <Footer />
