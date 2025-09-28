@@ -14,6 +14,8 @@ const Footer = () => {
     { name: "Mailing List", href: "http://eepurl.com/hg2ptX", icon: LinkIcon },
   ];
 
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="bg-brand-dark text-brand-light py-12">
       <div className="container mx-auto px-4 text-center space-y-8">
@@ -73,6 +75,11 @@ const Footer = () => {
             width={96}
             height={96}
           />
+        </div>
+
+        {/* Copyright Notice */}
+        <div className="pt-8 text-sm text-brand-light/70">
+          &copy; {currentYear} Daniele Buatti. All rights reserved.
         </div>
       </div>
     </footer>
