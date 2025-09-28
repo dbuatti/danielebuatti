@@ -28,10 +28,10 @@ const LandingPageV3: React.FC = () => {
   useSmoothScroll();
 
   return (
-    <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
+    <div className="flex flex-col min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
       <SeoStructuredData />
       <Navbar />
-      <main className="mx-auto px-4">
+      <main className="flex-grow mx-auto px-4">
         <HeroSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <UnifiedAboutSection /> {/* Using the new unified section */}
