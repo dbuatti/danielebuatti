@@ -18,9 +18,6 @@ const InstagramFeedSection: React.FC = () => {
             title="Instagram Feed"
           ></iframe>
         </div>
-        <p className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-4">
-          Follow @lightwidget on Instagram for a chance to win a free upgrade for your widget!
-        </p>
       </div>
     </section>
   );
