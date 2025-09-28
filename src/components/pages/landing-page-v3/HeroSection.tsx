@@ -19,7 +19,7 @@ const HeroSection: React.FC = () => {
         </p>
         <Dialog>
           <DialogTrigger asChild>
-            <Button size="lg" className="mt-8 bg-brand-primary hover:bg-brand-primary/90 text-brand-light hover:text-brand-dark text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"> {/* Added hover:text-brand-dark */}
+            <Button size="lg" className="mt-8 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
               Book a Discovery Session
             </Button>
           </DialogTrigger>

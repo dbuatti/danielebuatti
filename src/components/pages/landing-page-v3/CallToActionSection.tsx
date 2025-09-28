@@ -18,7 +18,7 @@ const CallToActionSection: React.FC = () => {
       <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
         <Button
           size="lg"
-          className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light hover:text-brand-dark text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105" // Added hover:text-brand-dark
+          className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
           onClick={handleBookOnlineClick}
         >
           Book Online

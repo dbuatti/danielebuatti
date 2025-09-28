@@ -23,7 +23,7 @@ const AmebAccompanyingPage: React.FC = () => {
 
         {/* Download PDF Button */}
         <div className="text-center">
-          <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light hover:text-brand-dark text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"> {/* Added hover:text-brand-dark */}
+          <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
             <a href={pdfLink} target="_blank" rel="noopener noreferrer" download>
               <Download className="h-5 w-5 mr-2" /> Download Service Details (PDF)
             </a>
@@ -76,7 +76,7 @@ const AmebAccompanyingPage: React.FC = () => {
               <li><strong className="text-brand-primary">1 hour</strong>: A$95</li>
             </ul>
             <p>Rehearsals can be booked at my location at <strong className="text-brand-primary">685 Toorak Road, Toorak</strong>.</p>
-            <Button asChild size="lg" className="mt-4 bg-brand-primary hover:bg-brand-primary/90 text-brand-light hover:text-brand-dark text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"> {/* Added hover:text-brand-dark */}
+            <Button asChild size="lg" className="mt-4 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
               <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
                 Book Rehearsal Online
               </a>
