@@ -18,7 +18,6 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import ServicesDropdownTrigger from "./ServicesDropdownTrigger"; // Import the new component
 
 const Navbar = () => {
   const activeSection = useActiveSection();
@@ -97,13 +96,19 @@ const Navbar = () => {
           {/* Services Dropdown for Desktop */}
           <DropdownMenu open={isServicesDropdownOpen} onOpenChange={setIsServicesDropdownOpen}>
             <DropdownMenuTrigger asChild>
-              <ServicesDropdownTrigger
-                isActive={isAnyServicePageActive}
+              <Button
+                variant="ghost"
+                className={cn(
+                  "text-sm font-medium transition-colors px-3 py-2 rounded-md",
+                  isAnyServicePageActive
+                    ? "font-bold text-brand-primary dark:text-brand-primary border-b-[3px] border-brand-primary pb-2 !bg-transparent !hover:bg-transparent" // Aggressive transparent background
+                    : "text-brand-dark dark:text-brand-light hover:text-brand-primary"
+                )}
                 onMouseEnter={() => setIsServicesDropdownOpen(true)}
                 onMouseLeave={handleMouseLeave}
               >
                 Services
-              </ServicesDropdownTrigger>
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent 
               align="end" 
@@ -179,7 +184,7 @@ const Navbar = () => {
                       className={cn(
                         "text-lg font-medium justify-start w-full px-4 py-2 rounded-md",
                         isAnyServicePageActive
-                          ? "font-bold text-brand-primary dark:text-brand-primary bg-transparent hover:bg-transparent"
+                          ? "font-bold text-brand-primary dark:text-brand-primary !bg-transparent !hover:bg-transparent" // Aggressive transparent background
                           : "text-brand-dark dark:text-brand-light hover:text-brand-primary"
                       )}
                       onClick={() => { /* Keep sheet open for dropdown */ }}
