@@ -24,7 +24,7 @@ const Navbar = () => {
   const location = useLocation();
   const { theme } = useTheme();
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
-  // Removed isServicesDropdownOpen state as DropdownMenu will manage its own open state
+  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = React.useState(false); // Reintroduced state for hover control
 
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
@@ -36,15 +36,29 @@ const Navbar = () => {
     { name: "AMEB Accompanying", href: "/ameb-accompanying" },
   ];
 
-  const isAnyServicePageActive = serviceLinks.some(service => location.pathname === service.href);
-
   // Define common classes for the custom trigger
   const servicesTriggerClasses = cn(
     "text-sm font-medium transition-colors hover:text-brand-primary",
-    "px-3 py-2 rounded-md cursor-pointer", // Added cursor-pointer for better UX
-    "bg-transparent hover:bg-transparent", // Ensure no background
+    "px-3 py-2 rounded-md cursor-pointer",
+    "bg-transparent hover:bg-transparent",
     "font-bold text-brand-primary dark:text-brand-primary border-2 border-brand-primary" // Always apply pink stroke
   );
+
+  // Timeout ref for delayed closing
+  const timeoutRef = React.useRef<number | null>(null);
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setIsServicesDropdownOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = window.setTimeout(() => {
+      setIsServicesDropdownOpen(false);
+    }, 150); // Small delay to prevent accidental closing
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
@@ -96,12 +110,14 @@ const Navbar = () => {
             })}
 
           {/* Services Dropdown for Desktop */}
-          <DropdownMenu> {/* Removed open and onOpenChange */}
+          <DropdownMenu open={isServicesDropdownOpen} onOpenChange={setIsServicesDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <span
                 className={servicesTriggerClasses}
                 role="button"
                 tabIndex={0}
+                onPointerEnter={handleMouseEnter}
+                onPointerLeave={handleMouseLeave}
               >
                 Services
               </span>
@@ -109,6 +125,8 @@ const Navbar = () => {
             <DropdownMenuContent
               align="end"
               className="bg-brand-light dark:bg-brand-dark border-brand-secondary"
+              onPointerEnter={handleMouseEnter} // Keep open if mouse moves to content
+              onPointerLeave={handleMouseLeave} // Close when leaving content
             >
               {serviceLinks.map((service) => (
                 <DropdownMenuItem key={service.name} asChild>
@@ -171,13 +189,14 @@ const Navbar = () => {
                   })}
 
                 {/* Services Dropdown for Mobile (inside Sheet) */}
-                <DropdownMenu> {/* Removed open and onOpenChange */}
+                {/* For mobile, it's generally better to keep it click-to-open for accessibility */}
+                <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <span
                       className={cn(
                         "text-lg font-medium justify-start w-full px-4 py-2 rounded-md cursor-pointer",
-                        "bg-transparent hover:bg-transparent", // Ensure no background
-                        "font-bold text-brand-primary dark:text-brand-primary border-2 border-brand-primary" // Always apply pink stroke
+                        "bg-transparent hover:bg-transparent",
+                        "font-bold text-brand-primary dark:text-brand-primary border-2 border-brand-primary"
                       )}
                       role="button"
                       tabIndex={0}
