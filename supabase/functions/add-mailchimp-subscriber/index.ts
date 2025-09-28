@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { email } = await req.json();
+    const { email, firstName, lastName } = await req.json(); // Extract firstName and lastName
 
     if (!email) {
       return new Response(JSON.stringify({ error: 'Email is required' }), {
@@ -31,21 +31,37 @@ serve(async (req) => {
       });
     }
 
-    // Mailchimp API key format is KEY-usX, where X is the data center.
-    // We need to extract the data center for the API endpoint.
     const [, dataCenter] = MAILCHIMP_API_KEY.split('-');
     const mailchimpApiUrl = `https://${dataCenter}.api.mailchimp.com/3.0/lists/${MAILCHIMP_AUDIENCE_ID}/members`;
 
-    const subscriberData = {
+    const subscriberData: {
+      email_address: string;
+      status: string;
+      merge_fields?: {
+        FNAME?: string;
+        LNAME?: string;
+      };
+    } = {
       email_address: email,
-      status: 'subscribed', // or 'pending' if you want double opt-in
+      status: 'subscribed',
     };
+
+    // Add merge fields if first name or last name are provided
+    if (firstName || lastName) {
+      subscriberData.merge_fields = {};
+      if (firstName) {
+        subscriberData.merge_fields.FNAME = firstName;
+      }
+      if (lastName) {
+        subscriberData.merge_fields.LNAME = lastName;
+      }
+    }
 
     const mailchimpResponse = await fetch(mailchimpApiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Basic ${btoa(`anystring:${MAILCHIMP_API_KEY}`)}`, // Mailchimp requires Basic Auth with any username
+        'Authorization': `Basic ${btoa(`anystring:${MAILCHIMP_API_KEY}`)}`,
       },
       body: JSON.stringify(subscriberData),
     });
@@ -54,10 +70,9 @@ serve(async (req) => {
 
     if (!mailchimpResponse.ok) {
       console.error('Mailchimp API error:', responseData);
-      // Handle specific Mailchimp errors, e.g., member already exists
       if (responseData.title === "Member Exists") {
         return new Response(JSON.stringify({ message: 'Email is already subscribed.' }), {
-          status: 200, // Return 200 as it's not an error from our side, just already subscribed
+          status: 200,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }

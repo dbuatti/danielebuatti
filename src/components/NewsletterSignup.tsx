@@ -20,6 +20,8 @@ const formSchema = z.object({
   email: z.string().email({
     message: "Please enter a valid email address.",
   }),
+  firstName: z.string().optional(), // Added first name
+  lastName: z.string().optional(),  // Added last name
 });
 
 const NewsletterSignup: React.FC = () => {
@@ -28,6 +30,8 @@ const NewsletterSignup: React.FC = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
+      firstName: "", // Set default value
+      lastName: "",  // Set default value
     },
   });
 
@@ -38,7 +42,11 @@ const NewsletterSignup: React.FC = () => {
     try {
       // Invoke the new Supabase Edge Function to add to Mailchimp
       const { data, error } = await supabase.functions.invoke('add-mailchimp-subscriber', {
-        body: { email: values.email },
+        body: { 
+          email: values.email,
+          firstName: values.firstName, // Pass first name
+          lastName: values.lastName,   // Pass last name
+        },
       });
 
       if (error) {
@@ -72,22 +80,58 @@ const NewsletterSignup: React.FC = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col sm:flex-row gap-4 max-w-sm mx-auto">
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem className="flex-grow">
-              <FormControl>
-                <Input
-                  placeholder="Your email address"
-                  {...field}
-                  className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="flex flex-col gap-4 w-full"> {/* Wrapper for name fields */}
+          <div className="flex gap-4">
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem className="flex-grow">
+                  <FormControl>
+                    <Input
+                      placeholder="First Name (Optional)"
+                      {...field}
+                      className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem className="flex-grow">
+                  <FormControl>
+                    <Input
+                      placeholder="Last Name (Optional)"
+                      {...field}
+                      className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="flex-grow">
+                <FormControl>
+                  <Input
+                    placeholder="Your email address"
+                    {...field}
+                    className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <Button
           type="submit"
           className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light shadow-md"
