@@ -19,7 +19,7 @@ const ActiveServiceButton: React.FC<ActiveServiceButtonProps> = ({
       // Explicitly define all styles for the active state, without passing a 'variant' prop
       className={cn(
         "text-sm font-medium transition-colors px-3 py-2 rounded-md",
-        "bg-brand-primary text-brand-light hover:bg-brand-primary/90 hover:text-brand-light", // Force white text on pink background, even on hover
+        "bg-brand-primary !text-brand-light hover:bg-brand-primary/90 hover:!text-brand-light", // Force white text on pink background, even on hover
         className
       )}
       {...props}
