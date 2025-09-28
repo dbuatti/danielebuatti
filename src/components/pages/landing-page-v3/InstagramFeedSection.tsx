@@ -10,11 +10,11 @@ const InstagramFeedSection: React.FC = () => {
         <div className="w-full h-auto">
           <script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script>
           <iframe
-            src="//lightwidget.com/widgets/ef00b287060550de8b982e15a8e4f15a.html"
+            src="https://cdn.lightwidget.com/widgets/ef00b287060550de8b982e15a8e4f15a.html"
             scrolling="no"
-            allowTransparency={true} // Corrected to camelCase for React JSX
+            allowTransparency={true}
             className="lightwidget-widget"
-            style={{ width: '100%', border: 0, overflow: 'hidden', height: '1600px' }} // Set height to 1600px
+            style={{ width: '100%', border: 0, overflow: 'hidden' }}
             title="Instagram Feed"
           ></iframe>
         </div>
