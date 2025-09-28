@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  html, body {
+    height: 100%; /* Added for consistent scrollbar behavior */
+  }
+
   :root {
     --background: 0 0% 100%; /* White */
     --foreground: 222.2 84% 4.9%; /* Dark Blue (default, will be overridden by brand dark blue) */
