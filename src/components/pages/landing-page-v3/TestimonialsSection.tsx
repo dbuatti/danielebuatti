@@ -3,7 +3,7 @@ import SectionHeading from "@/components/SectionHeading";
 import TestimonialCard from "@/components/TestimonialCard";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
-const testimonials = [
+export const testimonials = [ // Added export keyword
   {
     quote: "Daniele's clear, direct, and thoughtful communication is truly exceptional. I deeply appreciate the concise clarity and transparency, which makes working together an absolute pleasure. This approach not only benefits our current project but also sets a wonderful foundation for future collaborations. I wish every creative worked with such professionalism and insight.",
     author: "Em",
