@@ -18,7 +18,9 @@ const ServicesPage: React.FC = () => {
     <BookingPageLayout>
       <div className="max-w-4xl mx-auto space-y-12"> {/* Increased space-y for better separation */}
         <SectionHeading className="mb-8">
-          My Services
+          <h2 className="text-5xl md:text-6xl font-libre-baskerville font-bold text-brand-primary leading-tight">
+            My Services
+          </h2>
           <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 mt-2">
             Holistic Coaching for Your Voice, Body, and Performance
           </p>
@@ -29,7 +31,7 @@ const ServicesPage: React.FC = () => {
           <DynamicImage
             src="/danielecalmatpiano.jpeg"
             alt="Daniele Buatti playing piano with eyes closed, deeply in the moment"
-            className="w-full h-80 md:h-96 object-cover object-[5%_20%]" // Adjusted object-position to 5% from left, 20% from top
+            className="w-full h-96 md:h-[500px] object-cover object-[5%_20%]" // Increased height for more impact
             width={800}
             height={533}
           />
@@ -40,7 +42,7 @@ const ServicesPage: React.FC = () => {
         {/* Introduction Text Section with subtle background */}
         <section className="bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-8 rounded-xl shadow-inner space-y-6">
           <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-            Welcome! I’m Daniele Buatti, a vocal coach and musician passionate about helping artists connect deeply with their voice and body. My holistic approach recognizes that true expression and well-being are deeply intertwined.
+            <strong className="text-brand-primary">Welcome! I’m Daniele Buatti, a vocal coach and musician passionate about helping artists connect deeply with their voice and body.</strong> My holistic approach recognizes that true expression and well-being are deeply intertwined.
           </p>
           <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
             Whether you're looking for private coaching, vocal technique, or body-mind integration sessions, you’ll find a space here to explore, grow, and refine your artistry through an embodied connection.
