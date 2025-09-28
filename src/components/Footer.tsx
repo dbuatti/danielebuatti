@@ -1,5 +1,5 @@
 import React from "react";
-import { Instagram, Youtube, Mail, Phone, Link as LinkIcon, Newspaper, Twitch, Facebook, Patreon } from "lucide-react"; // Removed Discord
+import { Instagram, Youtube, Mail, Phone, Link as LinkIcon, Newspaper, Twitch, Facebook } from "lucide-react"; // Removed Patreon and Discord
 import { Separator } from "@/components/ui/separator";
 import DynamicImage from "@/components/DynamicImage";
 
@@ -10,7 +10,7 @@ const Footer = () => {
     { name: "Twitch", href: "https://twitch.tv/danielebuatti", icon: Twitch },
     { name: "Substack", href: "https://substack.com/@danielebuatti", icon: Newspaper },
     { name: "Facebook", href: "http://www.facebook.com/danielebuatti", icon: Facebook },
-    { name: "Patreon", href: "http://patreon.com/danielebuatti", icon: Patreon },
+    // { name: "Patreon", href: "http://patreon.com/danielebuatti", icon: Patreon }, // Patreon icon removed
     // { name: "Discord", href: "https://discord.gg/pfW8B3Fy", icon: Discord }, // Discord icon removed
     { name: "Mailing List", href: "http://eepurl.com/hg2ptX", icon: LinkIcon },
   ];
