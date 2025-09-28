@@ -23,10 +23,11 @@ const ActiveServiceButton: React.FC<ActiveServiceButtonProps> = ({
         "bg-brand-primary hover:bg-brand-primary/90", // Background and hover background
         className
       )}
-      style={{ color: 'white' }} // Force text color to white using inline style
       {...props}
     >
-      {children}
+      <span className="text-white hover:text-white"> {/* Apply text-white directly to span, and on hover */}
+        {children}
+      </span>
     </button>
   );
 };
