@@ -122,7 +122,7 @@ const LivePianoServicesPage: React.FC = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Left section: Back to Services */}
           <div className="flex items-center gap-4">
-            <Button asChild className="bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light px-4 py-2 text-sm">
+            <Button asChild className="bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light hover:text-livePiano-darker px-4 py-2 text-sm"> {/* Added hover:text-livePiano-darker */}
               <Link to="/">Back to Services</Link>
             </Button>
           </div>
@@ -328,7 +328,7 @@ const LivePianoServicesPage: React.FC = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" size="lg" className="w-full bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light text-lg py-3 rounded-full" disabled={loading}>
+              <Button type="submit" size="lg" className="w-full bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light hover:text-livePiano-darker text-lg py-3 rounded-full" disabled={loading}> {/* Added hover:text-livePiano-darker */}
                 {loading ? 'Sending...' : 'Send'}
               </Button>
             </form>
@@ -348,13 +348,13 @@ const LivePianoServicesPage: React.FC = () => {
               href="https://wa.me/61424174067" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="flex items-center gap-2 hover:text-livePiano-primary transition-colors"
+              className="flex items-center gap-2 text-livePiano-light hover:text-livePiano-darker transition-colors" {/* Added text-livePiano-light and hover:text-livePiano-darker */}
             >
               <Phone size={24} /> 0424 174 067
             </a>
             <a 
               href="mailto:info@danielebuatti.com" 
-              className="flex items-center gap-2 hover:text-livePiano-primary transition-colors"
+              className="flex items-center gap-2 text-livePiano-light hover:text-livePiano-darker transition-colors" {/* Added text-livePiano-light and hover:text-livePiano-darker */}
             >
               <Mail size={24} /> info@danielebuatti.com
             </a>

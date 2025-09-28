@@ -32,7 +32,7 @@ const FeaturedProgramCard: React.FC<FeaturedProgramCardProps> = ({
   backgroundColorClass, // New
   logoSrc, // New
   className,
-  buttonBgClass = "bg-brand-primary hover:bg-brand-primary/90 text-brand-light",
+  buttonBgClass = "bg-brand-primary hover:bg-brand-primary/90 text-brand-light hover:text-brand-dark", // Added hover:text-brand-dark
   buttonTextClass = "",
   overlayColorClass = "bg-black/30", // Default to black overlay
   backgroundPosition = "center", // Default to center

@@ -2,8 +2,8 @@
 
 import React, { useEffect } from 'react';
 import BookingPageLayout from '@/components/BookingPageLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Link } from 'react-router-dom';
 import { Mic, HeartHandshake } from 'lucide-react';
 import DynamicImage from '@/components/DynamicImage'; // Import DynamicImage
@@ -70,7 +70,7 @@ const ServicesPage: React.FC = () => {
               </p>
             </CardContent>
             <div className="mt-6 text-center">
-              <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+              <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light hover:text-brand-dark text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"> {/* Added hover:text-brand-dark */}
                 <Link to="/book-voice-piano">
                   Book Voice & Piano
                 </Link>
@@ -95,7 +95,7 @@ const ServicesPage: React.FC = () => {
               </p>
             </CardContent>
             <div className="mt-6 text-center">
-              <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+              <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light hover:text-brand-dark text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"> {/* Added hover:text-brand-dark */}
                 <Link to="/book-healing">
                   Book Healing Session
                 </Link>

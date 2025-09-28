@@ -33,7 +33,7 @@ const UnifiedAboutSection: React.FC = () => {
               I believe expression truly happens when the thought arises to express. My therapeutic approach helps students not only inform the characters they portray but also gain a deeper understanding of their own mannerisms, expressions, and thoughts, fostering authentic connection and healing through self-awareness.
             </p>
           </div>
-          <Button size="lg" className="mt-8 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+          <Button size="lg" className="mt-8 bg-brand-primary hover:bg-brand-primary/90 text-brand-light hover:text-brand-dark text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"> {/* Added hover:text-brand-dark */}
             <a href="https://rxresu.me/daniele.buatti/daniele-buatti-md" target="_blank" rel="noopener noreferrer">
               View CV
             </a>

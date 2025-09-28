@@ -32,7 +32,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   linkText,
   bgColorClass = "bg-brand-dark", // Base background color for the banner
   textColorClass = "text-brand-light",
-  buttonBgClass = "bg-brand-primary hover:bg-brand-primary/90 text-brand-light",
+  buttonBgClass = "bg-brand-primary hover:bg-brand-primary/90 text-brand-light hover:text-brand-dark", // Added hover:text-brand-dark
   buttonTextClass = "",
   logoSrc,
   className,
