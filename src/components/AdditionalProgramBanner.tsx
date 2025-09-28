@@ -67,14 +67,12 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
     </div>
   );
 
-  const contentAlignmentClass = contentAlignment === 'left' ? 'items-start text-left' : 'items-center text-center';
-
   return (
     <div
       className={cn(
-        "relative w-full flex flex-col overflow-hidden min-h-[500px] md:min-h-[600px]", // Added min-height
+        "relative flex flex-col overflow-hidden min-h-[500px] md:min-h-[600px]",
         bgColorClass,
-        className
+        className // This className prop contains "w-screen -mx-4 py-16"
       )}
       style={backgroundImageSrc ? { backgroundImage: `url(${backgroundImageSrc})`, backgroundSize: 'cover', backgroundPosition: backgroundPosition } : {}}
     >
@@ -86,16 +84,13 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
         )}></div>
       )}
 
-      {/* Content Wrapper - now full width, but uses grid for internal layout */}
-      <div className={cn(
-        "relative z-10 flex flex-grow w-full py-12", // Removed px-4 from here
-        contentAlignmentClass
-      )}>
+      {/* Content Wrapper - This needs to span full width and contain the grid */}
+      <div className="relative z-10 flex-grow w-full py-12 px-4"> {/* Added px-4 here */}
         {backgroundImageSrc ? (
           // Two-column layout for content when backgroundImageSrc is present
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8"> {/* Removed max-w-7xl mx-auto here */}
+          <div className="grid grid-cols-1 md:grid-cols-2 w-full h-full">
             {/* Left column for text content */}
-            <div className="flex flex-col justify-center px-4 md:col-span-1 max-w-3xl md:ml-0 md:mr-auto"> {/* Removed mx-auto */}
+            <div className="flex flex-col justify-center max-w-3xl"> {/* Removed px-4 from here */}
               {renderContent}
               {/* Availability info */}
               <div className="mt-6 flex items-center gap-2 text-brand-light/80">
@@ -104,11 +99,11 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
               </div>
             </div>
             {/* Right column is empty, allowing background image to show */}
-            <div className="hidden md:block md:col-span-1"></div>
+            <div className="hidden md:block"></div>
           </div>
         ) : (
           // Fallback for solid color or no image, centered content
-          <div className="flex flex-col justify-center items-center text-center w-full max-w-7xl mx-auto px-4">
+          <div className="flex flex-col justify-center items-center text-center w-full max-w-7xl mx-auto">
             {renderContent}
           </div>
         )}
