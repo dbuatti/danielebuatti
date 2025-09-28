@@ -5,12 +5,14 @@ import BookingPageLayout from '@/components/BookingPageLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Piano, FileText, CalendarDays } from 'lucide-react';
+import { Piano, FileText, CalendarDays, Download } from 'lucide-react'; // Added Download icon
 
 const AmebAccompanyingPage: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const pdfLink = "https://file.notion.so/f/f/8d90b4b2-f024-421e-b020-5d3e63481a43/17cf3257-f164-4512-a83a-c821cd02331f/_AMEB_Accompanying_Services_(1).pdf?table=block&id=1e6aad21-cd09-80a4-92d1-cccae463785c&spaceId=8d90b4b2-f024-421e-b020-5d3e63481a43&expirationTimestamp=1759046400000&signature=_0-ZXF1yZ6Z9HvBvPD_A9ctdpUtZZeFs7JizMuTMenc&downloadName=%F0%9F%8E%B9+AMEB+Accompanying+Services+%281%29.pdf";
 
   return (
     <BookingPageLayout pageTitle="AMEB Accompanying Services">
@@ -18,6 +20,15 @@ const AmebAccompanyingPage: React.FC = () => {
         <p className="text-lg text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
           As a dedicated accompanist, I offer my services for AMEB exams, providing a professional and supportive environment for your exam. I offer a supportive attitude whilst ensuring the student feels grounded and supported when taking their exam.
         </p>
+
+        {/* Download PDF Button */}
+        <div className="text-center">
+          <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+            <a href={pdfLink} target="_blank" rel="noopener noreferrer" download>
+              <Download className="h-5 w-5 mr-2" /> Download Service Details (PDF)
+            </a>
+          </Button>
+        </div>
 
         {/* Exam Day Accompanying */}
         <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
