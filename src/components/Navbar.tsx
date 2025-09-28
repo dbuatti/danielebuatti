@@ -18,6 +18,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"; // Import DropdownMenu components
+import ActiveServiceButton from "@/components/ActiveServiceButton"; // New import
 
 const Navbar = () => {
   const activeSection = useActiveSection();
@@ -90,18 +91,18 @@ const Navbar = () => {
           {/* Services Dropdown for Desktop */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                // Removed variant prop when active to allow full className control
-                variant={isAnyServicePageActive ? undefined : "ghost"} 
-                className={cn(
-                  "text-sm font-medium transition-colors px-3 py-2 rounded-md",
-                  isAnyServicePageActive
-                    ? "bg-brand-primary !text-brand-light hover:bg-brand-primary/90 hover:!text-brand-light" // Active state: pink background, white text, white text on hover
-                    : "text-brand-dark dark:text-brand-light hover:text-brand-primary" // Inactive state: default text color, primary text color on hover
-                )}
-              >
-                Services
-              </Button>
+              {isAnyServicePageActive ? (
+                <ActiveServiceButton> {/* Use the new component here */}
+                  Services
+                </ActiveServiceButton>
+              ) : (
+                <Button
+                  variant="ghost"
+                  className="text-sm font-medium transition-colors px-3 py-2 rounded-md text-brand-dark dark:text-brand-light hover:text-brand-primary"
+                >
+                  Services
+                </Button>
+              )}
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-brand-light dark:bg-brand-dark border-brand-secondary">
               {serviceLinks.map((service) => (
@@ -167,19 +168,19 @@ const Navbar = () => {
                 {/* Services Dropdown for Mobile */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button
-                      // Removed variant prop when active to allow full className control
-                      variant={isAnyServicePageActive ? undefined : "ghost"} 
-                      className={cn(
-                        "text-lg font-medium justify-start w-full px-4 py-2", // Base styles
-                        isAnyServicePageActive
-                          ? "bg-brand-primary !text-brand-light hover:bg-brand-primary/90 hover:!text-brand-light rounded-md" // Active state: pink background, white text
-                          : "text-brand-dark dark:text-brand-light hover:text-brand-primary" // Default link style
-                      )}
-                      onClick={() => { /* Keep sheet open for dropdown */ }}
-                    >
-                      Services
-                    </Button>
+                    {isAnyServicePageActive ? (
+                      <ActiveServiceButton className="justify-start w-full px-4 py-2 rounded-md"> {/* Use the new component here */}
+                        Services
+                      </ActiveServiceButton>
+                    ) : (
+                      <Button
+                        variant="ghost" 
+                        className="text-lg font-medium justify-start w-full px-4 py-2 text-brand-dark dark:text-brand-light hover:text-brand-primary" // Default link style
+                        onClick={() => { /* Keep sheet open for dropdown */ }}
+                      >
+                        Services
+                      </Button>
+                    )}
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="bg-brand-light dark:bg-brand-dark border-brand-secondary w-[calc(100%-2rem)] ml-4">
                     {serviceLinks.map((service) => (
