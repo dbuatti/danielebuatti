@@ -159,14 +159,14 @@ const Navbar = () => {
         </nav>
         <div className="flex items-center md:hidden">
           <ThemeToggle />
-          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}> {/* Removed key={location.key} */}
+          <Sheet key={isSheetOpen ? "open" : "closed"} open={isSheetOpen} onOpenChange={setIsSheetOpen}> {/* Added key based on isSheetOpen */}
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
                 className="text-brand-dark dark:text-brand-light"
                 aria-label="Open main menu"
-                onClick={() => setIsSheetOpen(true)} // Explicitly set to true on click
+                // Removed explicit onClick={() => setIsSheetOpen(true)}
               >
                 <Menu className="h-6 w-6" />
                 <span className="sr-only">Toggle Menu</span>
