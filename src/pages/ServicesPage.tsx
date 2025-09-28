@@ -21,7 +21,7 @@ const ServicesPage: React.FC = () => {
           <DynamicImage
             src="/danielecalmatpiano.jpeg"
             alt="Daniele Buatti playing piano with eyes closed, deeply in the moment"
-            className="w-full h-80 md:h-96 object-cover rounded-xl shadow-lg border-4 border-brand-secondary object-left" // Changed object-position to object-left
+            className="w-full h-80 md:h-96 object-cover rounded-xl shadow-lg border-4 border-brand-secondary object-[5%_center]" // Adjusted object-position to 5% center
             width={800}
             height={533}
           />
