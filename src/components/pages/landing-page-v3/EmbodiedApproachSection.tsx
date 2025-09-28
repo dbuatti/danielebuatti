@@ -15,7 +15,7 @@ const EmbodiedApproachSection: React.FC = () => {
           <Brain className="h-12 w-12 text-brand-primary mx-auto mb-4" />
           <CardTitle className="text-2xl text-brand-primary">1. Embodiment & Alignment</CardTitle>
           <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-            Rooted in Kinesiology, Yoga, and Somatic Therapy, we soften the body, lift posture, and free the breath so it supports your voice with ease. Cultivate a deeper connection between mind and body.
+            Rooted in Kinesiology, Yoga, and Somatic Therapy, we soften the body, lift posture, and free the breath so it supports your voice with ease. Cultivate a deeper connection between mind and body to unlock your natural vocal resonance.
           </CardContent>
         </Card>
         <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">

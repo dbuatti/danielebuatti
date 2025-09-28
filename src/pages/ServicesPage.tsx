@@ -16,10 +16,10 @@ const ServicesPage: React.FC = () => {
     <BookingPageLayout pageTitle="My Services">
       <div className="max-w-4xl mx-auto space-y-10">
         <p className="text-lg text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-          Welcome! I’m Daniele Buatti, a vocal coach and musician passionate about helping artists connect deeply with their voice and body. Whether you're looking for private coaching, vocal technique, or body-mind integration sessions, you’ll find a space here to explore, grow, and refine your artistry.
+          Welcome! I’m Daniele Buatti, a vocal coach and musician passionate about helping artists connect deeply with their voice and body. My holistic approach recognizes that true expression and well-being are deeply intertwined. Whether you're looking for private coaching, vocal technique, or body-mind integration sessions, you’ll find a space here to explore, grow, and refine your artistry through an embodied connection.
         </p>
         <p className="text-lg text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-          Bookings are available for vocal coaching, kinesiology sessions, and body-voice work. Choose a session that suits your needs, and let’s create something wonderful together.
+          Bookings are available for vocal coaching, kinesiology sessions, and body-voice work. Choose a session that suits your needs, and let’s create something wonderful together, fostering both your artistic and personal growth.
         </p>
 
         <div className="grid md:grid-cols-2 gap-8">
@@ -33,7 +33,7 @@ const ServicesPage: React.FC = () => {
             </CardHeader>
             <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 flex-grow space-y-4">
               <p>
-                Unlock your full vocal and musical potential with personalized 1:1 coaching. Whether you're a seasoned performer or just starting your journey, my holistic approach integrates technical mastery with body awareness and mindset strategies to help you achieve authentic, confident expression.
+                Unlock your full vocal and musical potential with personalized 1:1 coaching. My holistic approach integrates technical mastery with body awareness and mindset strategies to help you achieve authentic, confident expression. We'll explore how physical and emotional freedom directly enhances your vocal performance.
               </p>
               <p>
                 Sessions are available in flexible 30, 45, 60, or 90-minute durations to perfectly fit your schedule and goals.
@@ -58,7 +58,7 @@ const ServicesPage: React.FC = () => {
             </CardHeader>
             <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 flex-grow space-y-4">
               <p>
-                Explore deep body-mind integration through Kinesiology, energy balancing, and sound healing. These sessions are designed to restore balance, ease stress and tension, and release unhelpful patterns, fostering a profound connection between your inner self and your expressive voice.
+                Explore deep body-mind integration through Kinesiology, energy balancing, and sound healing. These sessions are designed to restore balance, ease stress and tension, and release unhelpful patterns, fostering a profound connection between your inner self and your expressive voice. This work directly supports greater freedom and authenticity in all forms of communication and performance.
               </p>
               <p>
                 Options include Kinesiology & Energy Balancing, Community Kinesiology, Kinesiology + Voice Integration, and Sound Healing / Piano Sound Bath.
