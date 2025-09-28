@@ -6,8 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Mic, Piano, Brain, Lightbulb } from 'lucide-react';
-import DynamicImage from '@/components/DynamicImage'; // Import DynamicImage
-import SectionHeading from '@/components/SectionHeading'; // Import SectionHeading
+import DynamicImage from '@/components/DynamicImage';
 
 const VoicePianoServicesPage: React.FC = () => {
   useEffect(() => {
@@ -15,15 +14,11 @@ const VoicePianoServicesPage: React.FC = () => {
   }, []);
 
   return (
-    <BookingPageLayout pageTitle="Voice & Piano Coaching">
+    <BookingPageLayout
+      pageTitle="Voice & Piano Coaching"
+      subtitle="Unlock Your Full Vocal & Musical Potential"
+    >
       <div className="max-w-4xl mx-auto space-y-10">
-        <SectionHeading className="mb-4">
-          Voice & Piano Coaching
-        </SectionHeading>
-        <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 text-center mt-2">
-          Unlock Your Full Vocal & Musical Potential
-        </p>
-
         {/* Hero Image Section */}
         <section className="relative mt-8 mb-8 rounded-xl overflow-hidden shadow-lg border-4 border-brand-secondary">
           <DynamicImage

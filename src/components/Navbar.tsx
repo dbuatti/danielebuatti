@@ -16,7 +16,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
@@ -24,7 +23,7 @@ const Navbar = () => {
   const location = useLocation();
   const { theme } = useTheme();
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
-  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = React.useState(false); // Reintroduced state for hover control
+  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = React.useState(false);
 
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
@@ -32,17 +31,24 @@ const Navbar = () => {
   const serviceLinks = [
     { name: "Services Overview", href: "/services" },
     { name: "Voice & Piano Coaching", href: "/voice-piano-services" },
-    { name: "Healing & Body-Voice Integration", href: "/book-healing" }, // Added Healing link
+    { name: "Healing & Body-Voice Integration", href: "/book-healing" },
     { name: "AMEB Accompanying", href: "/ameb-accompanying" },
     { name: "Live Piano Services", href: "/live-piano-services" },
   ];
+
+  // Define main navigation links (excluding service-related ones)
+  const mainNavLinks = navLinks.filter(link => 
+    !serviceLinks.some(service => service.href === link.href) && 
+    link.name !== "Services" && // Exclude the main "Services" link if it's handled by dropdown
+    !link.href.startsWith("/book-") // Exclude direct booking links from main nav
+  );
 
   // Define common classes for the custom trigger
   const servicesTriggerClasses = cn(
     "text-sm font-medium transition-colors hover:text-brand-primary",
     "px-3 py-2 rounded-md cursor-pointer",
     "bg-transparent hover:bg-transparent",
-    "font-bold text-brand-primary dark:text-brand-primary border-2 border-brand-primary" // Always apply pink stroke
+    "font-bold text-brand-primary dark:text-brand-primary border-2 border-brand-primary"
   );
 
   // Timeout ref for delayed closing
@@ -58,7 +64,7 @@ const Navbar = () => {
   const handleMouseLeave = () => {
     timeoutRef.current = window.setTimeout(() => {
       setIsServicesDropdownOpen(false);
-    }, 150); // Small delay to prevent accidental closing
+    }, 150);
   };
 
   return (
@@ -81,9 +87,7 @@ const Navbar = () => {
           />
         </Link>
         <nav className="hidden md:flex items-center space-x-6">
-          {navLinks
-            .filter(link => !serviceLinks.some(service => service.href === link.href) && link.name !== "Services" && link.name !== "Live Piano Services" && link.name !== "Voice & Piano Coaching" && link.name !== "AMEB Accompanying") // Filter out individual service links
-            .map((link) => {
+          {mainNavLinks.map((link) => {
               const isActive = link.href.startsWith("#")
                 ? (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))
                 : location.pathname === link.href;
@@ -126,8 +130,8 @@ const Navbar = () => {
             <DropdownMenuContent
               align="end"
               className="bg-brand-light dark:bg-brand-dark border-brand-secondary"
-              onPointerEnter={handleMouseEnter} // Keep open if mouse moves to content
-              onPointerLeave={handleMouseLeave} // Close when leaving content
+              onPointerEnter={handleMouseEnter}
+              onPointerLeave={handleMouseLeave}
             >
               {serviceLinks.map((service) => (
                 <DropdownMenuItem key={service.name} asChild>
@@ -160,9 +164,7 @@ const Navbar = () => {
             <SheetOverlay className="bg-black/60 dark:bg-black/90 z-[999]" />
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-brand-light dark:bg-brand-dark">
               <nav className="flex flex-col gap-4 pt-6">
-                {navLinks
-                  .filter(link => !serviceLinks.some(service => service.href === link.href) && link.name !== "Services" && link.name !== "Live Piano Services" && link.name !== "Voice & Piano Coaching" && link.name !== "AMEB Accompanying") // Filter out individual service links
-                  .map((link) => {
+                {mainNavLinks.map((link) => {
                     const isActive = link.href.startsWith("#")
                       ? (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))
                       : location.pathname === link.href;
@@ -190,7 +192,6 @@ const Navbar = () => {
                   })}
 
                 {/* Services Dropdown for Mobile (inside Sheet) */}
-                {/* For mobile, it's generally better to keep it click-to-open for accessibility */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <span

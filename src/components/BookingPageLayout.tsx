@@ -5,15 +5,16 @@ import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import DynamicImage from "@/components/DynamicImage";
 import { ArrowLeft } from 'lucide-react';
-import Footer from '@/components/Footer'; // Import Footer
+import Footer from '@/components/Footer';
+import { Separator } from '@/components/ui/separator'; // Import Separator
 
 interface BookingPageLayoutProps {
   children: React.ReactNode;
-  pageTitle: string; // Added pageTitle prop
+  pageTitle: string;
+  subtitle?: string; // Added subtitle prop
 }
 
-const BookingPageLayout: React.FC<BookingPageLayoutProps> = ({ children, pageTitle }) => {
-  // Scroll to top on page load
+const BookingPageLayout: React.FC<BookingPageLayoutProps> = ({ children, pageTitle, subtitle }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -31,7 +32,6 @@ const BookingPageLayout: React.FC<BookingPageLayoutProps> = ({ children, pageTit
             </Link>
           </Button>
           <div className="flex items-center gap-4">
-            {/* Removed h1 with pageTitle here */}
             <DynamicImage src="/logo-pinkwhite.png" alt="Daniele Buatti Logo" className="h-10 w-auto" width={220} height={40} />
           </div>
         </div>
@@ -39,10 +39,15 @@ const BookingPageLayout: React.FC<BookingPageLayoutProps> = ({ children, pageTit
 
       {/* Main Content */}
       <main className="container mx-auto px-4 pt-12 pb-12">
+        <div className="text-center space-y-4 mb-10">
+          <h1 className="text-4xl font-bold text-brand-primary">{pageTitle}</h1>
+          {subtitle && <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70">{subtitle}</p>}
+          <Separator className="max-w-xs mx-auto bg-brand-secondary" />
+        </div>
         {children}
       </main>
 
-      {/* Footer - Reusing the existing Footer component */}
+      {/* Footer */}
       <Footer />
     </div>
   );

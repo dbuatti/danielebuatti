@@ -6,8 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Mic, HeartHandshake } from 'lucide-react';
-import DynamicImage from '@/components/DynamicImage'; // Import DynamicImage
-import SectionHeading from '@/components/SectionHeading'; // Import SectionHeading for consistent styling
+import DynamicImage from '@/components/DynamicImage';
 
 const ServicesPage: React.FC = () => {
   useEffect(() => {
@@ -15,17 +14,13 @@ const ServicesPage: React.FC = () => {
   }, []);
 
   return (
-    <BookingPageLayout pageTitle="Services"> {/* Added pageTitle prop */}
+    <BookingPageLayout
+      pageTitle="My Services"
+      subtitle="Holistic Coaching for Your Voice, Body, and Performance"
+    >
       <div className="max-w-4xl mx-auto space-y-10">
-        <SectionHeading className="mb-4"> {/* Reduced mb-8 to mb-4 for closer subtitle */}
-          My Services {/* Pass only the text to SectionHeading */}
-        </SectionHeading>
-        <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 text-center mt-2">
-          Holistic Coaching for Your Voice, Body, and Performance {/* Render subtitle separately */}
-        </p>
-
         {/* Hero Image Section */}
-        <section className="relative mt-8 mb-8 rounded-xl overflow-hidden shadow-lg border-4 border-brand-secondary"> {/* Added mt-8 for space from subtitle */}
+        <section className="relative mt-8 mb-8 rounded-xl overflow-hidden shadow-lg border-4 border-brand-secondary">
           <DynamicImage
             src="/danielecalmatpiano.jpeg"
             alt="Daniele Buatti playing piano with eyes closed, deeply in the moment"

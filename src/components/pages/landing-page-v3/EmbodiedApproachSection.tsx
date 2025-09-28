@@ -2,6 +2,7 @@ import React from "react";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Brain, Lightbulb, Volume2 } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
+import PhilosophyStatement from "@/components/PhilosophyStatement"; // Import the new component
 
 const EmbodiedApproachSection: React.FC = () => {
   return (
@@ -10,6 +11,9 @@ const EmbodiedApproachSection: React.FC = () => {
       <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
         All my teachings are informed by Buddhist and yogic philosophies, fostering a heart-centred, process-oriented journey focused on truth and transformation, not just the destination.
       </p>
+      
+      <PhilosophyStatement className="max-w-4xl mx-auto my-10" /> {/* Integrate the new component here */}
+
       <div className="grid md:grid-cols-3 gap-8">
         <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
           <Brain className="h-12 w-12 text-brand-primary mx-auto mb-4" />
