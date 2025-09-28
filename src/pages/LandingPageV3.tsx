@@ -79,15 +79,13 @@ const LandingPageV3: React.FC = () => {
         }
         link="https://danielebuatti.as.me/audition-cut-playthrough-15"
         linkText="Book a Playthrough"
-        bgColorClass="bg-brand-dark" // Sets the solid background color to #00022D
+        bgColorClass="bg-brand-dark"
         textColorClass="text-brand-light"
         buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-        className="w-screen -mx-4 py-16" // Ensures full width and appropriate padding
         titleClassName="text-5xl md:text-6xl font-extrabold uppercase"
-        backgroundImageSrc="/danielepianolaugh.jpeg" // The image you provided
+        backgroundImageSrc="/danielepianolaugh.jpeg"
         backgroundPosition="80% center" // Adjusted to better display Daniele on the right
-        imageOverlayClass="bg-brand-dark/70" // This prop is used by the component to create the gradient from left (dark blue) to right (transparent over image)
-        contentAlignment="left" // Aligns content to the left, triggering the gradient overlay
+        // The imageOverlayClass and contentAlignment props are now handled by the component's default or new logic
       />
       <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
 

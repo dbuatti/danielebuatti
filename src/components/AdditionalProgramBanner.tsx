@@ -19,8 +19,7 @@ interface AdditionalProgramBannerProps {
   className?: string;
   backgroundImageSrc?: string;
   backgroundPosition?: string;
-  imageOverlayClass?: string;
-  contentAlignment?: 'left' | 'center';
+  imageOverlayClass?: string; // This will now define the gradient overlay
   titleClassName?: string;
   subtitle?: string;
   subtitleTextColorClass?: string;
@@ -31,96 +30,61 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   description,
   link,
   linkText,
-  bgColorClass = "bg-brand-dark",
+  bgColorClass = "bg-brand-dark", // Base background color for the banner
   textColorClass = "text-brand-light",
   buttonBgClass = "bg-brand-primary hover:bg-brand-primary/90 text-brand-light",
   buttonTextClass = "",
   logoSrc,
   className,
   backgroundImageSrc,
-  backgroundPosition = "center",
-  imageOverlayClass = "bg-black/50",
-  contentAlignment = "center",
+  backgroundPosition = "center right", // Default to show Daniele on the right
+  imageOverlayClass = "bg-gradient-to-r from-brand-dark via-brand-dark/70 to-transparent", // Default gradient
   titleClassName,
   subtitle,
   subtitleTextColorClass,
 }) => {
-  const renderContent = (
-    <div className={cn("space-y-4", textColorClass)}>
-      {logoSrc && (
-        <DynamicImage
-          src={logoSrc}
-          alt={`${typeof title === 'string' ? title : 'Program'} logo`}
-          className="h-20 object-contain mb-4"
-          width={80}
-          height={80}
-        />
-      )}
-      <h3 className={cn("text-4xl font-bold leading-tight", titleClassName)}>{title}</h3>
-      {subtitle && <p className={cn("text-xl", subtitleTextColorClass)}>{subtitle}</p>}
-      {description}
-      <Button asChild size="lg" className={cn("text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
-        <a href={link} target="_blank" rel="noopener noreferrer">
-          {linkText}
-        </a>
-      </Button>
-    </div>
-  );
-
-  const isLeftAlignedWithImage = contentAlignment === 'left' && backgroundImageSrc;
-
   return (
     <div
       className={cn(
-        "relative flex flex-col overflow-hidden min-h-[450px] py-12", // Re-added min-h and py-12 for overall vertical padding
-        bgColorClass, // This will now be the solid background for the whole banner
+        "relative w-full overflow-hidden py-20 md:py-24 lg:py-32", // Generous vertical padding
+        "min-h-[500px] md:min-h-[600px] lg:min-h-[700px]", // Ensure minimum height
+        bgColorClass, // Base background color
         className
       )}
-      // Apply background image style only if not left-aligned with a separate image element
-      style={!isLeftAlignedWithImage && backgroundImageSrc ? { backgroundImage: `url(${backgroundImageSrc})`, backgroundSize: 'cover', backgroundPosition: backgroundPosition } : {}}
+      style={backgroundImageSrc ? { backgroundImage: `url(${backgroundImageSrc})`, backgroundSize: 'cover', backgroundPosition: backgroundPosition } : {}}
     >
-      {/* Overlay for full background images (when not left-aligned with image) */}
-      {!isLeftAlignedWithImage && backgroundImageSrc && (
-        <div className={cn("absolute inset-0", imageOverlayClass)}></div>
-      )}
+      {/* Gradient Overlay */}
+      <div className={cn("absolute inset-0", imageOverlayClass)}></div>
 
-      {/* Content Wrapper */}
-      <div className="relative z-10 flex-grow w-full h-full px-4"> {/* Added px-4 for overall horizontal padding */}
-        {isLeftAlignedWithImage ? (
-          // Two-column layout for content when left-aligned with image
-          <div className="grid grid-cols-1 md:grid-cols-2 w-full h-full max-w-7xl mx-auto"> {/* Added max-w-7xl mx-auto for centering */}
-            {/* Left column for text content */}
-            <div className="flex flex-col justify-center px-4 md:px-8"> {/* Padding for text content */}
-              {renderContent}
-              {/* Availability info */}
-              <div className="mt-6 flex items-center gap-2 text-brand-light/80">
-                <CalendarDays className="h-5 w-5" />
-                <span>MON - FRI Subject to availability</span>
-              </div>
-            </div>
-            {/* Right column for the image */}
-            <div className="relative hidden md:flex items-center justify-end h-full"> {/* Removed p-4 */}
-              <img
-                src={backgroundImageSrc}
-                alt="Program background"
-                className={cn(
-                  "absolute inset-0 h-full w-full object-cover", // Image fills the entire right column
-                  "object-right" // Crop from the left to show Daniele on the right
-                )}
-              />
-              {/* Gradient overlay on the left side of the image to blend with text */}
-              <div className={cn(
-                "absolute inset-y-0 left-0 w-full h-full", // Covers the entire right column
-                `bg-gradient-to-r from-[var(--brand-dark)] to-transparent` // Blend from dark background to transparent over image
-              )}></div>
-            </div>
+      {/* Content */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 lg:px-12 h-full flex items-center">
+        <div className={cn("max-w-md lg:max-w-xl space-y-6 text-left", textColorClass)}>
+          {logoSrc && (
+            <DynamicImage
+              src={logoSrc}
+              alt={`${typeof title === 'string' ? title : 'Program'} logo`}
+              className="h-20 object-contain mb-4"
+              width={80}
+              height={80}
+            />
+          )}
+          <h3 className={cn("text-5xl md:text-6xl font-extrabold leading-tight", titleClassName)}>
+            {title}
+          </h3>
+          {subtitle && <p className={cn("text-xl md:text-2xl font-semibold", subtitleTextColorClass)}>{subtitle}</p>}
+          <div className="text-lg md:text-xl leading-relaxed">
+            {description}
           </div>
-        ) : (
-          // Fallback for solid color or full background image (centered content)
-          <div className="flex flex-col justify-center items-center text-center w-full max-w-7xl mx-auto">
-            {renderContent}
+          <Button asChild size="lg" className={cn("text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
+            <a href={link} target="_blank" rel="noopener noreferrer">
+              {linkText}
+            </a>
+          </Button>
+          <div className="mt-6 flex items-center gap-2 text-brand-light/80 text-sm md:text-base">
+            <CalendarDays className="h-5 w-5" />
+            <span>MON - FRI Subject to availability</span>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
