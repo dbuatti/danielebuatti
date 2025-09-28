@@ -12,9 +12,9 @@ const InstagramFeedSection: React.FC = () => {
           <iframe
             src="https://cdn.lightwidget.com/widgets/ef00b287060550de8b982e15a8e4f15a.html"
             scrolling="no"
-            allowTransparency={true} {/* Corrected to camelCase for React JSX */}
+            allowTransparency={true}
             className="lightwidget-widget"
-            style={{ width: '100%', border: 0, overflow: 'hidden' }}
+            style={{ width: '100%', border: 0 }} {/* Removed overflow: 'hidden' */}
             title="Instagram Feed"
           ></iframe>
         </div>
