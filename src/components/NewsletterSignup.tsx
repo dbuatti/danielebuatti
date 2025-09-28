@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/client"; // Import Supabase client
 
 const formSchema = z.object({
   email: z.string().email({
@@ -36,26 +36,28 @@ const NewsletterSignup: React.FC = () => {
     const loadingToastId = toast.loading("Subscribing you to the newsletter...");
 
     try {
-      const { error } = await supabase
-        .from("contact_messages")
-        .insert([
-          {
-            name: "Newsletter Subscriber", // Generic name for newsletter signups
-            email: values.email,
-            message: "Signed up for newsletter.",
-            type: "newsletter", // New type to distinguish
-          },
-        ]);
+      // Invoke the new Supabase Edge Function to add to Mailchimp
+      const { data, error } = await supabase.functions.invoke('add-mailchimp-subscriber', {
+        body: { email: values.email },
+      });
 
       if (error) {
         throw error;
       }
 
-      toast.success("You're subscribed!", {
-        id: loadingToastId,
-        description: "Check your inbox for a welcome message soon.",
-      });
-      form.reset();
+      // Check for specific messages from the edge function
+      if (data && data.message === 'Email is already subscribed.') {
+        toast.info("You're already subscribed!", {
+          id: loadingToastId,
+          description: "No need to sign up again.",
+        });
+      } else {
+        toast.success("You're subscribed!", {
+          id: loadingToastId,
+          description: "Check your inbox for a welcome message soon.",
+        });
+      }
+      form.reset(); // Reset the form after successful submission
     } catch (error) {
       console.error("Error subscribing to newsletter:", error);
       toast.error("Failed to subscribe.", {
