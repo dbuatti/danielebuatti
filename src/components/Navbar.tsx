@@ -96,7 +96,7 @@ const Navbar = () => {
                 className={cn(
                   "text-sm font-medium transition-colors px-3 py-2 rounded-md",
                   isAnyServicePageActive
-                    ? "bg-brand-primary text-brand-light hover:bg-brand-primary/90 hover:text-brand-light" // Active state: pink background, white text, white text on hover
+                    ? "bg-brand-primary !text-brand-light hover:bg-brand-primary/90 hover:!text-brand-light" // Active state: pink background, white text, white text on hover
                     : "text-brand-dark dark:text-brand-light hover:text-brand-primary" // Inactive state: default text color, primary text color on hover
                 )}
               >
@@ -173,7 +173,7 @@ const Navbar = () => {
                       className={cn(
                         "text-lg font-medium justify-start w-full px-4 py-2", // Base styles
                         isAnyServicePageActive
-                          ? "bg-brand-primary text-brand-light hover:bg-brand-primary/90 hover:text-brand-light rounded-md" // Active state: pink background, white text
+                          ? "bg-brand-primary !text-brand-light hover:bg-brand-primary/90 hover:!text-brand-light rounded-md" // Active state: pink background, white text
                           : "text-brand-dark dark:text-brand-light hover:text-brand-primary" // Default link style
                       )}
                       onClick={() => { /* Keep sheet open for dropdown */ }}
