@@ -79,17 +79,6 @@ const AdditionalProgramsSection: React.FC = () => {
           className="max-w-6xl"
           buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
         />
-
-        {/* NEW: FeaturedProgramCard for Audition Songbook Review */}
-        <FeaturedProgramCard
-          title="Audition Songbook Review"
-          description="Improve the visual and physical presentation of your audition materials. Get advice on organization, printing quality, and legibility for a professional songbook. Offered on a pay-what-you-feel basis."
-          link="#contact"
-          linkText="Enquire Now"
-          backgroundColorClass="bg-brand-dark-alt"
-          className="max-w-6xl"
-          buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-        />
       </div>
     </section>
   );
