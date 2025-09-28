@@ -69,13 +69,6 @@ const VoicePianoServicesPage: React.FC = () => {
                   Sessions are available in flexible 30, 45, 60, or 90-minute durations to perfectly fit your schedule and goals.
                 </p>
               </CardContent>
-              <div className="mt-6 text-center">
-                <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-                  <Link to="/book-voice-piano">
-                    Book Voice & Piano
-                  </Link>
-                </Button>
-              </div>
             </Card>
 
             {/* Healing & Body-Voice Integration Card */}
@@ -94,13 +87,6 @@ const VoicePianoServicesPage: React.FC = () => {
                   Sessions are available in flexible 30, 45, 60, or 90-minute durations to perfectly fit your schedule and goals.
                 </p>
               </CardContent>
-              <div className="mt-6 text-center">
-                <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-                  <Link to="/book-voice-piano">
-                    Book Voice & Piano
-                  </Link>
-                </Button>
-              </div>
             </Card>
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] hover:border-brand-primary transition-all duration-300">
               <CardHeader className="p-0 pb-4">
