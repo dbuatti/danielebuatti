@@ -21,8 +21,8 @@ import TulipsSection from "@/components/pages/landing-page-v3/TulipsSection";
 import CallToActionSection from "@/components/pages/landing-page-v3/CallToActionSection";
 import AdditionalProgramsSection from "@/components/pages/landing-page-v3/AdditionalProgramsSection";
 import InstagramFeedSection from "@/components/pages/landing-page-v3/InstagramFeedSection";
-import FullBioSection from "@/components/pages/landing-page-v3/FullBioSection"; // Ensure this import is present
-import AdditionalProgramBanner from "@/components/AdditionalProgramBanner"; // Import the banner component
+import FullBioSection from "@/components/pages/landing-page-v3/FullBioSection";
+import AdditionalProgramBanner from "@/components/AdditionalProgramBanner";
 
 const LandingPageV3: React.FC = () => {
   useSmoothScroll();
@@ -30,7 +30,7 @@ const LandingPageV3: React.FC = () => {
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
       <Navbar />
-      <main className="mx-auto px-4"> {/* Removed 'container' class */}
+      <main className="mx-auto px-4">
         <HeroSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <AboutMeSection />
@@ -61,10 +61,10 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <AdditionalProgramsSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <InstagramFeedSection /> {/* New section for Instagram feed */}
+        <InstagramFeedSection />
       </main>
 
-      {/* NEW: Online Drop-In Audition Cut Sessions Banner - Moved outside <main> */}
+      {/* Online Drop-In Audition Cut Sessions Banner */}
       <AdditionalProgramBanner
         title={<span className="text-brand-primary">AUDITION CUT PLAYTHROUGH</span>}
         subtitle="Live run through of your audition cut"
@@ -79,17 +79,17 @@ const LandingPageV3: React.FC = () => {
         }
         link="https://danielebuatti.as.me/audition-cut-playthrough-15"
         linkText="Book a Playthrough"
-        bgColorClass="bg-brand-dark" // Fallback background color
+        bgColorClass="bg-brand-dark" // Sets the solid background color to #00022D
         textColorClass="text-brand-light"
         buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-        className="w-screen -mx-4 py-16" // Full width, negative margins, increased padding
-        titleClassName="text-5xl md:text-6xl font-extrabold uppercase" // Larger, bolder, uppercase title
-        backgroundImageSrc="/danielepianolaugh.jpeg" // Image for the background
-        backgroundPosition="right center" // Position image to show Daniele on the right
-        imageOverlayClass="bg-brand-dark/70" // Darker overlay for contrast
-        contentAlignment="left" // Align content to the left
+        className="w-screen -mx-4 py-16" // Ensures full width and appropriate padding
+        titleClassName="text-5xl md:text-6xl font-extrabold uppercase"
+        backgroundImageSrc="/danielepianolaugh.jpeg" // The image you provided
+        backgroundPosition="right center" // Positions the image to the right
+        imageOverlayClass="bg-brand-dark/70" // This prop is used by the component to create the gradient from left (dark blue) to right (transparent over image)
+        contentAlignment="left" // Aligns content to the left, triggering the gradient overlay
       />
-      <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" /> {/* Add separator after the full-width banner */}
+      <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
 
       <Footer />
       <BackToTopButton />
