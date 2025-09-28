@@ -17,12 +17,12 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-brand-dark text-brand-light py-8">
-      <div className="container mx-auto px-4 text-center space-y-5">
+    <footer className="bg-brand-dark text-brand-light py-12"> {/* Increased from py-8 */}
+      <div className="container mx-auto px-4 text-center space-y-8"> {/* Increased from space-y-5 */}
         {/* Newsletter Signup Section */}
-        <div className="space-y-2">
+        <div className="space-y-3"> {/* Increased from space-y-2 */}
           <h3 className="text-2xl font-bold text-brand-light">Stay Connected</h3>
-          <p className="text-brand-light/80 max-w-xl mx-auto"> {/* Changed from max-w-md to max-w-xl */}
+          <p className="text-brand-light/80 max-w-xl mx-auto">
             Join my newsletter for exclusive insights, updates, and special offers.
           </p>
           <NewsletterSignup />
@@ -45,7 +45,7 @@ const Footer = () => {
           ))}
         </div>
 
-        <div className="space-y-0">
+        <div className="space-y-2"> {/* Increased from space-y-0 */}
           <p className="text-lg font-semibold">Contact Me</p>
           <a
             href="mailto:info@danielebuatti.com"
@@ -67,7 +67,7 @@ const Footer = () => {
 
         <Separator className="max-w-md mx-auto bg-brand-secondary" />
 
-        <div className="flex justify-center py-1">
+        <div className="flex justify-center py-2"> {/* Increased from py-1 */}
           <DynamicImage
             src="/logo-piano-white-44.png"
             alt="Daniele Buatti Brand Symbol"
@@ -78,7 +78,7 @@ const Footer = () => {
         </div>
 
         {/* Copyright Notice */}
-        <div className="pt-4 text-sm text-brand-light/70">
+        <div className="pt-6 text-sm text-brand-light/70"> {/* Increased from pt-4 */}
           &copy; {currentYear} Daniele Buatti. All rights reserved.
         </div>
       </div>
