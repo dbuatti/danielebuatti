@@ -17,7 +17,7 @@ const ServicesPage: React.FC = () => {
   return (
     <BookingPageLayout pageTitle="Services"> {/* Added pageTitle prop */}
       <div className="max-w-4xl mx-auto space-y-10">
-        <SectionHeading className="mb-8">
+        <SectionHeading className="mb-4"> {/* Reduced mb-8 to mb-4 for closer subtitle */}
           My Services {/* Pass only the text to SectionHeading */}
         </SectionHeading>
         <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 text-center mt-2">
@@ -25,7 +25,7 @@ const ServicesPage: React.FC = () => {
         </p>
 
         {/* Hero Image Section */}
-        <section className="relative mb-8 rounded-xl overflow-hidden shadow-lg border-4 border-brand-secondary">
+        <section className="relative mt-8 mb-8 rounded-xl overflow-hidden shadow-lg border-4 border-brand-secondary"> {/* Added mt-8 for space from subtitle */}
           <DynamicImage
             src="/danielecalmatpiano.jpeg"
             alt="Daniele Buatti playing piano with eyes closed, deeply in the moment"
