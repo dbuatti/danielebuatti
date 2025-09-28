@@ -3,12 +3,8 @@
 @tailwind utilities;
 
 @layer base {
-  html, body, #root { /* Added #root here */
-    height: 100%;
-  }
-
-  body {
-    overflow-x-hidden; /* Added to prevent horizontal overflow from affecting vertical scroll */
+  html, body {
+    height: 100%; /* Added for consistent scrollbar behavior */
   }
 
   :root {
@@ -127,7 +123,7 @@
   }
 
   body {
-    @apply bg-[var(--background)] text-[var(--foreground)] font-sans; /* Apply the new font here */
+    @apply bg-background text-foreground font-sans; /* Apply the new font here */
   }
 }
 
