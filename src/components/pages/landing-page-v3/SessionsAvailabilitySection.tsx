@@ -5,7 +5,6 @@ import SectionHeading from "@/components/SectionHeading";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
-// Removed import for AdditionalProgramBanner as it's no longer used here
 
 const SessionsAvailabilitySection: React.FC = () => {
   return (
@@ -24,32 +23,12 @@ const SessionsAvailabilitySection: React.FC = () => {
             <p>
               Experience personalised 1:1 coaching tailored to your unique journey. Whether it's vocal mastery (breath work, body integration, repertoire, audition prep), supportive piano lessons (musicianship, theory), or integrated body-voice work, sessions are available in flexible 30, 45, 60, or 90-minute durations to perfectly fit your schedule and goals.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4"> {/* Changed to grid for side-by-side cards */}
-              {/* Link to Voice & Piano Services Page */}
-              <Link to="/voice-piano-services" className="block">
-                <Card className={cn(
-                  "flex items-center justify-center h-40 p-6 rounded-xl shadow-lg",
-                  "bg-brand-primary text-brand-light",
-                  "hover:bg-brand-primary/90 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
-                )}>
-                  <CardContent className="p-0 text-3xl font-extrabold">
-                    Voice & Piano Coaching
-                  </CardContent>
-                </Card>
-              </Link>
-
-              {/* Book Healing Sessions Card */}
-              <Link to="/book-healing" className="block">
-                <Card className={cn(
-                  "flex items-center justify-center h-40 p-6 rounded-xl shadow-lg",
-                  "bg-brand-dark text-brand-light",
-                  "hover:bg-brand-dark-alt hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
-                )}>
-                  <CardContent className="p-0 text-3xl font-extrabold">
-                    Book Healing Sessions
-                  </CardContent>
-                </Card>
-              </Link>
+            <div className="pt-4">
+              <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+                <Link to="/voice-piano-services">
+                  Learn More & Book 1:1 Sessions
+                </Link>
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -81,7 +60,7 @@ const SessionsAvailabilitySection: React.FC = () => {
         </div>
       </div>
       <p className="text-xl font-medium text-brand-primary mt-8">
-        📅 Limited November spots are now open. DM to claim your session or schedule a complimentary discovery call.
+        📅 Limited November spots are now open. Schedule a complimentary discovery call to explore your potential.
       </p>
     </section>
   );
