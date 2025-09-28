@@ -91,12 +91,12 @@ const Navbar = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
-                // Removed variant="ghost" to allow direct background styling
+                variant={isAnyServicePageActive ? "default" : "ghost"} // Use default variant when active
                 className={cn(
-                  "text-sm font-medium transition-colors",
+                  "text-sm font-medium transition-colors px-3 py-2 rounded-md",
                   isAnyServicePageActive
-                    ? "bg-brand-primary hover:bg-brand-primary/90 text-brand-light px-3 py-2 rounded-md" // Pink background, white text, similar padding/rounding to other buttons
-                    : "text-brand-dark dark:text-brand-light hover:text-brand-primary" // Default link style
+                    ? "bg-brand-primary text-brand-light hover:bg-brand-primary/90 hover:text-brand-light" // Active state: pink background, white text, white text on hover
+                    : "text-brand-dark dark:text-brand-light hover:text-brand-primary" // Inactive state: default text color, primary text color on hover
                 )}
               >
                 Services
@@ -167,12 +167,12 @@ const Navbar = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
-                      // Removed variant="ghost" for mobile as well
+                      variant={isAnyServicePageActive ? "default" : "ghost"} // Use default variant when active
                       className={cn(
-                        "text-lg font-medium justify-start w-full px-4 py-2 hover:text-brand-primary",
+                        "text-lg font-medium justify-start w-full px-4 py-2", // Base styles
                         isAnyServicePageActive
-                          ? "bg-brand-primary hover:bg-brand-primary/90 text-brand-light rounded-md" // Pink background, white text
-                          : "text-brand-dark dark:text-brand-light" // Default link style
+                          ? "bg-brand-primary text-brand-light hover:bg-brand-primary/90 hover:text-brand-light rounded-md" // Active state: pink background, white text
+                          : "text-brand-dark dark:text-brand-light hover:text-brand-primary" // Default link style
                       )}
                       onClick={() => { /* Keep sheet open for dropdown */ }}
                     >
