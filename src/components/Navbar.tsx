@@ -91,8 +91,8 @@ const Navbar = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
-                // Only apply variant="ghost" when inactive
-                {...(!isAnyServicePageActive && { variant: "ghost" })}
+                // Removed variant prop when active to allow full className control
+                variant={isAnyServicePageActive ? undefined : "ghost"} 
                 className={cn(
                   "text-sm font-medium transition-colors px-3 py-2 rounded-md",
                   isAnyServicePageActive
@@ -168,8 +168,8 @@ const Navbar = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
-                      // Only apply variant="ghost" when inactive
-                      {...(!isAnyServicePageActive && { variant: "ghost" })}
+                      // Removed variant prop when active to allow full className control
+                      variant={isAnyServicePageActive ? undefined : "ghost"} 
                       className={cn(
                         "text-lg font-medium justify-start w-full px-4 py-2", // Base styles
                         isAnyServicePageActive
