@@ -15,7 +15,7 @@ const ServicesPage: React.FC = () => {
   }, []);
 
   return (
-    <BookingPageLayout>
+    <BookingPageLayout pageTitle="Services"> {/* Added pageTitle prop */}
       <div className="max-w-4xl mx-auto space-y-10">
         <SectionHeading className="mb-8">
           My Services {/* Pass only the text to SectionHeading */}
