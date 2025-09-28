@@ -20,8 +20,8 @@ import WhyWorkWithMeSection from "@/components/pages/landing-page-v3/WhyWorkWith
 import TulipsSection from "@/components/pages/landing-page-v3/TulipsSection";
 import CallToActionSection from "@/components/pages/landing-page-v3/CallToActionSection";
 import AdditionalProgramsSection from "@/components/pages/landing-page-v3/AdditionalProgramsSection";
-import FullBioSection from "@/components/pages/landing-page-v3/FullBioSection";
-import InstagramFeedSection from "@/components/pages/landing-page-v3/InstagramFeedSection"; // New import
+import InstagramFeedSection from "@/components/pages/landing-page-v3/InstagramFeedSection";
+import AdditionalProgramBanner from "@/components/AdditionalProgramBanner"; // Import the banner component
 
 const LandingPageV3: React.FC = () => {
   useSmoothScroll();
@@ -62,6 +62,34 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <InstagramFeedSection /> {/* New section for Instagram feed */}
       </main>
+
+      {/* NEW: Online Drop-In Audition Cut Sessions Banner - Moved outside <main> */}
+      <AdditionalProgramBanner
+        title={<span className="text-brand-primary">AUDITION CUT PLAYTHROUGH</span>}
+        subtitle="Live run through of your audition cut"
+        description={
+          <ul className="list-disc list-inside space-y-2 text-lg text-brand-light">
+            <li>15 minute online drop-in</li>
+            <li>Run your 16–32 bar cut with an experienced audition pianist</li>
+            <li>Live playthrough + practical feedback</li>
+            <li>Perfect for auditions & self-tapes</li>
+            <li>Upload your clear PDF when booking</li>
+          </ul>
+        }
+        link="https://danielebuatti.as.me/audition-cut-playthrough-15"
+        linkText="Book a Playthrough"
+        bgColorClass="bg-brand-dark" // Fallback background color
+        textColorClass="text-brand-light"
+        buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
+        className="w-screen -mx-4 py-16" // Full width, negative margins, increased padding
+        titleClassName="text-5xl md:text-6xl font-extrabold uppercase" // Larger, bolder, uppercase title
+        backgroundImageSrc="/danielepianolaugh.jpeg" // Image for the background
+        backgroundPosition="right center" // Position image to show Daniele on the right
+        imageOverlayClass="bg-brand-dark/70" // Darker overlay for contrast
+        contentAlignment="left" // Align content to the left
+      />
+      <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" /> {/* Add separator after the full-width banner */}
+
       <Footer />
       <BackToTopButton />
     </div>

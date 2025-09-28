@@ -5,7 +5,7 @@ import SectionHeading from "@/components/SectionHeading";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import AdditionalProgramBanner from "@/components/AdditionalProgramBanner";
+// Removed import for AdditionalProgramBanner as it's no longer used here
 
 const SessionsAvailabilitySection: React.FC = () => {
   return (
@@ -83,32 +83,6 @@ const SessionsAvailabilitySection: React.FC = () => {
       <p className="text-xl font-medium text-brand-primary mt-8">
         📅 Limited November spots are now open. DM to claim your session or schedule a complimentary discovery call.
       </p>
-
-      {/* NEW: Online Drop-In Audition Cut Sessions Banner */}
-      <AdditionalProgramBanner
-        title={<span className="text-brand-primary">AUDITION CUT PLAYTHROUGH</span>}
-        subtitle="Live run through of your audition cut"
-        description={
-          <ul className="list-disc list-inside space-y-2 text-lg text-brand-light">
-            <li>15 minute online drop-in</li>
-            <li>Run your 16–32 bar cut with an experienced audition pianist</li>
-            <li>Live playthrough + practical feedback</li>
-            <li>Perfect for auditions & self-tapes</li>
-            <li>Upload your clear PDF when booking</li>
-          </ul>
-        }
-        link="https://danielebuatti.as.me/audition-cut-playthrough-15"
-        linkText="Book a Playthrough"
-        bgColorClass="bg-brand-dark" // Fallback background color
-        textColorClass="text-brand-light"
-        buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-        className="w-screen -mx-4 py-16" // Full width, negative margins, increased padding
-        titleClassName="text-5xl md:text-6xl font-extrabold uppercase" // Larger, bolder, uppercase title
-        backgroundImageSrc="/danielepianolaugh.jpeg" // Image for the background
-        backgroundPosition="right center" // Position image to show Daniele on the right
-        imageOverlayClass="bg-brand-dark/70" // Darker overlay for contrast
-        contentAlignment="left" // Align content to the left
-      />
     </section>
   );
 };
