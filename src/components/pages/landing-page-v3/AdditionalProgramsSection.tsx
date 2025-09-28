@@ -4,7 +4,7 @@ import FeaturedProgramCard from "@/components/FeaturedProgramCard";
 
 const AdditionalProgramsSection: React.FC = () => {
   return (
-    <section className="py-12"> {/* Changed from pb-12 to py-12 */}
+    <section className="py-12">
       <div className="container mx-auto px-4 mb-10">
         <SectionHeading>Explore More from Daniele</SectionHeading>
       </div>
@@ -55,7 +55,7 @@ const AdditionalProgramsSection: React.FC = () => {
           backgroundPosition="center 40%"
         />
 
-        {/* NEW: FeaturedProgramCard for AMEB Accompanying Services */}
+        {/* FeaturedProgramCard for AMEB Accompanying Services */}
         <FeaturedProgramCard
           title="AMEB Accompanying Services"
           description="Professional and supportive piano accompaniment for your AMEB exams, ensuring you feel confident and ready."
@@ -66,6 +66,29 @@ const AdditionalProgramsSection: React.FC = () => {
           buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
           overlayColorClass="bg-black/60"
           backgroundPosition="center"
+        />
+
+        {/* NEW: FeaturedProgramCard for Online Drop-In Audition Cut Sessions */}
+        <FeaturedProgramCard
+          title="Online Drop-In Audition Cut Sessions"
+          description="A quick, focused 15-minute online session to run through your 16–32 bar audition cut with an experienced pianist and vocal coach."
+          link="https://danielebuatti.as.me/audition-cut-playthrough-15"
+          linkText="Book a Playthrough"
+          backgroundColorClass="bg-brand-blue"
+          logoSrc="/logo-piano-white-44.png"
+          className="max-w-6xl"
+          buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
+        />
+
+        {/* NEW: FeaturedProgramCard for Audition Songbook Review */}
+        <FeaturedProgramCard
+          title="Audition Songbook Review"
+          description="Improve the visual and physical presentation of your audition materials. Get advice on organization, printing quality, and legibility for a professional songbook. Offered on a pay-what-you-feel basis."
+          link="#contact"
+          linkText="Enquire Now"
+          backgroundColorClass="bg-brand-dark-alt"
+          className="max-w-6xl"
+          buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
         />
       </div>
     </section>
