@@ -6,9 +6,9 @@ export const navLinks = [
   { name: "Sessions", href: "#sessions" },
   { name: "Why Work With Me?", href: "#why-me" },
   { name: "Contact", href: "#contact" },
-  // Service links are handled by the dropdown in Navbar.tsx
-  { name: "Services", href: "/services" }, // New consolidated services page
-  { name: "Live Piano Services", href: "/live-piano-services" },
+  { name: "Services", href: "/services" }, // Consolidated services page
   { name: "Voice & Piano Coaching", href: "/voice-piano-services" },
+  { name: "Healing & Body-Voice Integration", href: "/book-healing" }, // Added Healing link
   { name: "AMEB Accompanying", href: "/ameb-accompanying" },
+  { name: "Live Piano Services", href: "/live-piano-services" },
 ];

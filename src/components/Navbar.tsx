@@ -31,9 +31,10 @@ const Navbar = () => {
 
   const serviceLinks = [
     { name: "Services Overview", href: "/services" },
-    { name: "Live Piano Services", href: "/live-piano-services" },
     { name: "Voice & Piano Coaching", href: "/voice-piano-services" },
+    { name: "Healing & Body-Voice Integration", href: "/book-healing" }, // Added Healing link
     { name: "AMEB Accompanying", href: "/ameb-accompanying" },
+    { name: "Live Piano Services", href: "/live-piano-services" },
   ];
 
   // Define common classes for the custom trigger
@@ -81,7 +82,7 @@ const Navbar = () => {
         </Link>
         <nav className="hidden md:flex items-center space-x-6">
           {navLinks
-            .filter(link => !serviceLinks.some(service => service.href === link.href) && link.name !== "Services")
+            .filter(link => !serviceLinks.some(service => service.href === link.href) && link.name !== "Services" && link.name !== "Live Piano Services" && link.name !== "Voice & Piano Coaching" && link.name !== "AMEB Accompanying") // Filter out individual service links
             .map((link) => {
               const isActive = link.href.startsWith("#")
                 ? (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))
@@ -160,7 +161,7 @@ const Navbar = () => {
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-brand-light dark:bg-brand-dark">
               <nav className="flex flex-col gap-4 pt-6">
                 {navLinks
-                  .filter(link => !serviceLinks.some(service => service.href === link.href) && link.name !== "Services")
+                  .filter(link => !serviceLinks.some(service => service.href === link.href) && link.name !== "Services" && link.name !== "Live Piano Services" && link.name !== "Voice & Piano Coaching" && link.name !== "AMEB Accompanying") // Filter out individual service links
                   .map((link) => {
                     const isActive = link.href.startsWith("#")
                       ? (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))
