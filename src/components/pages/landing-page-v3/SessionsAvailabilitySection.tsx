@@ -84,9 +84,9 @@ const SessionsAvailabilitySection: React.FC = () => {
         📅 Limited November spots are now open. DM to claim your session or schedule a complimentary discovery call.
       </p>
 
-      {/* NEW: Online Drop-In Audition Cut Sessions Banner */}
+      {/* Pink header */}
       <AdditionalProgramBanner
-        title={<span className="text-brand-primary">Online Drop-In Audition Cut Sessions</span>} {/* Pink header */}
+        title={<span className="text-brand-primary">Online Drop-In Audition Cut Sessions</span>}
         description="A quick, focused 15-minute online session to run through your 16–32 bar audition cut with an experienced pianist and vocal coach. Get immediate feedback to ensure you're polished and performance-ready for only A$30."
         link="https://danielebuatti.as.me/audition-cut-playthrough-15"
         linkText="Book a Playthrough"
