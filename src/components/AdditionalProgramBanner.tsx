@@ -46,8 +46,8 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
   return (
     <div
       className={cn(
-        "relative w-full overflow-hidden py-20 md:py-24 lg:py-32", // Generous vertical padding
-        "min-h-[500px] md:min-h-[600px] lg:min-h-[700px]", // Ensure minimum height
+        "relative w-full overflow-hidden py-16 md:py-20 lg:py-24", // Reduced vertical padding
+        "min-h-[400px] md:min-h-[500px] lg:min-h-[600px]", // Reduced minimum height
         bgColorClass, // Base background color
         className
       )}
@@ -72,7 +72,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
             {title}
           </h3>
           {subtitle && <p className={cn("text-xl md:text-2xl font-semibold text-shadow-sm", subtitleTextColorClass)}>{subtitle}</p>}
-          <div className="text-lg md:text-xl leading-relaxed font-medium text-shadow-sm"> {/* Increased font size and weight for description */}
+          <div className="text-lg md:text-xl leading-relaxed font-medium text-shadow-sm">
             {description}
           </div>
           <Button asChild size="lg" className={cn("text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
