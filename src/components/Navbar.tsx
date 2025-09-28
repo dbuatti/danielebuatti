@@ -38,15 +38,13 @@ const Navbar = () => {
 
   const isAnyServicePageActive = serviceLinks.some(service => location.pathname === service.href);
 
-  // Removed handleMouseLeave as it's no longer needed with simplified state management
-
   // Define common classes for the custom trigger
   const servicesTriggerClasses = cn(
     "text-sm font-medium transition-colors hover:text-brand-primary",
     "px-3 py-2 rounded-md cursor-pointer", // Added cursor-pointer for better UX
     "bg-transparent hover:bg-transparent", // Ensure no background
-    isAnyServicePageActive
-      ? "font-bold text-brand-primary dark:text-brand-primary border-b-[3px] border-brand-primary pb-2"
+    isAnyServicePageActive || isServicesDropdownOpen // Apply active styles if any service page is active OR dropdown is open
+      ? "font-bold text-brand-primary dark:text-brand-primary border-2 border-brand-primary" // Pink stroke
       : "text-brand-dark dark:text-brand-light"
   );
 
@@ -181,8 +179,8 @@ const Navbar = () => {
                       className={cn(
                         "text-lg font-medium justify-start w-full px-4 py-2 rounded-md cursor-pointer",
                         "bg-transparent hover:bg-transparent", // Ensure no background
-                        isAnyServicePageActive
-                          ? "font-bold text-brand-primary dark:text-brand-primary"
+                        isAnyServicePageActive || isServicesDropdownOpen // Apply active styles if any service page is active OR dropdown is open
+                          ? "font-bold text-brand-primary dark:text-brand-primary border-2 border-brand-primary" // Pink stroke
                           : "text-brand-dark dark:text-brand-light hover:text-brand-primary"
                       )}
                       role="button"
