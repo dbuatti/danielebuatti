@@ -18,7 +18,7 @@ const ServicesPage: React.FC = () => {
     <BookingPageLayout>
       <div className="max-w-4xl mx-auto space-y-12"> {/* Increased space-y for better separation */}
         <SectionHeading className="mb-8">
-          <h2 className="text-5xl md:text-6xl font-libre-baskerville font-bold text-brand-primary leading-tight">
+          <h2 className="text-5xl md:text-6xl font-bold text-brand-primary leading-tight"> {/* Removed font-libre-baskerville */}
             My Services
           </h2>
           <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 mt-2">
