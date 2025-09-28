@@ -18,7 +18,6 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"; // Import DropdownMenu components
-import ActiveServiceButton from "@/components/ActiveServiceButton"; // New import
 
 const Navbar = () => {
   const activeSection = useActiveSection();
@@ -91,18 +90,17 @@ const Navbar = () => {
           {/* Services Dropdown for Desktop */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              {isAnyServicePageActive ? (
-                <ActiveServiceButton className="text-white" style={{ color: 'white' }}> {/* Pass text-white and inline style directly */}
-                  Services
-                </ActiveServiceButton>
-              ) : (
-                <Button
-                  variant="ghost"
-                  className="text-sm font-medium transition-colors px-3 py-2 rounded-md text-brand-dark dark:text-brand-light hover:text-brand-primary"
-                >
-                  Services
-                </Button>
-              )}
+              <Button
+                variant={isAnyServicePageActive ? "default" : "ghost"} // Use default variant for active state
+                className={cn(
+                  "text-sm font-medium transition-colors px-3 py-2 rounded-md",
+                  isAnyServicePageActive
+                    ? "bg-brand-primary hover:bg-brand-primary/90 !text-white" // Force white text with !important
+                    : "text-brand-dark dark:text-brand-light hover:text-brand-primary"
+                )}
+              >
+                Services
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-brand-light dark:bg-brand-dark border-brand-secondary">
               {serviceLinks.map((service) => (
@@ -168,19 +166,18 @@ const Navbar = () => {
                 {/* Services Dropdown for Mobile */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    {isAnyServicePageActive ? (
-                      <ActiveServiceButton className="justify-start w-full px-4 py-2 rounded-md text-white" style={{ color: 'white' }}> {/* Pass text-white and inline style directly */}
-                        Services
-                      </ActiveServiceButton>
-                    ) : (
-                      <Button
-                        variant="ghost" 
-                        className="text-lg font-medium justify-start w-full px-4 py-2 text-brand-dark dark:text-brand-light hover:text-brand-primary" // Default link style
-                        onClick={() => { /* Keep sheet open for dropdown */ }}
-                      >
-                        Services
-                      </Button>
-                    )}
+                    <Button
+                      variant={isAnyServicePageActive ? "default" : "ghost"} // Use default variant for active state
+                      className={cn(
+                        "text-lg font-medium justify-start w-full px-4 py-2 rounded-md",
+                        isAnyServicePageActive
+                          ? "bg-brand-primary hover:bg-brand-primary/90 !text-white" // Force white text with !important
+                          : "text-brand-dark dark:text-brand-light hover:text-brand-primary"
+                      )}
+                      onClick={() => { /* Keep sheet open for dropdown */ }}
+                    >
+                      Services
+                    </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="bg-brand-light dark:bg-brand-dark border-brand-secondary w-[calc(100%-2rem)] ml-4">
                     {serviceLinks.map((service) => (
