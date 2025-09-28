@@ -1,19 +1,38 @@
 "use client";
 
-import React from 'react';
-import BookingPageLayout from '@/components/BookingPageLayout';
-import AcuityEmbed from '@/components/AcuityEmbed'; // Updated import
+import React, { useEffect } from 'react';
+import AcuityEmbed from '@/components/AcuityEmbed';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import SectionHeading from '@/components/SectionHeading';
+import { Separator } from '@/components/ui/separator';
 
 const VoicePianoBookingPage: React.FC = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const pageTitle = "Book Voice & Piano Sessions";
+  const subtitle = "Unlock Your Full Vocal & Musical Potential";
+
   return (
-    <BookingPageLayout pageTitle="Book Voice & Piano Sessions">
-      <div className="max-w-7xl mx-auto">
-        <AcuityEmbed
-          src="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:Voice%20%2B%20Piano"
-          title="Voice & Piano Booking"
-        />
-      </div>
-    </BookingPageLayout>
+    <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
+      <Navbar />
+      <main className="container mx-auto px-4 pt-12 pb-12">
+        <div className="text-center space-y-4 mb-10">
+          <SectionHeading>{pageTitle}</SectionHeading>
+          {subtitle && <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70">{subtitle}</p>}
+          <Separator className="max-w-xs mx-auto bg-brand-secondary" />
+        </div>
+        <div className="max-w-7xl mx-auto">
+          <AcuityEmbed
+            src="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:Voice%20%2B%20Piano"
+            title="Voice & Piano Booking"
+          />
+        </div>
+      </main>
+      <Footer />
+    </div>
   );
 };
 
