@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { Separator } from "@/components/ui/separator"; // Import Separator
 
 // Define the form schema using zod
 const formSchema = z.object({
@@ -54,7 +55,7 @@ const QuoteProposalPage: React.FC = () => {
   // Updated packages: Option 3 first, then Option 2. Option 1 removed.
   const packages = [
     { id: "option3", name: "The Ultimate Curated Celebration", focus: "Full Artistic Partnership & Rehearsal", contribution: 1350, image: "/quote-option-3.jpeg" },
-    { id: "option2", name: "Seamless Festive Flow", focus: "Flexible 3-Hour Engagement & Atmosphere", contribution: 875, image: "/quote-option-2.png" }, {/* Updated image to quote-option-2.png */}
+    { id: "option2", name: "Seamless Festive Flow", focus: "Flexible 3-Hour Engagement & Atmosphere", contribution: 875, image: "/quote-option-2.png" },
   ];
 
   const addOnPrice = 150;
@@ -170,6 +171,7 @@ const QuoteProposalPage: React.FC = () => {
             <p>Location: {proposalDetails.location}</p>
             <p>Prepared by: {proposalDetails.preparedBy}</p>
           </div>
+          <Separator className="max-w-md mx-auto bg-livePiano-border/50 mt-8" /> {/* Added separator */}
         </section>
 
         {/* Package Options Anchor Table */}
@@ -214,7 +216,7 @@ const QuoteProposalPage: React.FC = () => {
             This is the most exquisite carols experience: fully curated, rehearsed, and expertly guided for maximum musical impact and complete peace of mind for you, the host.
           </p>
           <div className="text-livePiano-light/80 space-y-4 max-w-3xl mx-auto">
-            <p className="text-xl font-semibold text-livePiano-primary">What's Included & The Value You Receive:</p>
+            <p className="text-xl font-semibold text-livePiano-primary border-b border-livePiano-primary/50 pb-2 mb-3">What's Included & The Value You Receive:</p> {/* Enhanced sub-heading */}
             <ul className="list-disc list-inside space-y-2">
               <li><strong>Private Rehearsal Session:</strong> Dedicated 1.5 hours a week prior to the event (A$150 Value) to refine your group’s sound and prepare any singers.</li>
               <li><strong>Extended Coverage (6pm–10pm):</strong> Guaranteed availability until the party concludes at 10pm—no watching the clock!</li>
@@ -248,7 +250,7 @@ const QuoteProposalPage: React.FC = () => {
             This flexible, high-value experience beautifully blends musical structure with adaptability, ensuring a delightful party atmosphere for your guests.
           </p>
           <div className="text-livePiano-light/80 space-y-4 max-w-3xl mx-auto">
-            <p className="text-xl font-semibold text-livePiano-primary">What's Included & The Value You Receive:</p>
+            <p className="text-xl font-semibold text-livePiano-primary border-b border-livePiano-primary/50 pb-2 mb-3">What's Included & The Value You Receive:</p> {/* Enhanced sub-heading */}
             <ul className="list-disc list-inside space-y-2">
               <li><strong>Extended 3-Hour Engagement (6pm–9pm):</strong> Ample time for guests to mingle and truly get into the festive mood.</li>
               <li><strong>On-Call Performance Buffer:</strong> Music that seamlessly adapts to your party's flow, ready when your guests are.</li>
