@@ -194,7 +194,7 @@ const QuoteProposalPage: React.FC = () => {
         </section>
 
         {/* Option 3: The Ultimate Curated Celebration */}
-        <section id="option3" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-8">
+        <section id="option3" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border-4 border-livePiano-primary space-y-8"> {/* Added border-4 border-livePiano-primary */}
           <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">The Ultimate Curated Celebration</h3>
           <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50">
             <div
@@ -223,7 +223,7 @@ const QuoteProposalPage: React.FC = () => {
             </ul>
           </div>
           <p className="text-lg italic text-livePiano-light/70 text-center mt-6 max-w-2xl mx-auto">
-            Choose this option for a seamless, stress-free, and truly unforgettable musical evening with professional oversight from rehearsal through performance.
+            Choose this option for an unparalleled, stress-free, and truly unforgettable musical evening with professional oversight from rehearsal through performance, ensuring complete peace of mind.
           </p>
         </section>
 
@@ -245,7 +245,7 @@ const QuoteProposalPage: React.FC = () => {
           </div>
           <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Your Contribution: A${packages[1].contribution}</p>
           <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
-            This flexible, high-value experience beautifully blends musical structure with adaptability, ensuring the perfect party atmosphere for your guests.
+            This flexible, high-value experience beautifully blends musical structure with adaptability, ensuring a delightful party atmosphere for your guests.
           </p>
           <div className="text-livePiano-light/80 space-y-4 max-w-3xl mx-auto">
             <p className="text-xl font-semibold text-livePiano-primary">What's Included & The Value You Receive:</p>
@@ -257,7 +257,7 @@ const QuoteProposalPage: React.FC = () => {
             </ul>
           </div>
           <p className="text-lg italic text-livePiano-light/70 text-center mt-6 max-w-2xl mx-auto">
-            This is the ideal option for hosts who prioritize a seamless atmosphere and flexibility. It guarantees music adapts to your party's pace, eliminating the stress of rigid timing, and provides excellent value.
+            This is a practical option for hosts who prioritize a seamless atmosphere and flexibility. It reliably adapts to your party's pace, ensuring music is always just right.
           </p>
         </section>
 
@@ -336,7 +336,10 @@ const QuoteProposalPage: React.FC = () => {
                             <FormControl>
                               <RadioGroupItem value={pkg.id} id={`package-${pkg.id}`} className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" />
                             </FormControl>
-                            <FormLabel htmlFor={`package-${pkg.id}`} className="text-xl font-medium text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                            <FormLabel htmlFor={`package-${pkg.id}`} className={
+                              `text-xl font-medium text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70
+                              ${pkg.id === "option3" ? "font-bold" : ""}` // Make premium label bolder
+                            }>
                               {pkg.name} (A${pkg.contribution})
                             </FormLabel>
                           </FormItem>
