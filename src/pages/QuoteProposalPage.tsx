@@ -229,7 +229,7 @@ const QuoteProposalPage: React.FC = () => {
                 render={({ field }) => (
                   <FormItem className={cn(
                     "flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-all duration-200 cursor-pointer",
-                    field.value ? "border-livePiano-primary shadow-lg" : "hover:border-livePiano-primary hover:shadow-md"
+                    field.value ? "border-livePiano-primary shadow-lg bg-livePiano-background/30" : "hover:border-livePiano-primary hover:shadow-md"
                   )}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
                       <div className="flex items-start space-x-3 mb-4 sm:mb-0">
@@ -263,7 +263,7 @@ const QuoteProposalPage: React.FC = () => {
                 render={({ field }) => (
                   <FormItem className={cn(
                     "flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-all duration-200 cursor-pointer",
-                    field.value ? "border-livePiano-primary shadow-lg" : "hover:border-livePiano-primary hover:shadow-md"
+                    field.value ? "border-livePiano-primary shadow-lg bg-livePiano-background/30" : "hover:border-livePiano-primary hover:shadow-md"
                   )}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
                       <div className="flex items-start space-x-3 mb-4 sm:mb-0">
