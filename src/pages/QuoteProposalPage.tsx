@@ -11,7 +11,7 @@ import { ArrowLeft } from 'lucide-react';
 import Footer from '@/components/Footer';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import * => z from "zod";
 import {
   Form,
   FormControl,
@@ -54,7 +54,7 @@ const QuoteProposalPage: React.FC = () => {
   // Updated packages: Option 3 first, then Option 2. Option 1 removed.
   const packages = [
     { id: "option3", name: "The Ultimate Curated Celebration", focus: "Full Artistic Partnership & Rehearsal", contribution: 1350, image: "/quote-option-3.jpeg" },
-    { id: "option2", name: "Seamless Festive Flow", focus: "Flexible 3-Hour Engagement & Atmosphere", contribution: 875, image: "/quote-option-2.jpeg" },
+    { id: "option2", name: "Seamless Festive Flow", focus: "Flexible 3-Hour Engagement & Atmosphere", contribution: 875, image: "/quote-option-2.png" }, // Updated to .png
   ];
 
   const addOnPrice = 150;
