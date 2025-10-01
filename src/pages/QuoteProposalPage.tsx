@@ -9,7 +9,7 @@ import { ArrowLeft } from 'lucide-react';
 import Footer from '@/components/Footer';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod"; // Corrected import statement
+import * as z from "zod";
 import {
   Form,
   FormControl,
@@ -31,8 +31,9 @@ const formSchema = z.object({
   clientEmail: z.string().email({ message: "A valid email address is required." }),
   wantsExtraHour: z.boolean().default(false),
   wantsRehearsal: z.boolean().default(false),
-  rehearsalHours: z.coerce.number().optional(), // Use z.coerce.number() for select value
-  wantsSongSheets: z.boolean().default(false),
+  rehearsalHours: z.coerce.number().optional(),
+  wantsArtisticGuidance: z.boolean().default(false), // New field for artistic guidance
+  artisticGuidanceHours: z.coerce.number().optional(), // Hours for artistic guidance
 });
 
 const QuoteProposalPage: React.FC = () => {
@@ -50,26 +51,32 @@ const QuoteProposalPage: React.FC = () => {
     preparedBy: "Daniele Buatti",
   };
 
-  const hourlyRate = 350;
+  const hourlyRate = 300; // Changed performance/rehearsal hourly rate to $300
+  const artisticGuidanceHourlyRate = 100; // New artistic guidance hourly rate
+  const rehearsalTravelCost = 350; // Fixed travel cost for rehearsal
 
   const baseService = {
     hours: 3,
-    cost: hourlyRate * 3, // 3 hours performance
+    cost: hourlyRate * 3, // 3 hours performance at new hourly rate
     description: "3 hours of live piano performance, including carol sing-alongs (two 45-min sets) and background music between sets. I will provide a printed song list.",
   };
 
   const addOns = {
     extraHour: {
       name: "Extra hour (to 10pm)",
-      cost: hourlyRate, // 1 extra hour
+      cost: hourlyRate, // 1 extra hour at new hourly rate
       description: "Extend the performance by one hour.",
     },
-    rehearsalHourlyRate: hourlyRate, // For dynamic calculation
-    rehearsalTravelCost: hourlyRate, // Fixed cost for travel if rehearsal is chosen (1 hour equivalent)
-    songSheets: {
-      name: "Custom printed song sheets",
-      cost: 150,
-      description: "Custom designed and printed song sheets for your guests.",
+    rehearsal: {
+      name: "Pre-event rehearsal",
+      hourlyRate: hourlyRate, // Uses the main hourly rate
+      travelCost: rehearsalTravelCost, // Fixed travel cost
+      description: "A dedicated rehearsal session one week prior to the event, plus travel time.",
+    },
+    artisticGuidance: {
+      name: "Personal Artistic Guidance & Collaboration",
+      hourlyRate: artisticGuidanceHourlyRate,
+      description: "Full collaboration on sheet music sourcing, set structure, and creation of a custom carols brochure.",
     },
   };
 
@@ -81,6 +88,13 @@ const QuoteProposalPage: React.FC = () => {
     { value: 3, label: "3 hours" },
   ];
 
+  const artisticGuidanceDurationOptions = [
+    { value: 1, label: "1 hour" },
+    { value: 2, label: "2 hours" },
+    { value: 3, label: "3 hours" },
+    { value: 4, label: "4 hours" },
+  ];
+
   // Initialize react-hook-form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -90,25 +104,29 @@ const QuoteProposalPage: React.FC = () => {
       wantsExtraHour: false,
       wantsRehearsal: false,
       rehearsalHours: 1.5, // Default to 1.5 hours if rehearsal is selected
-      wantsSongSheets: false,
+      wantsArtisticGuidance: false, // Default for new add-on
+      artisticGuidanceHours: 1, // Default for new add-on hours
     },
   });
 
   const wantsExtraHour = form.watch("wantsExtraHour");
   const wantsRehearsal = form.watch("wantsRehearsal");
   const rehearsalHours = form.watch("rehearsalHours");
-  const wantsSongSheets = form.watch("wantsSongSheets");
+  const wantsArtisticGuidance = form.watch("wantsArtisticGuidance"); // Watch new field
+  const artisticGuidanceHours = form.watch("artisticGuidanceHours"); // Watch new field
 
   // Calculate total amount dynamically
   const totalAmount = useMemo(() => {
     let total = baseService.cost;
     if (wantsExtraHour) total += addOns.extraHour.cost;
     if (wantsRehearsal && rehearsalHours) {
-      total += (rehearsalHours * addOns.rehearsalHourlyRate) + addOns.rehearsalTravelCost;
+      total += (rehearsalHours * addOns.rehearsal.hourlyRate) + addOns.rehearsal.travelCost;
     }
-    if (wantsSongSheets) total += addOns.songSheets.cost;
+    if (wantsArtisticGuidance && artisticGuidanceHours) {
+      total += (artisticGuidanceHours * addOns.artisticGuidance.hourlyRate);
+    }
     return total;
-  }, [wantsExtraHour, wantsRehearsal, rehearsalHours, wantsSongSheets]);
+  }, [wantsExtraHour, wantsRehearsal, rehearsalHours, wantsArtisticGuidance, artisticGuidanceHours]);
 
   // Handle form submission
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -118,9 +136,11 @@ const QuoteProposalPage: React.FC = () => {
       const selectedAddOnsList: string[] = [];
       if (values.wantsExtraHour) selectedAddOnsList.push(addOns.extraHour.name);
       if (values.wantsRehearsal && values.rehearsalHours) {
-        selectedAddOnsList.push(`Pre-event rehearsal (${values.rehearsalHours} hours + Travel)`);
+        selectedAddOnsList.push(`${addOns.rehearsal.name} (${values.rehearsalHours} hours + Travel)`);
       }
-      if (values.wantsSongSheets) selectedAddOnsList.push(addOns.songSheets.name);
+      if (values.wantsArtisticGuidance && values.artisticGuidanceHours) {
+        selectedAddOnsList.push(`${addOns.artisticGuidance.name} (${values.artisticGuidanceHours} hours)`);
+      }
 
       // Insert data into Supabase
       const { data, error } = await supabase
@@ -187,7 +207,7 @@ const QuoteProposalPage: React.FC = () => {
         {/* Hero Image Section */}
         <section className="relative mt-8 mb-8 rounded-xl overflow-hidden shadow-lg border-4 border-livePiano-primary">
           <DynamicImage
-            src="/live-performance.jpeg" // Updated image source
+            src="/live-performance.jpeg"
             alt="Daniele Buatti performing live"
             className="w-full h-96 md:h-[450px] object-cover object-center"
             width={800}
@@ -271,7 +291,6 @@ const QuoteProposalPage: React.FC = () => {
                         checked={field.value}
                         onCheckedChange={(checked) => {
                           field.onChange(checked);
-                          // If unchecking, reset rehearsal hours to default or null
                           if (!checked) {
                             form.setValue("rehearsalHours", undefined);
                           } else {
@@ -284,10 +303,10 @@ const QuoteProposalPage: React.FC = () => {
                     </FormControl>
                     <div className="space-y-1 leading-none">
                       <FormLabel htmlFor="add-on-rehearsal" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 hover:text-livePiano-primary transition-colors duration-200">
-                        Pre-event rehearsal + Travel (A${(rehearsalHours || 0) * addOns.rehearsalHourlyRate + addOns.rehearsalTravelCost})
+                        {addOns.rehearsal.name} + Travel (A${(rehearsalHours || 0) * addOns.rehearsal.hourlyRate + addOns.rehearsal.travelCost})
                       </FormLabel>
                       <FormDescription className="text-livePiano-light/70 text-base">
-                        A dedicated rehearsal session one week prior to the event, plus travel time.
+                        {addOns.rehearsal.description}
                       </FormDescription>
                       {wantsRehearsal && (
                         <FormField
@@ -308,7 +327,7 @@ const QuoteProposalPage: React.FC = () => {
                                 <SelectContent className="z-50 bg-livePiano-darker border-livePiano-border">
                                   {rehearsalDurationOptions.map((option) => (
                                     <SelectItem key={option.value} value={option.value.toString()} className="text-livePiano-light focus:bg-livePiano-primary focus:text-livePiano-darker">
-                                      {option.label} (A${option.value * addOns.rehearsalHourlyRate})
+                                      {option.label} (A${option.value * addOns.rehearsal.hourlyRate})
                                     </SelectItem>
                                   ))}
                                 </SelectContent>
@@ -324,24 +343,60 @@ const QuoteProposalPage: React.FC = () => {
               />
               <FormField
                 control={form.control}
-                name="wantsSongSheets"
+                name="wantsArtisticGuidance"
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-livePiano-border/50 p-4">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
-                        onCheckedChange={field.onChange}
-                        id="add-on-song-sheets"
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked);
+                          if (!checked) {
+                            form.setValue("artisticGuidanceHours", undefined);
+                          } else {
+                            form.setValue("artisticGuidanceHours", 1); // Set default when checked
+                          }
+                        }}
+                        id="add-on-artistic-guidance"
                         className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel htmlFor="add-on-song-sheets" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 hover:text-livePiano-primary transition-colors duration-200">
-                        {addOns.songSheets.name} (Add A${addOns.songSheets.cost})
+                      <FormLabel htmlFor="add-on-artistic-guidance" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 hover:text-livePiano-primary transition-colors duration-200">
+                        {addOns.artisticGuidance.name} (A${(artisticGuidanceHours || 0) * addOns.artisticGuidance.hourlyRate})
                       </FormLabel>
                       <FormDescription className="text-livePiano-light/70 text-base">
-                        {addOns.songSheets.description}
+                        {addOns.artisticGuidance.description}
                       </FormDescription>
+                      {wantsArtisticGuidance && (
+                        <FormField
+                          control={form.control}
+                          name="artisticGuidanceHours"
+                          render={({ field: guidanceField }) => (
+                            <FormItem className="mt-4">
+                              <FormLabel className="text-livePiano-light text-base">Select Hours:</FormLabel>
+                              <Select
+                                onValueChange={(value) => guidanceField.onChange(parseFloat(value))}
+                                defaultValue={guidanceField.value?.toString()}
+                              >
+                                <FormControl>
+                                  <SelectTrigger className="w-full bg-livePiano-background border-livePiano-border/50 text-livePiano-light focus-visible:ring-livePiano-primary">
+                                    <SelectValue placeholder="Select hours" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent className="z-50 bg-livePiano-darker border-livePiano-border">
+                                  {artisticGuidanceDurationOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value.toString()} className="text-livePiano-light focus:bg-livePiano-primary focus:text-livePiano-darker">
+                                      {option.label} (A${option.value * addOns.artisticGuidance.hourlyRate})
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
                     </div>
                   </FormItem>
                 )}
