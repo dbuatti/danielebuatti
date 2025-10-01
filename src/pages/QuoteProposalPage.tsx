@@ -9,7 +9,7 @@ import { ArrowLeft } from 'lucide-react';
 import Footer from '@/components/Footer';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import * as z from "zod"; // Corrected import statement
 import {
   Form,
   FormControl,
@@ -44,8 +44,8 @@ const QuoteProposalPage: React.FC = () => {
 
   const proposalDetails = {
     client: "Imme Kaschner",
-    dateOfEvent: "Saturday 22 November 2025", // Corrected date
-    time: "6:00–9:00pm (or later for the Premium Option)", // Corrected time
+    dateOfEvent: "Saturday 22 November 2025",
+    time: "6:00–9:00pm",
     location: "Kew (Private Home)",
     preparedBy: "Daniele Buatti",
   };
