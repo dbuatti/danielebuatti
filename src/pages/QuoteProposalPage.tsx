@@ -158,7 +158,7 @@ const QuoteProposalPage: React.FC = () => {
               </span>
             </Link>
           </Button>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2"> {/* Adjusted for better alignment */}
             <DynamicImage src="/gold-36.png" alt="Daniele Buatti Logo" className="h-16 md:h-20" width={80} height={80} />
             <h1 className="text-xl md:text-2xl font-montserrat font-light uppercase text-livePiano-light tracking-widest mt-2">
               Daniele Buatti
@@ -229,7 +229,7 @@ const QuoteProposalPage: React.FC = () => {
                 render={({ field }) => (
                   <FormItem className={cn(
                     "flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-all duration-200 cursor-pointer",
-                    field.value ? "border-livePiano-primary shadow-md" : "hover:border-livePiano-primary"
+                    field.value ? "border-livePiano-primary shadow-lg" : "hover:border-livePiano-primary hover:shadow-md"
                   )}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
                       <div className="flex items-start space-x-3 mb-4 sm:mb-0">
@@ -250,7 +250,7 @@ const QuoteProposalPage: React.FC = () => {
                           </FormDescription>
                         </div>
                       </div>
-                      <div className="text-2xl font-bold text-livePiano-primary sm:ml-auto">
+                      <div className="text-3xl font-bold text-livePiano-primary sm:ml-auto">
                         A${rehearsalDisplayCost}
                       </div>
                     </div>
@@ -263,7 +263,7 @@ const QuoteProposalPage: React.FC = () => {
                 render={({ field }) => (
                   <FormItem className={cn(
                     "flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-all duration-200 cursor-pointer",
-                    field.value ? "border-livePiano-primary shadow-md" : "hover:border-livePiano-primary"
+                    field.value ? "border-livePiano-primary shadow-lg" : "hover:border-livePiano-primary hover:shadow-md"
                   )}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
                       <div className="flex items-start space-x-3 mb-4 sm:mb-0">
@@ -284,7 +284,7 @@ const QuoteProposalPage: React.FC = () => {
                           </FormDescription>
                         </div>
                       </div>
-                      <div className="text-2xl font-bold text-livePiano-primary sm:ml-auto">
+                      <div className="text-3xl font-bold text-livePiano-primary sm:ml-auto">
                         A${extraHourDisplayCost}
                       </div>
                     </div>
@@ -308,7 +308,7 @@ const QuoteProposalPage: React.FC = () => {
                     <FormControl>
                       <Input
                         placeholder="e.g., Imme Kaschner"
-                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60 focus-visible:ring-livePiano-primary"
+                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60 focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2"
                         {...field}
                       />
                     </FormControl>
@@ -326,7 +326,7 @@ const QuoteProposalPage: React.FC = () => {
                       <Input
                         type="email"
                         placeholder="e.g., your@email.com"
-                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60 focus-visible:ring-livePiano-primary"
+                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60 focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2"
                         {...field}
                       />
                     </FormControl>
