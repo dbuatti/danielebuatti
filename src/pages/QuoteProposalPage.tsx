@@ -89,7 +89,7 @@ const QuoteProposalPage: React.FC = () => {
       clientEmail: '',
       wantsExtraHour: false,
       wantsRehearsal: true, // Default to checked
-      rehearsalHours: 2, // Default to 2 hours if rehearsal is selected
+      rehearsalHours: 1, // Default to 1 hour if rehearsal is selected
       wantsArtisticGuidance: false,
       artisticGuidanceHours: 1, // Default to 1 hour if artistic guidance is selected (will only be used if checkbox is checked)
     },
@@ -116,10 +116,10 @@ const QuoteProposalPage: React.FC = () => {
 
   // Handlers for rehearsal hours
   const handleDecrementRehearsal = () => {
-    form.setValue("rehearsalHours", Math.max(1, (rehearsalHours || 2) - 0.5));
+    form.setValue("rehearsalHours", Math.max(1, (rehearsalHours || 1) - 0.5));
   };
   const handleIncrementRehearsal = () => {
-    form.setValue("rehearsalHours", Math.min(3, (rehearsalHours || 2) + 0.5));
+    form.setValue("rehearsalHours", Math.min(3, (rehearsalHours || 1) + 0.5));
   };
 
   // Handlers for artistic guidance hours
@@ -312,7 +312,7 @@ const QuoteProposalPage: React.FC = () => {
                               if (!checked) {
                                 form.setValue("rehearsalHours", undefined);
                               } else {
-                                form.setValue("rehearsalHours", 2); // Set default when checked
+                                form.setValue("rehearsalHours", 1); // Set default to 1 hour when checked
                               }
                             }}
                             id="add-on-rehearsal"
@@ -339,7 +339,7 @@ const QuoteProposalPage: React.FC = () => {
                         variant="outline"
                         size="icon"
                         onClick={handleDecrementRehearsal}
-                        disabled={(rehearsalHours || 2) <= 1}
+                        disabled={(rehearsalHours || 1) <= 1}
                         className="h-8 w-8 bg-livePiano-darker border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
                       >
                         <Minus className="h-4 w-4" />
@@ -352,7 +352,7 @@ const QuoteProposalPage: React.FC = () => {
                         variant="outline"
                         size="icon"
                         onClick={handleIncrementRehearsal}
-                        disabled={(rehearsalHours || 2) >= 3}
+                        disabled={(rehearsalHours || 1) >= 3}
                         className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
                       >
                         <Plus className="h-4 w-4" />
@@ -417,7 +417,7 @@ const QuoteProposalPage: React.FC = () => {
                         size="icon"
                         onClick={handleIncrementArtisticGuidance}
                         disabled={(artisticGuidanceHours || 1) >= 4}
-                        className="h-8 w-8 bg-livePiano-darker border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
+                        className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
                       >
                         <Plus className="h-4 w-4" />
                       </Button>
