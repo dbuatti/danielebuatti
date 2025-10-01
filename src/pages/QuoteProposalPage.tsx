@@ -52,13 +52,14 @@ const QuoteProposalPage: React.FC = () => {
     preparedBy: "Daniele Buatti",
   };
 
-  // Updated packages with new contributions
+  // Updated packages with new contributions based on simplified hourly rates
   const packages = [
-    { id: "option3", name: "Premium Package", focus: "Full Artistic Partnership & Rehearsal", contribution: 1850, image: "/quote-option-3.jpeg" },
-    { id: "option2", name: "Standard Package", focus: "Flexible 3-Hour Engagement & Atmosphere", contribution: 1050, image: "/quote-option-2.png" },
+    { id: "option3", name: "Premium Package", focus: "3hr Performance + 1.5hr Rehearsal + Travel", contribution: 1900, image: "/quote-option-3.jpeg" },
+    { id: "option2", name: "Standard Package", focus: "3hr Performance Only", contribution: 1050, image: "/quote-option-2.png" },
   ];
 
-  const addOnPrice = 400;
+  // Add-on price for rehearsal and travel, if added to the Standard Package
+  const addOnPrice = 850; // 1.5 hours rehearsal ($525) + 1 hour travel ($350) = $875, rounded to $850 for simplicity
 
   // Initialize react-hook-form
   const form = useForm<z.infer<typeof formSchema>>({
@@ -74,10 +75,10 @@ const QuoteProposalPage: React.FC = () => {
   const selectedPackageId = form.watch("selectedPackage");
   const hasAddOn = form.watch("hasAddOn");
 
-  // Disable add-on if Option 3 is selected (as it's included)
+  // Disable add-on if Premium Package is selected (as it's already included)
   const isAddOnDisabled = selectedPackageId === "option3";
 
-  // Reset add-on if Option 3 is selected
+  // Reset add-on if Premium Package is selected
   useEffect(() => {
     if (isAddOnDisabled && hasAddOn) {
       form.setValue("hasAddOn", false);
@@ -88,11 +89,12 @@ const QuoteProposalPage: React.FC = () => {
   const totalAmount = useMemo(() => {
     const selectedPkg = packages.find(pkg => pkg.id === selectedPackageId);
     let total = selectedPkg ? selectedPkg.contribution : 0;
-    if (hasAddOn && !isAddOnDisabled) {
+    // If Standard Package is selected AND add-on is chosen, add the add-on price
+    if (selectedPackageId === "option2" && hasAddOn) {
       total += addOnPrice;
     }
     return total;
-  }, [selectedPackageId, hasAddOn, isAddOnDisabled, packages]);
+  }, [selectedPackageId, hasAddOn, packages]);
 
   // Handle form submission
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -195,7 +197,7 @@ const QuoteProposalPage: React.FC = () => {
           </Table>
         </section>
 
-        {/* Option 3: The Ultimate Curated Celebration */}
+        {/* Option 3: Premium Package */}
         <section id="option3" className="bg-livePiano-darker p-10 rounded-xl shadow-2xl border-4 border-livePiano-primary space-y-10 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
           <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">Premium Package</h3>
           <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50 shadow-md">
@@ -213,16 +215,14 @@ const QuoteProposalPage: React.FC = () => {
           </div>
           <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Your Contribution: <strong>A${packages[0].contribution}</strong></p>
           <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
-            This is the most exquisite carols experience: fully curated, rehearsed, and expertly guided for maximum musical impact and complete peace of mind for you, the host.
+            This package includes a 3-hour live piano performance, a 1.5-hour private rehearsal session, and covers travel time for both the rehearsal and the event, ensuring a fully prepared and seamless musical experience.
           </p>
           <div className="text-livePiano-light/80 space-y-5 max-w-3xl mx-auto">
-            <p className="text-xl font-semibold text-livePiano-primary border-b border-livePiano-primary/50 pb-2 mb-3">What's Included & The Value You Receive:</p>
+            <p className="text-xl font-semibold text-livePiano-primary border-b border-livePiano-primary/50 pb-2 mb-3">What's Included:</p>
             <ul className="list-disc list-inside space-y-3 [&>li]:marker:text-livePiano-primary [&>li]:marker:text-2xl">
-              <li><strong>Private Rehearsal Session:</strong> Dedicated 1.5 hours a week prior to the event (A$150 Value) to refine your group’s sound and prepare any singers.</li>
-              <li><strong>Extended Coverage (6pm–10pm):</strong> Guaranteed availability until the party concludes at 10pm—no watching the clock!</li>
-              <li><strong>Personal Artistic Guidance & Collaboration:</strong> Full collaboration on sheet music sourcing, set structure, and creation of a custom carols brochure.</li>
-              <li><strong>Live Piano Performance:</strong> Two 45-minute carol sets, beautiful background music, and spontaneous sing-alongs.</li>
-              <li><strong>Custom Carols Brochure:</strong> A beautifully prepared brochure based on your final song list.</li>
+              <li><strong>3-Hour Live Piano Performance:</strong> Two 45-minute carol sets, beautiful background music, and spontaneous sing-alongs.</li>
+              <li><strong>1.5-Hour Private Rehearsal Session:</strong> Dedicated time a week prior to the event to refine your group’s sound and prepare any singers.</li>
+              <li><strong>Travel Time Coverage:</strong> Includes travel for both the rehearsal and the event.</li>
             </ul>
           </div>
           <p className="text-lg italic text-livePiano-light/70 text-center mt-6 max-w-2xl mx-auto">
@@ -230,7 +230,7 @@ const QuoteProposalPage: React.FC = () => {
           </p>
         </section>
 
-        {/* Option 2: Seamless Festive Flow */}
+        {/* Option 2: Standard Package */}
         <section id="option2" className="bg-livePiano-darker p-10 rounded-xl shadow-2xl border-2 border-livePiano-border/50 space-y-10 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
           <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">Standard Package</h3>
           <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50 shadow-md">
@@ -248,14 +248,12 @@ const QuoteProposalPage: React.FC = () => {
           </div>
           <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Your Contribution: <strong>A${packages[1].contribution}</strong></p>
           <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
-            This flexible, high-value experience beautifully blends musical structure with adaptability, ensuring a delightful party atmosphere for your guests.
+            This package provides a 3-hour live piano performance, perfect for creating a festive atmosphere at your event.
           </p>
           <div className="text-livePiano-light/80 space-y-5 max-w-3xl mx-auto">
-            <p className="text-xl font-semibold text-livePiano-primary border-b border-livePiano-primary/50 pb-2 mb-3">What's Included & The Value You Receive:</p>
+            <p className="text-xl font-semibold text-livePiano-primary border-b border-livePiano-primary/50 pb-2 mb-3">What's Included:</p>
             <ul className="list-disc list-inside space-y-3 [&>li]:marker:text-livePiano-primary [&>li]:marker:text-2xl">
-              <li><strong>Extended 3-Hour Engagement (6pm–9pm):</strong> Ample time for guests to mingle and truly get into the festive mood.</li>
-              <li><strong>On-Call Performance Buffer:</strong> Music that seamlessly adapts to your party's flow, ready when your guests are.</li>
-              <li><strong>Live Piano Performance:</strong> Two 45-minute carol sets, plus delightful atmosphere music before, between, and after sets.</li>
+              <li><strong>3-Hour Live Piano Performance:</strong> Two 45-minute carol sets, plus delightful atmosphere music before, between, and after sets.</li>
             </ul>
           </div>
           <p className="text-lg italic text-livePiano-light/70 text-center mt-6 max-w-2xl mx-auto">
@@ -265,10 +263,10 @@ const QuoteProposalPage: React.FC = () => {
 
         {/* Optional Add-On Package */}
         <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-8">
-          <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Optional Add-On Package (For The Seamless Festive Flow only)</h3>
-          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Private Rehearsal Session: A${addOnPrice}</p>
+          <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Optional Add-On Package (For the Standard Package only)</h3>
+          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Private Rehearsal Session + Travel: A${addOnPrice}</p>
           <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
-            Add a dedicated 2-hour rehearsal session (including travel) one week prior for the host and any other participants to fine-tune the music, ensuring maximum confidence and musical success on the night.
+            Add a dedicated 1.5-hour rehearsal session (including travel) one week prior for the host and any other participants to fine-tune the music, ensuring maximum confidence and musical success on the night.
           </p>
         </section>
 
@@ -375,10 +373,10 @@ const QuoteProposalPage: React.FC = () => {
                         `text-xl font-bold text-livePiano-light leading-none hover:text-livePiano-primary transition-colors duration-200
                         ${isAddOnDisabled ? "cursor-not-allowed" : "peer-disabled:cursor-not-allowed peer-disabled:opacity-70"}`
                       }>
-                        Optional Add-On: Private Rehearsal Session (Add A${addOnPrice})
+                        Optional Add-On: Private Rehearsal Session + Travel (Add A${addOnPrice})
                       </FormLabel>
                       <FormDescription className="text-livePiano-light/70 text-base">
-                        Add a dedicated 2-hour rehearsal session (including travel) one week prior for the host and any other participants.
+                        Add a dedicated 1.5-hour rehearsal session (including travel) one week prior for the host and any other participants.
                       </FormDescription>
                     </div>
                   </FormItem>
