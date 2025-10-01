@@ -143,7 +143,7 @@ const QuoteProposalPage: React.FC = () => {
       {/* Header for Quote Proposal */}
       <header className="bg-livePiano-darker py-5 px-6 md:px-12 shadow-lg relative z-10 border-b border-livePiano-border/50">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Button asChild variant="ghost" className="text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker transition-colors duration-200">
+          <Button asChild variant="ghost" className="text-livePiano-light hover:text-livePiano-primary transition-colors duration-200 px-0 py-0 h-auto"> {/* Refined header button */}
             <Link to="/">
               <span className="flex items-center text-base md:text-lg font-semibold">
                 <ArrowLeft className="h-5 w-5 mr-2" /> Back to Home
@@ -161,7 +161,7 @@ const QuoteProposalPage: React.FC = () => {
 
       <main className="max-w-7xl mx-auto px-4 py-16 space-y-20">
         <section className="text-center space-y-6">
-          <h2 className="text-5xl md:text-6xl font-libre-baskerville font-extrabold text-livePiano-primary mb-4 leading-tight text-shadow-lg">
+          <h2 className="text-5xl md:text-6xl font-libre-baskerville font-extrabold text-livePiano-primary mb-4 leading-none text-shadow-lg"> {/* Tighter line-height */}
             Your Bespoke Live Piano Quote for a Magical Christmas Carols Party
           </h2>
           <div className="text-xl text-livePiano-light/90 max-w-3xl mx-auto space-y-3 font-medium">
@@ -171,7 +171,7 @@ const QuoteProposalPage: React.FC = () => {
             <p>Location: {proposalDetails.location}</p>
             <p>Prepared by: {proposalDetails.preparedBy}</p>
           </div>
-          <Separator className="max-w-lg mx-auto bg-livePiano-primary h-1 mt-10" /> {/* More prominent separator */}
+          <Separator className="max-w-lg mx-auto bg-livePiano-primary h-1 mt-10" />
         </section>
 
         {/* Package Options Anchor Table */}
@@ -180,7 +180,7 @@ const QuoteProposalPage: React.FC = () => {
           <Table className="w-full text-livePiano-light rounded-lg overflow-hidden">
             <TableHeader className="bg-livePiano-primary/20">
               <TableRow className="border-livePiano-border/50">
-                <TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6 text-shadow-sm">Package Name</TableHead><TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6 text-shadow-sm">Core Focus</TableHead><TableHead className="text-livePiano-primary text-lg font-extrabold py-4 px-6 text-right text-shadow-sm">Your Contribution</TableHead> {/* font-extrabold */}
+                <TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6 text-shadow-sm">Package Name</TableHead><TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6 text-shadow-sm">Core Focus</TableHead><TableHead className="text-livePiano-primary text-lg font-extrabold py-4 px-6 text-right text-shadow-sm">Your Contribution</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -188,7 +188,7 @@ const QuoteProposalPage: React.FC = () => {
                 <TableRow key={pkg.id} className="border-livePiano-border/50 hover:bg-livePiano-background/50 transition-colors duration-200">
                   <TableCell className="font-semibold text-livePiano-light py-4 px-6">
                     <a href={`#${pkg.id}`} className="hover:underline text-livePiano-primary transition-colors duration-200">{pkg.name}</a>
-                  </TableCell><TableCell className="py-4 px-6">{pkg.focus}</TableCell><TableCell className="text-right font-extrabold text-livePiano-primary py-4 px-6"><strong>A${pkg.contribution}</strong></TableCell> {/* font-extrabold */}
+                  </TableCell><TableCell className="py-4 px-6">{pkg.focus}</TableCell><TableCell className="text-right font-extrabold text-livePiano-primary py-4 px-6"><strong>A${pkg.contribution}</strong></TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -217,7 +217,7 @@ const QuoteProposalPage: React.FC = () => {
           </p>
           <div className="text-livePiano-light/80 space-y-4 max-w-3xl mx-auto">
             <p className="text-xl font-semibold text-livePiano-primary border-b border-livePiano-primary/50 pb-2 mb-3">What's Included & The Value You Receive:</p>
-            <ul className="list-disc list-inside space-y-2 [&>li]:marker:text-livePiano-primary">
+            <ul className="list-disc list-inside space-y-3 [&>li]:marker:text-livePiano-primary"> {/* Increased space-y */}
               <li><strong>Private Rehearsal Session:</strong> Dedicated 1.5 hours a week prior to the event (A$150 Value) to refine your group’s sound and prepare any singers.</li>
               <li><strong>Extended Coverage (6pm–10pm):</strong> Guaranteed availability until the party concludes at 10pm—no watching the clock!</li>
               <li><strong>Personal Artistic Guidance & Collaboration:</strong> Full collaboration on sheet music sourcing, set structure, and creation of a custom carols brochure.</li>
@@ -251,7 +251,7 @@ const QuoteProposalPage: React.FC = () => {
           </p>
           <div className="text-livePiano-light/80 space-y-4 max-w-3xl mx-auto">
             <p className="text-xl font-semibold text-livePiano-primary border-b border-livePiano-primary/50 pb-2 mb-3">What's Included & The Value You Receive:</p>
-            <ul className="list-disc list-inside space-y-2 [&>li]:marker:text-livePiano-primary">
+            <ul className="list-disc list-inside space-y-3 [&>li]:marker:text-livePiano-primary"> {/* Increased space-y */}
               <li><strong>Extended 3-Hour Engagement (6pm–9pm):</strong> Ample time for guests to mingle and truly get into the festive mood.</li>
               <li><strong>On-Call Performance Buffer:</strong> Music that seamlessly adapts to your party's flow, ready when your guests are.</li>
               <li><strong>Live Piano Performance:</strong> Two 45-minute carol sets, plus delightful atmosphere music before, between, and after sets.</li>
@@ -285,7 +285,7 @@ const QuoteProposalPage: React.FC = () => {
                 control={form.control}
                 name="clientName"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="space-y-2"> {/* Added space-y-2 */}
                     <FormLabel className="text-livePiano-light text-lg text-shadow-sm">Your Full Name</FormLabel>
                     <FormControl>
                       <Input
@@ -302,7 +302,7 @@ const QuoteProposalPage: React.FC = () => {
                 control={form.control}
                 name="clientEmail"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="space-y-2"> {/* Added space-y-2 */}
                     <FormLabel className="text-livePiano-light text-lg text-shadow-sm">Your Email Address</FormLabel>
                     <FormControl>
                       <Input
