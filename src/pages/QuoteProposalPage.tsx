@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import DynamicImage from "@/components/DynamicImage";
-import { ArrowLeft, Minus, Plus } from 'lucide-react'; // Added Minus and Plus icons
+import { ArrowLeft, Minus, Plus } from 'lucide-react';
 import Footer from '@/components/Footer';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { Separator } from "@/components/ui/separator";
-import { cn } from '@/lib/utils'; // Import cn for conditional styling
+import { cn } from '@/lib/utils';
 
 // Define the form schema using zod
 const formSchema = z.object({
@@ -53,11 +53,12 @@ const QuoteProposalPage: React.FC = () => {
 
   const hourlyRate = 300;
   const artisticGuidanceHourlyRate = 100;
-  const rehearsalTravelCost = 350; // Fixed travel cost for rehearsal
+  const performanceTravelCost = 100; // Fixed travel cost for performance
+  const rehearsalTravelCost = 100; // Fixed travel cost for rehearsal
 
   const baseService = {
     hours: 3,
-    cost: hourlyRate * 3, // 3 hours performance at new hourly rate
+    cost: (hourlyRate * 3) + performanceTravelCost, // 3 hours performance + performance travel cost
     description: "3 hours of live piano performance, including carol sing-alongs (two 45-min sets) and background music between sets.",
   };
 
@@ -71,7 +72,7 @@ const QuoteProposalPage: React.FC = () => {
       name: "Pre-event rehearsal",
       hourlyRate: hourlyRate, // Uses the main hourly rate
       travelCost: rehearsalTravelCost, // Fixed travel cost
-      description: "A dedicated rehearsal session one week prior to the event, plus travel time.",
+      description: "A dedicated rehearsal session one week prior to the event, plus a fixed travel fee.",
     },
     artisticGuidance: {
       name: "Personal Artistic Guidance & Collaboration",
@@ -79,6 +80,21 @@ const QuoteProposalPage: React.FC = () => {
       description: "Full collaboration on sheet music sourcing, set structure, and creation of a custom carols brochure.",
     },
   };
+
+  const rehearsalDurationOptions = [
+    { value: 1, label: "1 hour" },
+    { value: 1.5, label: "1.5 hours" },
+    { value: 2, label: "2 hours" },
+    { value: 2.5, label: "2.5 hours" },
+    { value: 3, label: "3 hours" },
+  ];
+
+  const artisticGuidanceDurationOptions = [
+    { value: 1, label: "1 hour" },
+    { value: 2, label: "2 hours" },
+    { value: 3, label: "3 hours" },
+    { value: 4, label: "4 hours" },
+  ];
 
   // Initialize react-hook-form
   const form = useForm<z.infer<typeof formSchema>>({
@@ -248,7 +264,7 @@ const QuoteProposalPage: React.FC = () => {
             Cost: <strong>A${baseService.cost}</strong>
           </p>
           <p className="text-lg text-livePiano-light/70 text-center">
-            My hourly rate is A${hourlyRate}/hour.
+            My hourly rate is A${hourlyRate}/hour, plus a A${performanceTravelCost} travel fee.
           </p>
         </section>
 
