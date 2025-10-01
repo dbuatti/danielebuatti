@@ -176,11 +176,11 @@ const QuoteProposalPage: React.FC = () => {
 
         {/* Package Options Anchor Table */}
         <section id="package-options" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30">
-          <h3 className="text-3xl font-bold text-livePiano-light mb-8 text-center">🎄 Your Package Options</h3>
+          <h3 className="text-3xl font-bold text-livePiano-light mb-8 text-center text-shadow-sm">🎄 Your Package Options</h3> {/* Added text-shadow-sm */}
           <Table className="w-full text-livePiano-light rounded-lg overflow-hidden">
             <TableHeader className="bg-livePiano-primary/20">
               <TableRow className="border-livePiano-border/50">
-                <TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6">Package Name</TableHead><TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6">Core Focus</TableHead><TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6 text-right">Your Contribution</TableHead>
+                <TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6 text-shadow-sm">Package Name</TableHead><TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6 text-shadow-sm">Core Focus</TableHead><TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6 text-right text-shadow-sm">Your Contribution</TableHead> {/* Added text-shadow-sm */}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -188,7 +188,7 @@ const QuoteProposalPage: React.FC = () => {
                 <TableRow key={pkg.id} className="border-livePiano-border/50 hover:bg-livePiano-background/50 transition-colors duration-200">
                   <TableCell className="font-semibold text-livePiano-light py-4 px-6">
                     <a href={`#${pkg.id}`} className="hover:underline text-livePiano-primary transition-colors duration-200">{pkg.name}</a>
-                  </TableCell><TableCell className="py-4 px-6">{pkg.focus}</TableCell><TableCell className="text-right font-bold text-livePiano-primary py-4 px-6"><strong>A${pkg.contribution}</strong></TableCell> {/* Ensured A$ is inside strong */}
+                  </TableCell><TableCell className="py-4 px-6">{pkg.focus}</TableCell><TableCell className="text-right font-bold text-livePiano-primary py-4 px-6"><strong>A${pkg.contribution}</strong></TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -196,9 +196,9 @@ const QuoteProposalPage: React.FC = () => {
         </section>
 
         {/* Option 3: The Ultimate Curated Celebration */}
-        <section id="option3" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border-4 border-livePiano-primary space-y-8 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl"> {/* Added hover effects */}
+        <section id="option3" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border-4 border-livePiano-primary space-y-8 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
           <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">The Ultimate Curated Celebration</h3>
-          <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50">
+          <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50 shadow-md"> {/* Added shadow-md */}
             <div
               className="absolute inset-0 bg-cover bg-center filter blur-lg scale-110"
               style={{ backgroundImage: `url(${packages[0].image})` }}
@@ -211,13 +211,13 @@ const QuoteProposalPage: React.FC = () => {
               height={400}
             />
           </div>
-          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Your Contribution: <strong>A${packages[0].contribution}</strong></p> {/* Ensured A$ is inside strong */}
+          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Your Contribution: <strong>A${packages[0].contribution}</strong></p>
           <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
             This is the most exquisite carols experience: fully curated, rehearsed, and expertly guided for maximum musical impact and complete peace of mind for you, the host.
           </p>
           <div className="text-livePiano-light/80 space-y-4 max-w-3xl mx-auto">
             <p className="text-xl font-semibold text-livePiano-primary border-b border-livePiano-primary/50 pb-2 mb-3">What's Included & The Value You Receive:</p>
-            <ul className="list-disc list-inside space-y-2 [&>li]:marker:text-livePiano-primary"> {/* Added custom bullet color */}
+            <ul className="list-disc list-inside space-y-2 [&>li]:marker:text-livePiano-primary">
               <li><strong>Private Rehearsal Session:</strong> Dedicated 1.5 hours a week prior to the event (A$150 Value) to refine your group’s sound and prepare any singers.</li>
               <li><strong>Extended Coverage (6pm–10pm):</strong> Guaranteed availability until the party concludes at 10pm—no watching the clock!</li>
               <li><strong>Personal Artistic Guidance & Collaboration:</strong> Full collaboration on sheet music sourcing, set structure, and creation of a custom carols brochure.</li>
@@ -230,9 +230,9 @@ const QuoteProposalPage: React.FC = () => {
         </section>
 
         {/* Option 2: Seamless Festive Flow */}
-        <section id="option2" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-8 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl"> {/* Added hover effects */}
+        <section id="option2" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-8 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
           <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">Seamless Festive Flow</h3>
-          <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50">
+          <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50 shadow-md"> {/* Added shadow-md */}
             <div
               className="absolute inset-0 bg-cover bg-center filter blur-lg scale-110"
               style={{ backgroundImage: `url(${packages[1].image})` }}
@@ -245,13 +245,13 @@ const QuoteProposalPage: React.FC = () => {
               height={400}
             />
           </div>
-          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Your Contribution: <strong>A${packages[1].contribution}</strong></p> {/* Ensured A$ is inside strong */}
+          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Your Contribution: <strong>A${packages[1].contribution}</strong></p>
           <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
             This flexible, high-value experience beautifully blends musical structure with adaptability, ensuring a delightful party atmosphere for your guests.
           </p>
           <div className="text-livePiano-light/80 space-y-4 max-w-3xl mx-auto">
             <p className="text-xl font-semibold text-livePiano-primary border-b border-livePiano-primary/50 pb-2 mb-3">What's Included & The Value You Receive:</p>
-            <ul className="list-disc list-inside space-y-2 [&>li]:marker:text-livePiano-primary"> {/* Added custom bullet color */}
+            <ul className="list-disc list-inside space-y-2 [&>li]:marker:text-livePiano-primary">
               <li><strong>Extended 3-Hour Engagement (6pm–9pm):</strong> Ample time for guests to mingle and truly get into the festive mood.</li>
               <li><strong>On-Call Performance Buffer:</strong> Music that seamlessly adapts to your party's flow, ready when your guests are.</li>
               <li><strong>Live Piano Performance:</strong> Two 45-minute carol sets, plus delightful atmosphere music before, between, and after sets.</li>
@@ -274,7 +274,7 @@ const QuoteProposalPage: React.FC = () => {
 
         {/* Client Acceptance Form */}
         <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-10">
-          <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center">Ready to bring the magic to your event?</h3>
+          <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Ready to bring the magic to your event?</h3> {/* Added text-shadow-sm */}
           <p className="text-xl text-livePiano-light/90 text-center max-w-3xl mx-auto">
             Please select your preferred package below. A 50% deposit is required to formally secure your booking, with the remaining balance due 7 days prior to the event.
           </p>
@@ -286,7 +286,7 @@ const QuoteProposalPage: React.FC = () => {
                 name="clientName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-livePiano-light text-lg">Your Full Name</FormLabel>
+                    <FormLabel className="text-livePiano-light text-lg text-shadow-sm">Your Full Name</FormLabel> {/* Added text-shadow-sm */}
                     <FormControl>
                       <Input
                         placeholder="e.g., Imme Kaschner"
@@ -303,7 +303,7 @@ const QuoteProposalPage: React.FC = () => {
                 name="clientEmail"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-livePiano-light text-lg">Your Email Address</FormLabel>
+                    <FormLabel className="text-livePiano-light text-lg text-shadow-sm">Your Email Address</FormLabel> {/* Added text-shadow-sm */}
                     <FormControl>
                       <Input
                         type="email"
@@ -326,7 +326,7 @@ const QuoteProposalPage: React.FC = () => {
                 name="selectedPackage"
                 render={({ field }) => (
                   <FormItem className="space-y-4">
-                    <FormLabel className="text-livePiano-light text-xl font-bold">Select Your Preferred Package:</FormLabel>
+                    <FormLabel className="text-livePiano-light text-xl font-bold text-shadow-sm">Select Your Preferred Package:</FormLabel> {/* Added text-shadow-sm */}
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
