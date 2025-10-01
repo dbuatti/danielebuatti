@@ -3,8 +3,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import DynamicImage from "@/components/DynamicImage";
 import { ArrowLeft } from 'lucide-react';
@@ -22,7 +20,6 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { Separator } from "@/components/ui/separator";
@@ -31,10 +28,9 @@ import { Separator } from "@/components/ui/separator";
 const formSchema = z.object({
   clientName: z.string().min(2, { message: "Your full name is required." }),
   clientEmail: z.string().email({ message: "A valid email address is required." }),
-  selectedPackage: z.enum(["option3", "option2"], {
-    required_error: "Please select a package.",
-  }),
-  hasAddOn: z.boolean().default(false),
+  wantsExtraHour: z.boolean().default(false),
+  wantsRehearsal: z.boolean().default(false),
+  wantsSongSheets: z.boolean().default(false),
 });
 
 const QuoteProposalPage: React.FC = () => {
@@ -46,20 +42,37 @@ const QuoteProposalPage: React.FC = () => {
 
   const proposalDetails = {
     client: "Imme Kaschner",
-    dateOfEvent: "Saturday 22 November 2025",
-    time: "6:00–9:00pm (or later for the Premium Option)",
+    dateOfEvent: "Saturday 20 December 2025", // Updated to a more typical Christmas date
+    time: "6:00pm - 9:00pm (Base Service)",
     location: "Kew (Private Home)",
     preparedBy: "Daniele Buatti",
   };
 
-  // Updated packages with new contributions based on simplified hourly rates
-  const packages = [
-    { id: "option3", name: "Premium Package", focus: "3hr Performance + 1.5hr Rehearsal + Travel", contribution: 1900, image: "/quote-option-3.jpeg" },
-    { id: "option2", name: "Standard Package", focus: "3hr Performance Only", contribution: 1050, image: "/quote-option-2.png" },
-  ];
+  const hourlyRate = 350;
 
-  // Add-on price for rehearsal and travel, if added to the Standard Package
-  const addOnPrice = 850; // 1.5 hours rehearsal ($525) + 1 hour travel ($350) = $875, rounded to $850 for simplicity
+  const baseService = {
+    hours: 3,
+    cost: hourlyRate * 3, // 3 hours performance
+    description: "3 hours of live piano performance, including carol sing-alongs (two 45-min sets) and background music between sets. I will provide a printed song list.",
+  };
+
+  const addOns = {
+    extraHour: {
+      name: "Extra hour (to 10pm)",
+      cost: hourlyRate, // 1 extra hour
+      description: "Extend the performance by one hour.",
+    },
+    rehearsal: {
+      name: "Pre-event rehearsal (2 hours incl. travel)",
+      cost: hourlyRate * 2, // 1.5 hours rehearsal + 0.5 hour travel (rounded to 2 hours for simplicity)
+      description: "A dedicated 1.5-hour rehearsal session one week prior to the event, including travel time.",
+    },
+    songSheets: {
+      name: "Custom printed song sheets",
+      cost: 150,
+      description: "Custom designed and printed song sheets for your guests.",
+    },
+  };
 
   // Initialize react-hook-form
   const form = useForm<z.infer<typeof formSchema>>({
@@ -67,40 +80,35 @@ const QuoteProposalPage: React.FC = () => {
     defaultValues: {
       clientName: '',
       clientEmail: '',
-      selectedPackage: undefined,
-      hasAddOn: false,
+      wantsExtraHour: false,
+      wantsRehearsal: false,
+      wantsSongSheets: false,
     },
   });
 
-  const selectedPackageId = form.watch("selectedPackage");
-  const hasAddOn = form.watch("hasAddOn");
-
-  // Disable add-on if Premium Package is selected (as it's already included)
-  const isAddOnDisabled = selectedPackageId === "option3";
-
-  // Reset add-on if Premium Package is selected
-  useEffect(() => {
-    if (isAddOnDisabled && hasAddOn) {
-      form.setValue("hasAddOn", false);
-    }
-  }, [isAddOnDisabled, hasAddOn, form]);
+  const wantsExtraHour = form.watch("wantsExtraHour");
+  const wantsRehearsal = form.watch("wantsRehearsal");
+  const wantsSongSheets = form.watch("wantsSongSheets");
 
   // Calculate total amount dynamically
   const totalAmount = useMemo(() => {
-    const selectedPkg = packages.find(pkg => pkg.id === selectedPackageId);
-    let total = selectedPkg ? selectedPkg.contribution : 0;
-    // If Standard Package is selected AND add-on is chosen, add the add-on price
-    if (selectedPackageId === "option2" && hasAddOn) {
-      total += addOnPrice;
-    }
+    let total = baseService.cost;
+    if (wantsExtraHour) total += addOns.extraHour.cost;
+    if (wantsRehearsal) total += addOns.rehearsal.cost;
+    if (wantsSongSheets) total += addOns.songSheets.cost;
     return total;
-  }, [selectedPackageId, hasAddOn, packages]);
+  }, [wantsExtraHour, wantsRehearsal, wantsSongSheets]);
 
   // Handle form submission
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const loadingToastId = toast.loading("Submitting your acceptance...");
 
     try {
+      const selectedAddOnsList: string[] = [];
+      if (values.wantsExtraHour) selectedAddOnsList.push(addOns.extraHour.name);
+      if (values.wantsRehearsal) selectedAddOnsList.push(addOns.rehearsal.name);
+      if (values.wantsSongSheets) selectedAddOnsList.push(addOns.songSheets.name);
+
       // Insert data into Supabase
       const { data, error } = await supabase
         .from('quote_acceptances')
@@ -108,9 +116,10 @@ const QuoteProposalPage: React.FC = () => {
           {
             client_name: values.clientName,
             client_email: values.clientEmail,
-            selected_package_id: values.selectedPackage,
-            has_add_on: values.hasAddOn,
-            total_amount: totalAmount, // Include the calculated total amount
+            selected_package_id: "Base Performance", // Indicating the base service
+            has_add_on: selectedAddOnsList.length > 0, // True if any add-on is selected
+            selected_add_ons: selectedAddOnsList.join(', '), // Store selected add-ons
+            total_amount: totalAmount,
             event_date: proposalDetails.dateOfEvent,
             event_location: proposalDetails.location,
             quote_title: "Christmas Carols – Private Party Quote Proposal",
@@ -161,124 +170,127 @@ const QuoteProposalPage: React.FC = () => {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-16 space-y-20">
+      <main className="max-w-7xl mx-auto px-4 py-16 space-y-12">
         <section className="text-center space-y-6">
           <h2 className="text-5xl md:text-6xl font-libre-baskerville font-extrabold text-livePiano-primary mb-6 leading-none text-shadow-lg">
-            Your Live Piano Quote for Christmas Carols
+            Christmas Carols – Live Piano
           </h2>
           <div className="text-xl text-livePiano-light/90 max-w-3xl mx-auto space-y-3 font-medium">
-            <p>Prepared for: <strong className="text-livePiano-primary">{proposalDetails.client}</strong></p>
-            <p>Date of Event: {proposalDetails.dateOfEvent}</p>
+            <p>Event: <strong className="text-livePiano-primary">{proposalDetails.dateOfEvent}</strong></p>
             <p>Time: {proposalDetails.time}</p>
             <p>Location: {proposalDetails.location}</p>
+            <p>Prepared for: <strong className="text-livePiano-primary">{proposalDetails.client}</strong></p>
             <p>Prepared by: {proposalDetails.preparedBy}</p>
           </div>
           <Separator className="max-w-lg mx-auto bg-livePiano-primary h-1 mt-10" />
         </section>
 
-        {/* Package Options Anchor Table */}
-        <section id="package-options" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30">
-          <h3 className="text-3xl font-bold text-livePiano-light mb-8 text-center text-shadow-sm">🎄 Your Package Options</h3>
-          <Table className="w-full text-livePiano-light rounded-lg overflow-hidden">
-            <TableHeader className="bg-livePiano-primary/20">
-              <TableRow className="border-livePiano-border/50">
-                <TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6 text-shadow-sm">Package Name</TableHead><TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6 text-shadow-sm">Core Focus</TableHead><TableHead className="text-livePiano-primary text-lg font-extrabold py-4 px-6 text-right text-shadow-sm">Your Contribution</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {packages.map((pkg) => (
-                <TableRow key={pkg.id} className="border-livePiano-border/50 hover:bg-livePiano-background/50 transition-colors duration-200">
-                  <TableCell className="font-semibold text-livePiano-light py-4 px-6">
-                    <a href={`#${pkg.id}`} className="hover:underline text-livePiano-primary transition-colors duration-200">{pkg.name}</a>
-                  </TableCell><TableCell className="py-4 px-6">{pkg.focus}</TableCell><TableCell className="text-right font-extrabold text-livePiano-primary py-4 px-6"><strong>A${pkg.contribution}</strong></TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </section>
-
-        {/* Option 3: Premium Package */}
-        <section id="option3" className="bg-livePiano-darker p-10 rounded-xl shadow-2xl border-4 border-livePiano-primary space-y-10 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
-          <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">Premium Package</h3>
-          <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50 shadow-md">
-            <div
-              className="absolute inset-0 bg-cover bg-center filter blur-lg scale-110"
-              style={{ backgroundImage: `url(${packages[0].image})` }}
-            ></div>
-            <DynamicImage
-              src={packages[0].image}
-              alt="Premium Package"
-              className="relative z-10 max-w-xl h-auto object-contain rounded-lg shadow-lg"
-              width={800}
-              height={400}
-            />
-          </div>
-          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Your Contribution: <strong>A${packages[0].contribution}</strong></p>
-          <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
-            This package includes a 3-hour live piano performance, a 1.5-hour private rehearsal session, and covers travel time for both the rehearsal and the event, ensuring a fully prepared and seamless musical experience.
-          </p>
-          <div className="text-livePiano-light/80 space-y-5 max-w-3xl mx-auto">
-            <p className="text-xl font-semibold text-livePiano-primary border-b border-livePiano-primary/50 pb-2 mb-3">What's Included:</p>
-            <ul className="list-disc list-inside space-y-3 [&>li]:marker:text-livePiano-primary [&>li]:marker:text-2xl">
-              <li><strong>3-Hour Live Piano Performance:</strong> Two 45-minute carol sets, beautiful background music, and spontaneous sing-alongs.</li>
-              <li><strong>1.5-Hour Private Rehearsal Session:</strong> Dedicated time a week prior to the event to refine your group’s sound and prepare any singers.</li>
-              <li><strong>Travel Time Coverage:</strong> Includes travel for both the rehearsal and the event.</li>
-            </ul>
-          </div>
-          <p className="text-lg italic text-livePiano-light/70 text-center mt-6 max-w-2xl mx-auto">
-            Choose this option for an unparalleled, stress-free, and truly unforgettable musical evening with professional oversight from rehearsal through performance, ensuring complete peace of mind.
-          </p>
-        </section>
-
-        {/* Option 2: Standard Package */}
-        <section id="option2" className="bg-livePiano-darker p-10 rounded-xl shadow-2xl border-2 border-livePiano-border/50 space-y-10 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
-          <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">Standard Package</h3>
-          <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50 shadow-md">
-            <div
-              className="absolute inset-0 bg-cover bg-center filter blur-lg scale-110"
-              style={{ backgroundImage: `url(${packages[1].image})` }}
-            ></div>
-            <DynamicImage
-              src={packages[1].image}
-              alt="Standard Package"
-              className="relative z-10 max-w-xl h-auto object-contain rounded-lg shadow-lg"
-              width={800}
-              height={400}
-            />
-          </div>
-          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Your Contribution: <strong>A${packages[1].contribution}</strong></p>
-          <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
-            This package provides a 3-hour live piano performance, perfect for creating a festive atmosphere at your event.
-          </p>
-          <div className="text-livePiano-light/80 space-y-5 max-w-3xl mx-auto">
-            <p className="text-xl font-semibold text-livePiano-primary border-b border-livePiano-primary/50 pb-2 mb-3">What's Included:</p>
-            <ul className="list-disc list-inside space-y-3 [&>li]:marker:text-livePiano-primary [&>li]:marker:text-2xl">
-              <li><strong>3-Hour Live Piano Performance:</strong> Two 45-minute carol sets, plus delightful atmosphere music before, between, and after sets.</li>
-            </ul>
-          </div>
-          <p className="text-lg italic text-livePiano-light/70 text-center mt-6 max-w-2xl mx-auto">
-            This is a practical option for hosts who prioritize a seamless atmosphere and flexibility. It reliably adapts to your party's pace, ensuring music is always just right.
-          </p>
-        </section>
-
-        {/* Optional Add-On Package */}
-        <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-8">
-          <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Optional Add-On Package (For the Standard Package only)</h3>
-          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Private Rehearsal Session + Travel: A${addOnPrice}</p>
-          <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
-            Add a dedicated 1.5-hour rehearsal session (including travel) one week prior for the host and any other participants to fine-tune the music, ensuring maximum confidence and musical success on the night.
-          </p>
-        </section>
-
-        {/* Client Acceptance Form */}
-        <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-10">
-          <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Ready to bring the magic to your event?</h3>
+        {/* Service Description */}
+        <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-6">
+          <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Service: Live Piano Performance</h3>
           <p className="text-xl text-livePiano-light/90 text-center max-w-3xl mx-auto">
-            Please select your preferred package below. A 50% deposit is required to formally secure your booking, with the remaining balance due 7 days prior to the event.
+            I will provide {baseService.hours} hours of live piano performance for your event.
           </p>
+          <div className="text-livePiano-light/80 space-y-4 max-w-3xl mx-auto">
+            <ul className="list-disc list-inside space-y-2 [&>li]:marker:text-livePiano-primary [&>li]:marker:text-xl">
+              <li>Carol sing-alongs (two 45-minute sets)</li>
+              <li>Background music between sets</li>
+              <li>I will provide a printed song list</li>
+            </ul>
+          </div>
+          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm mt-8">
+            Cost: <strong>A${baseService.cost}</strong>
+          </p>
+          <p className="text-lg text-livePiano-light/70 text-center">
+            My hourly rate is A${hourlyRate}/hour.
+          </p>
+        </section>
 
+        {/* Optional Add-Ons */}
+        <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-8">
+          <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Optional Add-Ons</h3>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-2xl mx-auto">
+              <FormField
+                control={form.control}
+                name="wantsExtraHour"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-livePiano-border/50 p-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        id="add-on-extra-hour"
+                        className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel htmlFor="add-on-extra-hour" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 hover:text-livePiano-primary transition-colors duration-200">
+                        {addOns.extraHour.name} (Add A${addOns.extraHour.cost})
+                      </FormLabel>
+                      <FormDescription className="text-livePiano-light/70 text-base">
+                        {addOns.extraHour.description}
+                      </FormDescription>
+                    </div>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="wantsRehearsal"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-livePiano-border/50 p-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        id="add-on-rehearsal"
+                        className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel htmlFor="add-on-rehearsal" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 hover:text-livePiano-primary transition-colors duration-200">
+                        {addOns.rehearsal.name} (Add A${addOns.rehearsal.cost})
+                      </FormLabel>
+                      <FormDescription className="text-livePiano-light/70 text-base">
+                        {addOns.rehearsal.description}
+                      </FormDescription>
+                    </div>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="wantsSongSheets"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-livePiano-border/50 p-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        id="add-on-song-sheets"
+                        className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel htmlFor="add-on-song-sheets" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 hover:text-livePiano-primary transition-colors duration-200">
+                        {addOns.songSheets.name} (Add A${addOns.songSheets.cost})
+                      </FormLabel>
+                      <FormDescription className="text-livePiano-light/70 text-base">
+                        {addOns.songSheets.description}
+                      </FormDescription>
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              <div className="text-center mt-10 p-6 bg-livePiano-primary/10 rounded-lg border border-livePiano-primary/30 shadow-lg">
+                <p className="text-2xl md:text-3xl font-bold text-livePiano-primary text-shadow-sm">
+                  Total Estimated Cost: <span className="text-livePiano-light">A${totalAmount}</span>
+                </p>
+              </div>
+
+              {/* Client Acceptance Form Fields */}
               <FormField
                 control={form.control}
                 name="clientName"
@@ -319,88 +331,25 @@ const QuoteProposalPage: React.FC = () => {
                 I, <span className="text-livePiano-primary">{form.watch("clientName") || "Your Name"}</span>, confirm my selection and booking for the event on {proposalDetails.dateOfEvent}.
               </p>
 
-              <FormField
-                control={form.control}
-                name="selectedPackage"
-                render={({ field }) => (
-                  <FormItem className="space-y-4">
-                    <FormLabel className="text-livePiano-light text-xl font-bold text-shadow-sm">Select Your Preferred Package:</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex flex-col space-y-4"
-                      >
-                        {packages.map((pkg) => (
-                          <FormItem key={pkg.id} className="flex items-center space-x-3">
-                            <FormControl>
-                              <RadioGroupItem value={pkg.id} id={`package-${pkg.id}`} className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" />
-                            </FormControl>
-                            <FormLabel htmlFor={`package-${pkg.id}`} className={
-                              `text-xl font-medium text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 hover:text-livePiano-primary transition-colors duration-200
-                              ${pkg.id === "option3" ? "font-bold" : ""}`
-                            }>
-                              {pkg.name} (A${pkg.contribution})
-                            </FormLabel>
-                          </FormItem>
-                        ))}
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="hasAddOn"
-                render={({ field }) => (
-                  <FormItem className={
-                    `flex flex-row items-start space-x-3 space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-opacity duration-200
-                    ${isAddOnDisabled ? "opacity-50 cursor-not-allowed" : ""}`
-                  }>
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        id="add-on-checkbox"
-                        disabled={isAddOnDisabled}
-                        className="h-6 w-6 border-livePiano-primary data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel htmlFor="add-on-checkbox" className={
-                        `text-xl font-bold text-livePiano-light leading-none hover:text-livePiano-primary transition-colors duration-200
-                        ${isAddOnDisabled ? "cursor-not-allowed" : "peer-disabled:cursor-not-allowed peer-disabled:opacity-70"}`
-                      }>
-                        Optional Add-On: Private Rehearsal Session + Travel (Add A${addOnPrice})
-                      </FormLabel>
-                      <FormDescription className="text-livePiano-light/70 text-base">
-                        Add a dedicated 1.5-hour rehearsal session (including travel) one week prior for the host and any other participants.
-                      </FormDescription>
-                    </div>
-                  </FormItem>
-                )}
-              />
-
-              {selectedPackageId && (
-                <div className="text-center mt-10 p-6 bg-livePiano-primary/10 rounded-lg border border-livePiano-primary/30 shadow-lg">
-                  <p className="text-2xl md:text-3xl font-bold text-livePiano-primary text-shadow-sm">
-                    Total Estimated Contribution: <span className="text-livePiano-light">A${totalAmount}</span>
-                  </p>
-                </div>
-              )}
-
               <Button
                 type="submit"
                 size="lg"
                 className="w-full bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-darker text-xl py-7 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
-                disabled={form.formState.isSubmitting || !selectedPackageId}
+                disabled={form.formState.isSubmitting || !form.formState.isValid}
               >
                 {form.formState.isSubmitting ? "Submitting..." : "Submit Acceptance"}
               </Button>
             </form>
           </Form>
+        </section>
+
+        {/* Booking Information */}
+        <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-6">
+          <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Booking Information</h3>
+          <ul className="list-disc list-inside text-lg text-livePiano-light/90 space-y-2">
+            <li>A 50% deposit is required to formally secure your booking.</li>
+            <li>The remaining balance is due 7 days prior to the event.</li>
+          </ul>
         </section>
       </main>
 
