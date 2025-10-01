@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
+// import { supabase } from '@/integrations/supabase/client'; // Removed Supabase client import
 import { Separator } from "@/components/ui/separator";
 import { cn } from '@/lib/utils';
 
@@ -97,53 +97,13 @@ const QuoteProposalPage: React.FC = () => {
 
   // Handle form submission
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const loadingToastId = toast.loading("Submitting your acceptance...");
-
-    try {
-      const selectedAddOnsList: string[] = [];
-      if (values.wantsExtraHour) selectedAddOnsList.push(addOns.extraHour.name);
-      if (values.wantsRehearsal) {
-        selectedAddOnsList.push(`${addOns.rehearsal.name} (2 hours + Travel)`);
-      }
-
-      // Insert data into Supabase
-      const { data, error } = await supabase
-        .from('quote_acceptances')
-        .insert([
-          {
-            client_name: values.clientName,
-            client_email: values.clientEmail,
-            selected_package_id: "Live Piano Engagement Fee", // Indicating the base service
-            has_add_on: selectedAddOnsList.length > 0, // True if any add-on is selected
-            selected_add_ons: selectedAddOnsList.join(', '), // Store selected add-ons
-            total_amount: totalAmount,
-            event_date: proposalDetails.dateOfEvent,
-            event_location: proposalDetails.location,
-            quote_title: "Christmas Carols – Live Piano Quote", // Updated title
-            quote_prepared_by: proposalDetails.preparedBy,
-          },
-        ])
-        .select();
-
-      if (error) {
-        throw error;
-      }
-
-      toast.success("Quote accepted successfully!", {
-        id: loadingToastId,
-        description: "Thank you! Daniele will be in touch shortly to finalise details.",
-      });
-
-      form.reset();
-      navigate('/live-piano-services/quote-confirmation');
-
-    } catch (error) {
-      console.error("Error submitting quote acceptance:", error);
-      toast.error("Failed to send quote acceptance.", {
-        id: loadingToastId,
-        description: "Please try again later or contact Daniele directly.",
-      });
-    }
+    // Removed Supabase insertion logic.
+    // The form will now simply navigate to the confirmation page.
+    toast.success("Quote accepted successfully!", {
+      description: "Thank you! Daniele will be in touch shortly to finalise details.",
+    });
+    form.reset();
+    navigate('/live-piano-services/quote-confirmation');
   }
 
   return (
