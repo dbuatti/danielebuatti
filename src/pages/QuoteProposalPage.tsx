@@ -232,9 +232,9 @@ const QuoteProposalPage: React.FC = () => {
                 name="wantsExtraHour"
                 render={({ field }) => (
                   <FormItem className={cn(
-                    "flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-all duration-200",
+                    "flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-all duration-200 cursor-pointer",
                     field.value ? "border-livePiano-primary shadow-md" : "hover:border-livePiano-primary"
-                  )}>
+                  )} onClick={() => field.onChange(!field.value)}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
                       <div className="flex items-start space-x-3 mb-4 sm:mb-0">
                         <FormControl>
@@ -246,7 +246,7 @@ const QuoteProposalPage: React.FC = () => {
                           />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel htmlFor="add-on-extra-hour" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 hover:text-livePiano-primary transition-colors duration-200">
+                          <FormLabel htmlFor="add-on-extra-hour" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                             {addOns.extraHour.name}
                           </FormLabel>
                           <FormDescription className="text-livePiano-light/70 text-base">
@@ -266,9 +266,9 @@ const QuoteProposalPage: React.FC = () => {
                 name="wantsRehearsal"
                 render={({ field }) => (
                   <FormItem className={cn(
-                    "flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-all duration-200",
+                    "flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-all duration-200 cursor-pointer",
                     field.value ? "border-livePiano-primary shadow-md" : "hover:border-livePiano-primary"
-                  )}>
+                  )} onClick={() => field.onChange(!field.value)}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
                       <div className="flex items-start space-x-3 mb-4 sm:mb-0">
                         <FormControl>
@@ -280,7 +280,7 @@ const QuoteProposalPage: React.FC = () => {
                           />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel htmlFor="add-on-rehearsal" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 hover:text-livePiano-primary transition-colors duration-200">
+                          <FormLabel htmlFor="add-on-rehearsal" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                             {addOns.rehearsal.name}
                           </FormLabel>
                           <FormDescription className="text-livePiano-light/70 text-base">
