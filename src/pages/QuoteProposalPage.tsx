@@ -1,17 +1,17 @@
 "use client";
 
-import React, { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import React, { useEffect, useMemo } from 'react'; // Import useMemo
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import DynamicImage from "@/components/DynamicImage";
-import { ArrowLeft } from 'lucide-react'; // Removed Download icon as it's no longer needed
-import Footer from '@/components/Footer'; // Using the main footer for consistency
-import { useForm } from "react-hook-form"; // Import react-hook-form
-import { zodResolver } from "@hookform/resolvers/zod"; // Import zodResolver
-import * as z from "zod"; // Import zod
+import { ArrowLeft } from 'lucide-react';
+import Footer from '@/components/Footer';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import {
   Form,
   FormControl,
@@ -19,12 +19,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription, // Import FormDescription for the add-on
-} from "@/components/ui/form"; // Import form components
-import { Input } from "@/components/ui/input"; // Import Input for form fields
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"; // Import RadioGroup
-import { toast } from 'sonner'; // Import toast for notifications
-import { supabase } from '@/integrations/supabase/client'; // Import Supabase client
+  FormDescription,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 // Define the form schema using zod
 const formSchema = z.object({
@@ -37,7 +37,7 @@ const formSchema = z.object({
 });
 
 const QuoteProposalPage: React.FC = () => {
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
   
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -51,12 +51,14 @@ const QuoteProposalPage: React.FC = () => {
     preparedBy: "Daniele Buatti",
   };
 
-  // Reordered packages to be 1, 2, 3 with updated details
+  // Reordered packages to be 1, 2, 3 with updated details and numeric contributions
   const packages = [
-    { id: "option1", name: "Option 1: The Festive Spark", focus: "Compact, Focused Performance", contribution: "A$600" },
-    { id: "option2", name: "Option 2: Seamless Festive Flow", focus: "Flexible 3-Hour Engagement & Atmosphere", contribution: "A$875" },
-    { id: "option3", name: "Option 3: The Ultimate Curated Celebration", focus: "Full Artistic Partnership & Rehearsal", contribution: "A$1,350" },
+    { id: "option1", name: "Option 1: The Festive Spark", focus: "Compact, Focused Performance", contribution: 600 },
+    { id: "option2", name: "Option 2: Seamless Festive Flow", focus: "Flexible 3-Hour Engagement & Atmosphere", contribution: 875 },
+    { id: "option3", name: "Option 3: The Ultimate Curated Celebration", focus: "Full Artistic Partnership & Rehearsal", contribution: 1350 },
   ];
+
+  const addOnPrice = 150;
 
   // Initialize react-hook-form
   const form = useForm<z.infer<typeof formSchema>>({
@@ -64,10 +66,33 @@ const QuoteProposalPage: React.FC = () => {
     defaultValues: {
       clientName: '',
       clientEmail: '',
-      selectedPackage: undefined, // No default selection
+      selectedPackage: undefined,
       hasAddOn: false,
     },
   });
+
+  const selectedPackageId = form.watch("selectedPackage");
+  const hasAddOn = form.watch("hasAddOn");
+
+  // Disable add-on if Option 3 is selected
+  const isAddOnDisabled = selectedPackageId === "option3";
+
+  // Reset add-on if Option 3 is selected
+  useEffect(() => {
+    if (isAddOnDisabled && hasAddOn) {
+      form.setValue("hasAddOn", false);
+    }
+  }, [isAddOnDisabled, hasAddOn, form]);
+
+  // Calculate total amount dynamically
+  const totalAmount = useMemo(() => {
+    const selectedPkg = packages.find(pkg => pkg.id === selectedPackageId);
+    let total = selectedPkg ? selectedPkg.contribution : 0;
+    if (hasAddOn && !isAddOnDisabled) {
+      total += addOnPrice;
+    }
+    return total;
+  }, [selectedPackageId, hasAddOn, isAddOnDisabled, packages]);
 
   // Handle form submission
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -83,13 +108,14 @@ const QuoteProposalPage: React.FC = () => {
             client_email: values.clientEmail,
             selected_package_id: values.selectedPackage,
             has_add_on: values.hasAddOn,
-            event_date: proposalDetails.dateOfEvent, // Use pre-filled event date
-            event_location: proposalDetails.location, // Use pre-filled event location
-            quote_title: "Christmas Carols – Private Party Quote Proposal", // Add quote title
-            quote_prepared_by: proposalDetails.preparedBy, // Add preparer
+            total_amount: totalAmount, // Include the calculated total amount
+            event_date: proposalDetails.dateOfEvent,
+            event_location: proposalDetails.location,
+            quote_title: "Christmas Carols – Private Party Quote Proposal",
+            quote_prepared_by: proposalDetails.preparedBy,
           },
         ])
-        .select(); // Select the inserted data to get its ID if needed
+        .select();
 
       if (error) {
         throw error;
@@ -100,8 +126,8 @@ const QuoteProposalPage: React.FC = () => {
         description: "Thank you! Daniele will be in touch shortly to finalize details.",
       });
 
-      form.reset(); // Reset the form
-      navigate('/live-piano-services/quote-confirmation'); // Navigate to confirmation page
+      form.reset();
+      navigate('/live-piano-services/quote-confirmation');
 
     } catch (error) {
       console.error("Error submitting quote acceptance:", error);
@@ -110,7 +136,7 @@ const QuoteProposalPage: React.FC = () => {
         description: "Please try again later or contact Daniele directly.",
       });
     }
-  };
+  }
 
   return (
     <div className="live-piano-theme min-h-screen bg-livePiano-background text-livePiano-light font-montserrat">
@@ -133,12 +159,12 @@ const QuoteProposalPage: React.FC = () => {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-16 space-y-20"> {/* Increased vertical spacing */}
-        <section className="text-center space-y-6"> {/* Increased vertical spacing */}
+      <main className="max-w-7xl mx-auto px-4 py-16 space-y-20">
+        <section className="text-center space-y-6">
           <h2 className="text-5xl md:text-6xl font-libre-baskerville font-extrabold text-livePiano-primary mb-4 leading-tight text-shadow-sm">
             Your Bespoke Live Piano Quote for a Magical Christmas Carols Party
           </h2>
-          <div className="text-xl text-livePiano-light/90 max-w-3xl mx-auto space-y-3 font-medium"> {/* Increased font size and weight */}
+          <div className="text-xl text-livePiano-light/90 max-w-3xl mx-auto space-y-3 font-medium">
             <p>Prepared for: <strong className="text-livePiano-primary">{proposalDetails.client}</strong></p>
             <p>Date of Event: {proposalDetails.dateOfEvent}</p>
             <p>Time: {proposalDetails.time}</p>
@@ -161,7 +187,7 @@ const QuoteProposalPage: React.FC = () => {
                 <TableRow key={pkg.id} className="border-livePiano-border/50 hover:bg-livePiano-background/50 transition-colors duration-200">
                   <TableCell className="font-semibold text-livePiano-light py-4 px-6">
                     <a href={`#${pkg.id}`} className="hover:underline text-livePiano-primary transition-colors duration-200">{pkg.name}</a>
-                  </TableCell><TableCell className="py-4 px-6">{pkg.focus}</TableCell><TableCell className="text-right font-bold text-livePiano-primary py-4 px-6">{pkg.contribution}</TableCell>
+                  </TableCell><TableCell className="py-4 px-6">{pkg.focus}</TableCell><TableCell className="text-right font-bold text-livePiano-primary py-4 px-6">A${pkg.contribution}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -169,9 +195,9 @@ const QuoteProposalPage: React.FC = () => {
         </section>
 
         {/* Option 1 */}
-        <section id="option1" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-8"> {/* Increased vertical spacing */}
+        <section id="option1" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-8">
           <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">Option 1 – The Festive Spark (Essential)</h3>
-          <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50"> {/* Increased height */}
+          <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50">
             {/* Blurred Background Image */}
             <div
               className="absolute inset-0 bg-cover bg-center filter blur-lg scale-110"
@@ -186,14 +212,14 @@ const QuoteProposalPage: React.FC = () => {
               height={400}
             />
           </div>
-          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Your Contribution: A$600</p>
+          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Your Contribution: A${packages[0].contribution}</p>
           <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
             A focused, festive performance for hosts seeking simplicity and a clear, time-bound musical segment.
           </p>
-          <div className="grid md:grid-cols-2 gap-8 text-livePiano-light/80"> {/* Increased gap */}
+          <div className="grid md:grid-cols-2 gap-8 text-livePiano-light/80">
             <div>
-              <h4 className="text-xl font-semibold text-livePiano-primary mb-3">What's Included:</h4> {/* Increased margin */}
-              <ul className="list-disc list-inside space-y-2"> {/* Increased spacing */}
+              <h4 className="text-xl font-semibold text-livePiano-primary mb-3">What's Included:</h4>
+              <ul className="list-disc list-inside space-y-2">
                 <li>2-Hour Engagement (6pm–8pm).</li>
                 <li>Live Piano Accompaniment (One Professional Musician).</li>
                 <li>2 × 45-minute carol sets.</li>
@@ -208,7 +234,7 @@ const QuoteProposalPage: React.FC = () => {
               </ul>
             </div>
           </div>
-          <p className="text-lg italic text-livePiano-light/70 text-center mt-6 max-w-2xl mx-auto"> {/* Increased margin */}
+          <p className="text-lg italic text-livePiano-light/70 text-center mt-6 max-w-2xl mx-auto">
             Why this option? Perfect for a budget-friendly, high-impact musical segment without requiring extra planning.
           </p>
         </section>
@@ -231,7 +257,7 @@ const QuoteProposalPage: React.FC = () => {
               height={400}
             />
           </div>
-          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Your Contribution: A$875</p>
+          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Your Contribution: A${packages[1].contribution}</p>
           <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
             A flexible, high-value experience that beautifully blends musical structure with adaptability, ensuring the perfect party atmosphere.
           </p>
@@ -254,7 +280,7 @@ const QuoteProposalPage: React.FC = () => {
             </div>
           </div>
           <p className="text-lg italic text-livePiano-light/70 text-center mt-6 max-w-2xl mx-auto">
-            Why this option? This is the ideal option for hosts who prioritize a seamless atmosphere and flexibility. It guarantees music adapts to your party's pace, eliminating the stress of rigid timing, and provides the best value for money.
+            Why this option? This is the ideal option for hosts who prioritize seamless atmosphere and flexibility. It guarantees music adapts to your party's pace, eliminating the stress of rigid timing, and provides the best value for money.
           </p>
         </section>
 
@@ -276,7 +302,7 @@ const QuoteProposalPage: React.FC = () => {
               height={400}
             />
           </div>
-          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Your Contribution: A$1,350</p>
+          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Your Contribution: A${packages[2].contribution}</p>
           <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
             The most exquisite carols experience: fully curated, rehearsed, and expertly guided for maximum musical impact and complete peace of mind for you, the host.
           </p>
@@ -308,7 +334,7 @@ const QuoteProposalPage: React.FC = () => {
         {/* Optional Add-On Package */}
         <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-8">
           <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Optional Add-On Package (For Options 1 & 2 only)</h3>
-          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Private Rehearsal Session: A$150</p>
+          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Private Rehearsal Session: A${addOnPrice}</p>
           <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
             Add a dedicated 1.5-hour rehearsal session (one week prior) for the host and any other participants to fine-tune the music, ensuring maximum confidence and musical success on the night.
           </p>
@@ -381,7 +407,7 @@ const QuoteProposalPage: React.FC = () => {
                               <RadioGroupItem value={pkg.id} id={`package-${pkg.id}`} className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" />
                             </FormControl>
                             <FormLabel htmlFor={`package-${pkg.id}`} className="text-xl font-medium text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                              {pkg.name} ({pkg.contribution})
+                              {pkg.name} (A${pkg.contribution})
                             </FormLabel>
                           </FormItem>
                         ))}
@@ -396,18 +422,25 @@ const QuoteProposalPage: React.FC = () => {
                 control={form.control}
                 name="hasAddOn"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-livePiano-border/50 p-4">
+                  <FormItem className={
+                    `flex flex-row items-start space-x-3 space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-opacity duration-200
+                    ${isAddOnDisabled ? "opacity-50 cursor-not-allowed" : ""}`
+                  }>
                     <FormControl>
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={field.onChange}
                         id="add-on-checkbox"
+                        disabled={isAddOnDisabled}
                         className="h-6 w-6 border-livePiano-primary data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel htmlFor="add-on-checkbox" className="text-xl font-medium text-livePiano-light">
-                        Optional Add-On: Private Rehearsal Session (Add A$150)
+                      <FormLabel htmlFor="add-on-checkbox" className={
+                        `text-xl font-medium text-livePiano-light leading-none
+                        ${isAddOnDisabled ? "cursor-not-allowed" : "peer-disabled:cursor-not-allowed peer-disabled:opacity-70"}`
+                      }>
+                        Optional Add-On: Private Rehearsal Session (Add A${addOnPrice})
                       </FormLabel>
                       <FormDescription className="text-livePiano-light/70 text-base">
                         Add a dedicated 1.5-hour rehearsal session (one week prior) for the host and any other participants.
@@ -417,11 +450,19 @@ const QuoteProposalPage: React.FC = () => {
                 )}
               />
 
+              {selectedPackageId && (
+                <div className="text-center mt-10 p-6 bg-livePiano-primary/10 rounded-lg border border-livePiano-primary/30 shadow-inner">
+                  <p className="text-2xl md:text-3xl font-bold text-livePiano-primary text-shadow-sm">
+                    Total Estimated Contribution: <span className="text-livePiano-light">A${totalAmount}</span>
+                  </p>
+                </div>
+              )}
+
               <Button
                 type="submit"
                 size="lg"
                 className="w-full bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-darker text-xl py-7 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
-                disabled={form.formState.isSubmitting}
+                disabled={form.formState.isSubmitting || !selectedPackageId} // Disable if no package is selected
               >
                 {form.formState.isSubmitting ? "Submitting..." : "Submit Acceptance"}
               </Button>
