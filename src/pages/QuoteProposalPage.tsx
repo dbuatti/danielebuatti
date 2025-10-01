@@ -150,7 +150,7 @@ const QuoteProposalPage: React.FC = () => {
               </span>
             </Link>
           </Button>
-          <div className="flex items-center gap-2"> {/* Adjusted for better alignment */}
+          <div className="flex items-center gap-2">
             <DynamicImage src="/gold-36.png" alt="Daniele Buatti Logo" className="h-16 md:h-20" width={80} height={80} />
             <h1 className="text-xl md:text-2xl font-montserrat font-light uppercase text-livePiano-light tracking-widest mt-2">
               Daniele Buatti
@@ -161,8 +161,8 @@ const QuoteProposalPage: React.FC = () => {
 
       <main className="max-w-7xl mx-auto px-4 py-16 space-y-20">
         <section className="text-center space-y-6">
-          <h2 className="text-5xl md:text-6xl font-libre-baskerville font-extrabold text-livePiano-primary mb-6 leading-none text-shadow-lg"> {/* Increased mb-4 to mb-6 */}
-            Your Bespoke Live Piano Quote for a Magical Christmas Carols Party
+          <h2 className="text-5xl md:text-6xl font-libre-baskerville font-extrabold text-livePiano-primary mb-6 leading-none text-shadow-lg">
+            Your Live Piano Quote for Christmas Carols
           </h2>
           <div className="text-xl text-livePiano-light/90 max-w-3xl mx-auto space-y-3 font-medium">
             <p>Prepared for: <strong className="text-livePiano-primary">{proposalDetails.client}</strong></p>
@@ -196,7 +196,7 @@ const QuoteProposalPage: React.FC = () => {
         </section>
 
         {/* Option 3: The Ultimate Curated Celebration */}
-        <section id="option3" className="bg-livePiano-darker p-10 rounded-xl shadow-2xl border-4 border-livePiano-primary space-y-10 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl"> {/* Increased padding and space-y */}
+        <section id="option3" className="bg-livePiano-darker p-10 rounded-xl shadow-2xl border-4 border-livePiano-primary space-y-10 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
           <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">The Ultimate Curated Celebration</h3>
           <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50 shadow-md">
             <div
@@ -215,9 +215,9 @@ const QuoteProposalPage: React.FC = () => {
           <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
             This is the most exquisite carols experience: fully curated, rehearsed, and expertly guided for maximum musical impact and complete peace of mind for you, the host.
           </p>
-          <div className="text-livePiano-light/80 space-y-5 max-w-3xl mx-auto"> {/* Increased space-y */}
+          <div className="text-livePiano-light/80 space-y-5 max-w-3xl mx-auto">
             <p className="text-xl font-semibold text-livePiano-primary border-b border-livePiano-primary/50 pb-2 mb-3">What's Included & The Value You Receive:</p>
-            <ul className="list-disc list-inside space-y-3 [&>li]:marker:text-livePiano-primary [&>li]:marker:text-2xl"> {/* Increased marker size */}
+            <ul className="list-disc list-inside space-y-3 [&>li]:marker:text-livePiano-primary [&>li]:marker:text-2xl">
               <li><strong>Private Rehearsal Session:</strong> Dedicated 1.5 hours a week prior to the event (A$150 Value) to refine your group’s sound and prepare any singers.</li>
               <li><strong>Extended Coverage (6pm–10pm):</strong> Guaranteed availability until the party concludes at 10pm—no watching the clock!</li>
               <li><strong>Personal Artistic Guidance & Collaboration:</strong> Full collaboration on sheet music sourcing, set structure, and creation of a custom carols brochure.</li>
@@ -230,7 +230,7 @@ const QuoteProposalPage: React.FC = () => {
         </section>
 
         {/* Option 2: Seamless Festive Flow */}
-        <section id="option2" className="bg-livePiano-darker p-10 rounded-xl shadow-2xl border-2 border-livePiano-border/50 space-y-10 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl"> {/* Increased padding and space-y */}
+        <section id="option2" className="bg-livePiano-darker p-10 rounded-xl shadow-2xl border-2 border-livePiano-border/50 space-y-10 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
           <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">Seamless Festive Flow</h3>
           <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50 shadow-md">
             <div
@@ -249,9 +249,9 @@ const QuoteProposalPage: React.FC = () => {
           <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
             This flexible, high-value experience beautifully blends musical structure with adaptability, ensuring a delightful party atmosphere for your guests.
           </p>
-          <div className="text-livePiano-light/80 space-y-5 max-w-3xl mx-auto"> {/* Increased space-y */}
+          <div className="text-livePiano-light/80 space-y-5 max-w-3xl mx-auto">
             <p className="text-xl font-semibold text-livePiano-primary border-b border-livePiano-primary/50 pb-2 mb-3">What's Included & The Value You Receive:</p>
-            <ul className="list-disc list-inside space-y-3 [&>li]:marker:text-livePiano-primary [&>li]:marker:text-2xl"> {/* Increased marker size */}
+            <ul className="list-disc list-inside space-y-3 [&>li]:marker:text-livePiano-primary [&>li]:marker:text-2xl">
               <li><strong>Extended 3-Hour Engagement (6pm–9pm):</strong> Ample time for guests to mingle and truly get into the festive mood.</li>
               <li><strong>On-Call Performance Buffer:</strong> Music that seamlessly adapts to your party's flow, ready when your guests are.</li>
               <li><strong>Live Piano Performance:</strong> Two 45-minute carol sets, plus delightful atmosphere music before, between, and after sets.</li>
@@ -386,7 +386,7 @@ const QuoteProposalPage: React.FC = () => {
               />
 
               {selectedPackageId && (
-                <div className="text-center mt-10 p-6 bg-livePiano-primary/10 rounded-lg border border-livePiano-primary/30 shadow-lg"> {/* Enhanced shadow */}
+                <div className="text-center mt-10 p-6 bg-livePiano-primary/10 rounded-lg border border-livePiano-primary/30 shadow-lg">
                   <p className="text-2xl md:text-3xl font-bold text-livePiano-primary text-shadow-sm">
                     Total Estimated Contribution: <span className="text-livePiano-light">A${totalAmount}</span>
                   </p>
