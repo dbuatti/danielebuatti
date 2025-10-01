@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import DynamicImage from "@/components/DynamicImage";
-import { ArrowLeft } from 'lucide-react'; // Removed Minus and Plus icons
+import { ArrowLeft, Minus, Plus } from 'lucide-react';
 import Footer from '@/components/Footer';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
