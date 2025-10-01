@@ -110,7 +110,7 @@ const QuoteProposalPage: React.FC = () => {
         description: "Please try again later or contact Daniele directly.",
       });
     }
-  }
+  };
 
   return (
     <div className="live-piano-theme min-h-screen bg-livePiano-background text-livePiano-light font-montserrat">
@@ -150,12 +150,10 @@ const QuoteProposalPage: React.FC = () => {
         {/* Package Options Anchor Table */}
         <section id="package-options" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30">
           <h3 className="text-3xl font-bold text-livePiano-light mb-8 text-center">🎄 Your Package Options</h3>
-          <Table className="w-full text-livePiano-light rounded-lg overflow-hidden"> {/* Added rounded-lg and overflow-hidden */}
-            <TableHeader className="bg-livePiano-primary/20"> {/* Subtle background for header */}
+          <Table className="w-full text-livePiano-light rounded-lg overflow-hidden">
+            <TableHeader className="bg-livePiano-primary/20">
               <TableRow className="border-livePiano-border/50">
-                <TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6">Package Name</TableHead> {/* Increased padding */}
-                <TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6">Core Focus</TableHead>
-                <TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6 text-right">Your Contribution</TableHead>
+                <TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6">Package Name</TableHead><TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6">Core Focus</TableHead><TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6 text-right">Your Contribution</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -163,9 +161,7 @@ const QuoteProposalPage: React.FC = () => {
                 <TableRow key={pkg.id} className="border-livePiano-border/50 hover:bg-livePiano-background/50 transition-colors duration-200">
                   <TableCell className="font-semibold text-livePiano-light py-4 px-6">
                     <a href={`#${pkg.id}`} className="hover:underline text-livePiano-primary transition-colors duration-200">{pkg.name}</a>
-                  </TableCell>
-                  <TableCell className="py-4 px-6">{pkg.focus}</TableCell>
-                  <TableCell className="text-right font-bold text-livePiano-primary py-4 px-6">{pkg.contribution}</TableCell> {/* Highlight contribution */}
+                  </TableCell><TableCell className="py-4 px-6">{pkg.focus}</TableCell><TableCell className="text-right font-bold text-livePiano-primary py-4 px-6">{pkg.contribution}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
