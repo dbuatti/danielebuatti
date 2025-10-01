@@ -56,12 +56,12 @@ const QuoteProposalPage: React.FC = () => {
 
   const addOns = {
     rehearsal: {
-      name: "Pre-event Artistic Direction", // Renamed
+      name: "Pre-event rehearsal", // Renamed
       cost: 700, // Fixed cost
-      description: "A dedicated 2-hour coaching session one week prior to the event, including travel, to fully refine the singers and curate the set list.",
+      description: "A 2-hour rehearsal session one week prior to the event, including travel.", // Simplified description
     },
     extraHour: {
-      name: "Extended Performance Hour", // Renamed
+      name: "Extended Performance Hour",
       cost: 350, // Consistent with hourly rate
       description: "Extend the live performance by one hour (until 10:00pm).",
     },
@@ -74,7 +74,7 @@ const QuoteProposalPage: React.FC = () => {
       clientName: '',
       clientEmail: '',
       wantsExtraHour: false,
-      wantsRehearsal: false, // Default to unchecked as per "Final Polished Quote Draft"
+      wantsRehearsal: false,
     },
   });
 
@@ -103,7 +103,7 @@ const QuoteProposalPage: React.FC = () => {
       const selectedAddOnsList: string[] = [];
       if (values.wantsExtraHour) selectedAddOnsList.push(addOns.extraHour.name);
       if (values.wantsRehearsal) {
-        selectedAddOnsList.push(addOns.rehearsal.name);
+        selectedAddOnsList.push(`${addOns.rehearsal.name} (2 hours + Travel)`);
       }
 
       // Insert data into Supabase
@@ -204,8 +204,8 @@ const QuoteProposalPage: React.FC = () => {
           <div className="text-livePiano-light/80 space-y-4 max-w-3xl mx-auto">
             <h4 className="text-2xl font-semibold text-livePiano-primary text-center text-shadow-sm mb-4">Service Components</h4>
             <ul className="list-disc list-inside space-y-2 [&>li]:marker:text-livePiano-primary [&>li]:marker:text-xl">
-              <li><strong>3-Hour Live Performance:</strong> Two 45-minute carol sets and beautiful background music between sets.</li>
-              <li><strong>Custom Carols Sheet:</strong> Collaboration on song selection and preparation of a custom song sheet for guests.</li>
+              <li><strong>3-Hour Live Performance:</strong> Two 45-minute carol sets and beautiful background music between sets (if desired).</li>
+              <li><strong>Collaboration on song selection</strong></li>
               <li><strong>Flexible Timing:</strong> Performance timing is flexible to dynamically respond to the needs of guests (the "on-call buffer").</li>
               <li><strong>All-Inclusive Logistics:</strong> Covers all sheet music preparation, travel, and setup required for the evening.</li>
             </ul>
@@ -230,7 +230,7 @@ const QuoteProposalPage: React.FC = () => {
                   <FormItem className={cn(
                     "flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-all duration-200 cursor-pointer",
                     field.value ? "border-livePiano-primary shadow-md" : "hover:border-livePiano-primary"
-                  )}>
+                  )} onClick={() => field.onChange(!field.value)}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
                       <div className="flex items-start space-x-3 mb-4 sm:mb-0">
                         <FormControl>
@@ -264,7 +264,7 @@ const QuoteProposalPage: React.FC = () => {
                   <FormItem className={cn(
                     "flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-all duration-200 cursor-pointer",
                     field.value ? "border-livePiano-primary shadow-md" : "hover:border-livePiano-primary"
-                  )}>
+                  )} onClick={() => field.onChange(!field.value)}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
                       <div className="flex items-start space-x-3 mb-4 sm:mb-0">
                         <FormControl>
