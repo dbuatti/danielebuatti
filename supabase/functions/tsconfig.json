@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["esnext", "dom"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": [
+      "https://deno.land/std@0.190.0/http/server.ts",
+      "https://esm.sh/@supabase/supabase-js@2.45.0",
+      "https://deno.land/x/supabase_functions_types/experimental/edge-runtime.d.ts"
+    ]
+  },
+  "include": ["**/*.ts"]
+}

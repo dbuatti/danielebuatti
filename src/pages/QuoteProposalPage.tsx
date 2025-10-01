@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client'; // Re-import Supabase client
+import { supabase } from '@/integrations/supabase/client'; // Keep Supabase client import for invoking functions
 import { Separator } from "@/components/ui/separator";
 import { cn } from '@/lib/utils';
 
@@ -100,25 +100,17 @@ const QuoteProposalPage: React.FC = () => {
     const loadingToastId = toast.loading("Submitting your acceptance...");
 
     try {
-      const { error } = await supabase
-        .from('quote_acceptances')
-        .insert([
-          {
-            client_name: values.clientName,
-            client_email: values.clientEmail,
-            selected_package_id: "Custom Quote", // Or a more specific package name if applicable
-            has_add_on: values.wantsExtraHour || values.wantsRehearsal,
-            selected_add_ons: JSON.stringify({
-              extraHour: values.wantsExtraHour,
-              rehearsal: values.wantsRehearsal,
-            }),
-            total_amount: totalAmount,
-            event_date: proposalDetails.dateOfEvent,
-            event_location: proposalDetails.location,
-            quote_title: "Christmas Carols – Live Piano Quote",
-            quote_prepared_by: proposalDetails.preparedBy,
-          },
-        ]);
+      // Invoke the new Supabase Edge Function
+      const { data, error } = await supabase.functions.invoke('submit-quote-acceptance', {
+        body: {
+          clientName: values.clientName,
+          clientEmail: values.clientEmail,
+          wantsExtraHour: values.wantsExtraHour,
+          wantsRehearsal: values.wantsRehearsal,
+          totalAmount: totalAmount,
+          proposalDetails: proposalDetails, // Pass proposal details to the function
+        },
+      });
 
       if (error) {
         throw error;
