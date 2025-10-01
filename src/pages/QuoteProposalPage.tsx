@@ -32,8 +32,6 @@ const formSchema = z.object({
   wantsExtraHour: z.boolean().default(false),
   wantsRehearsal: z.boolean().default(false),
   rehearsalHours: z.coerce.number().min(1).max(3).optional(), // Rehearsal hours 1 to 3
-  wantsArtisticGuidance: z.boolean().default(false),
-  artisticGuidanceHours: z.coerce.number().min(1).max(4).optional(), // Artistic guidance hours 1 to 4
 });
 
 const QuoteProposalPage: React.FC = () => {
@@ -51,10 +49,9 @@ const QuoteProposalPage: React.FC = () => {
     preparedBy: "Daniele Buatti",
   };
 
-  const hourlyRate = 300;
-  const artisticGuidanceHourlyRate = 100;
-  const performanceTravelCost = 100; // Fixed travel cost for performance
-  const rehearsalTravelCost = 100; // Fixed travel cost for rehearsal
+  const hourlyRate = 350; // Changed performance/rehearsal hourly rate to $350
+  const performanceTravelCost = 150; // Fixed travel cost for performance
+  const rehearsalTravelCost = 150; // Fixed travel cost for rehearsal
 
   const baseService = {
     hours: 3,
@@ -74,12 +71,15 @@ const QuoteProposalPage: React.FC = () => {
       travelCost: rehearsalTravelCost, // Fixed travel cost
       description: "A dedicated rehearsal session one week prior to the event, plus a fixed travel fee.",
     },
-    artisticGuidance: {
-      name: "Personal Artistic Guidance & Collaboration",
-      hourlyRate: artisticGuidanceHourlyRate,
-      description: "Full collaboration on sheet music sourcing, set structure, and creation of a custom carols brochure.",
-    },
   };
+
+  const rehearsalDurationOptions = [
+    { value: 1, label: "1 hour" },
+    { value: 1.5, label: "1.5 hours" },
+    { value: 2, label: "2 hours" },
+    { value: 2.5, label: "2.5 hours" },
+    { value: 3, label: "3 hours" },
+  ];
 
   // Initialize react-hook-form
   const form = useForm<z.infer<typeof formSchema>>({
@@ -90,16 +90,12 @@ const QuoteProposalPage: React.FC = () => {
       wantsExtraHour: false,
       wantsRehearsal: true, // Default to checked
       rehearsalHours: 2, // Default to 2 hours if rehearsal is selected
-      wantsArtisticGuidance: false,
-      artisticGuidanceHours: 1, // Default to 1 hour if artistic guidance is selected (will only be used if checkbox is checked)
     },
   });
 
   const wantsExtraHour = form.watch("wantsExtraHour");
   const wantsRehearsal = form.watch("wantsRehearsal");
   const rehearsalHours = form.watch("rehearsalHours");
-  const wantsArtisticGuidance = form.watch("wantsArtisticGuidance");
-  const artisticGuidanceHours = form.watch("artisticGuidanceHours");
 
   // Calculate total amount dynamically
   const totalAmount = useMemo(() => {
@@ -108,11 +104,8 @@ const QuoteProposalPage: React.FC = () => {
     if (wantsRehearsal && rehearsalHours) { // Only add if checkbox is checked AND hours are set
       total += (rehearsalHours * addOns.rehearsal.hourlyRate) + addOns.rehearsal.travelCost;
     }
-    if (wantsArtisticGuidance && artisticGuidanceHours) { // Only add if checkbox is checked AND hours are set
-      total += (artisticGuidanceHours * addOns.artisticGuidance.hourlyRate);
-    }
     return total;
-  }, [wantsExtraHour, wantsRehearsal, rehearsalHours, wantsArtisticGuidance, artisticGuidanceHours]);
+  }, [wantsExtraHour, wantsRehearsal, rehearsalHours]);
 
   // Handlers for rehearsal hours
   const handleDecrementRehearsal = () => {
@@ -121,19 +114,6 @@ const QuoteProposalPage: React.FC = () => {
   const handleIncrementRehearsal = () => {
     form.setValue("rehearsalHours", Math.min(3, (rehearsalHours || 2) + 0.5));
   };
-
-  // Handlers for artistic guidance hours
-  const handleDecrementArtisticGuidance = () => {
-    form.setValue("artisticGuidanceHours", Math.max(1, (artisticGuidanceHours || 1) - 1));
-  };
-  const handleIncrementArtisticGuidance = () => {
-    form.setValue("artisticGuidanceHours", Math.min(4, (artisticGuidanceHours || 1) + 1));
-  };
-
-  // Calculate individual add-on costs for display
-  const extraHourDisplayCost = wantsExtraHour ? addOns.extraHour.cost : 0;
-  const rehearsalDisplayCost = wantsRehearsal ? ((rehearsalHours || 0) * addOns.rehearsal.hourlyRate + addOns.rehearsal.travelCost) : 0;
-  const artisticGuidanceDisplayCost = wantsArtisticGuidance ? ((artisticGuidanceHours || 0) * addOns.artisticGuidance.hourlyRate) : 0;
 
   // Handle form submission
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -144,9 +124,6 @@ const QuoteProposalPage: React.FC = () => {
       if (values.wantsExtraHour) selectedAddOnsList.push(addOns.extraHour.name);
       if (values.wantsRehearsal && values.rehearsalHours) {
         selectedAddOnsList.push(`${addOns.rehearsal.name} (${values.rehearsalHours} hours + Travel)`);
-      }
-      if (values.wantsArtisticGuidance && values.artisticGuidanceHours) {
-        selectedAddOnsList.push(`${addOns.artisticGuidance.name} (${values.artisticGuidanceHours} hours)`);
       }
 
       // Insert data into Supabase
@@ -248,6 +225,8 @@ const QuoteProposalPage: React.FC = () => {
             <ul className="list-disc list-inside space-y-2 [&>li]:marker:text-livePiano-primary [&>li]:marker:text-xl">
               <li>Carol sing-alongs (two 45-minute sets)</li>
               <li>Background music between sets</li>
+              <li>Custom song sheet for guests</li> {/* Added */}
+              <li>Collaboration on song selection</li> {/* Added */}
               <li>Performance timing is flexible to adapt to your event's flow.</li>
             </ul>
           </div>
@@ -289,7 +268,7 @@ const QuoteProposalPage: React.FC = () => {
                         </div>
                       </div>
                       <div className="text-xl font-bold text-livePiano-primary">
-                        A${extraHourDisplayCost}
+                        A${wantsExtraHour ? addOns.extraHour.cost : 0}
                       </div>
                     </div>
                   </FormItem>
@@ -327,7 +306,7 @@ const QuoteProposalPage: React.FC = () => {
                         </div>
                       </div>
                       <div className="text-xl font-bold text-livePiano-primary">
-                        A${rehearsalDisplayCost}
+                        A${wantsRehearsal ? ((rehearsalHours || 0) * addOns.rehearsal.hourlyRate) + addOns.rehearsal.travelCost : 0}
                       </div>
                     </div>
                     {/* Rehearsal hours controls - always visible */}
@@ -359,70 +338,7 @@ const QuoteProposalPage: React.FC = () => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="wantsArtisticGuidance"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4">
-                    <div className="flex items-center justify-between w-full">
-                      <div className="flex items-start space-x-3">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={(checked) => {
-                              field.onChange(checked);
-                              if (!checked) {
-                                form.setValue("artisticGuidanceHours", undefined);
-                              } else {
-                                form.setValue("artisticGuidanceHours", 1); // Set default when checked
-                              }
-                            }}
-                            id="add-on-artistic-guidance"
-                            className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
-                          />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel htmlFor="add-on-artistic-guidance" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 hover:text-livePiano-primary transition-colors duration-200">
-                            {addOns.artisticGuidance.name}
-                          </FormLabel>
-                          <FormDescription className="text-livePiano-light/70 text-base">
-                            {addOns.artisticGuidance.description}
-                          </FormDescription>
-                        </div>
-                      </div>
-                      <div className="text-xl font-bold text-livePiano-primary">
-                        A${artisticGuidanceDisplayCost}
-                      </div>
-                    </div>
-                    {/* Artistic guidance hours controls - always visible */}
-                    <div className="flex items-center gap-2 mt-4 ml-9">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        onClick={handleDecrementArtisticGuidance}
-                        disabled={(artisticGuidanceHours || 1) <= 1}
-                        className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                      <span className="text-lg font-semibold text-livePiano-light w-16 text-center">
-                        {artisticGuidanceHours || 0} hrs
-                      </span>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        onClick={handleIncrementArtisticGuidance}
-                        disabled={(artisticGuidanceHours || 1) >= 4}
-                        className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </FormItem>
-                )}
-              />
+              {/* Removed Artistic Guidance FormField */}
 
               <div className="text-center mt-10 p-6 bg-livePiano-primary/10 rounded-lg border border-livePiano-primary/30 shadow-lg">
                 <p className="text-2xl md:text-3xl font-bold text-livePiano-primary text-shadow-sm">
