@@ -222,6 +222,7 @@ const QuoteProposalPage: React.FC = () => {
               <li><strong>Extended Coverage (6pm–10pm):</strong> Guaranteed availability until the party concludes at 10pm—no watching the clock!</li>
               <li><strong>Personal Artistic Guidance & Collaboration:</strong> Full collaboration on sheet music sourcing, set structure, and creation of a custom carols brochure.</li>
               <li><strong>Live Piano Performance:</strong> Two 45-minute carol sets, beautiful background music, and spontaneous sing-alongs.</li>
+              <li><strong>Custom Carols Brochure:</strong> A beautifully prepared brochure based on your final song list.</li>
             </ul>
           </div>
           <p className="text-lg italic text-livePiano-light/70 text-center mt-6 max-w-2xl mx-auto">
@@ -255,7 +256,6 @@ const QuoteProposalPage: React.FC = () => {
               <li><strong>Extended 3-Hour Engagement (6pm–9pm):</strong> Ample time for guests to mingle and truly get into the festive mood.</li>
               <li><strong>On-Call Performance Buffer:</strong> Music that seamlessly adapts to your party's flow, ready when your guests are.</li>
               <li><strong>Live Piano Performance:</strong> Two 45-minute carol sets, plus delightful atmosphere music before, between, and after sets.</li>
-              <li><strong>Custom Carols Brochure:</strong> A beautifully prepared brochure based on your final song list.</li>
             </ul>
           </div>
           <p className="text-lg italic text-livePiano-light/70 text-center mt-6 max-w-2xl mx-auto">
