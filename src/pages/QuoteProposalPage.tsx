@@ -88,10 +88,10 @@ const QuoteProposalPage: React.FC = () => {
       clientName: '',
       clientEmail: '',
       wantsExtraHour: false,
-      wantsRehearsal: false,
-      rehearsalHours: 1.5, // Default to 1.5 hours if rehearsal is selected
+      wantsRehearsal: true, // Default to checked
+      rehearsalHours: 2, // Default to 2 hours if rehearsal is selected
       wantsArtisticGuidance: false,
-      artisticGuidanceHours: undefined, // Changed default to undefined
+      artisticGuidanceHours: 1, // Default to 1 hour if artistic guidance is selected (will only be used if checkbox is checked)
     },
   });
 
@@ -105,10 +105,10 @@ const QuoteProposalPage: React.FC = () => {
   const totalAmount = useMemo(() => {
     let total = baseService.cost;
     if (wantsExtraHour) total += addOns.extraHour.cost;
-    if (wantsRehearsal && rehearsalHours) {
+    if (wantsRehearsal && rehearsalHours) { // Only add if checkbox is checked AND hours are set
       total += (rehearsalHours * addOns.rehearsal.hourlyRate) + addOns.rehearsal.travelCost;
     }
-    if (wantsArtisticGuidance && artisticGuidanceHours) {
+    if (wantsArtisticGuidance && artisticGuidanceHours) { // Only add if checkbox is checked AND hours are set
       total += (artisticGuidanceHours * addOns.artisticGuidance.hourlyRate);
     }
     return total;
@@ -116,10 +116,10 @@ const QuoteProposalPage: React.FC = () => {
 
   // Handlers for rehearsal hours
   const handleDecrementRehearsal = () => {
-    form.setValue("rehearsalHours", Math.max(1, (rehearsalHours || 1.5) - 0.5));
+    form.setValue("rehearsalHours", Math.max(1, (rehearsalHours || 2) - 0.5));
   };
   const handleIncrementRehearsal = () => {
-    form.setValue("rehearsalHours", Math.min(3, (rehearsalHours || 1.5) + 0.5));
+    form.setValue("rehearsalHours", Math.min(3, (rehearsalHours || 2) + 0.5));
   };
 
   // Handlers for artistic guidance hours
@@ -177,7 +177,7 @@ const QuoteProposalPage: React.FC = () => {
 
     } catch (error) {
       console.error("Error submitting quote acceptance:", error);
-      toast.error("Failed to send quote acceptance.", {
+      toast.error("Failed to submit quote acceptance.", {
         id: loadingToastId,
         description: "Please try again later or contact Daniele directly.",
       });
@@ -293,10 +293,11 @@ const QuoteProposalPage: React.FC = () => {
                         checked={field.value}
                         onCheckedChange={(checked) => {
                           field.onChange(checked);
+                          // If unchecking, set rehearsal hours to undefined
                           if (!checked) {
                             form.setValue("rehearsalHours", undefined);
                           } else {
-                            form.setValue("rehearsalHours", 1.5); // Set default when checked
+                            form.setValue("rehearsalHours", 2); // Set default to 2 hours when checked
                           }
                         }}
                         id="add-on-rehearsal"
@@ -310,33 +311,32 @@ const QuoteProposalPage: React.FC = () => {
                       <FormDescription className="text-livePiano-light/70 text-base">
                         {addOns.rehearsal.description}
                       </FormDescription>
-                      {wantsRehearsal && (
-                        <div className="flex items-center gap-2 mt-4">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            onClick={handleDecrementRehearsal}
-                            disabled={(rehearsalHours || 1.5) <= 1}
-                            className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
-                          >
-                            <Minus className="h-4 w-4" />
-                          </Button>
-                          <span className="text-lg font-semibold text-livePiano-light w-16 text-center">
-                            {rehearsalHours} hrs
-                          </span>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            onClick={handleIncrementRehearsal}
-                            disabled={(rehearsalHours || 1.5) >= 3}
-                            className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
-                          >
-                            <Plus className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      )}
+                      {/* Rehearsal hours controls - always visible */}
+                      <div className="flex items-center gap-2 mt-4">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={handleDecrementRehearsal}
+                          disabled={(rehearsalHours || 2) <= 1}
+                          className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                        <span className="text-lg font-semibold text-livePiano-light w-16 text-center">
+                          {rehearsalHours || 0} hrs
+                        </span>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={handleIncrementRehearsal}
+                          disabled={(rehearsalHours || 2) >= 3}
+                          className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </FormItem>
                 )}
@@ -354,7 +354,7 @@ const QuoteProposalPage: React.FC = () => {
                           if (!checked) {
                             form.setValue("artisticGuidanceHours", undefined);
                           } else {
-                            form.setValue("artisticGuidanceHours", 1); // Set default when checked
+                            form.setValue("artisticGuidanceHours", 1); // Set default to 1 hour when checked
                           }
                         }}
                         id="add-on-artistic-guidance"
@@ -368,33 +368,32 @@ const QuoteProposalPage: React.FC = () => {
                       <FormDescription className="text-livePiano-light/70 text-base">
                         {addOns.artisticGuidance.description}
                       </FormDescription>
-                      {wantsArtisticGuidance && (
-                        <div className="flex items-center gap-2 mt-4">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            onClick={handleDecrementArtisticGuidance}
-                            disabled={(artisticGuidanceHours || 1) <= 1}
-                            className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
-                          >
-                            <Minus className="h-4 w-4" />
-                          </Button>
-                          <span className="text-lg font-semibold text-livePiano-light w-16 text-center">
-                            {artisticGuidanceHours} hrs
-                          </span>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            onClick={handleIncrementArtisticGuidance}
-                            disabled={(artisticGuidanceHours || 1) >= 4}
-                            className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
-                          >
-                            <Plus className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      )}
+                      {/* Artistic guidance hours controls - always visible */}
+                      <div className="flex items-center gap-2 mt-4">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={handleDecrementArtisticGuidance}
+                          disabled={(artisticGuidanceHours || 1) <= 1}
+                          className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                        <span className="text-lg font-semibold text-livePiano-light w-16 text-center">
+                          {artisticGuidanceHours || 0} hrs
+                        </span>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={handleIncrementArtisticGuidance}
+                          disabled={(artisticGuidanceHours || 1) >= 4}
+                          className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </FormItem>
                 )}
