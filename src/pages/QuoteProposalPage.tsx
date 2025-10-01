@@ -194,7 +194,7 @@ const QuoteProposalPage: React.FC = () => {
         </section>
 
         {/* Option 3: The Ultimate Curated Celebration */}
-        <section id="option3" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border-4 border-livePiano-primary space-y-8"> {/* Added border-4 border-livePiano-primary */}
+        <section id="option3" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border-4 border-livePiano-primary space-y-8">
           <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">The Ultimate Curated Celebration</h3>
           <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50">
             <div
@@ -216,10 +216,10 @@ const QuoteProposalPage: React.FC = () => {
           <div className="text-livePiano-light/80 space-y-4 max-w-3xl mx-auto">
             <p className="text-xl font-semibold text-livePiano-primary">What's Included & The Value You Receive:</p>
             <ul className="list-disc list-inside space-y-2">
-              <li>**Private Rehearsal Session:** Dedicated 1.5 hours a week prior to the event (A$150 Value) to refine your group’s sound and prepare any singers.</li>
-              <li>**Extended Coverage (6pm–10pm):** Guaranteed availability until the party concludes at 10pm—no watching the clock!</li>
-              <li>**Personal Artistic Guidance & Collaboration:** Full collaboration on sheet music sourcing, set structure, and creation of a custom carols brochure.</li>
-              <li>**Live Piano Performance:** Two 45-minute carol sets, beautiful background music, and spontaneous sing-alongs.</li>
+              <li><strong>Private Rehearsal Session:</strong> Dedicated 1.5 hours a week prior to the event (A$150 Value) to refine your group’s sound and prepare any singers.</li>
+              <li><strong>Extended Coverage (6pm–10pm):</strong> Guaranteed availability until the party concludes at 10pm—no watching the clock!</li>
+              <li><strong>Personal Artistic Guidance & Collaboration:</strong> Full collaboration on sheet music sourcing, set structure, and creation of a custom carols brochure.</li>
+              <li><strong>Live Piano Performance:</strong> Two 45-minute carol sets, beautiful background music, and spontaneous sing-alongs.</li>
             </ul>
           </div>
           <p className="text-lg italic text-livePiano-light/70 text-center mt-6 max-w-2xl mx-auto">
@@ -250,10 +250,10 @@ const QuoteProposalPage: React.FC = () => {
           <div className="text-livePiano-light/80 space-y-4 max-w-3xl mx-auto">
             <p className="text-xl font-semibold text-livePiano-primary">What's Included & The Value You Receive:</p>
             <ul className="list-disc list-inside space-y-2">
-              <li>**Extended 3-Hour Engagement (6pm–9pm):** Ample time for guests to mingle and truly get into the festive mood.</li>
-              <li>**On-Call Performance Buffer:** Music that seamlessly adapts to your party's flow, ready when your guests are.</li>
-              <li>**Live Piano Performance:** Two 45-minute carol sets, plus delightful atmosphere music before, between, and after sets.</li>
-              <li>**Custom Carols Brochure:** A beautifully prepared brochure based on your final song list.</li>
+              <li><strong>Extended 3-Hour Engagement (6pm–9pm):</strong> Ample time for guests to mingle and truly get into the festive mood.</li>
+              <li><strong>On-Call Performance Buffer:</strong> Music that seamlessly adapts to your party's flow, ready when your guests are.</li>
+              <li><strong>Live Piano Performance:</strong> Two 45-minute carol sets, plus delightful atmosphere music before, between, and after sets.</li>
+              <li><strong>Custom Carols Brochure:</strong> A beautifully prepared brochure based on your final song list.</li>
             </ul>
           </div>
           <p className="text-lg italic text-livePiano-light/70 text-center mt-6 max-w-2xl mx-auto">
