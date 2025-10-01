@@ -19,6 +19,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription, // Import FormDescription for the add-on
 } from "@/components/ui/form"; // Import form components
 import { Input } from "@/components/ui/input"; // Import Input for form fields
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"; // Import RadioGroup
@@ -218,7 +219,7 @@ const QuoteProposalPage: React.FC = () => {
 
         {/* Option 2 */}
         <section id="option2" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-8">
-          <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">Option 2 – Seamless Festive Flow (Standard - Recommended)</h3> {/* Added text-livePiano-primary */}
+          <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">Option 2 – Seamless Festive Flow (Standard - Recommended)</h3>
           <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50">
             {/* Blurred Background Image */}
             <div
@@ -257,7 +258,7 @@ const QuoteProposalPage: React.FC = () => {
             </div>
           </div>
           <p className="text-lg italic text-livePiano-light/70 text-center mt-6 max-w-2xl mx-auto">
-            Why this option? This is the ideal option for hosts who prioritize seamless atmosphere and flexibility. It guarantees music adapts to your party's pace, eliminating the stress of rigid timing, and provides the best value for money.
+            Why this option? This is the ideal option for hosts who prioritize a seamless atmosphere and flexibility. It guarantees music adapts to your party's pace, eliminating the stress of rigid timing, and provides the best value for money.
           </p>
         </section>
 
