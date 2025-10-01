@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import DynamicImage from "@/components/DynamicImage";
-import { ArrowLeft, Minus, Plus } from 'lucide-react'; // Added Minus and Plus icons
+import { ArrowLeft, Minus, Plus } from 'lucide-react';
 import Footer from '@/components/Footer';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { Separator } from "@/components/ui/separator";
-import { cn } from '@/lib/utils'; // Import cn for conditional styling
+import { cn } from '@/lib/utils';
 
 // Define the form schema using zod
 const formSchema = z.object({
@@ -169,7 +169,7 @@ const QuoteProposalPage: React.FC = () => {
 
       toast.success("Quote accepted successfully!", {
         id: loadingToastId,
-        description: "Thank you! Daniele will be in touch shortly to finalize details.",
+        description: "Thank you! Daniele will be in touch shortly to finalise details.",
       });
 
       form.reset();
@@ -177,7 +177,7 @@ const QuoteProposalPage: React.FC = () => {
 
     } catch (error) {
       console.error("Error submitting quote acceptance:", error);
-      toast.error("Failed to submit quote acceptance.", {
+      toast.error("Failed to send quote acceptance.", {
         id: loadingToastId,
         description: "Please try again later or contact Daniele directly.",
       });
@@ -243,6 +243,7 @@ const QuoteProposalPage: React.FC = () => {
             <ul className="list-disc list-inside space-y-2 [&>li]:marker:text-livePiano-primary [&>li]:marker:text-xl">
               <li>Carol sing-alongs (two 45-minute sets)</li>
               <li>Background music between sets</li>
+              <li>Performance timing is flexible to adapt to your event's flow.</li>
             </ul>
           </div>
           <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm mt-8">
