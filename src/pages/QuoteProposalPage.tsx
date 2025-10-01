@@ -54,8 +54,8 @@ const QuoteProposalPage: React.FC = () => {
 
   // Updated packages with new contributions
   const packages = [
-    { id: "option3", name: "The Ultimate Curated Celebration", focus: "Full Artistic Partnership & Rehearsal", contribution: 1850, image: "/quote-option-3.jpeg" },
-    { id: "option2", name: "Seamless Festive Flow", focus: "Flexible 3-Hour Engagement & Atmosphere", contribution: 1050, image: "/quote-option-2.png" },
+    { id: "option3", name: "Premium Package", focus: "Full Artistic Partnership & Rehearsal", contribution: 1850, image: "/quote-option-3.jpeg" },
+    { id: "option2", name: "Standard Package", focus: "Flexible 3-Hour Engagement & Atmosphere", contribution: 1050, image: "/quote-option-2.png" },
   ];
 
   const addOnPrice = 400;
@@ -197,7 +197,7 @@ const QuoteProposalPage: React.FC = () => {
 
         {/* Option 3: The Ultimate Curated Celebration */}
         <section id="option3" className="bg-livePiano-darker p-10 rounded-xl shadow-2xl border-4 border-livePiano-primary space-y-10 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
-          <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">The Ultimate Curated Celebration</h3>
+          <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">Premium Package</h3>
           <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50 shadow-md">
             <div
               className="absolute inset-0 bg-cover bg-center filter blur-lg scale-110"
@@ -205,7 +205,7 @@ const QuoteProposalPage: React.FC = () => {
             ></div>
             <DynamicImage
               src={packages[0].image}
-              alt="The Ultimate Curated Celebration"
+              alt="Premium Package"
               className="relative z-10 max-w-xl h-auto object-contain rounded-lg shadow-lg"
               width={800}
               height={400}
@@ -231,7 +231,7 @@ const QuoteProposalPage: React.FC = () => {
 
         {/* Option 2: Seamless Festive Flow */}
         <section id="option2" className="bg-livePiano-darker p-10 rounded-xl shadow-2xl border-2 border-livePiano-border/50 space-y-10 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
-          <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">Seamless Festive Flow</h3>
+          <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">Standard Package</h3>
           <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50 shadow-md">
             <div
               className="absolute inset-0 bg-cover bg-center filter blur-lg scale-110"
@@ -239,7 +239,7 @@ const QuoteProposalPage: React.FC = () => {
             ></div>
             <DynamicImage
               src={packages[1].image}
-              alt="Seamless Festive Flow"
+              alt="Standard Package"
               className="relative z-10 max-w-xl h-auto object-contain rounded-lg shadow-lg"
               width={800}
               height={400}
