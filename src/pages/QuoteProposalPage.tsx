@@ -52,13 +52,13 @@ const QuoteProposalPage: React.FC = () => {
     preparedBy: "Daniele Buatti",
   };
 
-  // Updated packages: Option 3 first, then Option 2. Option 1 removed.
+  // Updated packages with new contributions
   const packages = [
-    { id: "option3", name: "The Ultimate Curated Celebration", focus: "Full Artistic Partnership & Rehearsal", contribution: 1350, image: "/quote-option-3.jpeg" },
-    { id: "option2", name: "Seamless Festive Flow", focus: "Flexible 3-Hour Engagement & Atmosphere", contribution: 875, image: "/quote-option-2.png" },
+    { id: "option3", name: "The Ultimate Curated Celebration", focus: "Full Artistic Partnership & Rehearsal", contribution: 1395, image: "/quote-option-3.jpeg" }, // Updated to 1395
+    { id: "option2", name: "Seamless Festive Flow", focus: "Flexible 3-Hour Engagement & Atmosphere", contribution: 875, image: "/quote-option-2.png" }, // Remains 875
   ];
 
-  const addOnPrice = 150;
+  const addOnPrice = 225; // Updated to 225
 
   // Initialize react-hook-form
   const form = useForm<z.infer<typeof formSchema>>({
@@ -146,7 +146,7 @@ const QuoteProposalPage: React.FC = () => {
           <Button asChild variant="ghost" className="text-livePiano-light hover:text-livePiano-primary transition-colors duration-200 px-0 py-0 h-auto">
             <Link to="/">
               <span className="flex items-center text-base md:text-lg font-semibold">
-                <ArrowLeft className="h-5 w-5 mr-2" /> <span>Back to Home</span> {/* Wrapped text in span */}
+                <ArrowLeft className="h-5 w-5 mr-2" /> <span>Back to Home</span>
               </span>
             </Link>
           </Button>
@@ -266,7 +266,7 @@ const QuoteProposalPage: React.FC = () => {
         {/* Optional Add-On Package */}
         <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-8">
           <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Optional Add-On Package (For The Seamless Festive Flow only)</h3>
-          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Private Rehearsal Session: A$150</p>
+          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Private Rehearsal Session: A${addOnPrice}</p>
           <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
             Add a dedicated 1.5-hour rehearsal session (one week prior) for the host and any other participants to fine-tune the music, ensuring maximum confidence and musical success on the night.
           </p>
@@ -339,7 +339,7 @@ const QuoteProposalPage: React.FC = () => {
                               <RadioGroupItem value={pkg.id} id={`package-${pkg.id}`} className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" />
                             </FormControl>
                             <FormLabel htmlFor={`package-${pkg.id}`} className={
-                              `text-xl font-medium text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70
+                              `text-xl font-medium text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 hover:text-livePiano-primary transition-colors duration-200
                               ${pkg.id === "option3" ? "font-bold" : ""}`
                             }>
                               {pkg.name} (A${pkg.contribution})
@@ -372,7 +372,7 @@ const QuoteProposalPage: React.FC = () => {
                     </FormControl>
                     <div className="space-y-1 leading-none">
                       <FormLabel htmlFor="add-on-checkbox" className={
-                        `text-xl font-bold text-livePiano-light leading-none
+                        `text-xl font-bold text-livePiano-light leading-none hover:text-livePiano-primary transition-colors duration-200
                         ${isAddOnDisabled ? "cursor-not-allowed" : "peer-disabled:cursor-not-allowed peer-disabled:opacity-70"}`
                       }>
                         Optional Add-On: Private Rehearsal Session (Add A${addOnPrice})
