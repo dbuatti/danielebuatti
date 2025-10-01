@@ -93,7 +93,7 @@ const QuoteProposalPage: React.FC = () => {
         <section id="option1" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-6">
           <h3 className="text-4xl font-bold text-livePiano-light text-center">Option 1 – Carols Highlight (Essential)</h3>
           <DynamicImage
-            src="/placeholder.svg" // Placeholder image
+            src="/quote-option-1.png" // Updated image source
             alt="Option 1: Carols Highlight"
             className="w-full h-64 object-cover rounded-lg mb-4 border border-livePiano-border/50"
             width={800}
@@ -124,18 +124,13 @@ const QuoteProposalPage: React.FC = () => {
           <p className="text-lg italic text-livePiano-light/70 text-center mt-4">
             Why choose this option? Perfect for a straightforward, uplifting musical highlight without requiring extra planning.
           </p>
-          <div className="text-center mt-6">
-            <Button className="bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light">
-              <Download className="h-4 w-4 mr-2" /> Export to Sheets
-            </Button>
-          </div>
         </section>
 
         {/* Option 2 */}
         <section id="option2" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-6">
           <h3 className="text-4xl font-bold text-livePiano-light text-center">Option 2 – Festive Flow (Standard)</h3>
           <DynamicImage
-            src="/placeholder.svg" // Placeholder image
+            src="/quote-option-2.jpeg" // Updated image source
             alt="Option 2: Festive Flow"
             className="w-full h-64 object-cover rounded-lg mb-4 border border-livePiano-border/50"
             width={800}
@@ -168,18 +163,13 @@ const QuoteProposalPage: React.FC = () => {
           <p className="text-lg italic text-livePiano-light/70 text-center mt-4">
             Why choose this option? This is the ideal option for hosts who prioritize seamless atmosphere and flexibility. It guarantees music adapts to your party's pace, eliminating the stress of rigid timing.
           </p>
-          <div className="text-center mt-6">
-            <Button className="bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light">
-              <Download className="h-4 w-4 mr-2" /> Export to Sheets
-            </Button>
-          </div>
         </section>
 
         {/* Option 3 */}
         <section id="option3" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-6">
           <h3 className="text-4xl font-bold text-livePiano-light text-center">Option 3 – Curated Celebration (Premium)</h3>
           <DynamicImage
-            src="/placeholder.svg" // Placeholder image
+            src="/quote-option-3.jpeg" // Updated image source
             alt="Option 3: Curated Celebration"
             className="w-full h-64 object-cover rounded-lg mb-4 border border-livePiano-border/50"
             width={800}
@@ -212,11 +202,6 @@ const QuoteProposalPage: React.FC = () => {
           <p className="text-lg italic text-livePiano-light/70 text-center mt-4">
             Why choose this option? You receive a seamless, stress-free, and unforgettable musical evening with professional oversight from rehearsal through performance.
           </p>
-          <div className="text-center mt-6">
-            <Button className="bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light">
-              <Download className="h-4 w-4 mr-2" /> Export to Sheets
-            </Button>
-          </div>
         </section>
 
         {/* Additional Notes & Client Acceptance */}
