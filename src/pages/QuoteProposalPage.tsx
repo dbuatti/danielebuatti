@@ -248,8 +248,8 @@ const QuoteProposalPage: React.FC = () => {
             <ul className="list-disc list-inside space-y-2 [&>li]:marker:text-livePiano-primary [&>li]:marker:text-xl">
               <li>Carol sing-alongs (two 45-minute sets)</li>
               <li>Background music between sets</li>
-              <li>Custom song sheet for guests</li> {/* Added */}
-              <li>Collaboration on song selection</li> {/* Added */}
+              <li>Custom song sheet for guests</li>
+              <li>Collaboration on song selection</li>
               <li>Performance timing is flexible to adapt to your event's flow.</li>
             </ul>
           </div>
@@ -353,7 +353,7 @@ const QuoteProposalPage: React.FC = () => {
                         size="icon"
                         onClick={handleIncrementRehearsal}
                         disabled={(rehearsalHours || 2) >= 3}
-                        className="h-8 w-8 bg-livePiano-darker border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
+                        className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
                       >
                         <Plus className="h-4 w-4" />
                       </Button>
