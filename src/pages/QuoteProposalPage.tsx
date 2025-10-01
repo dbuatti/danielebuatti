@@ -54,11 +54,11 @@ const QuoteProposalPage: React.FC = () => {
 
   // Updated packages with new contributions
   const packages = [
-    { id: "option3", name: "The Ultimate Curated Celebration", focus: "Full Artistic Partnership & Rehearsal", contribution: 1299, image: "/quote-option-3.jpeg" }, // Updated to 1299
-    { id: "option2", name: "Seamless Festive Flow", focus: "Flexible 3-Hour Engagement & Atmosphere", contribution: 799, image: "/quote-option-2.png" }, // Updated to 799
+    { id: "option3", name: "The Ultimate Curated Celebration", focus: "Full Artistic Partnership & Rehearsal", contribution: 1850, image: "/quote-option-3.jpeg" }, // Updated to 1850
+    { id: "option2", name: "Seamless Festive Flow", focus: "Flexible 3-Hour Engagement & Atmosphere", contribution: 1050, image: "/quote-option-2.png" }, // Updated to 1050
   ];
 
-  const addOnPrice = 249; // Updated to 249
+  const addOnPrice = 400; // Updated to 400
 
   // Initialize react-hook-form
   const form = useForm<z.infer<typeof formSchema>>({
@@ -268,7 +268,7 @@ const QuoteProposalPage: React.FC = () => {
           <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Optional Add-On Package (For The Seamless Festive Flow only)</h3>
           <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Private Rehearsal Session: A${addOnPrice}</p>
           <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
-            Add a dedicated 1.5-hour rehearsal session (one week prior) for the host and any other participants to fine-tune the music, ensuring maximum confidence and musical success on the night.
+            Add a dedicated 2-hour rehearsal session (including travel) one week prior for the host and any other participants to fine-tune the music, ensuring maximum confidence and musical success on the night.
           </p>
         </section>
 
@@ -378,7 +378,7 @@ const QuoteProposalPage: React.FC = () => {
                         Optional Add-On: Private Rehearsal Session (Add A${addOnPrice})
                       </FormLabel>
                       <FormDescription className="text-livePiano-light/70 text-base">
-                        Add a dedicated 1.5-hour rehearsal session (one week prior) for the host and any other participants.
+                        Add a dedicated 2-hour rehearsal session (including travel) one week prior for the host and any other participants.
                       </FormDescription>
                     </div>
                   </FormItem>
