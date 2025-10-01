@@ -9,7 +9,7 @@ import VoicePianoBookingPage from './pages/VoicePianoBookingPage';
 import HealingBookingPage from './pages/HealingBookingPage';
 import AmebAccompanyingPage from './pages/AmebAccompanyingPage';
 import ServicesPage from './pages/ServicesPage';
-import QuoteProposalPage from './pages/QuoteProposalPage'; // New import
+import QuotePage from './pages/QuotePage'; // New import
 import { Toaster } from 'sonner';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -26,7 +26,7 @@ function App() {
         <Route path="/book-voice-piano" element={<VoicePianoBookingPage />} />
         <Route path="/book-healing" element={<HealingBookingPage />} />
         <Route path="/ameb-accompanying" element={<AmebAccompanyingPage />} />
-        <Route path="/quote-proposal" element={<QuoteProposalPage />} /> {/* New route */}
+        <Route path="/quote-proposal" element={<QuotePage />} /> {/* New route */}
       </Routes>
     </Router>
   );
