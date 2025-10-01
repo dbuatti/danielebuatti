@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import DynamicImage from "@/components/DynamicImage";
-import { ArrowLeft, Minus, Plus } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Footer from '@/components/Footer';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -48,25 +48,22 @@ const QuoteProposalPage: React.FC = () => {
     preparedBy: "Daniele Buatti",
   };
 
-  const hourlyRate = 350; // Performance/rehearsal hourly rate
-  const performanceTravelCost = 150; // Fixed travel cost for performance
+  // Base hourly rate for performance and rehearsal
+  const hourlyRate = 350; 
 
-  const baseService = {
-    hours: 3,
-    cost: (hourlyRate * 3) + performanceTravelCost, // 3 hours performance + performance travel cost = 1050 + 150 = 1200
-    description: "This covers my 3-hour on-site engagement for your event, from 6:00pm to 9:00pm.",
-  };
+  // Base engagement fee is now all-inclusive
+  const baseEngagementFee = 1200; 
 
   const addOns = {
-    extraHour: {
-      name: "Extra hour (to 10pm)",
-      cost: hourlyRate, // 1 extra hour at new hourly rate = 350
-      description: "Extend the performance by one hour (performance rate).",
-    },
     rehearsal: {
-      name: "Pre-event rehearsal",
-      cost: 550, // Fixed cost for 2-hour rehearsal including travel
-      description: "A 2-hour coaching session one week prior to the event, includes travel.",
+      name: "Pre-event Artistic Direction", // Renamed
+      cost: 700, // Fixed cost
+      description: "A dedicated 2-hour coaching and rehearsal session one week prior to the event, including travel, to fully refine the singers and curate the set list.",
+    },
+    extraHour: {
+      name: "Extended Performance Hour", // Renamed
+      cost: 350, // Consistent with hourly rate
+      description: "Extend the live performance by one hour (until 10:00pm).",
     },
   };
 
@@ -77,7 +74,7 @@ const QuoteProposalPage: React.FC = () => {
       clientName: '',
       clientEmail: '',
       wantsExtraHour: false,
-      wantsRehearsal: true, // Default to checked
+      wantsRehearsal: false, // Default to unchecked as per "Final Polished Quote Draft"
     },
   });
 
@@ -86,9 +83,9 @@ const QuoteProposalPage: React.FC = () => {
 
   // Calculate total amount dynamically
   const totalAmount = useMemo(() => {
-    let total = baseService.cost;
+    let total = baseEngagementFee;
     if (wantsExtraHour) total += addOns.extraHour.cost;
-    if (wantsRehearsal) { // Only add if checkbox is checked
+    if (wantsRehearsal) {
       total += addOns.rehearsal.cost;
     }
     return total;
@@ -106,7 +103,7 @@ const QuoteProposalPage: React.FC = () => {
       const selectedAddOnsList: string[] = [];
       if (values.wantsExtraHour) selectedAddOnsList.push(addOns.extraHour.name);
       if (values.wantsRehearsal) {
-        selectedAddOnsList.push(`${addOns.rehearsal.name} (2 hours + Travel)`);
+        selectedAddOnsList.push(addOns.rehearsal.name);
       }
 
       // Insert data into Supabase
@@ -116,13 +113,13 @@ const QuoteProposalPage: React.FC = () => {
           {
             client_name: values.clientName,
             client_email: values.clientEmail,
-            selected_package_id: "Base Performance", // Indicating the base service
+            selected_package_id: "Live Piano Engagement Fee", // Indicating the base service
             has_add_on: selectedAddOnsList.length > 0, // True if any add-on is selected
             selected_add_ons: selectedAddOnsList.join(', '), // Store selected add-ons
             total_amount: totalAmount,
             event_date: proposalDetails.dateOfEvent,
             event_location: proposalDetails.location,
-            quote_title: "Christmas Carols – Private Party Quote Proposal",
+            quote_title: "Christmas Carols – Live Piano Quote", // Updated title
             quote_prepared_by: proposalDetails.preparedBy,
           },
         ])
@@ -186,81 +183,46 @@ const QuoteProposalPage: React.FC = () => {
 
         <section className="text-center space-y-6">
           <h2 className="text-5xl md:text-6xl font-libre-baskerville font-extrabold text-livePiano-primary mb-6 leading-none text-shadow-lg">
-            Christmas Carols – Live Piano
+            Christmas Carols – Live Piano Quote
           </h2>
           <div className="text-xl text-livePiano-light/90 max-w-3xl mx-auto space-y-3 font-medium">
-            <p>Event: <strong className="text-livePiano-primary">{proposalDetails.dateOfEvent}</strong></p>
+            <p>Prepared for: <strong className="text-livePiano-primary">{proposalDetails.client}</strong></p>
+            <p>Date of Event: {proposalDetails.dateOfEvent}</p>
             <p>Time: {proposalDetails.time}</p>
             <p>Location: {proposalDetails.location}</p>
-            <p>Prepared for: <strong className="text-livePiano-primary">{proposalDetails.client}</strong></p>
             <p>Prepared by: {proposalDetails.preparedBy}</p>
           </div>
           <Separator className="max-w-lg mx-auto bg-livePiano-primary h-1 mt-10" />
         </section>
 
-        {/* Service Description */}
+        {/* Live Piano Engagement Fee Section */}
         <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-6">
-          <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Service: Live Piano Performance</h3>
+          <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Live Piano Engagement Fee</h3>
           <p className="text-xl text-livePiano-light/90 text-center max-w-3xl mx-auto">
-            {baseService.description}
+            Your A${baseEngagementFee} fee secures a premium, seamless musical experience for your event. This includes all preparation and time on-site from 6:00pm to 9:00pm.
           </p>
           <div className="text-livePiano-light/80 space-y-4 max-w-3xl mx-auto">
+            <h4 className="text-2xl font-semibold text-livePiano-primary text-center text-shadow-sm mb-4">Service Components</h4>
             <ul className="list-disc list-inside space-y-2 [&>li]:marker:text-livePiano-primary [&>li]:marker:text-xl">
-              <li>This covers my time on-site from 6:00pm to 9:00pm.</li>
-              <li>Carol sing-alongs (two 45-minute sets)</li>
-              <li>Background music between sets</li>
-              <li>Custom song sheet for guests</li>
-              <li>Collaboration on song selection</li>
-              <li>Performance timing is flexible to dynamically respond to the needs of guests.</li>
+              <li><strong>3-Hour Live Performance:</strong> Two 45-minute carol sets and beautiful background music between sets.</li>
+              <li><strong>Custom Carols Sheet:</strong> Collaboration on song selection and preparation of a custom song sheet for guests.</li>
+              <li><strong>Flexible Timing:</strong> Performance timing is flexible to dynamically respond to the needs of guests (the "on-call buffer").</li>
+              <li><strong>All-Inclusive Logistics:</strong> Covers all sheet music preparation, travel, and setup required for the evening.</li>
             </ul>
           </div>
           <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm mt-8">
-            Cost: <strong>A${baseService.cost}</strong>
-          </p>
-          <p className="text-lg text-livePiano-light/70 text-center">
-            My performance rate is A${hourlyRate}/hour, plus a A${performanceTravelCost} travel fee.
+            All-Inclusive Engagement Fee: <strong>A${baseEngagementFee}</strong>
           </p>
         </section>
 
         {/* Optional Add-Ons */}
         <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-8">
           <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Optional Add-Ons</h3>
+          <p className="text-xl text-livePiano-light/90 text-center max-w-3xl mx-auto">
+            These premium options are available to enhance the musical quality and duration of your evening.
+          </p>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-2xl mx-auto">
-              <FormField
-                control={form.control}
-                name="wantsExtraHour"
-                render={({ field }) => (
-                  <FormItem className={cn(
-                    "flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-all duration-200 cursor-pointer",
-                    field.value ? "border-livePiano-primary shadow-md" : "hover:border-livePiano-primary"
-                  )} onClick={() => field.onChange(!field.value)}>
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
-                      <div className="flex items-start space-x-3 mb-4 sm:mb-0">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                            id="add-on-extra-hour"
-                            className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
-                          />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel htmlFor="add-on-extra-hour" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            {addOns.extraHour.name}
-                          </FormLabel>
-                          <FormDescription className="text-livePiano-light/70 text-base">
-                            {addOns.extraHour.description}
-                          </FormDescription>
-                        </div>
-                      </div>
-                      <div className="text-2xl font-bold text-livePiano-primary sm:ml-auto">
-                        A${extraHourDisplayCost}
-                      </div>
-                    </div>
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="wantsRehearsal"
@@ -290,6 +252,40 @@ const QuoteProposalPage: React.FC = () => {
                       </div>
                       <div className="text-2xl font-bold text-livePiano-primary sm:ml-auto">
                         A${rehearsalDisplayCost}
+                      </div>
+                    </div>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="wantsExtraHour"
+                render={({ field }) => (
+                  <FormItem className={cn(
+                    "flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-all duration-200 cursor-pointer",
+                    field.value ? "border-livePiano-primary shadow-md" : "hover:border-livePiano-primary"
+                  )} onClick={() => field.onChange(!field.value)}>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
+                      <div className="flex items-start space-x-3 mb-4 sm:mb-0">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            id="add-on-extra-hour"
+                            className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel htmlFor="add-on-extra-hour" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                            {addOns.extraHour.name}
+                          </FormLabel>
+                          <FormDescription className="text-livePiano-light/70 text-base">
+                            {addOns.extraHour.description}
+                          </FormDescription>
+                        </div>
+                      </div>
+                      <div className="text-2xl font-bold text-livePiano-primary sm:ml-auto">
+                        A${extraHourDisplayCost}
                       </div>
                     </div>
                   </FormItem>
