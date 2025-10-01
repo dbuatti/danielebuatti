@@ -229,48 +229,31 @@ const QuoteProposalPage: React.FC = () => {
           </p>
         </section>
 
-        {/* Additional Notes & Client Acceptance */}
+        {/* Client Acceptance */}
         <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-10"> {/* Increased vertical spacing */}
-          <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center">📌 Additional Notes & Next Steps</h3>
-          <div className="text-lg text-livePiano-light/90 space-y-4 max-w-3xl mx-auto">
-            <p>All packages include preparation, performance, and equipment (keyboard if required).</p>
-            <p>Referral via Loclan and Dan Walker (Melbourne Lawyers Choir) is noted.</p>
+          <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center">Ready to bring the magic to your event?</h3>
+          <p className="text-xl text-livePiano-light/90 text-center max-w-3xl mx-auto">
+            Please select your preferred package below. A 50% deposit is required to formally secure your booking, with the remaining balance due 7 days prior to the event.
+          </p>
+          <p className="text-xl text-livePiano-light/90 text-center max-w-3xl mx-auto font-semibold">
+            I, {proposalDetails.client}, confirm my selection and booking for the event on {proposalDetails.dateOfEvent}.
+          </p>
+
+          <div className="flex flex-col md:flex-row justify-center items-start md:items-center gap-8 mt-8"> {/* Increased gap */}
+            {packages.map((pkg) => (
+              <div key={`accept-${pkg.id}`} className="flex items-center space-x-3"> {/* Increased space-x */}
+                <Checkbox id={`accept-${pkg.id}`} className="h-6 w-6 border-livePiano-primary data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" /> {/* Increased checkbox size */}
+                <label
+                  htmlFor={`accept-${pkg.id}`}
+                  className="text-xl font-medium text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  {pkg.name}
+                </label>
+              </div>
+            ))}
           </div>
 
-          <div className="pt-8 space-y-8"> {/* Increased vertical spacing */}
-            <h4 className="text-3xl font-bold text-livePiano-primary text-center text-shadow-sm">Ready to bring the magic to your event?</h4>
-            <p className="text-xl text-livePiano-light/90 text-center max-w-3xl mx-auto">
-              Please select your preferred package below. A 50% deposit is required to formally secure your booking, with the remaining balance due 7 days prior to the event.
-            </p>
-            <p className="text-xl text-livePiano-light/90 text-center max-w-3xl mx-auto font-semibold">
-              I, {proposalDetails.client}, confirm my selection and booking for the event on {proposalDetails.dateOfEvent}.
-            </p>
-
-            <div className="flex flex-col md:flex-row justify-center items-start md:items-center gap-8 mt-8"> {/* Increased gap */}
-              {packages.map((pkg) => (
-                <div key={`accept-${pkg.id}`} className="flex items-center space-x-3"> {/* Increased space-x */}
-                  <Checkbox id={`accept-${pkg.id}`} className="h-6 w-6 border-livePiano-primary data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" /> {/* Increased checkbox size */}
-                  <label
-                    htmlFor={`accept-${pkg.id}`}
-                    className="text-xl font-medium text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    {pkg.name}
-                  </label>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-12 space-y-8 text-livePiano-light/90"> {/* Increased vertical spacing */}
-              <div className="flex flex-col items-center">
-                <p className="text-xl mb-3 font-semibold">Signature:</p> {/* Increased font size and margin */}
-                <div className="w-full max-w-md h-px bg-livePiano-border/70"></div>
-              </div>
-              <div className="flex flex-col items-center">
-                <p className="text-xl mb-3 font-semibold">Date:</p> {/* Increased font size and margin */}
-                <div className="w-full max-w-md h-px bg-livePiano-border/70"></div>
-              </div>
-            </div>
-          </div>
+          {/* Signature and Date fields removed here */}
         </section>
       </main>
 
