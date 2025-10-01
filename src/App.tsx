@@ -9,13 +9,13 @@ import VoicePianoBookingPage from './pages/VoicePianoBookingPage';
 import HealingBookingPage from './pages/HealingBookingPage';
 import AmebAccompanyingPage from './pages/AmebAccompanyingPage';
 import ServicesPage from './pages/ServicesPage';
-import QuotePage from './pages/QuotePage'; // New import
+import QuoteProposalPage from './pages/QuoteProposalPage'; // Corrected import name
 import { Toaster } from 'sonner';
 import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
-    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}> {/* Added future flags */}
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Toaster />
       <ScrollToTop />
       <Routes>
@@ -26,7 +26,7 @@ function App() {
         <Route path="/book-voice-piano" element={<VoicePianoBookingPage />} />
         <Route path="/book-healing" element={<HealingBookingPage />} />
         <Route path="/ameb-accompanying" element={<AmebAccompanyingPage />} />
-        <Route path="/quote-proposal" element={<QuotePage />} /> {/* New route */}
+        <Route path="/live-piano-services/quote-proposal" element={<QuoteProposalPage />} /> {/* Updated route */}
       </Routes>
     </Router>
   );
