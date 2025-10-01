@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo } from 'react'; // Import useMemo
+import React, { useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,7 +30,7 @@ import { supabase } from '@/integrations/supabase/client';
 const formSchema = z.object({
   clientName: z.string().min(2, { message: "Your full name is required." }),
   clientEmail: z.string().email({ message: "A valid email address is required." }),
-  selectedPackage: z.enum(["option1", "option2", "option3"], {
+  selectedPackage: z.enum(["option3", "option2"], { // Only options 3 and 2 now
     required_error: "Please select a package.",
   }),
   hasAddOn: z.boolean().default(false),
@@ -51,11 +51,10 @@ const QuoteProposalPage: React.FC = () => {
     preparedBy: "Daniele Buatti",
   };
 
-  // Reordered packages to be 1, 2, 3 with updated details and numeric contributions
+  // Updated packages: Option 3 first, then Option 2. Option 1 removed.
   const packages = [
-    { id: "option1", name: "Option 1: The Festive Spark", focus: "Compact, Focused Performance", contribution: 600 },
-    { id: "option2", name: "Option 2: Seamless Festive Flow", focus: "Flexible 3-Hour Engagement & Atmosphere", contribution: 875 },
-    { id: "option3", name: "Option 3: The Ultimate Curated Celebration", focus: "Full Artistic Partnership & Rehearsal", contribution: 1350 },
+    { id: "option3", name: "The Ultimate Curated Celebration", focus: "Full Artistic Partnership & Rehearsal", contribution: 1350, image: "/quote-option-3.jpeg" },
+    { id: "option2", name: "Seamless Festive Flow", focus: "Flexible 3-Hour Engagement & Atmosphere", contribution: 875, image: "/quote-option-2.jpeg" },
   ];
 
   const addOnPrice = 150;
@@ -74,7 +73,7 @@ const QuoteProposalPage: React.FC = () => {
   const selectedPackageId = form.watch("selectedPackage");
   const hasAddOn = form.watch("hasAddOn");
 
-  // Disable add-on if Option 3 is selected
+  // Disable add-on if Option 3 is selected (as it's included)
   const isAddOnDisabled = selectedPackageId === "option3";
 
   // Reset add-on if Option 3 is selected
@@ -194,19 +193,17 @@ const QuoteProposalPage: React.FC = () => {
           </Table>
         </section>
 
-        {/* Option 1 */}
-        <section id="option1" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-8">
-          <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">Option 1 – The Festive Spark (Essential)</h3>
+        {/* Option 3: The Ultimate Curated Celebration */}
+        <section id="option3" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-8">
+          <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">The Ultimate Curated Celebration</h3>
           <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50">
-            {/* Blurred Background Image */}
             <div
               className="absolute inset-0 bg-cover bg-center filter blur-lg scale-110"
-              style={{ backgroundImage: `url(/quote-option-1.png)` }}
+              style={{ backgroundImage: `url(${packages[0].image})` }}
             ></div>
-            {/* Main Image */}
             <DynamicImage
-              src="/quote-option-1.png"
-              alt="Option 1: The Festive Spark"
+              src={packages[0].image}
+              alt="The Ultimate Curated Celebration"
               className="relative z-10 max-w-xl h-auto object-contain rounded-lg shadow-lg"
               width={800}
               height={400}
@@ -214,44 +211,33 @@ const QuoteProposalPage: React.FC = () => {
           </div>
           <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Your Contribution: A${packages[0].contribution}</p>
           <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
-            A focused, festive performance for hosts seeking simplicity and a clear, time-bound musical segment.
+            This is the most exquisite carols experience: fully curated, rehearsed, and expertly guided for maximum musical impact and complete peace of mind for you, the host.
           </p>
-          <div className="grid md:grid-cols-2 gap-8 text-livePiano-light/80">
-            <div>
-              <h4 className="text-xl font-semibold text-livePiano-primary mb-3">What's Included:</h4>
-              <ul className="list-disc list-inside space-y-2">
-                <li>2-Hour Engagement (6pm–8pm).</li>
-                <li>Live Piano Accompaniment (One Professional Musician).</li>
-                <li>2 × 45-minute carol sets.</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-xl font-semibold text-livePiano-primary mb-3">The Value You Receive:</h4>
-              <ul className="list-disc list-inside space-y-2">
-                <li>Clear, focused time commitment.</li>
-                <li>Support for both choristers and non-choristers alike.</li>
-                <li>A straightforward, uplifting musical highlight.</li>
-              </ul>
-            </div>
+          <div className="text-livePiano-light/80 space-y-4 max-w-3xl mx-auto">
+            <p className="text-xl font-semibold text-livePiano-primary">What's Included & The Value You Receive:</p>
+            <ul className="list-disc list-inside space-y-2">
+              <li>**Private Rehearsal Session:** Dedicated 1.5 hours a week prior to the event (A$150 Value) to refine your group’s sound and prepare any singers.</li>
+              <li>**Extended Coverage (6pm–10pm):** Guaranteed availability until the party concludes at 10pm—no watching the clock!</li>
+              <li>**Personal Artistic Guidance & Collaboration:** Full collaboration on sheet music sourcing, set structure, and creation of a custom carols brochure.</li>
+              <li>**Live Piano Performance:** Two 45-minute carol sets, beautiful background music, and spontaneous sing-alongs.</li>
+            </ul>
           </div>
           <p className="text-lg italic text-livePiano-light/70 text-center mt-6 max-w-2xl mx-auto">
-            Why this option? Perfect for a budget-friendly, high-impact musical segment without requiring extra planning.
+            Choose this option for a seamless, stress-free, and truly unforgettable musical evening with professional oversight from rehearsal through performance.
           </p>
         </section>
 
-        {/* Option 2 */}
+        {/* Option 2: Seamless Festive Flow */}
         <section id="option2" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-8">
-          <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">Option 2 – Seamless Festive Flow (Standard - Recommended)</h3>
+          <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">Seamless Festive Flow</h3>
           <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50">
-            {/* Blurred Background Image */}
             <div
               className="absolute inset-0 bg-cover bg-center filter blur-lg scale-110"
-              style={{ backgroundImage: `url(/quote-option-2.jpeg)` }}
+              style={{ backgroundImage: `url(${packages[1].image})` }}
             ></div>
-            {/* Main Image */}
             <DynamicImage
-              src="/quote-option-2.jpeg"
-              alt="Option 2: Seamless Festive Flow"
+              src={packages[1].image}
+              alt="Seamless Festive Flow"
               className="relative z-10 max-w-xl h-auto object-contain rounded-lg shadow-lg"
               width={800}
               height={400}
@@ -259,82 +245,26 @@ const QuoteProposalPage: React.FC = () => {
           </div>
           <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Your Contribution: A${packages[1].contribution}</p>
           <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
-            A flexible, high-value experience that beautifully blends musical structure with adaptability, ensuring the perfect party atmosphere.
+            This flexible, high-value experience beautifully blends musical structure with adaptability, ensuring the perfect party atmosphere for your guests.
           </p>
-          <div className="grid md:grid-cols-2 gap-8 text-livePiano-light/80">
-            <div>
-              <h4 className="text-xl font-semibold text-livePiano-primary mb-3">What's Included:</h4>
-              <ul className="list-disc list-inside space-y-2">
-                <li>Extended 3-Hour Engagement (6pm–9pm).</li>
-                <li>On-Call Performance Buffer.</li>
-                <li>Live Piano Accompaniment (One Professional Musician).</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-xl font-semibold text-livePiano-primary mb-3">The Value You Receive:</h4>
-              <ul className="list-disc list-inside space-y-2">
-                <li>Ample time for guests to mingle and get into the festive mood.</li>
-                <li>Seamlessly adapts to the party's flow, ensuring music starts when guests are ready to sing.</li>
-                <li>2 × 45-minute carol sets, plus atmosphere music before/between/after sets.</li>
-              </ul>
-            </div>
+          <div className="text-livePiano-light/80 space-y-4 max-w-3xl mx-auto">
+            <p className="text-xl font-semibold text-livePiano-primary">What's Included & The Value You Receive:</p>
+            <ul className="list-disc list-inside space-y-2">
+              <li>**Extended 3-Hour Engagement (6pm–9pm):** Ample time for guests to mingle and truly get into the festive mood.</li>
+              <li>**On-Call Performance Buffer:** Music that seamlessly adapts to your party's flow, ready when your guests are.</li>
+              <li>**Live Piano Performance:** Two 45-minute carol sets, plus delightful atmosphere music before, between, and after sets.</li>
+              <li>**Custom Carols Brochure:** A beautifully prepared brochure based on your final song list.</li>
+            </ul>
           </div>
           <p className="text-lg italic text-livePiano-light/70 text-center mt-6 max-w-2xl mx-auto">
-            Why this option? This is the ideal option for hosts who prioritize seamless atmosphere and flexibility. It guarantees music adapts to your party's pace, eliminating the stress of rigid timing, and provides the best value for money.
-          </p>
-        </section>
-
-        {/* Option 3 */}
-        <section id="option3" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-8">
-          <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">Option 3 – The Ultimate Curated Celebration (Premium)</h3>
-          <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50">
-            {/* Blurred Background Image */}
-            <div
-              className="absolute inset-0 bg-cover bg-center filter blur-lg scale-110"
-              style={{ backgroundImage: `url(/quote-option-3.jpeg)` }}
-            ></div>
-            {/* Main Image */}
-            <DynamicImage
-              src="/quote-option-3.jpeg"
-              alt="Option 3: The Ultimate Curated Celebration"
-              className="relative z-10 max-w-xl h-auto object-contain rounded-lg shadow-lg"
-              width={800}
-              height={400}
-            />
-          </div>
-          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Your Contribution: A${packages[2].contribution}</p>
-          <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
-            The most exquisite carols experience: fully curated, rehearsed, and expertly guided for maximum musical impact and complete peace of mind for you, the host.
-          </p>
-          <div className="grid md:grid-cols-2 gap-8 text-livePiano-light/80">
-            <div>
-              <h4 className="text-xl font-semibold text-livePiano-primary mb-3">What's Included:</h4>
-              <ul className="list-disc list-inside space-y-2">
-                <li>Private Rehearsal Session.</li>
-                <li>Extended Coverage (6pm–10pm).</li>
-                <li>Artistic Guidance and Collaboration.</li>
-                <li>Live Piano Accompaniment (One Professional Musician).</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-xl font-semibold text-livePiano-primary mb-3">The Value You Receive:</h4>
-              <ul className="list-disc list-inside space-y-2">
-                <li>Dedicated rehearsal for 1.5 hours a week prior to the event (A$150 Value).</li>
-                <li>Guaranteed availability until the party concludes at 10pm.</li>
-                <li>Full collaboration on sheet music sourcing, set structure, and creation.</li>
-                <li>Two 45-minute carol sets, beautiful background music, and spontaneous sing-alongs.</li>
-              </ul>
-            </div>
-          </div>
-          <p className="text-lg italic text-livePiano-light/70 text-center mt-6 max-w-2xl mx-auto">
-            Why this option? You'll enjoy a seamless, stress-free, and truly unforgettable musical evening with professional oversight from rehearsal through performance.
+            This is the ideal option for hosts who prioritize a seamless atmosphere and flexibility. It guarantees music adapts to your party's pace, eliminating the stress of rigid timing, and provides excellent value.
           </p>
         </section>
 
         {/* Optional Add-On Package */}
         <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-8">
-          <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Optional Add-On Package (For Options 1 & 2 only)</h3>
-          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Private Rehearsal Session: A${addOnPrice}</p>
+          <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Optional Add-On Package (For The Seamless Festive Flow only)</h3>
+          <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm">Private Rehearsal Session: A$150</p>
           <p className="text-lg text-livePiano-light/90 text-center max-w-2xl mx-auto">
             Add a dedicated 1.5-hour rehearsal session (one week prior) for the host and any other participants to fine-tune the music, ensuring maximum confidence and musical success on the night.
           </p>
@@ -462,7 +392,7 @@ const QuoteProposalPage: React.FC = () => {
                 type="submit"
                 size="lg"
                 className="w-full bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-darker text-xl py-7 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
-                disabled={form.formState.isSubmitting || !selectedPackageId} // Disable if no package is selected
+                disabled={form.formState.isSubmitting || !selectedPackageId}
               >
                 {form.formState.isSubmitting ? "Submitting..." : "Submit Acceptance"}
               </Button>
