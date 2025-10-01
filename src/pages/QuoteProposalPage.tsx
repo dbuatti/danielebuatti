@@ -143,10 +143,10 @@ const QuoteProposalPage: React.FC = () => {
       {/* Header for Quote Proposal */}
       <header className="bg-livePiano-darker py-5 px-6 md:px-12 shadow-lg relative z-10 border-b border-livePiano-border/50">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Button asChild variant="ghost" className="text-livePiano-light hover:text-livePiano-primary transition-colors duration-200 px-0 py-0 h-auto"> {/* Refined header button */}
+          <Button asChild variant="ghost" className="text-livePiano-light hover:text-livePiano-primary transition-colors duration-200 px-0 py-0 h-auto">
             <Link to="/">
               <span className="flex items-center text-base md:text-lg font-semibold">
-                <ArrowLeft className="h-5 w-5 mr-2" /> Back to Home
+                <ArrowLeft className="h-5 w-5 mr-2" /> <span>Back to Home</span> {/* Wrapped text in span */}
               </span>
             </Link>
           </Button>
@@ -161,7 +161,7 @@ const QuoteProposalPage: React.FC = () => {
 
       <main className="max-w-7xl mx-auto px-4 py-16 space-y-20">
         <section className="text-center space-y-6">
-          <h2 className="text-5xl md:text-6xl font-libre-baskerville font-extrabold text-livePiano-primary mb-4 leading-none text-shadow-lg"> {/* Tighter line-height */}
+          <h2 className="text-5xl md:text-6xl font-libre-baskerville font-extrabold text-livePiano-primary mb-4 leading-none text-shadow-lg">
             Your Bespoke Live Piano Quote for a Magical Christmas Carols Party
           </h2>
           <div className="text-xl text-livePiano-light/90 max-w-3xl mx-auto space-y-3 font-medium">
@@ -217,7 +217,7 @@ const QuoteProposalPage: React.FC = () => {
           </p>
           <div className="text-livePiano-light/80 space-y-4 max-w-3xl mx-auto">
             <p className="text-xl font-semibold text-livePiano-primary border-b border-livePiano-primary/50 pb-2 mb-3">What's Included & The Value You Receive:</p>
-            <ul className="list-disc list-inside space-y-3 [&>li]:marker:text-livePiano-primary"> {/* Increased space-y */}
+            <ul className="list-disc list-inside space-y-3 [&>li]:marker:text-livePiano-primary">
               <li><strong>Private Rehearsal Session:</strong> Dedicated 1.5 hours a week prior to the event (A$150 Value) to refine your group’s sound and prepare any singers.</li>
               <li><strong>Extended Coverage (6pm–10pm):</strong> Guaranteed availability until the party concludes at 10pm—no watching the clock!</li>
               <li><strong>Personal Artistic Guidance & Collaboration:</strong> Full collaboration on sheet music sourcing, set structure, and creation of a custom carols brochure.</li>
@@ -230,7 +230,7 @@ const QuoteProposalPage: React.FC = () => {
         </section>
 
         {/* Option 2: Seamless Festive Flow */}
-        <section id="option2" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border-2 border-livePiano-border/50 space-y-8 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl"> {/* Changed border to border-2 border-livePiano-border/50 */}
+        <section id="option2" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border-2 border-livePiano-border/50 space-y-8 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
           <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">Seamless Festive Flow</h3>
           <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50 shadow-md">
             <div
@@ -251,7 +251,7 @@ const QuoteProposalPage: React.FC = () => {
           </p>
           <div className="text-livePiano-light/80 space-y-4 max-w-3xl mx-auto">
             <p className="text-xl font-semibold text-livePiano-primary border-b border-livePiano-primary/50 pb-2 mb-3">What's Included & The Value You Receive:</p>
-            <ul className="list-disc list-inside space-y-3 [&>li]:marker:text-livePiano-primary"> {/* Increased space-y */}
+            <ul className="list-disc list-inside space-y-3 [&>li]:marker:text-livePiano-primary">
               <li><strong>Extended 3-Hour Engagement (6pm–9pm):</strong> Ample time for guests to mingle and truly get into the festive mood.</li>
               <li><strong>On-Call Performance Buffer:</strong> Music that seamlessly adapts to your party's flow, ready when your guests are.</li>
               <li><strong>Live Piano Performance:</strong> Two 45-minute carol sets, plus delightful atmosphere music before, between, and after sets.</li>
@@ -285,7 +285,7 @@ const QuoteProposalPage: React.FC = () => {
                 control={form.control}
                 name="clientName"
                 render={({ field }) => (
-                  <FormItem className="space-y-2"> {/* Added space-y-2 */}
+                  <FormItem className="space-y-2">
                     <FormLabel className="text-livePiano-light text-lg text-shadow-sm">Your Full Name</FormLabel>
                     <FormControl>
                       <Input
@@ -302,7 +302,7 @@ const QuoteProposalPage: React.FC = () => {
                 control={form.control}
                 name="clientEmail"
                 render={({ field }) => (
-                  <FormItem className="space-y-2"> {/* Added space-y-2 */}
+                  <FormItem className="space-y-2">
                     <FormLabel className="text-livePiano-light text-lg text-shadow-sm">Your Email Address</FormLabel>
                     <FormControl>
                       <Input
