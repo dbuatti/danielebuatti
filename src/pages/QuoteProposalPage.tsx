@@ -235,7 +235,10 @@ const QuoteProposalPage: React.FC = () => {
                           </FormDescription>
                         </div>
                       </div>
-                      <div className="text-3xl font-bold text-livePiano-primary sm:ml-auto">
+                      <div className={cn(
+                        "text-3xl font-bold sm:ml-auto",
+                        field.value ? "text-livePiano-primary" : "text-livePiano-light/50"
+                      )}>
                         A${rehearsalDisplayCost}
                       </div>
                     </div>
@@ -269,7 +272,10 @@ const QuoteProposalPage: React.FC = () => {
                           </FormDescription>
                         </div>
                       </div>
-                      <div className="text-3xl font-bold text-livePiano-primary sm:ml-auto">
+                      <div className={cn(
+                        "text-3xl font-bold sm:ml-auto",
+                        field.value ? "text-livePiano-primary" : "text-livePiano-light/50"
+                      )}>
                         A${extraHourDisplayCost}
                       </div>
                     </div>
