@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import DynamicImage from "@/components/DynamicImage";
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Minus, Plus } from 'lucide-react'; // Added Minus and Plus icons
 import Footer from '@/components/Footer';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,10 +20,10 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { Separator } from "@/components/ui/separator";
+import { cn } from '@/lib/utils'; // Import cn for conditional styling
 
 // Define the form schema using zod
 const formSchema = z.object({
@@ -31,9 +31,9 @@ const formSchema = z.object({
   clientEmail: z.string().email({ message: "A valid email address is required." }),
   wantsExtraHour: z.boolean().default(false),
   wantsRehearsal: z.boolean().default(false),
-  rehearsalHours: z.coerce.number().optional(),
-  wantsArtisticGuidance: z.boolean().default(false), // New field for artistic guidance
-  artisticGuidanceHours: z.coerce.number().optional(), // Hours for artistic guidance
+  rehearsalHours: z.coerce.number().min(1).max(3).optional(), // Rehearsal hours 1 to 3
+  wantsArtisticGuidance: z.boolean().default(false),
+  artisticGuidanceHours: z.coerce.number().min(1).max(4).optional(), // Artistic guidance hours 1 to 4
 });
 
 const QuoteProposalPage: React.FC = () => {
@@ -51,14 +51,14 @@ const QuoteProposalPage: React.FC = () => {
     preparedBy: "Daniele Buatti",
   };
 
-  const hourlyRate = 300; // Changed performance/rehearsal hourly rate to $300
-  const artisticGuidanceHourlyRate = 100; // New artistic guidance hourly rate
+  const hourlyRate = 300;
+  const artisticGuidanceHourlyRate = 100;
   const rehearsalTravelCost = 350; // Fixed travel cost for rehearsal
 
   const baseService = {
     hours: 3,
     cost: hourlyRate * 3, // 3 hours performance at new hourly rate
-    description: "3 hours of live piano performance, including carol sing-alongs (two 45-min sets) and background music between sets. I will provide a printed song list.",
+    description: "3 hours of live piano performance, including carol sing-alongs (two 45-min sets) and background music between sets.",
   };
 
   const addOns = {
@@ -80,21 +80,6 @@ const QuoteProposalPage: React.FC = () => {
     },
   };
 
-  const rehearsalDurationOptions = [
-    { value: 1, label: "1 hour" },
-    { value: 1.5, label: "1.5 hours" },
-    { value: 2, label: "2 hours" },
-    { value: 2.5, label: "2.5 hours" },
-    { value: 3, label: "3 hours" },
-  ];
-
-  const artisticGuidanceDurationOptions = [
-    { value: 1, label: "1 hour" },
-    { value: 2, label: "2 hours" },
-    { value: 3, label: "3 hours" },
-    { value: 4, label: "4 hours" },
-  ];
-
   // Initialize react-hook-form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -104,16 +89,16 @@ const QuoteProposalPage: React.FC = () => {
       wantsExtraHour: false,
       wantsRehearsal: false,
       rehearsalHours: 1.5, // Default to 1.5 hours if rehearsal is selected
-      wantsArtisticGuidance: false, // Default for new add-on
-      artisticGuidanceHours: 1, // Default for new add-on hours
+      wantsArtisticGuidance: false,
+      artisticGuidanceHours: 1, // Default to 1 hour if artistic guidance is selected
     },
   });
 
   const wantsExtraHour = form.watch("wantsExtraHour");
   const wantsRehearsal = form.watch("wantsRehearsal");
   const rehearsalHours = form.watch("rehearsalHours");
-  const wantsArtisticGuidance = form.watch("wantsArtisticGuidance"); // Watch new field
-  const artisticGuidanceHours = form.watch("artisticGuidanceHours"); // Watch new field
+  const wantsArtisticGuidance = form.watch("wantsArtisticGuidance");
+  const artisticGuidanceHours = form.watch("artisticGuidanceHours");
 
   // Calculate total amount dynamically
   const totalAmount = useMemo(() => {
@@ -127,6 +112,22 @@ const QuoteProposalPage: React.FC = () => {
     }
     return total;
   }, [wantsExtraHour, wantsRehearsal, rehearsalHours, wantsArtisticGuidance, artisticGuidanceHours]);
+
+  // Handlers for rehearsal hours
+  const handleDecrementRehearsal = () => {
+    form.setValue("rehearsalHours", Math.max(1, (rehearsalHours || 1.5) - 0.5));
+  };
+  const handleIncrementRehearsal = () => {
+    form.setValue("rehearsalHours", Math.min(3, (rehearsalHours || 1.5) + 0.5));
+  };
+
+  // Handlers for artistic guidance hours
+  const handleDecrementArtisticGuidance = () => {
+    form.setValue("artisticGuidanceHours", Math.max(1, (artisticGuidanceHours || 1) - 1));
+  };
+  const handleIncrementArtisticGuidance = () => {
+    form.setValue("artisticGuidanceHours", Math.min(4, (artisticGuidanceHours || 1) + 1));
+  };
 
   // Handle form submission
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -241,7 +242,6 @@ const QuoteProposalPage: React.FC = () => {
             <ul className="list-disc list-inside space-y-2 [&>li]:marker:text-livePiano-primary [&>li]:marker:text-xl">
               <li>Carol sing-alongs (two 45-minute sets)</li>
               <li>Background music between sets</li>
-              <li>I will provide a printed song list</li>
             </ul>
           </div>
           <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm mt-8">
@@ -303,39 +303,37 @@ const QuoteProposalPage: React.FC = () => {
                     </FormControl>
                     <div className="space-y-1 leading-none">
                       <FormLabel htmlFor="add-on-rehearsal" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 hover:text-livePiano-primary transition-colors duration-200">
-                        {addOns.rehearsal.name} + Travel (A${(rehearsalHours || 0) * addOns.rehearsal.hourlyRate + addOns.rehearsal.travelCost})
+                        {addOns.rehearsal.name} + Travel (A${((rehearsalHours || 0) * addOns.rehearsal.hourlyRate) + addOns.rehearsal.travelCost})
                       </FormLabel>
                       <FormDescription className="text-livePiano-light/70 text-base">
                         {addOns.rehearsal.description}
                       </FormDescription>
                       {wantsRehearsal && (
-                        <FormField
-                          control={form.control}
-                          name="rehearsalHours"
-                          render={({ field: rehearsalField }) => (
-                            <FormItem className="mt-4">
-                              <FormLabel className="text-livePiano-light text-base">Select Rehearsal Duration:</FormLabel>
-                              <Select
-                                onValueChange={(value) => rehearsalField.onChange(parseFloat(value))}
-                                defaultValue={rehearsalField.value?.toString()}
-                              >
-                                <FormControl>
-                                  <SelectTrigger className="w-full bg-livePiano-background border-livePiano-border/50 text-livePiano-light focus-visible:ring-livePiano-primary">
-                                    <SelectValue placeholder="Select hours" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent className="z-50 bg-livePiano-darker border-livePiano-border">
-                                  {rehearsalDurationOptions.map((option) => (
-                                    <SelectItem key={option.value} value={option.value.toString()} className="text-livePiano-light focus:bg-livePiano-primary focus:text-livePiano-darker">
-                                      {option.label} (A${option.value * addOns.rehearsal.hourlyRate})
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                        <div className="flex items-center gap-2 mt-4">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={handleDecrementRehearsal}
+                            disabled={(rehearsalHours || 1.5) <= 1}
+                            className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
+                          >
+                            <Minus className="h-4 w-4" />
+                          </Button>
+                          <span className="text-lg font-semibold text-livePiano-light w-16 text-center">
+                            {rehearsalHours} hrs
+                          </span>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={handleIncrementRehearsal}
+                            disabled={(rehearsalHours || 1.5) >= 3}
+                            className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
+                          >
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        </div>
                       )}
                     </div>
                   </FormItem>
@@ -369,33 +367,31 @@ const QuoteProposalPage: React.FC = () => {
                         {addOns.artisticGuidance.description}
                       </FormDescription>
                       {wantsArtisticGuidance && (
-                        <FormField
-                          control={form.control}
-                          name="artisticGuidanceHours"
-                          render={({ field: guidanceField }) => (
-                            <FormItem className="mt-4">
-                              <FormLabel className="text-livePiano-light text-base">Select Hours:</FormLabel>
-                              <Select
-                                onValueChange={(value) => guidanceField.onChange(parseFloat(value))}
-                                defaultValue={guidanceField.value?.toString()}
-                              >
-                                <FormControl>
-                                  <SelectTrigger className="w-full bg-livePiano-background border-livePiano-border/50 text-livePiano-light focus-visible:ring-livePiano-primary">
-                                    <SelectValue placeholder="Select hours" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent className="z-50 bg-livePiano-darker border-livePiano-border">
-                                  {artisticGuidanceDurationOptions.map((option) => (
-                                    <SelectItem key={option.value} value={option.value.toString()} className="text-livePiano-light focus:bg-livePiano-primary focus:text-livePiano-darker">
-                                      {option.label} (A${option.value * addOns.artisticGuidance.hourlyRate})
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                        <div className="flex items-center gap-2 mt-4">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={handleDecrementArtisticGuidance}
+                            disabled={(artisticGuidanceHours || 1) <= 1}
+                            className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
+                          >
+                            <Minus className="h-4 w-4" />
+                          </Button>
+                          <span className="text-lg font-semibold text-livePiano-light w-16 text-center">
+                            {artisticGuidanceHours} hrs
+                          </span>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={handleIncrementArtisticGuidance}
+                            disabled={(artisticGuidanceHours || 1) >= 4}
+                            className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
+                          >
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        </div>
                       )}
                     </div>
                   </FormItem>
