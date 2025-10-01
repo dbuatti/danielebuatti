@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import DynamicImage from "@/components/DynamicImage";
-import { ArrowLeft, Minus, Plus } from 'lucide-react';
+import { ArrowLeft, Minus, Plus } from 'lucide-react'; // Added Minus and Plus icons
 import Footer from '@/components/Footer';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { Separator } from "@/components/ui/separator";
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'; // Import cn for conditional styling
 
 // Define the form schema using zod
 const formSchema = z.object({
@@ -80,21 +80,6 @@ const QuoteProposalPage: React.FC = () => {
       description: "Full collaboration on sheet music sourcing, set structure, and creation of a custom carols brochure.",
     },
   };
-
-  const rehearsalDurationOptions = [
-    { value: 1, label: "1 hour" },
-    { value: 1.5, label: "1.5 hours" },
-    { value: 2, label: "2 hours" },
-    { value: 2.5, label: "2.5 hours" },
-    { value: 3, label: "3 hours" },
-  ];
-
-  const artisticGuidanceDurationOptions = [
-    { value: 1, label: "1 hour" },
-    { value: 2, label: "2 hours" },
-    { value: 3, label: "3 hours" },
-    { value: 4, label: "4 hours" },
-  ];
 
   // Initialize react-hook-form
   const form = useForm<z.infer<typeof formSchema>>({
