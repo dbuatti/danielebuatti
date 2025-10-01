@@ -130,6 +130,11 @@ const QuoteProposalPage: React.FC = () => {
     form.setValue("artisticGuidanceHours", Math.min(4, (artisticGuidanceHours || 1) + 1));
   };
 
+  // Calculate individual add-on costs for display
+  const extraHourDisplayCost = wantsExtraHour ? addOns.extraHour.cost : 0;
+  const rehearsalDisplayCost = wantsRehearsal ? ((rehearsalHours || 0) * addOns.rehearsal.hourlyRate + addOns.rehearsal.travelCost) : 0;
+  const artisticGuidanceDisplayCost = wantsArtisticGuidance ? ((artisticGuidanceHours || 0) * addOns.artisticGuidance.hourlyRate) : 0;
+
   // Handle form submission
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const loadingToastId = toast.loading("Submitting your acceptance...");
@@ -177,7 +182,7 @@ const QuoteProposalPage: React.FC = () => {
 
     } catch (error) {
       console.error("Error submitting quote acceptance:", error);
-      toast.error("Failed to submit quote acceptance.", {
+      toast.error("Failed to send quote acceptance.", {
         id: loadingToastId,
         description: "Please try again later or contact Daniele directly.",
       });
@@ -263,22 +268,29 @@ const QuoteProposalPage: React.FC = () => {
                 control={form.control}
                 name="wantsExtraHour"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-livePiano-border/50 p-4">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        id="add-on-extra-hour"
-                        className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel htmlFor="add-on-extra-hour" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 hover:text-livePiano-primary transition-colors duration-200">
-                        {addOns.extraHour.name} (Add A${addOns.extraHour.cost})
-                      </FormLabel>
-                      <FormDescription className="text-livePiano-light/70 text-base">
-                        {addOns.extraHour.description}
-                      </FormDescription>
+                  <FormItem className="flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4">
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex items-start space-x-3">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            id="add-on-extra-hour"
+                            className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel htmlFor="add-on-extra-hour" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 hover:text-livePiano-primary transition-colors duration-200">
+                            {addOns.extraHour.name}
+                          </FormLabel>
+                          <FormDescription className="text-livePiano-light/70 text-base">
+                            {addOns.extraHour.description}
+                          </FormDescription>
+                        </div>
+                      </div>
+                      <div className="text-xl font-bold text-livePiano-primary">
+                        A${extraHourDisplayCost}
+                      </div>
                     </div>
                   </FormItem>
                 )}
@@ -287,56 +299,62 @@ const QuoteProposalPage: React.FC = () => {
                 control={form.control}
                 name="wantsRehearsal"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-livePiano-border/50 p-4">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={(checked) => {
-                          field.onChange(checked);
-                          // If unchecking, set rehearsal hours to undefined
-                          if (!checked) {
-                            form.setValue("rehearsalHours", undefined);
-                          } else {
-                            form.setValue("rehearsalHours", 2); // Set default to 2 hours when checked
-                          }
-                        }}
-                        id="add-on-rehearsal"
-                        className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel htmlFor="add-on-rehearsal" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 hover:text-livePiano-primary transition-colors duration-200">
-                        {addOns.rehearsal.name} + Travel (A${((rehearsalHours || 0) * addOns.rehearsal.hourlyRate) + addOns.rehearsal.travelCost})
-                      </FormLabel>
-                      <FormDescription className="text-livePiano-light/70 text-base">
-                        {addOns.rehearsal.description}
-                      </FormDescription>
-                      {/* Rehearsal hours controls - always visible */}
-                      <div className="flex items-center gap-2 mt-4">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          onClick={handleDecrementRehearsal}
-                          disabled={(rehearsalHours || 2) <= 1}
-                          className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
-                        >
-                          <Minus className="h-4 w-4" />
-                        </Button>
-                        <span className="text-lg font-semibold text-livePiano-light w-16 text-center">
-                          {rehearsalHours || 0} hrs
-                        </span>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          onClick={handleIncrementRehearsal}
-                          disabled={(rehearsalHours || 2) >= 3}
-                          className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
-                        >
-                          <Plus className="h-4 w-4" />
-                        </Button>
+                  <FormItem className="flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4">
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex items-start space-x-3">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={(checked) => {
+                              field.onChange(checked);
+                              if (!checked) {
+                                form.setValue("rehearsalHours", undefined);
+                              } else {
+                                form.setValue("rehearsalHours", 2); // Set default when checked
+                              }
+                            }}
+                            id="add-on-rehearsal"
+                            className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel htmlFor="add-on-rehearsal" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 hover:text-livePiano-primary transition-colors duration-200">
+                            {addOns.rehearsal.name} + Travel
+                          </FormLabel>
+                          <FormDescription className="text-livePiano-light/70 text-base">
+                            {addOns.rehearsal.description}
+                          </FormDescription>
+                        </div>
                       </div>
+                      <div className="text-xl font-bold text-livePiano-primary">
+                        A${rehearsalDisplayCost}
+                      </div>
+                    </div>
+                    {/* Rehearsal hours controls - always visible */}
+                    <div className="flex items-center gap-2 mt-4 ml-9">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={handleDecrementRehearsal}
+                        disabled={(rehearsalHours || 2) <= 1}
+                        className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <span className="text-lg font-semibold text-livePiano-light w-16 text-center">
+                        {rehearsalHours || 0} hrs
+                      </span>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={handleIncrementRehearsal}
+                        disabled={(rehearsalHours || 2) >= 3}
+                        className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
                     </div>
                   </FormItem>
                 )}
@@ -345,55 +363,62 @@ const QuoteProposalPage: React.FC = () => {
                 control={form.control}
                 name="wantsArtisticGuidance"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-livePiano-border/50 p-4">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={(checked) => {
-                          field.onChange(checked);
-                          if (!checked) {
-                            form.setValue("artisticGuidanceHours", undefined);
-                          } else {
-                            form.setValue("artisticGuidanceHours", 1); // Set default to 1 hour when checked
-                          }
-                        }}
-                        id="add-on-artistic-guidance"
-                        className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel htmlFor="add-on-artistic-guidance" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 hover:text-livePiano-primary transition-colors duration-200">
-                        {addOns.artisticGuidance.name} (A${(artisticGuidanceHours || 0) * addOns.artisticGuidance.hourlyRate})
-                      </FormLabel>
-                      <FormDescription className="text-livePiano-light/70 text-base">
-                        {addOns.artisticGuidance.description}
-                      </FormDescription>
-                      {/* Artistic guidance hours controls - always visible */}
-                      <div className="flex items-center gap-2 mt-4">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          onClick={handleDecrementArtisticGuidance}
-                          disabled={(artisticGuidanceHours || 1) <= 1}
-                          className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
-                        >
-                          <Minus className="h-4 w-4" />
-                        </Button>
-                        <span className="text-lg font-semibold text-livePiano-light w-16 text-center">
-                          {artisticGuidanceHours || 0} hrs
-                        </span>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          onClick={handleIncrementArtisticGuidance}
-                          disabled={(artisticGuidanceHours || 1) >= 4}
-                          className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
-                        >
-                          <Plus className="h-4 w-4" />
-                        </Button>
+                  <FormItem className="flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4">
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex items-start space-x-3">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={(checked) => {
+                              field.onChange(checked);
+                              if (!checked) {
+                                form.setValue("artisticGuidanceHours", undefined);
+                              } else {
+                                form.setValue("artisticGuidanceHours", 1); // Set default when checked
+                              }
+                            }}
+                            id="add-on-artistic-guidance"
+                            className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel htmlFor="add-on-artistic-guidance" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 hover:text-livePiano-primary transition-colors duration-200">
+                            {addOns.artisticGuidance.name}
+                          </FormLabel>
+                          <FormDescription className="text-livePiano-light/70 text-base">
+                            {addOns.artisticGuidance.description}
+                          </FormDescription>
+                        </div>
                       </div>
+                      <div className="text-xl font-bold text-livePiano-primary">
+                        A${artisticGuidanceDisplayCost}
+                      </div>
+                    </div>
+                    {/* Artistic guidance hours controls - always visible */}
+                    <div className="flex items-center gap-2 mt-4 ml-9">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={handleDecrementArtisticGuidance}
+                        disabled={(artisticGuidanceHours || 1) <= 1}
+                        className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <span className="text-lg font-semibold text-livePiano-light w-16 text-center">
+                        {artisticGuidanceHours || 0} hrs
+                      </span>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={handleIncrementArtisticGuidance}
+                        disabled={(artisticGuidanceHours || 1) >= 4}
+                        className="h-8 w-8 bg-livePiano-background border-livePiano-border/50 text-livePiano-light hover:bg-livePiano-primary hover:text-livePiano-darker"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
                     </div>
                   </FormItem>
                 )}
