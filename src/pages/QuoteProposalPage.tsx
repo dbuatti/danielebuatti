@@ -23,10 +23,11 @@ const QuoteProposalPage: React.FC = () => {
     preparedBy: "Daniele Buatti",
   };
 
+  // Reordered packages to be 1, 2, 3
   const packages = [
-    { id: "option3", name: "Option 3: Curated Celebration", focus: "Full Artistic Partnership & Rehearsal", investment: "A$1,400" },
-    { id: "option2", name: "Option 2: Festive Flow", focus: "Flexible 3-Hour Engagement & Atmosphere", investment: "A$950" },
-    { id: "option1", name: "Option 1: Carols Highlight", focus: "Compact, Focused Performance", investment: "A$500" },
+    { id: "option1", name: "Option 1: The Festive Spark", focus: "Compact, Focused Performance", contribution: "A$500" },
+    { id: "option2", name: "Option 2: Seamless Festive Flow", focus: "Flexible 3-Hour Engagement & Atmosphere", contribution: "A$950" },
+    { id: "option3", name: "Option 3: The Ultimate Curated Celebration", focus: "Full Artistic Partnership & Rehearsal", contribution: "A$1,400" },
   ];
 
   return (
@@ -53,26 +54,26 @@ const QuoteProposalPage: React.FC = () => {
       <main className="max-w-7xl mx-auto px-4 py-12 space-y-16">
         <section className="text-center space-y-4">
           <h2 className="text-5xl font-libre-baskerville font-bold text-livePiano-primary mb-4 leading-tight">
-            Christmas Carols – Private Party Quote Proposal
+            Your Bespoke Live Piano Quote for a Magical Christmas Carols Party
           </h2>
           <div className="text-lg text-livePiano-light/90 max-w-3xl mx-auto space-y-2">
-            <p><strong>Prepared for:</strong> {proposalDetails.client}</p>
-            <p><strong>Date of Event:</strong> {proposalDetails.dateOfEvent}</p>
-            <p><strong>Time:</strong> {proposalDetails.time}</p>
-            <p><strong>Location:</strong> {proposalDetails.location}</p>
-            <p><strong>Prepared by:</strong> {proposalDetails.preparedBy}</p>
+            <p>Prepared for: <strong className="text-livePiano-primary">{proposalDetails.client}</strong></p>
+            <p>Date of Event: {proposalDetails.dateOfEvent}</p>
+            <p>Time: {proposalDetails.time}</p>
+            <p>Location: {proposalDetails.location}</p>
+            <p>Prepared by: {proposalDetails.preparedBy}</p>
           </div>
         </section>
 
         {/* Package Options Anchor Table */}
         <section id="package-options" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30">
-          <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center">🎄 Package Options</h3>
+          <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center">🎄 Your Package Options</h3>
           <Table className="w-full text-livePiano-light">
             <TableHeader>
               <TableRow className="border-livePiano-border/50">
                 <TableHead className="text-livePiano-primary text-lg">Package Name</TableHead>
                 <TableHead className="text-livePiano-primary text-lg">Core Focus</TableHead>
-                <TableHead className="text-livePiano-primary text-lg text-right">Investment</TableHead>
+                <TableHead className="text-livePiano-primary text-lg text-right">Your Contribution</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -82,7 +83,7 @@ const QuoteProposalPage: React.FC = () => {
                     <a href={`#${pkg.id}`} className="hover:underline text-livePiano-primary">{pkg.name}</a>
                   </TableCell>
                   <TableCell>{pkg.focus}</TableCell>
-                  <TableCell className="text-right font-bold">{pkg.investment}</TableCell>
+                  <TableCell className="text-right font-bold">{pkg.contribution}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -91,116 +92,140 @@ const QuoteProposalPage: React.FC = () => {
 
         {/* Option 1 */}
         <section id="option1" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-6">
-          <h3 className="text-4xl font-bold text-livePiano-light text-center">Option 1 – Carols Highlight (Essential)</h3>
-          <DynamicImage
-            src="/quote-option-1.png"
-            alt="Option 1: Carols Highlight"
-            className="w-full h-64 object-cover object-[40%25%] rounded-lg mb-4 border border-livePiano-border/50"
-            width={800}
-            height={400}
-          />
-          <p className="text-2xl font-semibold text-livePiano-primary text-center">Investment: A$500</p>
+          <h3 className="text-4xl font-bold text-livePiano-primary text-center">Option 1 – The Festive Spark</h3>
+          <div className="relative h-64 md:h-96 flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50">
+            {/* Blurred Background Image */}
+            <div
+              className="absolute inset-0 bg-cover bg-center filter blur-lg scale-110"
+              style={{ backgroundImage: `url(/quote-option-1.png)` }}
+            ></div>
+            {/* Main Image */}
+            <DynamicImage
+              src="/quote-option-1.png"
+              alt="Option 1: The Festive Spark"
+              className="relative z-10 max-w-xl h-auto object-contain rounded-lg shadow-lg"
+              width={800}
+              height={400}
+            />
+          </div>
+          <p className="text-2xl font-semibold text-livePiano-primary text-center">Your Contribution: A$500</p>
           <p className="text-lg text-livePiano-light/90 text-center">
-            A focused, festive performance for hosts seeking simplicity and a clear, time-bound musical segment.
+            A delightful, focused performance for hosts who desire a clear, time-bound musical highlight to set a joyful tone.
           </p>
           <div className="grid md:grid-cols-2 gap-4 text-livePiano-light/80">
             <div>
-              <h4 className="text-xl font-semibold text-livePiano-primary mb-2">Inclusions</h4>
+              <h4 className="text-xl font-semibold text-livePiano-primary mb-2">What's Included:</h4>
               <ul className="list-disc list-inside space-y-1">
                 <li>2-Hour Engagement (6pm–8pm).</li>
-                <li>Live Piano</li>
-                <li>Accompaniment</li>
+                <li>Live Piano Performance</li>
+                <li>Supportive Accompaniment</li>
               </ul>
             </div>
             <div>
-              <h4 className="text-xl font-semibold text-livePiano-primary mb-2">Value Provided</h4>
+              <h4 className="text-xl font-semibold text-livePiano-primary mb-2">The Value You Receive:</h4>
               <ul className="list-disc list-inside space-y-1">
-                <li>Clear, focused time commitment.</li>
-                <li>2 × 45-minute carol sets.</li>
-                <li>Support for both choristers and non-choristers alike.</li>
+                <li>A clear, focused musical segment for your event.</li>
+                <li>Two 45-minute carol sets, perfectly timed for your gathering.</li>
+                <li>Harmonious support for both seasoned singers and those just joining in.</li>
               </ul>
             </div>
           </div>
           <p className="text-lg italic text-livePiano-light/70 text-center mt-4">
-            Why choose this option? Perfect for a straightforward, uplifting musical highlight without requiring extra planning.
+            Why this option? It's perfect for a straightforward, uplifting musical moment without requiring extensive planning.
           </p>
         </section>
 
         {/* Option 2 */}
         <section id="option2" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-6">
-          <h3 className="text-4xl font-bold text-livePiano-light text-center">Option 2 – Festive Flow (Standard)</h3>
-          <DynamicImage
-            src="/quote-option-2.jpeg"
-            alt="Option 2: Festive Flow"
-            className="w-full h-64 object-cover object-[30%_25%] rounded-lg mb-4 border border-livePiano-border/50" // Adjusted to object-[30%_30%]
-            width={800}
-            height={400}
-          />
-          <p className="text-2xl font-semibold text-livePiano-primary text-center">Investment: A$950</p>
+          <h3 className="text-4xl font-bold text-livePiano-light text-center">Option 2 – Seamless Festive Flow</h3>
+          <div className="relative h-64 md:h-96 flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50">
+            {/* Blurred Background Image */}
+            <div
+              className="absolute inset-0 bg-cover bg-center filter blur-lg scale-110"
+              style={{ backgroundImage: `url(/quote-option-2.jpeg)` }}
+            ></div>
+            {/* Main Image */}
+            <DynamicImage
+              src="/quote-option-2.jpeg"
+              alt="Option 2: Seamless Festive Flow"
+              className="relative z-10 max-w-xl h-auto object-contain rounded-lg shadow-lg"
+              width={800}
+              height={400}
+            />
+          </div>
+          <p className="text-2xl font-semibold text-livePiano-primary text-center">Your Contribution: A$950</p>
           <p className="text-lg text-livePiano-light/90 text-center">
-            A flexible, high-value option that blends musical structure with adaptability for the best party atmosphere.
+            A flexible, high-value experience that beautifully blends musical structure with adaptability, ensuring the perfect party atmosphere.
           </p>
           <div className="grid md:grid-cols-2 gap-4 text-livePiano-light/80">
             <div>
-              <h4 className="text-xl font-semibold text-livePiano-primary mb-2">Inclusions</h4>
+              <h4 className="text-xl font-semibold text-livePiano-primary mb-2">What's Included:</h4>
               <ul className="list-disc list-inside space-y-1">
                 <li>Extended 3-Hour Engagement (6pm–9pm).</li>
                 <li>On-Call Performance Buffer</li>
-                <li>Live Piano</li>
-                <li>Carols Brochure</li>
+                <li>Live Piano Performance</li>
+                <li>Custom Carols Brochure</li>
               </ul>
             </div>
             <div>
-              <h4 className="text-xl font-semibold text-livePiano-primary mb-2">Value Provided</h4>
+              <h4 className="text-xl font-semibold text-livePiano-primary mb-2">The Value You Receive:</h4>
               <ul className="list-disc list-inside space-y-1">
-                <li>Ample buffer time for guests to mingle and get into the mood.</li>
-                <li>Seamlessly adapts to the party's flow, ensuring music starts when guests are ready to sing.</li>
-                <li>2 × 45-minute carol sets, plus atmosphere music before/between/after sets.</li>
-                <li>Prepared based on your final song list.</li>
+                <li>Ample time for guests to mingle and truly get into the festive mood.</li>
+                <li>Music that seamlessly adapts to your party's flow, ready when your guests are.</li>
+                <li>Two 45-minute carol sets, plus delightful atmosphere music before, between, and after sets.</li>
+                <li>A beautifully prepared brochure based on your final song list.</li>
               </ul>
             </div>
           </div>
           <p className="text-lg italic text-livePiano-light/70 text-center mt-4">
-            Why choose this option? This is the ideal option for hosts who prioritize seamless atmosphere and flexibility. It guarantees music adapts to your party's pace, eliminating the stress of rigid timing.
+            Why this option? It's ideal for hosts who prioritize a seamless atmosphere and flexibility. It guarantees music adapts to your party's pace, eliminating the stress of rigid timing.
           </p>
         </section>
 
         {/* Option 3 */}
         <section id="option3" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-6">
-          <h3 className="text-4xl font-bold text-livePiano-light text-center">Option 3 – Curated Celebration (Premium)</h3>
-          <DynamicImage
-            src="/quote-option-3.jpeg"
-            alt="Option 3: Curated Celebration"
-            className="w-full h-64 object-cover rounded-lg mb-4 border border-livePiano-border/50"
-            width={800}
-            height={400}
-          />
-          <p className="text-2xl font-semibold text-livePiano-primary text-center">Investment: A$1,400</p>
+          <h3 className="text-4xl font-bold text-livePiano-light text-center">Option 3 – The Ultimate Curated Celebration</h3>
+          <div className="relative h-64 md:h-96 flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50">
+            {/* Blurred Background Image */}
+            <div
+              className="absolute inset-0 bg-cover bg-center filter blur-lg scale-110"
+              style={{ backgroundImage: `url(/quote-option-3.jpeg)` }}
+            ></div>
+            {/* Main Image */}
+            <DynamicImage
+              src="/quote-option-3.jpeg"
+              alt="Option 3: The Ultimate Curated Celebration"
+              className="relative z-10 max-w-xl h-auto object-contain rounded-lg shadow-lg"
+              width={800}
+              height={400}
+            />
+          </div>
+          <p className="text-2xl font-semibold text-livePiano-primary text-center">Your Contribution: A$1,400</p>
           <p className="text-lg text-livePiano-light/90 text-center">
-            The ultimate carols experience: fully curated, rehearsed, and guided for maximum musical impact and host peace of mind.
+            The most exquisite carols experience: fully curated, rehearsed, and expertly guided for maximum musical impact and complete peace of mind for you, the host.
           </p>
           <div className="grid md:grid-cols-2 gap-4 text-livePiano-light/80">
             <div>
-              <h4 className="text-xl font-semibold text-livePiano-primary mb-2">Inclusions</h4>
+              <h4 className="text-xl font-semibold text-livePiano-primary mb-2">What's Included:</h4>
               <ul className="list-disc list-inside space-y-1">
                 <li>Private Rehearsal Session</li>
                 <li>Full Evening Coverage (6pm–late).</li>
-                <li>Artistic Guidance</li>
-                <li>Live Piano</li>
+                <li>Personal Artistic Guidance</li>
+                <li>Live Piano Performance</li>
               </ul>
             </div>
             <div>
-              <h4 className="text-xl font-semibold text-livePiano-primary mb-2">Value Provided</h4>
+              <h4 className="text-xl font-semibold text-livePiano-primary mb-2">The Value You Receive:</h4>
               <ul className="list-disc list-inside space-y-1">
-                <li>Dedicated time to refine your group’s sound and prepare singers.</li>
-                <li>Availability until the end of the party—no watching the clock.</li>
+                <li>Dedicated time to refine your group’s sound and prepare any singers.</li>
+                <li>Availability until the very end of your party—no watching the clock!</li>
                 <li>Full collaboration on sheet music sourcing, set structure, and creation of a custom carols brochure.</li>
-                <li>2 × 45-minute carol sets, background music, and spontaneous sing-alongs.</li>
+                <li>Two 45-minute carol sets, beautiful background music, and spontaneous sing-alongs.</li>
               </ul>
             </div>
           </div>
           <p className="text-lg italic text-livePiano-light/70 text-center mt-4">
-            Why choose this option? You receive a seamless, stress-free, and unforgettable musical evening with professional oversight from rehearsal through performance.
+            Why this option? You'll enjoy a seamless, stress-free, and truly unforgettable musical evening with professional oversight from rehearsal through performance.
           </p>
         </section>
 
@@ -213,10 +238,9 @@ const QuoteProposalPage: React.FC = () => {
           </div>
 
           <div className="pt-8 space-y-6">
-            <h4 className="text-2xl font-bold text-livePiano-primary text-center">Client Acceptance</h4>
+            <h4 className="text-2xl font-bold text-livePiano-primary text-center">Ready to bring the magic to your event?</h4>
             <p className="text-lg text-livePiano-light/90 text-center">
-              Please select your preferred package below.
-              A 50% deposit is required to formally secure the booking. The remaining balance is due 7 days prior to the event.
+              Please select your preferred package below. A 50% deposit is required to formally secure your booking, with the remaining balance due 7 days prior to the event.
             </p>
             <p className="text-lg text-livePiano-light/90 text-center">
               I, {proposalDetails.client}, confirm my selection and booking for the event on {proposalDetails.dateOfEvent}.
