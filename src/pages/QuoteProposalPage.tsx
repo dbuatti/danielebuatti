@@ -92,13 +92,21 @@ const QuoteProposalPage: React.FC = () => {
         {/* Option 1 */}
         <section id="option1" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-6">
           <h3 className="text-4xl font-bold text-livePiano-light text-center">Option 1 – Carols Highlight (Essential)</h3>
-          <DynamicImage
-            src="/quote-option-1.png"
-            alt="Option 1: Carols Highlight"
-            className="w-full h-64 object-cover object-[40%25%] rounded-lg mb-4 border border-livePiano-border/50"
-            width={800}
-            height={400}
-          />
+          <div className="relative h-64 md:h-96 flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50">
+            {/* Blurred Background Image */}
+            <div
+              className="absolute inset-0 bg-cover bg-center filter blur-lg scale-110"
+              style={{ backgroundImage: `url(/quote-option-1.png)` }}
+            ></div>
+            {/* Main Image */}
+            <DynamicImage
+              src="/quote-option-1.png"
+              alt="Option 1: Carols Highlight"
+              className="relative z-10 max-w-xl h-auto object-contain rounded-lg shadow-lg"
+              width={800}
+              height={400}
+            />
+          </div>
           <p className="text-2xl font-semibold text-livePiano-primary text-center">Investment: A$500</p>
           <p className="text-lg text-livePiano-light/90 text-center">
             A focused, festive performance for hosts seeking simplicity and a clear, time-bound musical segment.
@@ -129,13 +137,21 @@ const QuoteProposalPage: React.FC = () => {
         {/* Option 2 */}
         <section id="option2" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-6">
           <h3 className="text-4xl font-bold text-livePiano-light text-center">Option 2 – Festive Flow (Standard)</h3>
-          <DynamicImage
-            src="/quote-option-2.jpeg"
-            alt="Option 2: Festive Flow"
-            className="w-full h-64 object-cover object-[25%_25%] rounded-lg mb-4 border border-livePiano-border/50" // Adjusted to object-[30%_30%]
-            width={800}
-            height={400}
-          />
+          <div className="relative h-64 md:h-96 flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50">
+            {/* Blurred Background Image */}
+            <div
+              className="absolute inset-0 bg-cover bg-center filter blur-lg scale-110"
+              style={{ backgroundImage: `url(/quote-option-2.jpeg)` }}
+            ></div>
+            {/* Main Image */}
+            <DynamicImage
+              src="/quote-option-2.jpeg"
+              alt="Option 2: Festive Flow"
+              className="relative z-10 max-w-xl h-auto object-contain rounded-lg shadow-lg"
+              width={800}
+              height={400}
+            />
+          </div>
           <p className="text-2xl font-semibold text-livePiano-primary text-center">Investment: A$950</p>
           <p className="text-lg text-livePiano-light/90 text-center">
             A flexible, high-value option that blends musical structure with adaptability for the best party atmosphere.
@@ -168,13 +184,21 @@ const QuoteProposalPage: React.FC = () => {
         {/* Option 3 */}
         <section id="option3" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-6">
           <h3 className="text-4xl font-bold text-livePiano-light text-center">Option 3 – Curated Celebration (Premium)</h3>
-          <DynamicImage
-            src="/quote-option-3.jpeg"
-            alt="Option 3: Curated Celebration"
-            className="w-full h-64 object-cover rounded-lg mb-4 border border-livePiano-border/50"
-            width={800}
-            height={400}
-          />
+          <div className="relative h-64 md:h-96 flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50">
+            {/* Blurred Background Image */}
+            <div
+              className="absolute inset-0 bg-cover bg-center filter blur-lg scale-110"
+              style={{ backgroundImage: `url(/quote-option-3.jpeg)` }}
+            ></div>
+            {/* Main Image */}
+            <DynamicImage
+              src="/quote-option-3.jpeg"
+              alt="Option 3: Curated Celebration"
+              className="relative z-10 max-w-xl h-auto object-contain rounded-lg shadow-lg"
+              width={800}
+              height={400}
+            />
+          </div>
           <p className="text-2xl font-semibold text-livePiano-primary text-center">Investment: A$1,400</p>
           <p className="text-lg text-livePiano-light/90 text-center">
             The ultimate carols experience: fully curated, rehearsed, and guided for maximum musical impact and host peace of mind.
@@ -213,7 +237,7 @@ const QuoteProposalPage: React.FC = () => {
           </div>
 
           <div className="pt-8 space-y-6">
-            <h4 className="text-2xl font-bold text-livePiano-primary text-center">Client Acceptance</h4>
+            <h4 className="2xl font-bold text-livePiano-primary text-center">Client Acceptance</h4>
             <p className="text-lg text-livePiano-light/90 text-center">
               Please select your preferred package below.
               A 50% deposit is required to formally secure the booking. The remaining balance is due 7 days prior to the event.
