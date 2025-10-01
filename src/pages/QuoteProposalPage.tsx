@@ -95,7 +95,7 @@ const QuoteProposalPage: React.FC = () => {
           <DynamicImage
             src="/quote-option-1.png"
             alt="Option 1: Carols Highlight"
-            className="w-full h-64 object-cover object-center rounded-lg mb-4 border border-livePiano-border/50" // Changed to object-center
+            className="w-full h-64 object-cover object-top rounded-lg mb-4 border border-livePiano-border/50" // Changed to object-top
             width={800}
             height={400}
           />
@@ -132,7 +132,7 @@ const QuoteProposalPage: React.FC = () => {
           <DynamicImage
             src="/quote-option-2.jpeg"
             alt="Option 2: Festive Flow"
-            className="w-full h-64 object-cover object-center rounded-lg mb-4 border border-livePiano-border/50" // Changed to object-center
+            className="w-full h-64 object-cover object-center rounded-lg mb-4 border border-livePiano-border/50"
             width={800}
             height={400}
           />
