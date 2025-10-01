@@ -91,9 +91,9 @@ const QuoteProposalPage: React.FC = () => {
     return total;
   }, [wantsExtraHour, wantsRehearsal]);
 
-  // Calculate individual add-on costs for display
-  const extraHourDisplayCost = wantsExtraHour ? addOns.extraHour.cost : 0;
-  const rehearsalDisplayCost = wantsRehearsal ? addOns.rehearsal.cost : 0;
+  // Calculate individual add-on costs for display - now always show the actual cost
+  const extraHourDisplayCost = addOns.extraHour.cost;
+  const rehearsalDisplayCost = addOns.rehearsal.cost;
 
   // Handle form submission
   async function onSubmit(values: z.infer<typeof formSchema>) {
