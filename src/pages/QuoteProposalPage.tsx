@@ -95,7 +95,7 @@ const QuoteProposalPage: React.FC = () => {
           <DynamicImage
             src="/quote-option-1.png"
             alt="Option 1: Carols Highlight"
-            className="w-full h-64 object-cover object-[40%40%] rounded-lg mb-4 border border-livePiano-border/50"
+            className="w-full h-64 object-cover object-[40%30%] rounded-lg mb-4 border border-livePiano-border/50"
             width={800}
             height={400}
           />
