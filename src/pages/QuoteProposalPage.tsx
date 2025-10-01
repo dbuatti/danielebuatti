@@ -161,7 +161,7 @@ const QuoteProposalPage: React.FC = () => {
 
       <main className="max-w-7xl mx-auto px-4 py-16 space-y-20">
         <section className="text-center space-y-6">
-          <h2 className="text-5xl md:text-6xl font-libre-baskerville font-extrabold text-livePiano-primary mb-4 leading-tight text-shadow-lg"> {/* Increased text-shadow */}
+          <h2 className="text-5xl md:text-6xl font-libre-baskerville font-extrabold text-livePiano-primary mb-4 leading-tight text-shadow-lg">
             Your Bespoke Live Piano Quote for a Magical Christmas Carols Party
           </h2>
           <div className="text-xl text-livePiano-light/90 max-w-3xl mx-auto space-y-3 font-medium">
@@ -171,16 +171,16 @@ const QuoteProposalPage: React.FC = () => {
             <p>Location: {proposalDetails.location}</p>
             <p>Prepared by: {proposalDetails.preparedBy}</p>
           </div>
-          <Separator className="max-w-md mx-auto bg-livePiano-border/50 mt-8" />
+          <Separator className="max-w-lg mx-auto bg-livePiano-primary h-1 mt-10" /> {/* More prominent separator */}
         </section>
 
         {/* Package Options Anchor Table */}
         <section id="package-options" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30">
-          <h3 className="text-3xl font-bold text-livePiano-light mb-8 text-center text-shadow-sm">🎄 Your Package Options</h3> {/* Added text-shadow-sm */}
+          <h3 className="text-3xl font-bold text-livePiano-light mb-8 text-center text-shadow-sm">🎄 Your Package Options</h3>
           <Table className="w-full text-livePiano-light rounded-lg overflow-hidden">
             <TableHeader className="bg-livePiano-primary/20">
               <TableRow className="border-livePiano-border/50">
-                <TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6 text-shadow-sm">Package Name</TableHead><TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6 text-shadow-sm">Core Focus</TableHead><TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6 text-right text-shadow-sm">Your Contribution</TableHead> {/* Added text-shadow-sm */}
+                <TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6 text-shadow-sm">Package Name</TableHead><TableHead className="text-livePiano-primary text-lg font-bold py-4 px-6 text-shadow-sm">Core Focus</TableHead><TableHead className="text-livePiano-primary text-lg font-extrabold py-4 px-6 text-right text-shadow-sm">Your Contribution</TableHead> {/* font-extrabold */}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -188,7 +188,7 @@ const QuoteProposalPage: React.FC = () => {
                 <TableRow key={pkg.id} className="border-livePiano-border/50 hover:bg-livePiano-background/50 transition-colors duration-200">
                   <TableCell className="font-semibold text-livePiano-light py-4 px-6">
                     <a href={`#${pkg.id}`} className="hover:underline text-livePiano-primary transition-colors duration-200">{pkg.name}</a>
-                  </TableCell><TableCell className="py-4 px-6">{pkg.focus}</TableCell><TableCell className="text-right font-bold text-livePiano-primary py-4 px-6"><strong>A${pkg.contribution}</strong></TableCell>
+                  </TableCell><TableCell className="py-4 px-6">{pkg.focus}</TableCell><TableCell className="text-right font-extrabold text-livePiano-primary py-4 px-6"><strong>A${pkg.contribution}</strong></TableCell> {/* font-extrabold */}
                 </TableRow>
               ))}
             </TableBody>
@@ -198,7 +198,7 @@ const QuoteProposalPage: React.FC = () => {
         {/* Option 3: The Ultimate Curated Celebration */}
         <section id="option3" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border-4 border-livePiano-primary space-y-8 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
           <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">The Ultimate Curated Celebration</h3>
-          <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50 shadow-md"> {/* Added shadow-md */}
+          <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50 shadow-md">
             <div
               className="absolute inset-0 bg-cover bg-center filter blur-lg scale-110"
               style={{ backgroundImage: `url(${packages[0].image})` }}
@@ -230,9 +230,9 @@ const QuoteProposalPage: React.FC = () => {
         </section>
 
         {/* Option 2: Seamless Festive Flow */}
-        <section id="option2" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-8 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
+        <section id="option2" className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border-2 border-livePiano-border/50 space-y-8 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl"> {/* Changed border to border-2 border-livePiano-border/50 */}
           <h3 className="text-4xl font-bold text-livePiano-primary text-center text-shadow-sm">Seamless Festive Flow</h3>
-          <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50 shadow-md"> {/* Added shadow-md */}
+          <div className="relative h-72 md:h-[400px] flex items-center justify-center rounded-lg overflow-hidden mb-4 border border-livePiano-border/50 shadow-md">
             <div
               className="absolute inset-0 bg-cover bg-center filter blur-lg scale-110"
               style={{ backgroundImage: `url(${packages[1].image})` }}
@@ -274,7 +274,7 @@ const QuoteProposalPage: React.FC = () => {
 
         {/* Client Acceptance Form */}
         <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-10">
-          <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Ready to bring the magic to your event?</h3> {/* Added text-shadow-sm */}
+          <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Ready to bring the magic to your event?</h3>
           <p className="text-xl text-livePiano-light/90 text-center max-w-3xl mx-auto">
             Please select your preferred package below. A 50% deposit is required to formally secure your booking, with the remaining balance due 7 days prior to the event.
           </p>
@@ -286,7 +286,7 @@ const QuoteProposalPage: React.FC = () => {
                 name="clientName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-livePiano-light text-lg text-shadow-sm">Your Full Name</FormLabel> {/* Added text-shadow-sm */}
+                    <FormLabel className="text-livePiano-light text-lg text-shadow-sm">Your Full Name</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="e.g., Imme Kaschner"
@@ -303,7 +303,7 @@ const QuoteProposalPage: React.FC = () => {
                 name="clientEmail"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-livePiano-light text-lg text-shadow-sm">Your Email Address</FormLabel> {/* Added text-shadow-sm */}
+                    <FormLabel className="text-livePiano-light text-lg text-shadow-sm">Your Email Address</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
@@ -326,7 +326,7 @@ const QuoteProposalPage: React.FC = () => {
                 name="selectedPackage"
                 render={({ field }) => (
                   <FormItem className="space-y-4">
-                    <FormLabel className="text-livePiano-light text-xl font-bold text-shadow-sm">Select Your Preferred Package:</FormLabel> {/* Added text-shadow-sm */}
+                    <FormLabel className="text-livePiano-light text-xl font-bold text-shadow-sm">Select Your Preferred Package:</FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
