@@ -42,8 +42,8 @@ const QuoteProposalPage: React.FC = () => {
 
   const proposalDetails = {
     client: "Imme Kaschner",
-    dateOfEvent: "Saturday 20 December 2025", // Updated to a more typical Christmas date
-    time: "6:00pm - 9:00pm (Base Service)",
+    dateOfEvent: "Saturday 22 November 2025", // Corrected date
+    time: "6:00–9:00pm (or later for the Premium Option)", // Corrected time
     location: "Kew (Private Home)",
     preparedBy: "Daniele Buatti",
   };
@@ -171,6 +171,19 @@ const QuoteProposalPage: React.FC = () => {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-16 space-y-12">
+        {/* Hero Image Section */}
+        <section className="relative mt-8 mb-8 rounded-xl overflow-hidden shadow-lg border-4 border-livePiano-primary">
+          <DynamicImage
+            src="/danielepianolaugh.jpeg" // Using a relevant image from public folder
+            alt="Daniele Buatti playing piano"
+            className="w-full h-96 md:h-[450px] object-cover object-center"
+            width={800}
+            height={533}
+          />
+          {/* Gradient Overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-livePiano-darker/50 to-transparent"></div>
+        </section>
+
         <section className="text-center space-y-6">
           <h2 className="text-5xl md:text-6xl font-libre-baskerville font-extrabold text-livePiano-primary mb-6 leading-none text-shadow-lg">
             Christmas Carols – Live Piano
