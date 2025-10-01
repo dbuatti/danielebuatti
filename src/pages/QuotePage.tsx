@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import DynamicImage from "@/components/DynamicImage";
-import { ArrowLeft, Download, CheckSquare, Phone, Mail } from 'lucide-react'; // Imported Phone and Mail
+import { ArrowLeft, Phone, Mail } from 'lucide-react'; // Removed Download icon as it's no longer needed
 import { toast } from 'sonner';
 import { Checkbox } from '@/components/ui/checkbox'; // Assuming you have a Checkbox component
 
@@ -15,11 +15,7 @@ const QuotePage: React.FC = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const handleExportToSheets = (optionName: string) => {
-    toast.info(`Exporting "${optionName}" to Sheets is a placeholder function.`, {
-      description: "This feature would require backend integration with Google Sheets API.",
-    });
-  };
+  // Removed handleExportToSheets function as it's no longer used.
 
   return (
     <div className="live-piano-theme min-h-screen bg-livePiano-background text-livePiano-light font-montserrat">
@@ -115,9 +111,6 @@ const QuotePage: React.FC = () => {
               </ul>
             </div>
           </div>
-          <Button onClick={() => handleExportToSheets("Option 1")} className="w-full bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light text-lg py-3 rounded-full">
-            <Download className="h-5 w-5 mr-2" /> Export to Sheets
-          </Button>
           <p className="text-md italic text-livePiano-light/70 text-center">
             Why choose this option? Perfect for a straightforward, uplifting musical highlight without requiring extra planning.
           </p>
@@ -151,9 +144,6 @@ const QuotePage: React.FC = () => {
               </ul>
             </div>
           </div>
-          <Button onClick={() => handleExportToSheets("Option 2")} className="w-full bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light text-lg py-3 rounded-full">
-            <Download className="h-5 w-5 mr-2" /> Export to Sheets
-          </Button>
           <p className="text-md italic text-livePiano-light/70 text-center">
             Why choose this option? This is the ideal option for hosts who prioritize seamless atmosphere and flexibility. It guarantees music adapts to your party's pace, eliminating the stress of rigid timing.
           </p>
@@ -187,9 +177,6 @@ const QuotePage: React.FC = () => {
               </ul>
             </div>
           </div>
-          <Button onClick={() => handleExportToSheets("Option 3")} className="w-full bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light text-lg py-3 rounded-full">
-            <Download className="h-5 w-5 mr-2" /> Export to Sheets
-          </Button>
           <p className="text-md italic text-livePiano-light/70 text-center">
             Why choose this option? You receive a seamless, stress-free, and unforgettable musical evening with professional oversight from rehearsal through performance.
           </p>
