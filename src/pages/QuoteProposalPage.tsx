@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import DynamicImage from "@/components/DynamicImage";
-import { ArrowLeft, Minus, Plus } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Footer from '@/components/Footer';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,7 +31,6 @@ const formSchema = z.object({
   clientEmail: z.string().email({ message: "A valid email address is required." }),
   wantsExtraHour: z.boolean().default(false),
   wantsRehearsal: z.boolean().default(false),
-  rehearsalHours: z.coerce.number().min(1).max(3).optional(), // Rehearsal hours 1 to 3
 });
 
 const QuoteProposalPage: React.FC = () => {
@@ -55,7 +54,7 @@ const QuoteProposalPage: React.FC = () => {
   const baseService = {
     hours: 3,
     cost: (hourlyRate * 3) + performanceTravelCost, // 3 hours performance + performance travel cost = 1050 + 150 = 1200
-    description: "3 hours of live piano performance, including carol sing-alongs (two 45-minute sets) and background music between sets.",
+    description: "This covers my 3-hour on-site engagement for your event, from 6:00pm to 9:00pm.",
   };
 
   const addOns = {
@@ -203,15 +202,16 @@ const QuoteProposalPage: React.FC = () => {
         <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-6">
           <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Service: Live Piano Performance</h3>
           <p className="text-xl text-livePiano-light/90 text-center max-w-3xl mx-auto">
-            I will provide {baseService.hours} hours of live piano performance for your event.
+            {baseService.description}
           </p>
           <div className="text-livePiano-light/80 space-y-4 max-w-3xl mx-auto">
             <ul className="list-disc list-inside space-y-2 [&>li]:marker:text-livePiano-primary [&>li]:marker:text-xl">
+              <li>This covers my time on-site from 6:00pm to 9:00pm.</li>
               <li>Carol sing-alongs (two 45-minute sets)</li>
               <li>Background music between sets</li>
               <li>Custom song sheet for guests</li>
               <li>Collaboration on song selection</li>
-              <li>Performance timing is flexible to adapt to your event's flow.</li>
+              <li>Performance timing is flexible to dynamically respond to the needs of guests.</li>
             </ul>
           </div>
           <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm mt-8">
@@ -231,9 +231,9 @@ const QuoteProposalPage: React.FC = () => {
                 control={form.control}
                 name="wantsExtraHour"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 hover:border-livePiano-primary transition-all duration-200">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
-                      <div className="flex items-start space-x-3 mb-4 sm:mb-0">
+                  <FormItem className="flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 hover:border-livePiano-primary transition-colors duration-200">
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex items-start space-x-3">
                         <FormControl>
                           <Checkbox
                             checked={field.value}
@@ -251,7 +251,7 @@ const QuoteProposalPage: React.FC = () => {
                           </FormDescription>
                         </div>
                       </div>
-                      <div className="text-2xl font-bold text-livePiano-primary sm:ml-auto">
+                      <div className="text-xl font-bold text-livePiano-primary">
                         A${extraHourDisplayCost}
                       </div>
                     </div>
@@ -262,9 +262,9 @@ const QuoteProposalPage: React.FC = () => {
                 control={form.control}
                 name="wantsRehearsal"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 hover:border-livePiano-primary transition-all duration-200">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
-                      <div className="flex items-start space-x-3 mb-4 sm:mb-0">
+                  <FormItem className="flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 hover:border-livePiano-primary transition-colors duration-200">
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex items-start space-x-3">
                         <FormControl>
                           <Checkbox
                             checked={field.value}
@@ -282,7 +282,7 @@ const QuoteProposalPage: React.FC = () => {
                           </FormDescription>
                         </div>
                       </div>
-                      <div className="text-2xl font-bold text-livePiano-primary sm:ml-auto">
+                      <div className="text-xl font-bold text-livePiano-primary">
                         A${rehearsalDisplayCost}
                       </div>
                     </div>
