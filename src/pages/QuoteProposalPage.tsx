@@ -54,11 +54,11 @@ const QuoteProposalPage: React.FC = () => {
 
   // Updated packages with new contributions
   const packages = [
-    { id: "option3", name: "The Ultimate Curated Celebration", focus: "Full Artistic Partnership & Rehearsal", contribution: 1395, image: "/quote-option-3.jpeg" }, // Updated to 1395
-    { id: "option2", name: "Seamless Festive Flow", focus: "Flexible 3-Hour Engagement & Atmosphere", contribution: 875, image: "/quote-option-2.png" }, // Remains 875
+    { id: "option3", name: "The Ultimate Curated Celebration", focus: "Full Artistic Partnership & Rehearsal", contribution: 1299, image: "/quote-option-3.jpeg" }, // Updated to 1299
+    { id: "option2", name: "Seamless Festive Flow", focus: "Flexible 3-Hour Engagement & Atmosphere", contribution: 799, image: "/quote-option-2.png" }, // Updated to 799
   ];
 
-  const addOnPrice = 225; // Updated to 225
+  const addOnPrice = 249; // Updated to 249
 
   // Initialize react-hook-form
   const form = useForm<z.infer<typeof formSchema>>({
