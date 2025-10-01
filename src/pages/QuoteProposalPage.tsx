@@ -59,7 +59,7 @@ const QuoteProposalPage: React.FC = () => {
   const baseService = {
     hours: 3,
     cost: (hourlyRate * 3) + performanceTravelCost, // 3 hours performance + performance travel cost
-    description: "3 hours of live piano performance, including carol sing-alongs (two 45-min sets) and background music between sets.",
+    description: "3 hours of live piano performance, including carol sing-alongs (two 45-minute sets) and background music between sets.",
   };
 
   const addOns = {
@@ -91,7 +91,7 @@ const QuoteProposalPage: React.FC = () => {
       wantsRehearsal: false,
       rehearsalHours: 1.5, // Default to 1.5 hours if rehearsal is selected
       wantsArtisticGuidance: false,
-      artisticGuidanceHours: 1, // Default to 1 hour if artistic guidance is selected
+      artisticGuidanceHours: undefined, // Changed default to undefined
     },
   });
 
