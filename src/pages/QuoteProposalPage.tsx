@@ -56,9 +56,9 @@ const QuoteProposalPage: React.FC = () => {
 
   const addOns = {
     rehearsal: {
-      name: "Pre-event rehearsal", // Renamed
+      name: "Pre-event rehearsal",
       cost: 700, // Fixed cost
-      description: "A 2-hour rehearsal session one week prior to the event, including travel.", // Simplified description
+      description: "A 2-hour rehearsal session one week prior to the event, including travel.",
     },
     extraHour: {
       name: "Extended Performance Hour",
@@ -230,7 +230,7 @@ const QuoteProposalPage: React.FC = () => {
                   <FormItem className={cn(
                     "flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-all duration-200 cursor-pointer",
                     field.value ? "border-livePiano-primary shadow-md" : "hover:border-livePiano-primary"
-                  )} onClick={() => field.onChange(!field.value)}>
+                  )}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
                       <div className="flex items-start space-x-3 mb-4 sm:mb-0">
                         <FormControl>
@@ -264,7 +264,7 @@ const QuoteProposalPage: React.FC = () => {
                   <FormItem className={cn(
                     "flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-all duration-200 cursor-pointer",
                     field.value ? "border-livePiano-primary shadow-md" : "hover:border-livePiano-primary"
-                  )} onClick={() => field.onChange(!field.value)}>
+                  )}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
                       <div className="flex items-start space-x-3 mb-4 sm:mb-0">
                         <FormControl>
