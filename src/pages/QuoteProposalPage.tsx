@@ -1,16 +1,43 @@
 "use client";
 
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import DynamicImage from "@/components/DynamicImage";
-import { ArrowLeft, Download } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react'; // Removed Download icon as it's no longer needed
 import Footer from '@/components/Footer'; // Using the main footer for consistency
+import { useForm } from "react-hook-form"; // Import react-hook-form
+import { zodResolver } from "@hookform/resolvers/zod"; // Import zodResolver
+import * as z from "zod"; // Import zod
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"; // Import form components
+import { Input } from "@/components/ui/input"; // Import Input for form fields
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"; // Import RadioGroup
+import { toast } from 'sonner'; // Import toast for notifications
+import { supabase } from '@/integrations/supabase/client'; // Import Supabase client
+
+// Define the form schema using zod
+const formSchema = z.object({
+  clientName: z.string().min(2, { message: "Your full name is required." }),
+  clientEmail: z.string().email({ message: "A valid email address is required." }),
+  selectedPackage: z.enum(["option1", "option2", "option3"], {
+    required_error: "Please select a package.",
+  }),
+  hasAddOn: z.boolean().default(false),
+});
 
 const QuoteProposalPage: React.FC = () => {
+  const navigate = useNavigate(); // Initialize useNavigate
+  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -29,6 +56,60 @@ const QuoteProposalPage: React.FC = () => {
     { id: "option2", name: "Option 2: Seamless Festive Flow", focus: "Flexible 3-Hour Engagement & Atmosphere", contribution: "A$875" },
     { id: "option3", name: "Option 3: The Ultimate Curated Celebration", focus: "Full Artistic Partnership & Rehearsal", contribution: "A$1,350" },
   ];
+
+  // Initialize react-hook-form
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      clientName: '',
+      clientEmail: '',
+      selectedPackage: undefined, // No default selection
+      hasAddOn: false,
+    },
+  });
+
+  // Handle form submission
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const loadingToastId = toast.loading("Submitting your acceptance...");
+
+    try {
+      // Insert data into Supabase
+      const { data, error } = await supabase
+        .from('quote_acceptances')
+        .insert([
+          {
+            client_name: values.clientName,
+            client_email: values.clientEmail,
+            selected_package_id: values.selectedPackage,
+            has_add_on: values.hasAddOn,
+            event_date: proposalDetails.dateOfEvent, // Use pre-filled event date
+            event_location: proposalDetails.location, // Use pre-filled event location
+            quote_title: "Christmas Carols – Private Party Quote Proposal", // Add quote title
+            quote_prepared_by: proposalDetails.preparedBy, // Add preparer
+          },
+        ])
+        .select(); // Select the inserted data to get its ID if needed
+
+      if (error) {
+        throw error;
+      }
+
+      toast.success("Quote accepted successfully!", {
+        id: loadingToastId,
+        description: "Thank you! Daniele will be in touch shortly to finalize details.",
+      });
+
+      form.reset(); // Reset the form
+      navigate('/live-piano-services/quote-confirmation'); // Navigate to confirmation page
+
+    } catch (error) {
+      console.error("Error submitting quote acceptance:", error);
+      toast.error("Failed to submit quote acceptance.", {
+        id: loadingToastId,
+        description: "Please try again later or contact Daniele directly.",
+      });
+    }
+  }
 
   return (
     <div className="live-piano-theme min-h-screen bg-livePiano-background text-livePiano-light font-montserrat">
@@ -176,7 +257,7 @@ const QuoteProposalPage: React.FC = () => {
             </div>
           </div>
           <p className="text-lg italic text-livePiano-light/70 text-center mt-6 max-w-2xl mx-auto">
-            Why this option? This is the ideal option for hosts who prioritize a seamless atmosphere and flexibility. It guarantees music adapts to your party's pace, eliminating the stress of rigid timing, and provides the best value for money.
+            Why this option? This is the ideal option for hosts who prioritize seamless atmosphere and flexibility. It guarantees music adapts to your party's pace, eliminating the stress of rigid timing, and provides the best value for money.
           </p>
         </section>
 
@@ -236,54 +317,119 @@ const QuoteProposalPage: React.FC = () => {
           </p>
         </section>
 
-        {/* Client Acceptance */}
-        <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-10"> {/* Increased vertical spacing */}
+        {/* Client Acceptance Form */}
+        <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-10">
           <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center">Ready to bring the magic to your event?</h3>
           <p className="text-xl text-livePiano-light/90 text-center max-w-3xl mx-auto">
             Please select your preferred package below. A 50% deposit is required to formally secure your booking, with the remaining balance due 7 days prior to the event.
           </p>
-          <p className="text-xl text-livePiano-light/90 text-center max-w-3xl mx-auto font-semibold">
-            I, {proposalDetails.client}, confirm my selection and booking for the event on {proposalDetails.dateOfEvent}.
-          </p>
 
-          <div className="flex flex-col md:flex-row justify-center items-start md:items-center gap-8 mt-8"> {/* Increased gap */}
-            <div className="flex items-center space-x-3">
-              <Checkbox id="option1-checkbox" className="h-6 w-6 border-livePiano-primary data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" />
-              <label htmlFor="option1-checkbox" className="text-xl font-medium text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                Option 1: The Festive Spark (A$600)
-              </label>
-            </div>
-            <div className="flex items-center space-x-3">
-              <Checkbox id="option2-checkbox" className="h-6 w-6 border-livePiano-primary data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" />
-              <label htmlFor="option2-checkbox" className="text-xl font-medium text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                Option 2: Seamless Festive Flow (A$875)
-              </label>
-            </div>
-            <div className="flex items-center space-x-3">
-              <Checkbox id="option3-checkbox" className="h-6 w-6 border-livePiano-primary data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" />
-              <label htmlFor="option3-checkbox" className="text-xl font-medium text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                Option 3: The Ultimate Curated Celebration (A$1,350)
-              </label>
-            </div>
-          </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-2xl mx-auto">
+              <FormField
+                control={form.control}
+                name="clientName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-livePiano-light text-lg">Your Full Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g., Imme Kaschner"
+                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60 focus-visible:ring-livePiano-primary"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="clientEmail"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-livePiano-light text-lg">Your Email Address</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="e.g., your@email.com"
+                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60 focus-visible:ring-livePiano-primary"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <div className="flex items-center justify-center space-x-3 mt-6">
-            <Checkbox id="add-on-checkbox" className="h-6 w-6 border-livePiano-primary data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" />
-            <label htmlFor="add-on-checkbox" className="text-xl font-medium text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Optional Add-On: Private Rehearsal Session (Add A$150)
-            </label>
-          </div>
+              <p className="text-xl text-livePiano-light/90 text-center font-semibold mt-8">
+                I, <span className="text-livePiano-primary">{form.watch("clientName") || "Your Name"}</span>, confirm my selection and booking for the event on {proposalDetails.dateOfEvent}.
+              </p>
 
-          <div className="mt-12 space-y-8 text-livePiano-light/90"> {/* Increased vertical spacing */}
-            <div className="flex flex-col items-center">
-              <p className="text-xl mb-3 font-semibold">Signature:</p> {/* Increased font size and margin */}
-              <div className="w-full max-w-md h-px bg-livePiano-border/70"></div>
-            </div>
-            <div className="flex flex-col items-center">
-              <p className="text-xl mb-3 font-semibold">Date:</p> {/* Increased font size and margin */}
-              <div className="w-full max-w-md h-px bg-livePiano-border/70"></div>
-            </div>
-          </div>
+              <FormField
+                control={form.control}
+                name="selectedPackage"
+                render={({ field }) => (
+                  <FormItem className="space-y-4">
+                    <FormLabel className="text-livePiano-light text-xl font-bold">Select Your Preferred Package:</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-4"
+                      >
+                        {packages.map((pkg) => (
+                          <FormItem key={pkg.id} className="flex items-center space-x-3">
+                            <FormControl>
+                              <RadioGroupItem value={pkg.id} id={`package-${pkg.id}`} className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" />
+                            </FormControl>
+                            <FormLabel htmlFor={`package-${pkg.id}`} className="text-xl font-medium text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                              {pkg.name} ({pkg.contribution})
+                            </FormLabel>
+                          </FormItem>
+                        ))}
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="hasAddOn"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-livePiano-border/50 p-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        id="add-on-checkbox"
+                        className="h-6 w-6 border-livePiano-primary data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel htmlFor="add-on-checkbox" className="text-xl font-medium text-livePiano-light">
+                        Optional Add-On: Private Rehearsal Session (Add A$150)
+                      </FormLabel>
+                      <FormDescription className="text-livePiano-light/70 text-base">
+                        Add a dedicated 1.5-hour rehearsal session (one week prior) for the host and any other participants.
+                      </FormDescription>
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                type="submit"
+                size="lg"
+                className="w-full bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-darker text-xl py-7 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting ? "Submitting..." : "Submit Acceptance"}
+              </Button>
+            </form>
+          </Form>
         </section>
       </main>
 
