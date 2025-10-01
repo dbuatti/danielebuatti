@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import DynamicImage from "@/components/DynamicImage";
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Minus, Plus } from 'lucide-react';
 import Footer from '@/components/Footer';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -231,9 +231,12 @@ const QuoteProposalPage: React.FC = () => {
                 control={form.control}
                 name="wantsExtraHour"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 hover:border-livePiano-primary transition-colors duration-200">
-                    <div className="flex items-center justify-between w-full">
-                      <div className="flex items-start space-x-3">
+                  <FormItem className={cn(
+                    "flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-all duration-200",
+                    field.value ? "border-livePiano-primary shadow-md" : "hover:border-livePiano-primary"
+                  )}>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
+                      <div className="flex items-start space-x-3 mb-4 sm:mb-0">
                         <FormControl>
                           <Checkbox
                             checked={field.value}
@@ -251,7 +254,7 @@ const QuoteProposalPage: React.FC = () => {
                           </FormDescription>
                         </div>
                       </div>
-                      <div className="text-xl font-bold text-livePiano-primary">
+                      <div className="text-2xl font-bold text-livePiano-primary sm:ml-auto">
                         A${extraHourDisplayCost}
                       </div>
                     </div>
@@ -262,9 +265,12 @@ const QuoteProposalPage: React.FC = () => {
                 control={form.control}
                 name="wantsRehearsal"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 hover:border-livePiano-primary transition-colors duration-200">
-                    <div className="flex items-center justify-between w-full">
-                      <div className="flex items-start space-x-3">
+                  <FormItem className={cn(
+                    "flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-all duration-200",
+                    field.value ? "border-livePiano-primary shadow-md" : "hover:border-livePiano-primary"
+                  )}>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
+                      <div className="flex items-start space-x-3 mb-4 sm:mb-0">
                         <FormControl>
                           <Checkbox
                             checked={field.value}
@@ -282,7 +288,7 @@ const QuoteProposalPage: React.FC = () => {
                           </FormDescription>
                         </div>
                       </div>
-                      <div className="text-xl font-bold text-livePiano-primary">
+                      <div className="text-2xl font-bold text-livePiano-primary sm:ml-auto">
                         A${rehearsalDisplayCost}
                       </div>
                     </div>
