@@ -11,7 +11,7 @@ const WhoIWorkWithSection: React.FC = () => {
         <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
           <CardHeader className="p-0 pb-4">
             <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
-              <Mic className="h-6 w-6" />
+              <Mic className="h-6 w-6 drop-shadow-sm" /> {/* Added drop-shadow-sm */}
               Singers & Aspiring Musicians
             </CardTitle>
           </CardHeader>
@@ -22,7 +22,7 @@ const WhoIWorkWithSection: React.FC = () => {
         <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
           <CardHeader className="p-0 pb-4">
             <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
-              <Lightbulb className="h-6 w-6" />
+              <Lightbulb className="h-6 w-6 drop-shadow-sm" /> {/* Added drop-shadow-sm */}
               Dynamic Public Speakers
             </CardTitle>
           </CardHeader>
@@ -33,7 +33,7 @@ const WhoIWorkWithSection: React.FC = () => {
         <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
           <CardHeader className="p-0 pb-4">
             <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
-              <Camera className="h-6 w-6" />
+              <Camera className="h-6 w-6 drop-shadow-sm" /> {/* Added drop-shadow-sm */}
               Film & Streaming Performers
             </CardTitle>
           </CardHeader>
@@ -44,7 +44,7 @@ const WhoIWorkWithSection: React.FC = () => {
         <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
           <CardHeader className="p-0 pb-4">
             <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
-              <HeartHandshake className="h-6 w-6" />
+              <HeartHandshake className="h-6 w-6 drop-shadow-sm" /> {/* Added drop-shadow-sm */}
               Committed Professionals
             </CardTitle>
           </CardHeader>
