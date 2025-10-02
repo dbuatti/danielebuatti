@@ -36,8 +36,9 @@ const Navbar = () => {
   const serviceLinks = [
     { name: "Services Overview", href: "/services" },
     { name: "Voice & Piano Coaching", href: "/book-voice-piano" },
-    { name: "Embodiment & Somatic Work", href: "/book-embodiment-somatic" }, // Updated link
+    { name: "Embodiment & Somatic Work", href: "/book-embodiment-somatic" },
     { name: "Presence & Communication", href: "/book-presence-communication" },
+    { name: "AMEB Accompanying", href: "/ameb-accompanying" }, // Re-added
   ];
 
   // Define main navigation links (excluding service-related ones and the new programs page)
@@ -46,7 +47,6 @@ const Navbar = () => {
     link.name !== "Services" && 
     link.name !== "Programs" && // Exclude Programs from the direct main nav links
     !link.href.startsWith("/book-") &&
-    link.name !== "AMEB Accompanying" && // Exclude from main nav
     link.name !== "Live Piano Services" // Exclude from main nav
   );
 
@@ -168,7 +168,7 @@ const Navbar = () => {
           </Button>
           <ThemeToggle />
         </nav>
-        <div className="flex items-center md:hidden">
+        <div className="flex items-center md::hidden">
           <ThemeToggle />
           <Sheet key={isSheetOpen ? "open" : "closed"} open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>

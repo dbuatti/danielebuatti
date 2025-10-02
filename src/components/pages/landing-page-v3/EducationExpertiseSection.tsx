@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Music, Leaf, Megaphone } from "lucide-react"; // Removed unused icons
+import { Music, Leaf, Megaphone } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 
 const EducationExpertiseSection: React.FC = () => {
@@ -20,6 +20,7 @@ const EducationExpertiseSection: React.FC = () => {
               <li>Piano & Keyboard Performance</li>
               <li>Music Direction & Conducting</li>
               <li>Score Preparation & Technology</li>
+              <li>AMEB Accompanying</li> {/* Added AMEB Accompanying here */}
             </ul>
           </CardContent>
         </Card>

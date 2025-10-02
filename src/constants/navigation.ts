@@ -11,6 +11,6 @@ export const navLinks = [
   { name: "Voice & Piano Coaching", href: "/book-voice-piano" }, // Updated to direct booking
   { name: "Embodiment & Somatic Work", href: "/book-embodiment-somatic" }, // Updated link
   { name: "Presence & Communication", href: "/book-presence-communication" }, // New link
-  { name: "AMEB Accompanying", href: "/ameb-accompanying" },
+  { name: "AMEB Accompanying", href: "/ameb-accompanying" }, // Re-added
   { name: "Live Piano Services", href: "/live-piano-services" },
 ];
