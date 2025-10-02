@@ -20,7 +20,7 @@ const UnifiedAboutSection: React.FC = () => {
             height={500}
           />
           <div className="absolute -top-10 -right-10 bg-brand-primary/20 dark:bg-brand-primary/30 p-6 rounded-xl shadow-lg hidden md:block transform rotate-3">
-            <p className="text-sm text-brand-dark dark:text-brand-light italic text-shadow-sm">"My therapeutic approach fosters authentic connection."</p> {/* Added text-shadow-sm */}
+            <p className="text-sm text-brand-dark dark:text-brand-light italic">"My therapeutic approach fosters authentic connection."</p> {/* Removed text-shadow-sm */}
           </div>
         </div>
         <div className="text-center md:text-left space-y-8">
@@ -28,7 +28,7 @@ const UnifiedAboutSection: React.FC = () => {
             I help performers and communicators connect body, breath, and voice so they can express themselves with freedom, authenticity, and ease. My work is about discovering a voice that feels grounded, resonant, and spacious — one that grows out of the whole body rather than being forced or strained. Through mindful awareness and playful exploration, I guide singers to connect breath, body, and sound for confident, impactful, and authentic expression.
           </p>
           <div className="space-y-2">
-            <p className="text-xl font-semibold text-brand-primary text-shadow-sm">THOUGHT • INTENTION • BREATH • EXPRESSION</p> {/* Added text-shadow-sm */}
+            <p className="text-xl font-semibold text-brand-primary">THOUGHT • INTENTION • BREATH • EXPRESSION</p> {/* Removed text-shadow-sm */}
             <p className="text-md text-brand-dark/70 dark:text-brand-light/70">
               I believe true expression arises when the impulse to communicate is embodied. My approach blends therapeutic awareness with practical training, helping students notice and release patterns of tension, expand their sense of resonance, and explore sound with curiosity. This process not only informs performance and character work but also deepens self-understanding, supporting connection, wellbeing, and sustainable artistry.
             </p>
