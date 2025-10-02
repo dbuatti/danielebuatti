@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom'; // Import useLocation
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -12,9 +12,23 @@ import SectionHeading from '@/components/SectionHeading';
 import { Mic, Leaf, Megaphone, Piano, FileText } from 'lucide-react'; // Added icons for categories
 
 const ServicesPage: React.FC = () => {
+  const location = useLocation(); // Get current location
+
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    window.scrollTo(0, 0); // Scroll to top on initial load/route change
+
+    // Handle scrolling to hash fragment
+    if (location.hash) {
+      const id = location.hash.substring(1);
+      const element = document.getElementById(id);
+      if (element) {
+        // Use a timeout to ensure the element is rendered and the page has settled
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100); // Small delay
+      }
+    }
+  }, [location]); // Re-run effect when location changes
 
   const pageTitle = "My Coaching Services";
   const subtitle = "Holistic Coaching for Your Voice, Body, and Performance";
@@ -42,8 +56,6 @@ const ServicesPage: React.FC = () => {
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/50 to-transparent"></div>
           </section>
-
-          {/* Removed the introductory text block here */}
 
           {/* My Key Expertise Section */}
           <div className="space-y-8">
@@ -80,6 +92,7 @@ const ServicesPage: React.FC = () => {
                 <li>Holistic Voice & Somatic Techniques (Breath-Body-Mind, Yoga, Mindfulness)</li>
                 <li>Tension Release for vocal freedom</li>
                 <li>Mind-Body Connection for natural resonance</li>
+              <li>Mind-Body Connection for natural resonance</li>
               </ul>
             </div>
 
