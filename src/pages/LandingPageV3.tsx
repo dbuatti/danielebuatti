@@ -23,6 +23,7 @@ import CallToActionSection from "@/components/pages/landing-page-v3/CallToAction
 // import AdditionalProgramsSection from "@/components/pages/landing-page-v3/AdditionalProgramsSection"; // Removed from here
 // import InstagramFeedSection from "@/components/pages/landing-page-v3/InstagramFeedSection"; // Temporarily removed
 import AdditionalProgramBanner from "@/components/AdditionalProgramBanner";
+import ResonanceProgramCard from "@/components/ResonanceProgramCard"; // Import the new component
 
 const LandingPageV3: React.FC = () => {
   useSmoothScroll();
@@ -51,6 +52,9 @@ const LandingPageV3: React.FC = () => {
         <TestimonialsSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <SessionsAvailabilitySection />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        {/* Add ResonanceProgramCard here */}
+        <ResonanceProgramCard className="my-12" />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <AdditionalProgramBanner
           title={<span className="text-brand-primary">AUDITION CUT PLAYTHROUGH</span>}

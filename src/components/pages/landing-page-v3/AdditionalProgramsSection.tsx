@@ -1,6 +1,7 @@
 import React from "react";
 import SectionHeading from "@/components/SectionHeading";
 import FeaturedProgramCard from "@/components/FeaturedProgramCard";
+import ResonanceProgramCard from "@/components/ResonanceProgramCard"; // Import the new component
 
 const AdditionalProgramsSection: React.FC = () => {
   return (
@@ -31,16 +32,8 @@ const AdditionalProgramsSection: React.FC = () => {
           buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
         />
 
-        {/* FeaturedProgramCard for Resonance with Daniele */}
-        <FeaturedProgramCard
-          title="Resonance with Daniele: A Joyful Pop-Up Choir for All Voices"
-          description="Join a welcoming community to sing, connect, and shine, with no experience needed."
-          link="https://resonance-with-daniele.vercel.app"
-          linkText="Join Resonance Choir"
-          backgroundImageSrc="/conduct.jpeg"
-          className="max-w-6xl"
-          buttonBgClass="bg-brand-light hover:bg-brand-light/90 text-brand-dark"
-        />
+        {/* ResonanceProgramCard for Choir */}
+        <ResonanceProgramCard className="max-w-6xl" />
 
         {/* FeaturedProgramCard for Live Piano Services */}
         <FeaturedProgramCard
