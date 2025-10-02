@@ -25,19 +25,19 @@ const UnifiedAboutSection: React.FC = () => {
         </div>
         <div className="text-center md:text-left space-y-8">
           <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-            For over 12 years, I've been a Music Director, Pianist, Arranger, Vocal Coach, and Educator. I offer a unique blend of artistic leadership and evidence-based methods, training versatile, industry-ready performers and communicators. My experience spans professional music theatre, vocal pedagogy, tertiary education, and holistic somatic practices. My focus is on high-quality, embodied coaching and innovative performance curricula, helping artists express themselves through a holistic approach that connects breath, body, and mind for truly embodied performance and profound personal well-being.
+            I help performers and communicators connect body, breath, and voice, so they can express themselves with freedom, authenticity, and ease. Discover a voice that feels free, grounded, and authentic, and learn to connect breath, body, and sound for confident, impactful performances. My holistic approach integrates world-class musical training with deep body awareness and a powerful mindset, helping you achieve more without strain, stress, or burnout.
           </p>
           <div className="space-y-2">
             <p className="text-xl font-semibold text-brand-primary">THOUGHT • INTENTION • BREATH • EXPRESSION</p>
             <p className="text-md text-brand-dark/70 dark:text-brand-light/70">
-              I believe expression truly happens when the thought arises to express. My therapeutic approach helps students not only inform the characters they portray but also gain a deeper understanding of their own mannerisms, expressions, and thoughts, fostering authentic connection and healing through self-awareness.
+              I believe true expression arises when the thought to express is fully embodied. My therapeutic approach guides students to not only inform the characters they portray but also to gain a deeper understanding of their own mannerisms, expressions, and thoughts, fostering authentic connection and healing through self-awareness.
             </p>
           </div>
-          {/* Removed View CV button as it's moving to Programs page */}
+          <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
+            With over 12 years of experience as a Music Director, Pianist, Arranger, Vocal Coach, and Educator, my background spans professional music theatre, vocal pedagogy, tertiary education, and holistic somatic practices. This extensive track record forms the foundation for my unique, high-quality, and embodied coaching, training versatile, industry-ready performers and communicators.
+          </p>
         </div>
       </div>
-
-      {/* Removed Full Story and Education section */}
     </section>
   );
 };
