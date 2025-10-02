@@ -34,9 +34,9 @@ const LandingPageV3: React.FC = () => {
       <main className="mx-auto px-4">
         <HeroSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <UnifiedAboutSection /> {/* Using the new unified section */}
+        <EducationExpertiseSection /> {/* Moved this section here */}
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <EducationExpertiseSection /> {/* This will be updated in a later step to only contain expertise */}
+        <UnifiedAboutSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <GreenroomAwardsSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
