@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom'; // Import useLocation
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -9,30 +9,11 @@ import DynamicImage from '@/components/DynamicImage';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionHeading from '@/components/SectionHeading';
-import { Mic, Leaf, Megaphone, Piano, FileText } from 'lucide-react'; // Added icons for categories
+import { Mic, Leaf, Megaphone, Piano, FileText } from 'lucide-react';
 
 const ServicesPage: React.FC = () => {
-  const location = useLocation(); // Get current location
-
-  useEffect(() => {
-    const navigationEntry = performance.getEntriesByType("navigation")[0];
-    const isReload = navigationEntry && (navigationEntry as PerformanceNavigationTiming).type === "reload";
-
-    if (isReload) {
-      // On a full page reload, always scroll to the top and ignore hash
-      window.scrollTo(0, 0);
-    } else if (location.hash) {
-      // For regular navigation with a hash, scroll to the hash after a short delay
-      const id = location.hash.substring(1);
-      const element = document.getElementById(id);
-      if (element) {
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100); // Small delay to ensure element is rendered
-      }
-    }
-    // If not a reload and no hash, the ScrollToTop component (in App.tsx) will handle scrolling to 0,0
-  }, [location]); // Re-run effect when location changes
+  // Removed useEffect for scrolling, as ScrollToTop component now handles all scroll logic.
+  // The location hook is still used implicitly by Link components, but not directly for scrolling here.
 
   const pageTitle = "My Coaching Services";
   const subtitle = "Holistic Coaching for Your Voice, Body, and Performance";
@@ -67,7 +48,7 @@ const ServicesPage: React.FC = () => {
             <Separator className="max-w-xs mx-auto bg-brand-secondary" />
 
             {/* Performance & Musicianship Category */}
-            <div id="voice-piano" className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+            <div id="performance-musicianship" className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
               <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
                 <Mic className="h-8 w-8" /> Performance & Musicianship
               </h3>
