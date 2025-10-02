@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React from 'react'; // Removed useEffect and useLocation
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -13,7 +13,7 @@ import { Mic, Leaf, Megaphone, Piano, FileText } from 'lucide-react';
 
 const ServicesPage: React.FC = () => {
   // Removed useEffect for scrolling, as ScrollToTop component now handles all scroll logic.
-  // The location hook is still used implicitly by Link components, but not directly for scrolling here.
+  // The location hook is no longer needed here.
 
   const pageTitle = "My Coaching Services";
   const subtitle = "Holistic Coaching for Your Voice, Body, and Performance";
@@ -48,7 +48,7 @@ const ServicesPage: React.FC = () => {
             <Separator className="max-w-xs mx-auto bg-brand-secondary" />
 
             {/* Performance & Musicianship Category */}
-            <div id="performance-musicianship" className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+            <div className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
               <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
                 <Mic className="h-8 w-8" /> Performance & Musicianship
               </h3>
@@ -62,10 +62,15 @@ const ServicesPage: React.FC = () => {
                 <li>Score Preparation & Technology</li>
                 <li>AMEB Accompanying</li>
               </ul>
+              <div className="text-center mt-6">
+                <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+                  <Link to="/book-voice-piano">Book Performance & Musicianship Session</Link>
+                </Button>
+              </div>
             </div>
 
             {/* Embodiment & Somatic Work Category */}
-            <div id="embodiment-somatic" className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+            <div className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
               <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
                 <Leaf className="h-8 w-8" /> Embodiment & Somatic Work
               </h3>
@@ -79,10 +84,15 @@ const ServicesPage: React.FC = () => {
                 <li>Mind-Body Connection for natural resonance</li>
               <li>Mind-Body Connection for natural resonance</li>
               </ul>
+              <div className="text-center mt-6">
+                <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+                  <Link to="/book-embodiment-somatic">Book Embodiment & Somatic Session</Link>
+                </Button>
+              </div>
             </div>
 
             {/* Presence & Communication Category */}
-            <div id="presence-communication" className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+            <div className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
               <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
                 <Megaphone className="h-8 w-8" /> Presence & Communication
               </h3>
@@ -94,6 +104,11 @@ const ServicesPage: React.FC = () => {
                 <li>Acting & Film Performance</li>
                 <li>On-Camera & Streaming Presence</li>
               </ul>
+              <div className="text-center mt-6">
+                <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+                  <Link to="/book-presence-communication">Book Presence & Communication Session</Link>
+                </Button>
+              </div>
             </div>
           </div>
 

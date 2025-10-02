@@ -16,7 +16,7 @@ const VoicePianoServicesPage: React.FC = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const pageTitle = "Voice & Piano Coaching";
+  const pageTitle = "Performance & Musicianship Coaching"; // Changed from "Voice & Piano Coaching"
   const subtitle = "Unlock Your Full Vocal & Musical Potential";
 
   return (
@@ -120,7 +120,7 @@ const VoicePianoServicesPage: React.FC = () => {
           <div className="text-center mt-8">
             <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
               <Link to="/book-voice-piano">
-                Book Your Voice & Piano Session
+                Book Your Performance & Musicianship Session
               </Link>
             </Button>
           </div>

@@ -12,7 +12,7 @@ const VoicePianoBookingPage: React.FC = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const pageTitle = "Book Voice & Piano Sessions";
+  const pageTitle = "Book Performance & Musicianship Sessions"; // Changed from "Book Voice & Piano Sessions"
   const subtitle = "Unlock Your Full Vocal & Musical Potential";
 
   return (
@@ -26,8 +26,8 @@ const VoicePianoBookingPage: React.FC = () => {
         </div>
         <div className="max-w-7xl mx-auto">
           <AcuityEmbed
-            src="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:Voice%20%2B%20Piano"
-            title="Voice & Piano Booking"
+            src="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:Voice%20%2B%20Piano" // Keeping original Acuity category name for now
+            title="Performance & Musicianship Booking" // Changed from "Voice & Piano Booking"
           />
         </div>
       </main>

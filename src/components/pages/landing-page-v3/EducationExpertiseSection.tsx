@@ -10,7 +10,7 @@ const EducationExpertiseSection: React.FC = () => {
       <SectionHeading>My Key Expertise</SectionHeading>
       <div className="grid md:grid-cols-3 gap-8">
         {/* Category 1: Performance & Musicianship */}
-        <Link to="/services#voice-piano" className="block"> {/* Wrap with Link */}
+        <Link to="/book-voice-piano" className="block"> {/* Link to booking page */}
           <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 h-full">
             <CardHeader className="p-0 pb-4">
               <Music className="h-12 w-12 text-brand-primary mx-auto mb-4" />
@@ -29,7 +29,7 @@ const EducationExpertiseSection: React.FC = () => {
         </Link>
 
         {/* Category 2: Embodiment & Somatic Work */}
-        <Link to="/services#embodiment-somatic" className="block"> {/* Wrap with Link */}
+        <Link to="/book-embodiment-somatic" className="block"> {/* Link to booking page */}
           <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 h-full">
             <CardHeader className="p-0 pb-4">
               <Leaf className="h-12 w-12 text-brand-primary mx-auto mb-4" />
@@ -47,7 +47,7 @@ const EducationExpertiseSection: React.FC = () => {
         </Link>
 
         {/* Category 3: Presence & Communication */}
-        <Link to="/services#presence-communication" className="block"> {/* Wrap with Link */}
+        <Link to="/book-presence-communication" className="block"> {/* Link to booking page */}
           <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 h-full">
             <CardHeader className="p-0 pb-4">
               <Megaphone className="h-12 w-12 text-brand-primary mx-auto mb-4" />

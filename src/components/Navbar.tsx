@@ -33,15 +33,12 @@ const Navbar = () => {
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
 
-  const serviceLinks = [
-    { name: "Voice & Piano Coaching", href: "/services#voice-piano" },
-    { name: "Embodiment & Somatic Work", href: "/services#embodiment-somatic" },
-    { name: "Presence & Communication", href: "/services#presence-communication" },
-  ];
+  // Removed serviceLinks array as specific anchor links are no longer used.
+  // The "Services" dropdown will now simply link to the /services page.
 
   // Define main navigation links (excluding service-related ones and the new programs page)
   const mainNavLinks = navLinks.filter(link => 
-    !link.href.startsWith("/services#") && // Exclude anchor links
+    !link.href.startsWith("/services#") && // Exclude anchor links (though none exist now)
     link.name !== "Services" && 
     link.name !== "Programs" && 
     link.name !== "AMEB Accompanying" && 
@@ -119,7 +116,7 @@ const Navbar = () => {
               }
             })}
 
-          {/* Services Dropdown for Desktop */}
+          {/* Services Dropdown for Desktop - now links directly to /services */}
           <DropdownMenu open={isServicesDropdownOpen} onOpenChange={setIsServicesDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <Link
@@ -140,13 +137,12 @@ const Navbar = () => {
               onPointerEnter={handleMouseEnter}
               onPointerLeave={handleMouseLeave}
             >
-              {serviceLinks.map((service) => (
-                <DropdownMenuItem key={service.name} asChild>
-                  <Link to={service.href} className="text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark-alt">
-                    {service.name}
-                  </Link>
-                </DropdownMenuItem>
-              ))}
+              {/* Removed individual service links from dropdown. User can navigate from /services page. */}
+              <DropdownMenuItem asChild>
+                <Link to="/services" className="text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark-alt">
+                  View All Services
+                </Link>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -211,7 +207,7 @@ const Navbar = () => {
                     }
                   })}
 
-                {/* Services Dropdown for Mobile (inside Sheet) */}
+                {/* Services Dropdown for Mobile (inside Sheet) - now links directly to /services */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Link
@@ -230,13 +226,12 @@ const Navbar = () => {
                     </Link>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="bg-brand-light dark:bg-brand-dark border-brand-secondary w-[calc(100%-2rem)] ml-4">
-                    {serviceLinks.map((service) => (
-                      <DropdownMenuItem key={service.name} asChild>
-                        <Link to={service.href} className="text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark-alt" onClick={() => setIsSheetOpen(false)}>
-                          {service.name}
-                        </Link>
-                      </DropdownMenuItem>
-                    ))}
+                    {/* Removed individual service links from dropdown. User can navigate from /services page. */}
+                    <DropdownMenuItem asChild>
+                      <Link to="/services" className="text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark-alt" onClick={() => setIsSheetOpen(false)}>
+                        View All Services
+                      </Link>
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
 
