@@ -35,6 +35,9 @@ const MusicDirectorPianistCard: React.FC<MusicDirectorPianistCardProps> = ({ cla
         <p>
           I completed a Bachelor of Music at the Australian Institute of Music (2014-2016), where I focused on Arranging, Composition, Orchestration, and Piano. Furthering my commitment to holistic development, I also earned a Diploma of Kinesiology, specialising in mind-body integration for performance and well-being, which deeply informs my integrated coaching approach.
         </p>
+        <p>
+          With over 12 years of experience as a Music Director, Pianist, Arranger, Vocal Coach, and Educator, I bring together professional music theatre expertise, vocal pedagogy, and somatic practices influenced by kinesiology and yoga. This integrated approach forms the foundation for my unique, embodied coaching — training versatile, resilient, and expressive performers and communicators.
+        </p>
       </div>
     </>
   );
