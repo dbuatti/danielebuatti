@@ -12,19 +12,20 @@ import SeoStructuredData from "@/components/SeoStructuredData";
 import HeroSection from "@/components/pages/landing-page-v3/HeroSection";
 import UnifiedAboutSection from "@/components/pages/landing-page-v3/UnifiedAboutSection";
 import EducationExpertiseSection from "@/components/pages/landing-page-v3/EducationExpertiseSection";
-import GreenroomAwardsSection from "@/components/pages/landing-page-v3/GreenroomAwardsSection";
+// Removed GreenroomAwardsSection import
 import WhoIWorkWithSection from "@/components/pages/landing-page-v3/WhoIWorkWithSection";
-import DanieleSmileHostSection from "@/components/pages/landing-page-v3/DanieleSmileHostSection";
+// Removed DanieleSmileHostSection import
 import EmbodiedApproachSection from "@/components/pages/landing-page-v3/EmbodiedApproachSection";
-import DanieleCalmAtPianoSection from "@/components/pages/landing-page-v3/DanieleCalmAtPianoSection";
+// Removed DanieleCalmAtPianoSection import
 import TestimonialsSection from "@/components/pages/landing-page-v3/TestimonialsSection";
 import SessionsAvailabilitySection from "@/components/pages/landing-page-v3/SessionsAvailabilitySection";
 import WhyWorkWithMeSection from "@/components/pages/landing-page-v3/WhyWorkWithMeSection";
-import TulipsSection from "@/components/pages/landing-page-v3/TulipsSection";
+// Removed TulipsSection import
 import CallToActionSection from "@/components/pages/landing-page-v3/CallToActionSection";
-// import AdditionalProgramBanner from "@/components/AdditionalProgramBanner"; // Removed this import as the specific banner is moved
+import AdditionalProgramBanner from "@/components/AdditionalProgramBanner";
 import ResonanceProgramCard from "@/components/ResonanceProgramCard";
 import DynamicImage from "@/components/DynamicImage"; // Import DynamicImage
+import ImageCarouselSection from "@/components/pages/landing-page-v3/ImageCarouselSection"; // New import for carousel
 
 const LandingPageV3: React.FC = () => {
   useSmoothScroll();
@@ -64,16 +65,12 @@ const LandingPageV3: React.FC = () => {
           </p>
         </section>
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <GreenroomAwardsSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <DanieleSmileHostSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <DanieleCalmAtPianoSection />
+        {/* Replaced individual image sections with the new carousel */}
+        <ImageCarouselSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <ResonanceProgramCard className="my-12" />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        {/* The AdditionalProgramBanner for Audition Cut Playthrough has been moved to ArchivePage.tsx */}
-        {/* <AdditionalProgramBanner
+        <AdditionalProgramBanner
           title={<span className="text-brand-primary">AUDITION CUT PLAYTHROUGH</span>}
           subtitle="Live run through of your audition cut"
           description={
@@ -93,7 +90,7 @@ const LandingPageV3: React.FC = () => {
           titleClassName="text-5xl md:text-6xl font-extrabold uppercase"
           backgroundImageSrc="/danielepianolaugh.jpeg"
           backgroundPosition="80% center"
-        /> */}
+        />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
         <TulipsSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
