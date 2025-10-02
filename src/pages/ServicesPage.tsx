@@ -65,11 +65,7 @@ const ServicesPage: React.FC = () => {
                   <strong>Audition Cut Playthrough:</strong> A focused 15-minute online drop-in session to run your 16–32 bar audition cut with an experienced audition pianist. Receive live playthrough and practical feedback, perfect for auditions and self-tapes. Please upload your clear PDF sheet music when booking.
                 </li>
               </ul>
-              <div className="text-center mt-6">
-                <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-                  <Link to="/book-voice-piano">Book Performance & Musicianship Session</Link>
-                </Button>
-              </div>
+              {/* Removed the "Book Performance & Musicianship Session" button */}
             </div>
 
             {/* Embodiment & Somatic Work Category */}
@@ -86,11 +82,7 @@ const ServicesPage: React.FC = () => {
                 <li>Tension Release for vocal freedom</li>
                 <li>Mind-Body Connection for natural resonance</li>
               </ul>
-              <div className="text-center mt-6">
-                <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-                  <Link to="/book-embodiment-somatic">Book Embodiment & Somatic Session</Link>
-                </Button>
-              </div>
+              {/* Removed the "Book Embodiment & Somatic Session" button */}
             </div>
 
             {/* Presence & Communication Category */}
@@ -106,11 +98,7 @@ const ServicesPage: React.FC = () => {
                 <li>Acting & Film Performance</li>
                 <li>On-Camera & Streaming Presence</li>
               </ul>
-              <div className="text-center mt-6">
-                <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-                  <Link to="/book-presence-communication">Book Presence & Communication Session</Link>
-                </Button>
-              </div>
+              {/* Removed the "Book Presence & Communication Session" button */}
             </div>
           </div>
 
