@@ -26,28 +26,28 @@ serve(async (req) => {
     const { record } = payload; // The new contact_message record
 
     if (!record) {
+      console.error('Edge Function: No record found in payload');
       return new Response(JSON.stringify({ error: 'No record found in payload' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    const { name, email, message, created_at } = record; // 'type' is no longer relevant here
+    const { name, email, message, created_at } = record;
 
     // Retrieve secrets for email service
     const EMAIL_SERVICE_API_KEY = Deno.env.get('EMAIL_SERVICE_API_KEY');
     const CONTACT_FORM_RECIPIENT_EMAIL = Deno.env.get('CONTACT_FORM_RECIPIENT_EMAIL');
-    const EMAIL_SERVICE_ENDPOINT = Deno.env.get('EMAIL_SERVICE_ENDPOINT'); // e.g., for SendGrid, Mailgun, Resend
+    const EMAIL_SERVICE_ENDPOINT = Deno.env.get('EMAIL_SERVICE_ENDPOINT');
 
     if (!EMAIL_SERVICE_API_KEY || !CONTACT_FORM_RECIPIENT_EMAIL || !EMAIL_SERVICE_ENDPOINT) {
-      console.error('Missing email service environment variables.');
+      console.error('Edge Function: Missing email service environment variables. Check EMAIL_SERVICE_API_KEY, CONTACT_FORM_RECIPIENT_EMAIL, EMAIL_SERVICE_ENDPOINT.');
       return new Response(JSON.stringify({ error: 'Server configuration error: Missing email service credentials.' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    // This function now exclusively handles contact form submissions
     const subject = `New Contact Form Submission from ${name}`;
     const emailHtml = `
       <div style="font-family: 'Outfit', sans-serif; color: #00022D; background-color: #F8F8F8; padding: 20px; border-radius: 8px;">
@@ -79,7 +79,6 @@ serve(async (req) => {
       </div>
     `;
 
-    // Resend API call
     const emailResponse = await fetch(EMAIL_SERVICE_ENDPOINT, {
       method: 'POST',
       headers: {
@@ -96,11 +95,11 @@ serve(async (req) => {
 
     if (!emailResponse.ok) {
       const errorData = await emailResponse.json();
-      console.error('Email service error:', errorData);
-      throw new Error(`Failed to send email: ${emailResponse.statusText}`);
+      console.error('Edge Function: Email service error - Status:', emailResponse.status, 'Body:', errorData);
+      throw new Error(`Failed to send email: ${emailResponse.statusText} - ${JSON.stringify(errorData)}`);
     }
 
-    console.log(`Email notification sent for contact form successfully!`);
+    console.log(`Edge Function: Email notification sent for contact form successfully!`);
 
     return new Response(JSON.stringify({ message: `Email notification sent for contact form` }), {
       status: 200,
@@ -108,7 +107,7 @@ serve(async (req) => {
     });
 
   } catch (error) {
-    console.error('Edge Function error:', error.message);
+    console.error('Edge Function: Caught error during execution:', error.message);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
