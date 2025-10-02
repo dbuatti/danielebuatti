@@ -15,17 +15,25 @@ const ServicesPage: React.FC = () => {
   const location = useLocation(); // Get current location
 
   useEffect(() => {
-    window.scrollTo(0, 0); // Scroll to top on initial load/route change
+    const navigationEntry = performance.getEntriesByType("navigation")[0];
+    // Assert that navigationEntry is PerformanceNavigationTiming to access 'type'
+    const isReload = navigationEntry && (navigationEntry as PerformanceNavigationTiming).type === "reload";
 
-    // Handle scrolling to hash fragment
-    if (location.hash) {
-      const id = location.hash.substring(1);
-      const element = document.getElementById(id);
-      if (element) {
-        // Use a timeout to ensure the element is rendered and the page has settled
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100); // Small delay
+    if (isReload) {
+      // On a full page reload, always scroll to the top and ignore hash
+      window.scrollTo(0, 0);
+    } else {
+      // For regular navigation, scroll to top first, then to hash if present
+      window.scrollTo(0, 0); 
+      if (location.hash) {
+        const id = location.hash.substring(1);
+        const element = document.getElementById(id);
+        if (element) {
+          // Use a timeout to ensure the element is rendered and the page has settled
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100); // Small delay
+        }
       }
     }
   }, [location]); // Re-run effect when location changes
