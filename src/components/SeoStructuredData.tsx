@@ -62,7 +62,7 @@ const SeoStructuredData: React.FC = () => {
                   "@type": "Offer",
                   "itemOffered": {
                     "@type": "Service",
-                    "name": "Healing & Body-Voice Integration Sessions",
+                    "name": "Embodiment & Somatic Work Sessions", // Updated name
                     "description": "Integrated body-voice work sessions focusing on holistic somatic practices."
                   }
                 },
@@ -87,10 +87,10 @@ const SeoStructuredData: React.FC = () => {
             {
               "@type": "Offer",
               "itemOffered": {
-                "@type": "Service",
-                "name": "Remote/Zoom Sessions",
-                "description": "World-class coaching available online for on-camera performance, virtual presentations, audition cuts, and Kinesiology."
-              }
+                  "@type": "Service",
+                  "name": "Remote/Zoom Sessions",
+                  "description": "World-class coaching available online for on-camera performance, virtual presentations, audition cuts, and Kinesiology."
+                }
             },
             {
               "@type": "Offer",

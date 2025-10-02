@@ -36,8 +36,8 @@ const Navbar = () => {
   const serviceLinks = [
     { name: "Services Overview", href: "/services" },
     { name: "Voice & Piano Coaching", href: "/book-voice-piano" },
-    { name: "Healing & Body-Voice Integration", href: "/book-healing" },
-    { name: "Presence & Communication", href: "/book-presence-communication" }, // New link
+    { name: "Embodiment & Somatic Work", href: "/book-embodiment-somatic" }, // Updated link
+    { name: "Presence & Communication", href: "/book-presence-communication" },
   ];
 
   // Define main navigation links (excluding service-related ones and the new programs page)

@@ -7,12 +7,12 @@ import Footer from '@/components/Footer';
 import SectionHeading from '@/components/SectionHeading';
 import { Separator } from '@/components/ui/separator';
 
-const HealingBookingPage: React.FC = () => {
+const EmbodimentSomaticBookingPage: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const pageTitle = "Book Healing & Body-Voice Integration";
+  const pageTitle = "Book Embodiment & Somatic Work Sessions";
   const subtitle = "Restore Balance, Ease Tension, and Unlock Authentic Expression";
 
   return (
@@ -29,8 +29,8 @@ const HealingBookingPage: React.FC = () => {
             These sessions are designed to restore balance, ease stress and tension, and release unhelpful patterns, fostering a profound connection between your inner self and your expressive voice. By addressing the root causes of physical and emotional blocks, we unlock greater freedom and authenticity in all forms of communication and performance.
           </p>
           <AcuityEmbed
-            src="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:Healing%20%2B%20Body-Voice%20Integration"
-            title="Healing & Body-Voice Integration Booking"
+            src="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:Healing%20%2B%20Body-Voice%20Integration" // Keep original Acuity category for now, user can update if Acuity category name changes
+            title="Embodiment & Somatic Work Booking"
           />
         </div>
       </main>
@@ -39,4 +39,4 @@ const HealingBookingPage: React.FC = () => {
   );
 };
 
-export default HealingBookingPage;
+export default EmbodimentSomaticBookingPage;

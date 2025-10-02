@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Mic, HeartHandshake, Megaphone } from 'lucide-react'; // Added Megaphone icon
+import { Mic, HeartHandshake, Megaphone } from 'lucide-react';
 import DynamicImage from '@/components/DynamicImage';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -81,12 +81,12 @@ const ServicesPage: React.FC = () => {
               </div>
             </Card>
 
-            {/* Healing & Body-Voice Integration Card */}
+            {/* Embodiment & Somatic Work Card */}
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] hover:border-brand-primary transition-all duration-300">
               <CardHeader className="p-0 pb-4">
                 <CardTitle className="flex items-center gap-3 text-2xl text-brand-primary">
                   <HeartHandshake className="h-7 w-7" />
-                  Healing & Body-Voice Integration
+                  Embodiment & Somatic Work
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 flex-grow space-y-4">
@@ -99,14 +99,14 @@ const ServicesPage: React.FC = () => {
               </CardContent>
               <div className="mt-6 text-center">
                 <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-                  <Link to="/book-healing">
-                    Book Healing Session
+                  <Link to="/book-embodiment-somatic">
+                    Book Embodiment & Somatic Session
                   </Link>
                 </Button>
               </div>
             </Card>
 
-            {/* New Presence & Communication Card */}
+            {/* Presence & Communication Card */}
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] hover:border-brand-primary transition-all duration-300">
               <CardHeader className="p-0 pb-4">
                 <CardTitle className="flex items-center gap-3 text-2xl text-brand-primary">

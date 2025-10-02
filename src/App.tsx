@@ -6,13 +6,13 @@ import LandingPageV3 from './pages/LandingPageV3';
 import LivePianoServicesPage from './pages/LivePianoServicesPage';
 import VoicePianoServicesPage from './pages/VoicePianoServicesPage';
 import VoicePianoBookingPage from './pages/VoicePianoBookingPage';
-import HealingBookingPage from './pages/HealingBookingPage';
+import EmbodimentSomaticBookingPage from './pages/EmbodimentSomaticBookingPage'; // Updated import
 import AmebAccompanyingPage from './pages/AmebAccompanyingPage';
 import ServicesPage from './pages/ServicesPage';
 import QuoteProposalPage from './pages/QuoteProposalPage';
 import QuoteConfirmationPage from './pages/QuoteConfirmationPage';
 import ProgramsPage from './pages/ProgramsPage';
-import PresenceCommunicationBookingPage from './pages/PresenceCommunicationBookingPage'; // New import
+import PresenceCommunicationBookingPage from './pages/PresenceCommunicationBookingPage';
 import { Toaster } from 'sonner';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -28,8 +28,8 @@ function App() {
         <Route path="/live-piano-services" element={<LivePianoServicesPage />} />
         <Route path="/voice-piano-services" element={<VoicePianoServicesPage />} />
         <Route path="/book-voice-piano" element={<VoicePianoBookingPage />} />
-        <Route path="/book-healing" element={<HealingBookingPage />} />
-        <Route path="/book-presence-communication" element={<PresenceCommunicationBookingPage />} /> {/* New route */}
+        <Route path="/book-embodiment-somatic" element={<EmbodimentSomaticBookingPage />} /> {/* Updated route */}
+        <Route path="/book-presence-communication" element={<PresenceCommunicationBookingPage />} />
         <Route path="/ameb-accompanying" element={<AmebAccompanyingPage />} />
         <Route path="/live-piano-services/quote-proposal" element={<QuoteProposalPage />} />
         <Route path="/live-piano-services/quote-confirmation" element={<QuoteConfirmationPage />} />
