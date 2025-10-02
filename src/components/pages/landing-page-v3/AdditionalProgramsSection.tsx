@@ -7,23 +7,8 @@ import ResonanceProgramCard from "@/components/ResonanceProgramCard";
 const AdditionalProgramsSection: React.FC = () => {
   return (
     <section className="py-12">
-      <div className="container mx-auto px-4 mb-10">
-        <SectionHeading>Explore More from Daniele</SectionHeading>
-      </div>
+      {/* Removed the SectionHeading and its container */}
       <div className="space-y-12">
-        {/* NEW: FeaturedProgramCard for Music Director & Pianist */}
-        <FeaturedProgramCard
-          title="Music Director & Pianist"
-          description="Explore my extensive experience as a music director, vocal coach, pianist, and performer in music theatre."
-          link="/music-director-pianist"
-          linkText="Learn More"
-          backgroundImageSrc="/daniele simple.jpeg" // Using the image from the original card
-          className="max-w-6xl"
-          buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-          overlayColorClass="bg-black/50"
-          backgroundPosition="center"
-        />
-
         {/* FeaturedProgramCard for Buattiverse */}
         <FeaturedProgramCard
           title="Buattiverse: Sheet Music & Backing Tracks"
