@@ -59,9 +59,6 @@ const SessionsAvailabilitySection: React.FC = () => {
           </Card>
         </div>
       </div>
-      {/* Removed: <p className="text-xl font-medium text-brand-primary mt-8">
-        📅 Limited November spots are now open. Schedule a complimentary discovery call to explore your potential.
-      </p> */}
     </section>
   );
 };

@@ -38,7 +38,7 @@ export const testimonials = [ // Added export keyword
 
 const TestimonialsSection: React.FC = () => {
   return (
-    <section id="testimonials" className="max-w-7xl mx-auto text-center space-y-10 py-12 bg-brand-secondary/20 dark:bg-brand-dark/50 rounded-xl shadow-lg">
+    <section id="testimonials" className="max-w-7xl mx-auto text-center space-y-10 py-12 bg-brand-secondary/20 dark:bg-brand-dark/50 rounded-xl shadow-lg"> {/* Added background, rounded corners, and shadow */}
       <SectionHeading>What My Clients Say</SectionHeading>
       <Carousel
         opts={{
