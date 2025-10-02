@@ -7,7 +7,7 @@ import SectionHeading from '@/components/SectionHeading';
 import { Separator } from '@/components/ui/separator';
 import AdditionalProgramsSection from '@/components/pages/landing-page-v3/AdditionalProgramsSection';
 import BackToTopButton from '@/components/BackToTopButton';
-// Removed MusicDirectorPianistCard import as it's now a separate page
+import MusicDirectorPianistCard from '@/components/pages/programs/MusicDirectorPianistCard'; // Re-import the card
 
 const ProgramsPage: React.FC = () => {
   return (
@@ -22,7 +22,12 @@ const ProgramsPage: React.FC = () => {
           <Separator className="max-w-xs mx-auto bg-brand-secondary" />
         </div>
 
-        {/* The Music Director & Pianist content is now on its own page, linked from AdditionalProgramsSection */}
+        {/* Music Director & Pianist Section */}
+        <section className="py-12 max-w-7xl mx-auto space-y-10">
+          <SectionHeading>Music Director & Pianist</SectionHeading>
+          <MusicDirectorPianistCard />
+        </section>
+
         {/* Other Programs Section */}
         <AdditionalProgramsSection />
       </main>

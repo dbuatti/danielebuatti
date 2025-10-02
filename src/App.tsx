@@ -14,7 +14,7 @@ import QuoteConfirmationPage from './pages/QuoteConfirmationPage';
 import ProgramsPage from './pages/ProgramsPage';
 import PresenceCommunicationBookingPage from './pages/PresenceCommunicationBookingPage';
 import ArchivePage from './pages/ArchivePage';
-import MusicDirectorPianistPage from './pages/MusicDirectorPianistPage'; // New import
+// Removed MusicDirectorPianistPage import
 import { Toaster } from 'sonner';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -36,7 +36,7 @@ function App() {
         <Route path="/live-piano-services/quote-proposal" element={<QuoteProposalPage />} />
         <Route path="/live-piano-services/quote-confirmation" element={<QuoteConfirmationPage />} />
         <Route path="/archive" element={<ArchivePage />} />
-        <Route path="/music-director-pianist" element={<MusicDirectorPianistPage />} /> {/* New route */}
+        {/* Removed Music Director & Pianist route */}
       </Routes>
     </Router>
   );
