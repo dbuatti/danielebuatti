@@ -20,6 +20,9 @@ const AdditionalProgramsSection: React.FC = () => {
           buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
           overlayColorClass="bg-black/50"
           backgroundPosition="center"
+          // Adjusting the inner card's background and text for better contrast
+          cardBgClass="bg-brand-light dark:bg-brand-dark-alt" // New prop for inner card background
+          cardTextClass="text-brand-dark dark:text-brand-light" // New prop for inner card text
         />
 
         {/* FeaturedProgramCard for Buattiverse */}

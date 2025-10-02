@@ -4,10 +4,9 @@ import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionHeading from '@/components/SectionHeading';
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@/components/ui/separator'; // Fixed import syntax
 import AdditionalProgramsSection from '@/components/pages/landing-page-v3/AdditionalProgramsSection';
 import BackToTopButton from '@/components/BackToTopButton';
-// Removed MusicDirectorPianistCard import as it's now a separate page
 
 const ProgramsPage: React.FC = () => {
   return (
@@ -19,7 +18,7 @@ const ProgramsPage: React.FC = () => {
           <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 max-w-3xl mx-auto">
             Explore my diverse range of musical and educational ventures, from sheet music and backing tracks to community choirs and live performances.
           </p>
-          <Separator className="max-w-xs mx-auto bg-brand-secondary" />
+          <Separator className="max-w-xs mx-auto bg-brand-secondary mt-8" /> {/* Added separator */}
         </div>
 
         {/* Removed Music Director & Pianist section from here */}

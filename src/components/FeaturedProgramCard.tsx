@@ -21,6 +21,8 @@ interface FeaturedProgramCardProps {
   buttonTextClass?: string;
   overlayColorClass?: string; // Still useful for background images
   backgroundPosition?: string; // New prop for background-position
+  cardBgClass?: string; // NEW: Prop for inner card background
+  cardTextClass?: string; // NEW: Prop for inner card text
 }
 
 const FeaturedProgramCard: React.FC<FeaturedProgramCardProps> = ({
@@ -36,6 +38,8 @@ const FeaturedProgramCard: React.FC<FeaturedProgramCardProps> = ({
   buttonTextClass = "",
   overlayColorClass = "bg-black/30", // Default to black overlay
   backgroundPosition = "center", // Default to center
+  cardBgClass = "bg-brand-dark/80 dark:bg-brand-dark/90", // Default inner card background
+  cardTextClass = "text-brand-light", // Default inner card text
 }) => {
   const hasBackgroundImage = !!backgroundImageSrc;
   const hasSolidBackgroundWithLogo = !!backgroundColorClass && !!logoSrc;
@@ -67,14 +71,14 @@ const FeaturedProgramCard: React.FC<FeaturedProgramCardProps> = ({
       )}
 
       {/* Content Card */}
-      <Card className="relative z-10 bg-brand-dark/80 dark:bg-brand-dark/90 text-brand-light p-6 md:p-8 max-w-md mx-auto border-brand-secondary shadow-lg">
+      <Card className={cn("relative z-10 p-6 md:p-8 max-w-md mx-auto border-brand-secondary shadow-lg", cardBgClass, cardTextClass)}>
         <CardHeader className="p-0 pb-4">
           <CardTitle className="text-3xl font-extrabold leading-tight text-shadow-sm">
             {title}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0 space-y-4">
-          <p className="text-lg text-brand-light/90 text-shadow-sm">
+          <p className="text-lg text-shadow-sm">
             {description}
           </p>
           <Button asChild size="lg" className={cn("text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
