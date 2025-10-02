@@ -92,8 +92,7 @@ const LandingPageV3: React.FC = () => {
           backgroundPosition="80% center"
         />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
-        <TulipsSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        {/* Removed TulipsSection rendering */}
         <CallToActionSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         {/* <InstagramFeedSection /> */} {/* Temporarily commented out */}
