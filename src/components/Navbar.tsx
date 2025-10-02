@@ -160,9 +160,11 @@ const Navbar = () => {
             Programs
           </Link>
 
-          <Link to="/services" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 px-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-            Book a session
-          </Link>
+          <Button asChild size="sm" className="h-9 px-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+            <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
+              Book a session
+            </a>
+          </Button>
           <ThemeToggle />
         </nav>
         <div className="flex items-center md:hidden">
@@ -246,9 +248,11 @@ const Navbar = () => {
                   Programs
                 </Link>
 
-                <Link to="/services" onClick={() => setIsSheetOpen(false)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-lg font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-12 px-6 py-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
-                  Book a session
-                </Link>
+                <Button asChild size="lg" className="h-12 px-6 py-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
+                  <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer" onClick={() => setIsSheetOpen(false)}>
+                    Book a session
+                  </a>
+                </Button>
               </nav>
             </SheetContent>
           </Sheet>
