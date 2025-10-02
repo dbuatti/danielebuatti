@@ -45,8 +45,8 @@ const MusicDirectorPianistCard: React.FC<MusicDirectorPianistCardProps> = ({ cla
             Passionate about the transformative power of music and theatre, I continue to inspire performers of all ages and levels, combining artistry, empathy, and technical skill to create performances that are both compelling and heartfelt.
           </p>
 
-          {/* Education & Certifications Section */}
-          <div className="pt-8 space-y-4 bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-6 rounded-lg border border-brand-secondary">
+          {/* Education & Certifications Section - now integrated without a separate box */}
+          <div className="mt-8 space-y-4"> {/* Changed pt-8 to mt-8 and removed bg/border/padding */}
             <h3 className="flex items-center gap-3 text-2xl font-bold text-brand-primary justify-center md:justify-start">
               <GraduationCap className="h-7 w-7" />
               My Education & Certifications
