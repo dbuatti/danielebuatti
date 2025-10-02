@@ -22,7 +22,7 @@ import SessionsAvailabilitySection from "@/components/pages/landing-page-v3/Sess
 import WhyWorkWithMeSection from "@/components/pages/landing-page-v3/WhyWorkWithMeSection";
 // Removed TulipsSection import
 import CallToActionSection from "@/components/pages/landing-page-v3/CallToActionSection";
-import AdditionalProgramBanner from "@/components/AdditionalProgramBanner";
+// import AdditionalProgramBanner from "@/components/AdditionalProgramBanner"; // This import is now truly not needed
 import ResonanceProgramCard from "@/components/ResonanceProgramCard";
 import DynamicImage from "@/components/DynamicImage"; // Import DynamicImage
 import ImageCarouselSection from "@/components/pages/landing-page-v3/ImageCarouselSection"; // New import for carousel
@@ -70,7 +70,8 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <ResonanceProgramCard className="my-12" />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <AdditionalProgramBanner
+        {/* THIS IS THE AUDITION CUT PLAYTHROUGH BANNER THAT IS NOW REMOVED */}
+        {/* <AdditionalProgramBanner
           title={<span className="text-brand-primary">AUDITION CUT PLAYTHROUGH</span>}
           subtitle="Live run through of your audition cut"
           description={
@@ -90,9 +91,8 @@ const LandingPageV3: React.FC = () => {
           titleClassName="text-5xl md:text-6xl font-extrabold uppercase"
           backgroundImageSrc="/danielepianolaugh.jpeg"
           backgroundPosition="80% center"
-        />
+        /> */}
         <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
-        {/* Removed TulipsSection rendering */}
         <CallToActionSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         {/* <InstagramFeedSection /> */} {/* Temporarily commented out */}
