@@ -6,14 +6,15 @@ import LandingPageV3 from './pages/LandingPageV3';
 import LivePianoServicesPage from './pages/LivePianoServicesPage';
 import VoicePianoServicesPage from './pages/VoicePianoServicesPage';
 import VoicePianoBookingPage from './pages/VoicePianoBookingPage';
-import EmbodimentSomaticBookingPage from './pages/EmbodimentSomaticBookingPage'; // Updated import
+import EmbodimentSomaticBookingPage from './pages/EmbodimentSomaticBookingPage';
 import AmebAccompanyingPage from './pages/AmebAccompanyingPage';
 import ServicesPage from './pages/ServicesPage';
 import QuoteProposalPage from './pages/QuoteProposalPage';
 import QuoteConfirmationPage from './pages/QuoteConfirmationPage';
 import ProgramsPage from './pages/ProgramsPage';
 import PresenceCommunicationBookingPage from './pages/PresenceCommunicationBookingPage';
-import ArchivePage from './pages/ArchivePage'; // New import for ArchivePage
+import ArchivePage from './pages/ArchivePage';
+import MusicDirectorPianistPage from './pages/MusicDirectorPianistPage'; // New import
 import { Toaster } from 'sonner';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -29,12 +30,13 @@ function App() {
         <Route path="/live-piano-services" element={<LivePianoServicesPage />} />
         <Route path="/voice-piano-services" element={<VoicePianoServicesPage />} />
         <Route path="/book-voice-piano" element={<VoicePianoBookingPage />} />
-        <Route path="/book-embodiment-somatic" element={<EmbodimentSomaticBookingPage />} /> {/* Updated route */}
+        <Route path="/book-embodiment-somatic" element={<EmbodimentSomaticBookingPage />} />
         <Route path="/book-presence-communication" element={<PresenceCommunicationBookingPage />} />
         <Route path="/ameb-accompanying" element={<AmebAccompanyingPage />} />
         <Route path="/live-piano-services/quote-proposal" element={<QuoteProposalPage />} />
         <Route path="/live-piano-services/quote-confirmation" element={<QuoteConfirmationPage />} />
-        <Route path="/archive" element={<ArchivePage />} /> {/* New route for ArchivePage */}
+        <Route path="/archive" element={<ArchivePage />} />
+        <Route path="/music-director-pianist" element={<MusicDirectorPianistPage />} /> {/* New route */}
       </Routes>
     </Router>
   );
