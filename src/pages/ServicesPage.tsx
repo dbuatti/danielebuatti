@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Mic, HeartHandshake } from 'lucide-react';
+import { Mic, HeartHandshake, Megaphone } from 'lucide-react'; // Added Megaphone icon
 import DynamicImage from '@/components/DynamicImage';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -74,7 +74,7 @@ const ServicesPage: React.FC = () => {
               </CardContent>
               <div className="mt-6 text-center">
                 <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-                  <Link to="/book-voice-piano"> {/* Changed link here */}
+                  <Link to="/book-voice-piano">
                     Book Voice & Piano Session
                   </Link>
                 </Button>
@@ -101,6 +101,31 @@ const ServicesPage: React.FC = () => {
                 <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
                   <Link to="/book-healing">
                     Book Healing Session
+                  </Link>
+                </Button>
+              </div>
+            </Card>
+
+            {/* New Presence & Communication Card */}
+            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] hover:border-brand-primary transition-all duration-300">
+              <CardHeader className="p-0 pb-4">
+                <CardTitle className="flex items-center gap-3 text-2xl text-brand-primary">
+                  <Megaphone className="h-7 w-7" />
+                  Presence & Communication
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 flex-grow space-y-4">
+                <p>
+                  Refine your impact in any setting. These sessions focus on public speaking, on-camera performance, acting, and streaming presence. Learn to command attention, articulate clearly, and connect authentically with your audience, whether live or virtual.
+                </p>
+                <p>
+                  Develop techniques to manage nerves, enhance vocal projection, and embody confidence for powerful and memorable communication.
+                </p>
+              </CardContent>
+              <div className="mt-6 text-center">
+                <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+                  <Link to="/book-presence-communication">
+                    Book Presence & Communication Session
                   </Link>
                 </Button>
               </div>

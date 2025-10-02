@@ -65,6 +65,14 @@ const SeoStructuredData: React.FC = () => {
                     "name": "Healing & Body-Voice Integration Sessions",
                     "description": "Integrated body-voice work sessions focusing on holistic somatic practices."
                   }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Presence & Communication Sessions",
+                    "description": "Coaching for public speaking, on-camera presence, acting, and streaming presence to enhance impact and authentic connection."
+                  }
                 }
               ]
             },

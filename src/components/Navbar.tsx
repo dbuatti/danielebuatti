@@ -37,8 +37,7 @@ const Navbar = () => {
     { name: "Services Overview", href: "/services" },
     { name: "Voice & Piano Coaching", href: "/book-voice-piano" },
     { name: "Healing & Body-Voice Integration", href: "/book-healing" },
-    { name: "AMEB Accompanying", href: "/ameb-accompanying" },
-    { name: "Live Piano Services", href: "/live-piano-services" },
+    { name: "Presence & Communication", href: "/book-presence-communication" }, // New link
   ];
 
   // Define main navigation links (excluding service-related ones and the new programs page)
@@ -46,7 +45,9 @@ const Navbar = () => {
     !serviceLinks.some(service => service.href === link.href) && 
     link.name !== "Services" && 
     link.name !== "Programs" && // Exclude Programs from the direct main nav links
-    !link.href.startsWith("/book-") 
+    !link.href.startsWith("/book-") &&
+    link.name !== "AMEB Accompanying" && // Exclude from main nav
+    link.name !== "Live Piano Services" // Exclude from main nav
   );
 
   // Define common classes for the custom trigger
