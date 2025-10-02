@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import DynamicImage from "@/components/DynamicImage";
 import SectionHeading from "@/components/SectionHeading";
-import { GraduationCap } from "lucide-react"; // Import GraduationCap icon
+// Removed GraduationCap as it's moving with the education section
 
 const UnifiedAboutSection: React.FC = () => {
   return (
@@ -33,49 +33,11 @@ const UnifiedAboutSection: React.FC = () => {
               I believe expression truly happens when the thought arises to express. My therapeutic approach helps students not only inform the characters they portray but also gain a deeper understanding of their own mannerisms, expressions, and thoughts, fostering authentic connection and healing through self-awareness.
             </p>
           </div>
-          <Button size="lg" className="mt-8 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-            <a href="https://rxresu.me/daniele.buatti/daniele-buatti-md" target="_blank" rel="noopener noreferrer">
-              View CV
-            </a>
-          </Button>
+          {/* Removed View CV button as it's moving to Programs page */}
         </div>
       </div>
 
-      {/* Full Story and Education */}
-      <div className="max-w-4xl mx-auto text-center space-y-8 pt-12">
-        <DynamicImage
-          src="/daniele simple.jpeg"
-          alt="Daniele Buatti simple headshot"
-          className="w-64 h-64 rounded-full object-cover mx-auto mb-8 shadow-lg border-4 border-brand-secondary"
-          width={256}
-          height={256}
-        />
-        <div className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed space-y-6 text-left px-4">
-          <p>
-            I am a versatile music theatre practitioner with extensive experience as a vocal coach, pianist, music director, and performer. With a career spanning over a decade, I have collaborated on a wide range of productions, from large-scale musicals to intimate workshops, including Paw Patrol Live, Beetlejuice, Heathers, A Chorus Line, Shrek, Legally Blonde, Mary Poppins, and Madiba the Musical at Melbourne’s Comedy Theatre.
-          </p>
-          <p>
-            My approach blends technical expertise with a deep understanding of embodiment, performance psychology, and improvisation, helping performers find freedom, resonance, and authenticity in their voice. I am also known for my innovative work in educational and charitable theatre programs, mentoring emerging artists and facilitating workshops that integrate movement, sound, and emotional awareness.
-          </p>
-          <p>
-            As a pianist and music director, I bring a nuanced, collaborative energy to every production, tailoring musical direction to support both performers and the narrative. My teaching and coaching practice focuses on helping artists unlock their potential, manage performance stress, and develop a sustainable, expressive relationship with their craft. This often involves addressing underlying physical or energetic blocks through body-voice integration, leading to deeper healing and more authentic expression.
-          </p>
-          <p>
-            Passionate about the transformative power of music and theatre, I continue to inspire performers of all ages and levels, combining artistry, empathy, and technical skill to create performances that are both compelling and heartfelt.
-          </p>
-
-          {/* Education & Certifications - Integrated as narrative */}
-          <div className="pt-8 space-y-4">
-            <h3 className="flex items-center gap-3 text-2xl font-bold text-brand-primary justify-center md:justify-start">
-              <GraduationCap className="h-7 w-7" />
-              My Education & Certifications
-            </h3>
-            <p>
-              I completed a Bachelor of Music at the Australian Institute of Music (2014-2016), where I focused on Arranging, Composition, Orchestration, and Piano. Furthering my commitment to holistic development, I also earned a Diploma of Kinesiology, specialising in mind-body integration for performance and well-being, which deeply informs my integrated coaching approach.
-            </p>
-          </div>
-        </div>
-      </div>
+      {/* Removed Full Story and Education section */}
     </section>
   );
 };

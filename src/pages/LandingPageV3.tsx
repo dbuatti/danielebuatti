@@ -20,10 +20,9 @@ import SessionsAvailabilitySection from "@/components/pages/landing-page-v3/Sess
 import WhyWorkWithMeSection from "@/components/pages/landing-page-v3/WhyWorkWithMeSection";
 import TulipsSection from "@/components/pages/landing-page-v3/TulipsSection";
 import CallToActionSection from "@/components/pages/landing-page-v3/CallToActionSection";
-// import AdditionalProgramsSection from "@/components/pages/landing-page-v3/AdditionalProgramsSection"; // Removed from here
-// import InstagramFeedSection from "@/components/pages/landing-page-v3/InstagramFeedSection"; // Temporarily removed
 import AdditionalProgramBanner from "@/components/AdditionalProgramBanner";
-import ResonanceProgramCard from "@/components/ResonanceProgramCard"; // Import the new component
+import ResonanceProgramCard from "@/components/ResonanceProgramCard";
+import DynamicImage from "@/components/DynamicImage"; // Import DynamicImage
 
 const LandingPageV3: React.FC = () => {
   useSmoothScroll();
@@ -39,6 +38,20 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <UnifiedAboutSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        {/* Re-adding the daniele simple.jpeg image here as a standalone section */}
+        <section className="max-w-6xl mx-auto text-center py-12">
+          <DynamicImage
+            src="/daniele simple.jpeg"
+            alt="Daniele Buatti simple headshot"
+            className="w-full max-w-md h-auto rounded-xl shadow-2xl object-cover border-4 border-brand-primary mx-auto transform rotate-1 hover:rotate-0 transition-transform duration-500"
+            width={600}
+            height={600}
+          />
+          <p className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-4">
+            Daniele Buatti, dedicated to embodied performance and well-being.
+          </p>
+        </section>
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <GreenroomAwardsSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <WhoIWorkWithSection />
@@ -53,7 +66,6 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <SessionsAvailabilitySection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        {/* Add ResonanceProgramCard here */}
         <ResonanceProgramCard className="my-12" />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <AdditionalProgramBanner
@@ -84,7 +96,6 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <CallToActionSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        {/* AdditionalProgramsSection is now on its own page */}
         {/* <InstagramFeedSection /> */} {/* Temporarily commented out */}
       </main>
 
