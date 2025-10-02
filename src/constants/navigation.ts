@@ -7,6 +7,7 @@ export const navLinks = [
   { name: "Why Work With Me?", href: "#why-me" },
   { name: "Contact", href: "#contact" },
   { name: "Services", href: "/services" }, // Consolidated services page
+  { name: "Programs", href: "/programs" }, // New Programs page
   { name: "Voice & Piano Coaching", href: "/book-voice-piano" }, // Updated to direct booking
   { name: "Healing & Body-Voice Integration", href: "/book-healing" }, // Added Healing link
   { name: "AMEB Accompanying", href: "/ameb-accompanying" },

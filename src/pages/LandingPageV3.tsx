@@ -8,7 +8,7 @@ import SeoStructuredData from "@/components/SeoStructuredData";
 
 // Import new modular sections
 import HeroSection from "@/components/pages/landing-page-v3/HeroSection";
-import UnifiedAboutSection from "@/components/pages/landing-page-v3/UnifiedAboutSection"; // New import
+import UnifiedAboutSection from "@/components/pages/landing-page-v3/UnifiedAboutSection";
 import EducationExpertiseSection from "@/components/pages/landing-page-v3/EducationExpertiseSection";
 import GreenroomAwardsSection from "@/components/pages/landing-page-v3/GreenroomAwardsSection";
 import WhoIWorkWithSection from "@/components/pages/landing-page-v3/WhoIWorkWithSection";
@@ -20,7 +20,7 @@ import SessionsAvailabilitySection from "@/components/pages/landing-page-v3/Sess
 import WhyWorkWithMeSection from "@/components/pages/landing-page-v3/WhyWorkWithMeSection";
 import TulipsSection from "@/components/pages/landing-page-v3/TulipsSection";
 import CallToActionSection from "@/components/pages/landing-page-v3/CallToActionSection";
-import AdditionalProgramsSection from "@/components/pages/landing-page-v3/AdditionalProgramsSection";
+// import AdditionalProgramsSection from "@/components/pages/landing-page-v3/AdditionalProgramsSection"; // Removed from here
 // import InstagramFeedSection from "@/components/pages/landing-page-v3/InstagramFeedSection"; // Temporarily removed
 import AdditionalProgramBanner from "@/components/AdditionalProgramBanner";
 
@@ -34,7 +34,7 @@ const LandingPageV3: React.FC = () => {
       <main className="mx-auto px-4">
         <HeroSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <EducationExpertiseSection /> {/* Moved this section here */}
+        <EducationExpertiseSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <UnifiedAboutSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
@@ -80,8 +80,7 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <CallToActionSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <AdditionalProgramsSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        {/* AdditionalProgramsSection is now on its own page */}
         {/* <InstagramFeedSection /> */} {/* Temporarily commented out */}
       </main>
 

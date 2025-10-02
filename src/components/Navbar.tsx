@@ -35,17 +35,18 @@ const Navbar = () => {
 
   const serviceLinks = [
     { name: "Services Overview", href: "/services" },
-    { name: "Voice & Piano Coaching", href: "/book-voice-piano" }, // Updated link
+    { name: "Voice & Piano Coaching", href: "/book-voice-piano" },
     { name: "Healing & Body-Voice Integration", href: "/book-healing" },
     { name: "AMEB Accompanying", href: "/ameb-accompanying" },
     { name: "Live Piano Services", href: "/live-piano-services" },
   ];
 
-  // Define main navigation links (excluding service-related ones)
+  // Define main navigation links (excluding service-related ones and the new programs page)
   const mainNavLinks = navLinks.filter(link => 
     !serviceLinks.some(service => service.href === link.href) && 
-    link.name !== "Services" && // Exclude the main "Services" link if it's handled by dropdown
-    !link.href.startsWith("/book-") // Exclude direct booking links from main nav
+    link.name !== "Services" && 
+    link.name !== "Programs" && // Exclude Programs from the direct main nav links
+    !link.href.startsWith("/book-") 
   );
 
   // Define common classes for the custom trigger
@@ -72,13 +73,10 @@ const Navbar = () => {
     }, 150);
   };
 
-  // Removed scrollToTop function as it's handled by ScrollToTop component for route changes
-  // and useSmoothScroll for hash links.
-
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
       <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center space-x-2" onClick={() => window.scrollTo(0, 0)}> {/* Simplified onClick for Home link */}
+        <Link to="/" className="flex items-center space-x-2" onClick={() => window.scrollTo(0, 0)}>
           <DynamicImage
             src={brandSymbolSrc}
             alt="Daniele Buatti Brand Symbol"
@@ -109,7 +107,7 @@ const Navbar = () => {
 
               if (link.href.startsWith('/')) {
                 return (
-                  <Link key={link.name} to={link.href} className={commonClasses} onClick={link.href === "/" ? () => window.scrollTo(0, 0) : undefined}> {/* Simplified onClick for Home link */}
+                  <Link key={link.name} to={link.href} className={commonClasses} onClick={link.href === "/" ? () => window.scrollTo(0, 0) : undefined}>
                     {link.name}
                   </Link>
                 );
@@ -152,6 +150,16 @@ const Navbar = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
+          {/* New Programs Link */}
+          <Link to="/programs" className={cn(
+            "text-sm font-medium transition-colors hover:text-brand-primary",
+            location.pathname === "/programs"
+              ? "font-bold text-brand-primary dark:text-brand-primary border-b-[3px] border-brand-primary pb-2"
+              : "text-brand-dark dark:text-brand-light"
+          )}>
+            Programs
+          </Link>
+
           <Link to="/services" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 px-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
             Book a session
           </Link>
@@ -159,14 +167,13 @@ const Navbar = () => {
         </nav>
         <div className="flex items-center md:hidden">
           <ThemeToggle />
-          <Sheet key={isSheetOpen ? "open" : "closed"} open={isSheetOpen} onOpenChange={setIsSheetOpen}> {/* Added key based on isSheetOpen */}
+          <Sheet key={isSheetOpen ? "open" : "closed"} open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
                 className="text-brand-dark dark:text-brand-light"
                 aria-label="Open main menu"
-                // Removed explicit onClick={() => setIsSheetOpen(true)}
               >
                 <Menu className="h-6 w-6" />
                 <span className="sr-only">Toggle Menu</span>
@@ -189,7 +196,7 @@ const Navbar = () => {
 
                     if (link.href.startsWith('/')) {
                       return (
-                        <Link key={link.name} to={link.href} className={commonClasses} onClick={() => setIsSheetOpen(false)}> {/* Simplified onClick to just close sheet */}
+                        <Link key={link.name} to={link.href} className={commonClasses} onClick={() => setIsSheetOpen(false)}>
                           {link.name}
                         </Link>
                       );
@@ -228,6 +235,16 @@ const Navbar = () => {
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
+
+                {/* New Programs Link for Mobile */}
+                <Link to="/programs" onClick={() => setIsSheetOpen(false)} className={cn(
+                  "text-lg font-medium hover:text-brand-primary",
+                  location.pathname === "/programs"
+                    ? "font-bold text-brand-primary dark:text-brand-primary"
+                    : "text-brand-dark dark:text-brand-light"
+                )}>
+                  Programs
+                </Link>
 
                 <Link to="/services" onClick={() => setIsSheetOpen(false)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-lg font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-12 px-6 py-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
                   Book a session
