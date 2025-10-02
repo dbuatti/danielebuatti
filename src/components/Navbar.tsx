@@ -11,19 +11,14 @@ import { useActiveSection } from "@/hooks/use-active-section";
 import { cn } from "@/lib/utils";
 import DynamicImage from "@/components/DynamicImage";
 import { useTheme } from "next-themes";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+// Removed DropdownMenu imports as it's no longer needed for Services
 
 const Navbar = () => {
   const activeSection = useActiveSection();
   const location = useLocation();
   const { theme } = useTheme();
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
-  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = React.useState(false);
+  // Removed isServicesDropdownOpen state as it's no longer needed
 
   // Close the mobile sheet whenever the route changes
   React.useEffect(() => {
@@ -33,46 +28,19 @@ const Navbar = () => {
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
 
-  // Removed serviceLinks array as specific anchor links are no longer used.
-  // The "Services" dropdown will now simply link to the /services page.
-
   // Define main navigation links (excluding service-related ones and the new programs page)
   const mainNavLinks = navLinks.filter(link => 
-    !link.href.startsWith("/services#") && // Exclude anchor links (though none exist now)
+    !link.href.startsWith("#") && // Exclude anchor links (though none exist now)
     link.name !== "Services" && 
     link.name !== "Programs" && 
     link.name !== "AMEB Accompanying" && 
     link.name !== "Live Piano Services"
   );
 
-  // Define common classes for the custom trigger
-  const servicesTriggerClasses = cn(
-    "text-sm font-medium transition-colors hover:text-brand-primary",
-    "px-3 py-2 rounded-md cursor-pointer",
-    "bg-transparent hover:bg-transparent",
-    "font-bold text-brand-primary dark:text-brand-primary border-2 border-brand-primary"
-  );
-
-  // Timeout ref for delayed closing
-  const timeoutRef = React.useRef<number | null>(null);
-
-  const handleMouseEnter = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    setIsServicesDropdownOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    timeoutRef.current = window.setTimeout(() => {
-      setIsServicesDropdownOpen(false);
-    }, 150);
-  };
-
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
       <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center space-x-2"> {/* Removed onClick={() => window.scrollTo(0, 0)} */}
+        <Link to="/" className="flex items-center space-x-2">
           <DynamicImage
             src={brandSymbolSrc}
             alt="Daniele Buatti Brand Symbol"
@@ -103,7 +71,7 @@ const Navbar = () => {
 
               if (link.href.startsWith('/')) {
                 return (
-                  <Link key={link.name} to={link.href} className={commonClasses}> {/* Removed onClick for internal links */}
+                  <Link key={link.name} to={link.href} className={commonClasses}>
                     {link.name}
                   </Link>
                 );
@@ -116,37 +84,20 @@ const Navbar = () => {
               }
             })}
 
-          {/* Services Dropdown for Desktop - now links directly to /services */}
-          <DropdownMenu open={isServicesDropdownOpen} onOpenChange={setIsServicesDropdownOpen}>
-            <DropdownMenuTrigger asChild>
-              <Link
-                to="/services" // Services button now links to the services overview page
-                className={servicesTriggerClasses}
-                role="button"
-                tabIndex={0}
-                onPointerEnter={handleMouseEnter}
-                onPointerLeave={handleMouseLeave}
-                aria-label="Toggle services menu"
-              >
-                Services
-              </Link>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="bg-brand-light dark:bg-brand-dark border-brand-secondary"
-              onPointerEnter={handleMouseEnter}
-              onPointerLeave={handleMouseLeave}
-            >
-              {/* Removed individual service links from dropdown. User can navigate from /services page. */}
-              <DropdownMenuItem asChild>
-                <Link to="/services" className="text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark-alt">
-                  View All Services
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* Services Link for Desktop (no dropdown) */}
+          <Link
+            to="/services"
+            className={cn(
+              "text-sm font-medium transition-colors hover:text-brand-primary",
+              location.pathname === "/services"
+                ? "font-bold text-brand-primary dark:text-brand-primary border-b-[3px] border-brand-primary pb-2"
+                : "text-brand-dark dark:text-brand-light"
+            )}
+          >
+            Services
+          </Link>
 
-          {/* New Programs Link */}
+          {/* Programs Link */}
           <Link to="/programs" className={cn(
             "text-sm font-medium transition-colors hover:text-brand-primary",
             location.pathname === "/programs"
@@ -207,33 +158,19 @@ const Navbar = () => {
                     }
                   })}
 
-                {/* Services Dropdown for Mobile (inside Sheet) - now links directly to /services */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Link
-                      to="/services" // Services button now links to the services overview page
-                      className={cn(
-                        "text-lg font-medium justify-start w-full px-4 py-2 rounded-md cursor-pointer",
-                        "bg-transparent hover:bg-transparent",
-                        "font-bold text-brand-primary dark:text-brand-primary border-2 border-brand-primary"
-                      )}
-                      role="button"
-                      tabIndex={0}
-                      aria-label="Toggle services menu"
-                      onClick={() => setIsSheetOpen(false)} // Close sheet on click
-                    >
-                      Services
-                    </Link>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="bg-brand-light dark:bg-brand-dark border-brand-secondary w-[calc(100%-2rem)] ml-4">
-                    {/* Removed individual service links from dropdown. User can navigate from /services page. */}
-                    <DropdownMenuItem asChild>
-                      <Link to="/services" className="text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark-alt" onClick={() => setIsSheetOpen(false)}>
-                        View All Services
-                      </Link>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                {/* Services Link for Mobile (no dropdown) */}
+                <Link
+                  to="/services"
+                  className={cn(
+                    "text-lg font-medium hover:text-brand-primary",
+                    location.pathname === "/services"
+                      ? "font-bold text-brand-primary dark:text-brand-primary"
+                      : "text-brand-dark dark:text-brand-light"
+                  )}
+                  onClick={() => setIsSheetOpen(false)}
+                >
+                  Services
+                </Link>
 
                 {/* New Programs Link for Mobile */}
                 <Link to="/programs" onClick={() => setIsSheetOpen(false)} className={cn(

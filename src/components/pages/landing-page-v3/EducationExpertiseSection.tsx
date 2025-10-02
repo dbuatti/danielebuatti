@@ -1,5 +1,6 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button"; // Import Button
 import { Music, Leaf, Megaphone } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 import { Link } from "react-router-dom"; // Import Link
@@ -10,13 +11,13 @@ const EducationExpertiseSection: React.FC = () => {
       <SectionHeading>My Key Expertise</SectionHeading>
       <div className="grid md:grid-cols-3 gap-8">
         {/* Category 1: Performance & Musicianship */}
-        <Link to="/book-voice-piano" className="block"> {/* Link to booking page */}
-          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 h-full">
+        <Link to="/services" className="block"> {/* Link to main services page */}
+          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 h-full flex flex-col justify-between">
             <CardHeader className="p-0 pb-4">
               <Music className="h-12 w-12 text-brand-primary mx-auto mb-4" />
               <CardTitle className="text-2xl text-brand-primary">Performance & Musicianship</CardTitle>
             </CardHeader>
-            <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3">
+            <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3 flex-grow">
               <ul className="list-disc list-inside text-left mx-auto max-w-xs">
                 <li>Vocal Coaching (contemporary, classical, musical theatre)</li>
                 <li>Piano & Keyboard Performance</li>
@@ -25,17 +26,22 @@ const EducationExpertiseSection: React.FC = () => {
                 <li>AMEB Accompanying</li>
               </ul>
             </CardContent>
+            <div className="mt-6"> {/* Added div for button spacing */}
+              <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+                <Link to="/services">Learn More</Link>
+              </Button>
+            </div>
           </Card>
         </Link>
 
         {/* Category 2: Embodiment & Somatic Work */}
-        <Link to="/book-embodiment-somatic" className="block"> {/* Link to booking page */}
-          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 h-full">
+        <Link to="/services" className="block"> {/* Link to main services page */}
+          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 h-full flex flex-col justify-between">
             <CardHeader className="p-0 pb-4">
               <Leaf className="h-12 w-12 text-brand-primary mx-auto mb-4" />
               <CardTitle className="text-2xl text-brand-primary">Embodiment & Somatic Work</CardTitle>
             </CardHeader>
-            <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3">
+            <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3 flex-grow">
               <ul className="list-disc list-inside text-left mx-auto max-w-xs">
                 <li>Kinesiology</li>
                 <li>Holistic Voice & Somatic Techniques (Breath-Body-Mind, Yoga, Mindfulness)</li>
@@ -43,23 +49,33 @@ const EducationExpertiseSection: React.FC = () => {
                 <li>Mind-Body Connection for natural resonance</li>
               </ul>
             </CardContent>
+            <div className="mt-6"> {/* Added div for button spacing */}
+              <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+                <Link to="/services">Learn More</Link>
+              </Button>
+            </div>
           </Card>
         </Link>
 
         {/* Category 3: Presence & Communication */}
-        <Link to="/book-presence-communication" className="block"> {/* Link to booking page */}
-          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 h-full">
+        <Link to="/services" className="block"> {/* Link to main services page */}
+          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 h-full flex flex-col justify-between">
             <CardHeader className="p-0 pb-4">
               <Megaphone className="h-12 w-12 text-brand-primary mx-auto mb-4" />
               <CardTitle className="text-2xl text-brand-primary">Presence & Communication</CardTitle>
             </CardHeader>
-            <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3">
+            <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3 flex-grow">
               <ul className="list-disc list-inside text-left mx-auto max-w-xs">
                 <li>Public Speaking & Presentation</li>
                 <li>Acting & Film Performance</li>
                 <li>On-Camera & Streaming Presence</li>
               </ul>
             </CardContent>
+            <div className="mt-6"> {/* Added div for button spacing */}
+              <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+                <Link to="/services">Learn More</Link>
+              </Button>
+            </div>
           </Card>
         </Link>
       </div>
