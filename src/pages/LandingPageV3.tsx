@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Separator } from "@/components/ui/separator";
 import Navbar from "@/components/Navbar";
@@ -34,9 +36,18 @@ const LandingPageV3: React.FC = () => {
       <main className="mx-auto px-4">
         <HeroSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <EducationExpertiseSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <UnifiedAboutSection />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <EmbodiedApproachSection />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <WhoIWorkWithSection />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <TestimonialsSection />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <SessionsAvailabilitySection />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        {/* Remaining sections in their relative order */}
+        <EducationExpertiseSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         {/* Re-adding the daniele simple.jpeg image here as a standalone section */}
         <section className="max-w-6xl mx-auto text-center py-12">
@@ -54,17 +65,9 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <GreenroomAwardsSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <WhoIWorkWithSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <DanieleSmileHostSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <EmbodiedApproachSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <DanieleCalmAtPianoSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <TestimonialsSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <SessionsAvailabilitySection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <ResonanceProgramCard className="my-12" />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
