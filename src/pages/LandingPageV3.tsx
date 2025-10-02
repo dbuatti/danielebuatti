@@ -22,7 +22,7 @@ import SessionsAvailabilitySection from "@/components/pages/landing-page-v3/Sess
 import WhyWorkWithMeSection from "@/components/pages/landing-page-v3/WhyWorkWithMeSection";
 import TulipsSection from "@/components/pages/landing-page-v3/TulipsSection";
 import CallToActionSection from "@/components/pages/landing-page-v3/CallToActionSection";
-import AdditionalProgramBanner from "@/components/AdditionalProgramBanner";
+// import AdditionalProgramBanner from "@/components/AdditionalProgramBanner"; // Removed this import as the specific banner is moved
 import ResonanceProgramCard from "@/components/ResonanceProgramCard";
 import DynamicImage from "@/components/DynamicImage"; // Import DynamicImage
 
@@ -36,7 +36,7 @@ const LandingPageV3: React.FC = () => {
       <main className="mx-auto px-4">
         <HeroSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <EducationExpertiseSection /> {/* Moved here */}
+        <EducationExpertiseSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <UnifiedAboutSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
@@ -70,7 +70,8 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <ResonanceProgramCard className="my-12" />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <AdditionalProgramBanner
+        {/* The AdditionalProgramBanner for Audition Cut Playthrough has been moved to ArchivePage.tsx */}
+        {/* <AdditionalProgramBanner
           title={<span className="text-brand-primary">AUDITION CUT PLAYTHROUGH</span>}
           subtitle="Live run through of your audition cut"
           description={
@@ -90,7 +91,7 @@ const LandingPageV3: React.FC = () => {
           titleClassName="text-5xl md:text-6xl font-extrabold uppercase"
           backgroundImageSrc="/danielepianolaugh.jpeg"
           backgroundPosition="80% center"
-        />
+        /> */}
         <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
         <WhyWorkWithMeSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />

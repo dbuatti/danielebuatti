@@ -13,6 +13,7 @@ import QuoteProposalPage from './pages/QuoteProposalPage';
 import QuoteConfirmationPage from './pages/QuoteConfirmationPage';
 import ProgramsPage from './pages/ProgramsPage';
 import PresenceCommunicationBookingPage from './pages/PresenceCommunicationBookingPage';
+import ArchivePage from './pages/ArchivePage'; // New import for ArchivePage
 import { Toaster } from 'sonner';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -33,6 +34,7 @@ function App() {
         <Route path="/ameb-accompanying" element={<AmebAccompanyingPage />} />
         <Route path="/live-piano-services/quote-proposal" element={<QuoteProposalPage />} />
         <Route path="/live-piano-services/quote-confirmation" element={<QuoteConfirmationPage />} />
+        <Route path="/archive" element={<ArchivePage />} /> {/* New route for ArchivePage */}
       </Routes>
     </Router>
   );

@@ -24,6 +24,7 @@ const EducationExpertiseSection: React.FC = () => {
                 <li>Music Direction & Conducting</li>
                 <li>Score Preparation & Technology</li>
                 <li>AMEB Accompanying</li>
+                <li>Audition Cut Playthrough</li> {/* Added this line */}
               </ul>
             </CardContent>
             <div className="mt-6"> {/* Added div for button spacing */}
