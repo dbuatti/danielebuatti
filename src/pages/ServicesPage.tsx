@@ -30,18 +30,20 @@ const ServicesPage: React.FC = () => {
         </div>
 
         <section className="max-w-4xl mx-auto space-y-10">
-          {/* Introduction Text Section */}
-          <div className="bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-8 rounded-xl shadow-inner space-y-6">
-            <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-              <strong className="text-brand-primary">Welcome! I’m Daniele Buatti, a vocal coach and musician passionate about helping artists connect deeply with their voice and body.</strong> My holistic approach <strong className="text-brand-primary">recognises</strong> that true expression and well-being are deeply intertwined.
-            </p>
-            <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-              Whether you're looking for private coaching, vocal technique, or body-mind integration sessions, you’ll find a space here to explore, grow, and refine your artistry through an embodied connection.
-            </p>
-            <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-              My coaching is designed to foster both your artistic and personal growth. Explore the categories below to see how we can work together.
-            </p>
-          </div>
+          {/* Hero Image Section */}
+          <section className="relative mt-8 mb-8 rounded-xl overflow-hidden shadow-lg border-4 border-brand-secondary">
+            <DynamicImage
+              src="/danielecalmatpiano.jpeg"
+              alt="Daniele Buatti playing piano with eyes closed, deeply in the moment"
+              className="w-full h-96 md:h-[450px] object-cover object-[5%_20%]"
+              width={800}
+              height={533}
+            />
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/50 to-transparent"></div>
+          </section>
+
+          {/* Removed the introductory text block here */}
 
           {/* My Key Expertise Section */}
           <div className="space-y-8">
