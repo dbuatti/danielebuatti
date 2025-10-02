@@ -34,20 +34,18 @@ const Navbar = () => {
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
 
   const serviceLinks = [
-    { name: "Services Overview", href: "/services" },
-    { name: "Voice & Piano Coaching", href: "/book-voice-piano" },
-    { name: "Embodiment & Somatic Work", href: "/book-embodiment-somatic" },
-    { name: "Presence & Communication", href: "/book-presence-communication" },
-    { name: "AMEB Accompanying", href: "/ameb-accompanying" }, // Re-added
+    { name: "Voice & Piano Coaching", href: "/services#voice-piano" },
+    { name: "Embodiment & Somatic Work", href: "/services#embodiment-somatic" },
+    { name: "Presence & Communication", href: "/services#presence-communication" },
   ];
 
   // Define main navigation links (excluding service-related ones and the new programs page)
   const mainNavLinks = navLinks.filter(link => 
-    !serviceLinks.some(service => service.href === link.href) && 
+    !link.href.startsWith("/services#") && // Exclude anchor links
     link.name !== "Services" && 
-    link.name !== "Programs" && // Exclude Programs from the direct main nav links
-    !link.href.startsWith("/book-") &&
-    link.name !== "Live Piano Services" // Exclude from main nav
+    link.name !== "Programs" && 
+    link.name !== "AMEB Accompanying" && 
+    link.name !== "Live Piano Services"
   );
 
   // Define common classes for the custom trigger
@@ -124,7 +122,8 @@ const Navbar = () => {
           {/* Services Dropdown for Desktop */}
           <DropdownMenu open={isServicesDropdownOpen} onOpenChange={setIsServicesDropdownOpen}>
             <DropdownMenuTrigger asChild>
-              <span
+              <Link
+                to="/services" // Services button now links to the services overview page
                 className={servicesTriggerClasses}
                 role="button"
                 tabIndex={0}
@@ -133,7 +132,7 @@ const Navbar = () => {
                 aria-label="Toggle services menu"
               >
                 Services
-              </span>
+              </Link>
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
@@ -168,7 +167,7 @@ const Navbar = () => {
           </Button>
           <ThemeToggle />
         </nav>
-        <div className="flex items-center md::hidden">
+        <div className="flex items-center md:hidden">
           <ThemeToggle />
           <Sheet key={isSheetOpen ? "open" : "closed"} open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
@@ -215,7 +214,8 @@ const Navbar = () => {
                 {/* Services Dropdown for Mobile (inside Sheet) */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <span
+                    <Link
+                      to="/services" // Services button now links to the services overview page
                       className={cn(
                         "text-lg font-medium justify-start w-full px-4 py-2 rounded-md cursor-pointer",
                         "bg-transparent hover:bg-transparent",
@@ -224,9 +224,10 @@ const Navbar = () => {
                       role="button"
                       tabIndex={0}
                       aria-label="Toggle services menu"
+                      onClick={() => setIsSheetOpen(false)} // Close sheet on click
                     >
                       Services
-                    </span>
+                    </Link>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="bg-brand-light dark:bg-brand-dark border-brand-secondary w-[calc(100%-2rem)] ml-4">
                     {serviceLinks.map((service) => (

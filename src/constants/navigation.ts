@@ -8,9 +8,9 @@ export const navLinks = [
   { name: "Contact", href: "#contact" },
   { name: "Services", href: "/services" }, // Consolidated services page
   { name: "Programs", href: "/programs" }, // New Programs page
-  { name: "Voice & Piano Coaching", href: "/book-voice-piano" }, // Updated to direct booking
-  { name: "Embodiment & Somatic Work", href: "/book-embodiment-somatic" }, // Updated link
-  { name: "Presence & Communication", href: "/book-presence-communication" }, // New link
-  { name: "AMEB Accompanying", href: "/ameb-accompanying" }, // Re-added
-  { name: "Live Piano Services", href: "/live-piano-services" },
+  { name: "Voice & Piano Coaching", href: "/services#voice-piano" }, // Now an anchor link
+  { name: "Embodiment & Somatic Work", href: "/services#embodiment-somatic" }, // Now an anchor link
+  { name: "Presence & Communication", href: "/services#presence-communication" }, // Now an anchor link
+  { name: "AMEB Accompanying", href: "/ameb-accompanying" }, // Kept as a separate page, but not in main services dropdown
+  { name: "Live Piano Services", href: "/live-piano-services" }, // Kept as a separate page, but not in main services dropdown
 ];

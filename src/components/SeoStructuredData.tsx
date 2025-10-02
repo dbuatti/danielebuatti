@@ -48,70 +48,130 @@ const SeoStructuredData: React.FC = () => {
           "itemListElement": [
             {
               "@type": "OfferCatalog",
-              "name": "1:1 Coaching",
+              "name": "Performance & Musicianship Coaching",
               "itemListElement": [
                 {
                   "@type": "Offer",
                   "itemOffered": {
                     "@type": "Service",
-                    "name": "Voice & Piano Sessions",
-                    "description": "Personalised 1:1 coaching for vocal mastery, breath work, body integration, repertoire, audition prep, and supportive piano lessons."
+                    "name": "Vocal Coaching",
+                    "description": "Coaching for contemporary, classical, and musical theatre vocal styles."
                   }
                 },
                 {
                   "@type": "Offer",
                   "itemOffered": {
                     "@type": "Service",
-                    "name": "Embodiment & Somatic Work Sessions", // Updated name
-                    "description": "Integrated body-voice work sessions focusing on holistic somatic practices."
+                    "name": "Piano & Keyboard Performance",
+                    "description": "Coaching for piano and keyboard performance."
                   }
                 },
                 {
                   "@type": "Offer",
                   "itemOffered": {
                     "@type": "Service",
-                    "name": "Presence & Communication Sessions",
-                    "description": "Coaching for public speaking, on-camera presence, acting, and streaming presence to enhance impact and authentic connection."
+                    "name": "Music Direction & Conducting",
+                    "description": "Coaching in music direction and conducting."
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Score Preparation & Technology",
+                    "description": "Coaching in score preparation and music technology."
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "AMEB Accompanying",
+                    "description": "Professional and supportive piano accompaniment for AMEB exams."
                   }
                 }
               ]
             },
             {
-              "@type": "Offer",
-              "itemOffered": {
-                "@type": "Service",
-                "name": "Workshops & Group Classes",
-                "description": "Group sessions for public speaking, on-camera presence, and 'Body Voice Sound Workshop'."
-              }
-            },
-            {
-              "@type": "Offer",
-              "itemOffered": {
-                  "@type": "Service",
-                  "name": "Remote/Zoom Sessions",
-                  "description": "World-class coaching available online for on-camera performance, virtual presentations, audition cuts, and Kinesiology."
+              "@type": "OfferCatalog",
+              "name": "Embodiment & Somatic Work Coaching",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Kinesiology",
+                    "description": "Kinesiology sessions for mind-body integration."
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Holistic Voice & Somatic Techniques",
+                    "description": "Holistic voice and somatic techniques including Breath-Body-Mind, Yoga, and Mindfulness."
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Tension Release for Vocal Freedom",
+                    "description": "Techniques for tension release to achieve vocal freedom."
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Mind-Body Connection for Natural Resonance",
+                    "description": "Coaching to foster mind-body connection for natural resonance."
+                  }
                 }
+              ]
             },
             {
-              "@type": "Offer",
-              "itemOffered": {
-                "@type": "Service",
-                "name": "AMEB Accompanying Services",
-                "description": "Professional and supportive piano accompaniment for AMEB exams and rehearsals."
-              }
+              "@type": "OfferCatalog",
+              "name": "Presence & Communication Coaching",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Public Speaking & Presentation",
+                    "description": "Coaching for public speaking and presentation skills."
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Acting & Film Performance",
+                    "description": "Coaching for acting and film performance."
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "On-Camera & Streaming Presence",
+                    "description": "Coaching for on-camera and streaming presence."
+                  }
+                }
+              ]
             }
           ]
         },
         "aggregateRating": {
           "@type": "AggregateRating",
           "ratingValue": "5",
-          "reviewCount": testimonials.length // Dynamically use the number of testimonials
+          "reviewCount": testimonials.length
         },
         "review": testimonials.map(t => ({
           "@type": "Review",
           "reviewRating": {
             "@type": "Rating",
-            "ratingValue": "5" // Assuming all testimonials are 5-star
+            "ratingValue": "5"
           },
           "author": {
             "@type": "Person",
