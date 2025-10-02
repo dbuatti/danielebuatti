@@ -7,10 +7,9 @@ import SectionHeading from '@/components/SectionHeading';
 import { Separator } from '@/components/ui/separator';
 import AdditionalProgramsSection from '@/components/pages/landing-page-v3/AdditionalProgramsSection';
 import BackToTopButton from '@/components/BackToTopButton';
+import MusicDirectorPianistCard from '@/components/pages/programs/MusicDirectorPianistCard'; // Import the card directly
 
 const ProgramsPage: React.FC = () => {
-  // Removed useEffect for scrolling, as ScrollToTop component now handles all scroll logic.
-
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
       <Navbar />
@@ -22,6 +21,14 @@ const ProgramsPage: React.FC = () => {
           </p>
           <Separator className="max-w-xs mx-auto bg-brand-secondary" />
         </div>
+
+        {/* Music Director & Pianist Section */}
+        <section className="py-12 max-w-7xl mx-auto space-y-10">
+          <SectionHeading>Music Director & Pianist</SectionHeading>
+          <MusicDirectorPianistCard />
+        </section>
+
+        {/* Other Programs Section */}
         <AdditionalProgramsSection />
       </main>
       <Footer />

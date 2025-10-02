@@ -2,7 +2,7 @@ import React from "react";
 import SectionHeading from "@/components/SectionHeading";
 import FeaturedProgramCard from "@/components/FeaturedProgramCard";
 import ResonanceProgramCard from "@/components/ResonanceProgramCard";
-import MusicDirectorPianistCard from "@/components/pages/programs/MusicDirectorPianistCard";
+// Removed MusicDirectorPianistCard import as it's now rendered directly in ProgramsPage
 
 const AdditionalProgramsSection: React.FC = () => {
   return (
@@ -11,9 +11,6 @@ const AdditionalProgramsSection: React.FC = () => {
         <SectionHeading>Explore More from Daniele</SectionHeading>
       </div>
       <div className="space-y-12">
-        {/* New Music Director & Pianist Card at the top */}
-        <MusicDirectorPianistCard className="max-w-6xl" />
-
         {/* FeaturedProgramCard for Buattiverse */}
         <FeaturedProgramCard
           title="Buattiverse: Sheet Music & Backing Tracks"

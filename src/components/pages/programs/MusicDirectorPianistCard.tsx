@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import DynamicImage from "@/components/DynamicImage";
 import { GraduationCap } from "lucide-react";
@@ -12,7 +12,6 @@ interface MusicDirectorPianistCardProps {
 }
 
 const MusicDirectorPianistCard: React.FC<MusicDirectorPianistCardProps> = ({ className }) => {
-  const title = "Music Director & Pianist";
   const description = (
     <>
       <p>
@@ -50,21 +49,16 @@ const MusicDirectorPianistCard: React.FC<MusicDirectorPianistCardProps> = ({ cla
       "flex flex-col lg:flex-row items-center gap-8 max-w-6xl mx-auto",
       className
     )}>
-      <div className="lg:w-1/3 flex-shrink-0">
+      <div className="lg:w-1/3 flex-shrink-0 flex justify-center">
         <DynamicImage
           src={imageSrc}
           alt="Daniele Buatti simple headshot"
-          className="w-full h-auto rounded-xl shadow-lg object-cover border-4 border-brand-primary"
+          className="w-full max-w-xs h-auto rounded-xl shadow-lg object-cover border-4 border-brand-primary"
           width={400}
           height={400}
         />
       </div>
       <div className="lg:w-2/3 text-center lg:text-left space-y-6">
-        <CardHeader className="p-0">
-          <CardTitle className="text-4xl font-extrabold leading-tight text-brand-primary">
-            {title}
-          </CardTitle>
-        </CardHeader>
         <CardContent className="p-0 text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed space-y-4">
           {description}
         </CardContent>
