@@ -32,7 +32,8 @@ const EducationExpertiseSection: React.FC = () => {
           </CardHeader>
           <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3">
             <ul className="list-disc list-inside text-left mx-auto max-w-xs">
-              <li>Holistic Voice & Somatic Techniques (Kinesiology, Breath-Body-Mind, Yoga, Mindfulness)</li>
+              <li>Kinesiology</li>
+              <li>Holistic Voice & Somatic Techniques (Breath-Body-Mind, Yoga, Mindfulness)</li>
               <li>Tension Release for vocal freedom</li>
               <li>Mind-Body Connection for natural resonance</li>
             </ul>
