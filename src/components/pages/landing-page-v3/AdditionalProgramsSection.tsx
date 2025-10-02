@@ -7,9 +7,7 @@ import ResonanceProgramCard from "@/components/ResonanceProgramCard";
 const AdditionalProgramsSection: React.FC = () => {
   return (
     <section className="py-12">
-      <div className="container mx-auto px-4 mb-10">
-        <SectionHeading>Explore More from Daniele</SectionHeading>
-      </div>
+      {/* Removed the SectionHeading and its container */}
       <div className="space-y-12">
         {/* NEW: FeaturedProgramCard for Music Director & Pianist */}
         <FeaturedProgramCard
