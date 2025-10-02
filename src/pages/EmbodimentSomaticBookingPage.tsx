@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import AcuityEmbed from '@/components/AcuityEmbed';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -8,9 +8,7 @@ import SectionHeading from '@/components/SectionHeading';
 import { Separator } from '@/components/ui/separator';
 
 const EmbodimentSomaticBookingPage: React.FC = () => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // Removed useEffect for scrolling, as ScrollToTop component now handles all scroll logic.
 
   const pageTitle = "Book Embodiment & Somatic Work Sessions";
   const subtitle = "Restore Balance, Ease Tension, and Unlock Authentic Expression";

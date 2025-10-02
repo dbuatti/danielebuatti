@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,9 +11,7 @@ import { toast } from 'sonner';
 import { Checkbox } from '@/components/ui/checkbox'; // Assuming you have a Checkbox component
 
 const QuotePage: React.FC = () => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // Removed useEffect for scrolling, as ScrollToTop component now handles all scroll logic.
 
   // Removed handleExportToSheets function as it's no longer used.
 

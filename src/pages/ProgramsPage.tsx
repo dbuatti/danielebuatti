@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionHeading from '@/components/SectionHeading';
@@ -9,9 +9,7 @@ import AdditionalProgramsSection from '@/components/pages/landing-page-v3/Additi
 import BackToTopButton from '@/components/BackToTopButton';
 
 const ProgramsPage: React.FC = () => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // Removed useEffect for scrolling, as ScrollToTop component now handles all scroll logic.
 
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">

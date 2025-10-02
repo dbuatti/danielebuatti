@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react'; // Removed useEffect
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -36,9 +36,7 @@ const formSchema = z.object({
 const QuoteProposalPage: React.FC = () => {
   const navigate = useNavigate();
   
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // Removed useEffect for scrolling, as ScrollToTop component now handles all scroll logic.
 
   const proposalDetails = {
     client: "Imme Kaschner",

@@ -72,7 +72,7 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
       <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center space-x-2" onClick={() => window.scrollTo(0, 0)}>
+        <Link to="/" className="flex items-center space-x-2"> {/* Removed onClick={() => window.scrollTo(0, 0)} */}
           <DynamicImage
             src={brandSymbolSrc}
             alt="Daniele Buatti Brand Symbol"
@@ -103,7 +103,7 @@ const Navbar = () => {
 
               if (link.href.startsWith('/')) {
                 return (
-                  <Link key={link.name} to={link.href} className={commonClasses} onClick={link.href === "/" ? () => window.scrollTo(0, 0) : undefined}>
+                  <Link key={link.name} to={link.href} className={commonClasses}> {/* Removed onClick for internal links */}
                     {link.name}
                   </Link>
                 );

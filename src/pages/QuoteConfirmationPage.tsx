@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import DynamicImage from "@/components/DynamicImage";
@@ -8,9 +8,7 @@ import Footer from '@/components/Footer';
 import { CheckCircle2 } from 'lucide-react';
 
 const QuoteConfirmationPage: React.FC = () => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // Removed useEffect for scrolling, as ScrollToTop component now handles all scroll logic.
 
   return (
     <div className="live-piano-theme min-h-screen bg-livePiano-background text-livePiano-light font-montserrat flex flex-col">

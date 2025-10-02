@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -12,9 +12,7 @@ import SectionHeading from '@/components/SectionHeading'; // Import SectionHeadi
 import { Separator } from '@/components/ui/separator'; // Import Separator
 
 const VoicePianoServicesPage: React.FC = () => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // Removed useEffect for scrolling, as ScrollToTop component now handles all scroll logic.
 
   const pageTitle = "Performance & Musicianship Coaching"; // Changed from "Voice & Piano Coaching"
   const subtitle = "Unlock Your Full Vocal & Musical Potential";
