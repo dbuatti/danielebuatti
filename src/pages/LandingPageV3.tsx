@@ -7,6 +7,8 @@ import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
 import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 import SeoStructuredData from "@/components/SeoStructuredData";
+import { Card, CardContent } from "@/components/ui/card"; // Import Card and CardContent
+import SectionHeading from "@/components/SectionHeading"; // Import SectionHeading
 
 // Import new modular sections
 import HeroSection from "@/components/pages/landing-page-v3/HeroSection";
@@ -51,18 +53,21 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <SessionsAvailabilitySection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        {/* Re-adding the daniele simple.jpeg image here as a standalone section */}
-        <section className="max-w-6xl mx-auto text-center py-12">
-          <DynamicImage
-            src="/daniele simple.jpeg"
-            alt="Daniele Buatti simple headshot"
-            className="w-full max-w-md h-auto rounded-xl shadow-2xl object-cover border-4 border-brand-primary mx-auto transform rotate-1 hover:rotate-0 transition-transform duration-500"
-            width={600}
-            height={600}
-          />
-          <p className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-4">
-            Daniele Buatti, dedicated to embodied performance and well-being.
-          </p>
+        {/* Standalone image now wrapped in a Card with a SectionHeading */}
+        <section className="max-w-6xl mx-auto text-center py-12 space-y-10">
+          <SectionHeading>A Personal Glimpse</SectionHeading> {/* New SectionHeading */}
+          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col items-center">
+            <DynamicImage
+              src="/daniele simple.jpeg"
+              alt="Daniele Buatti simple headshot"
+              className="w-full max-w-md h-auto rounded-xl shadow-2xl object-cover border-4 border-brand-primary mx-auto transform rotate-1 hover:rotate-0 transition-transform duration-500"
+              width={600}
+              height={600}
+            />
+            <CardContent className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-4 p-0">
+              Daniele Buatti, dedicated to embodied performance and well-being.
+            </CardContent>
+          </Card>
         </section>
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         {/* Replaced individual image sections with the new carousel */}
