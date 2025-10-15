@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { cn } from '@/lib/utils'; // Import cn for conditional class merging
+import { cn } from '@/lib/utils';
 
 // Define the form schema using zod
 const formSchema = z.object({
@@ -79,7 +79,7 @@ const ErinKennedyQuotePage: React.FC = () => {
           eventLocation: quoteDetails.location,
           preparedBy: quoteDetails.preparedBy,
           onSitePerformanceCost: onSitePerformanceCost,
-          showPreparationFee: quoteDetails.showPreparationFee,
+          showPreparationFee: quoteDetails.showPreparationFee, // Corrected variable name
           totalBaseInvoice: totalBaseInvoice,
           rehearsalBundleCostPerStudent: quoteDetails.rehearsalBundleCost,
         },
@@ -157,8 +157,8 @@ const ErinKennedyQuotePage: React.FC = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-brand-primary/20 text-brand-dark dark:text-brand-light">
-                  <th className="p-3 border-b border-brand-secondary">Component</th>
-                  <th className="p-3 border-b border-brand-secondary">Detail</th>
+                  <th className="p-3 border-b border-brand-secondary">Service Component</th>
+                  <th className="p-3 border-b border-brand-secondary">Details</th>
                   <th className="p-3 border-b border-brand-secondary text-right">Investment</th>
                 </tr>
               </thead>
@@ -166,7 +166,7 @@ const ErinKennedyQuotePage: React.FC = () => {
                 <tr className="hover:bg-brand-secondary/10 transition-colors">
                   <td className="p-3 border-b border-brand-secondary font-semibold text-brand-primary">I. Performance & On-Site Engagement</td>
                   <td className="p-3 border-b border-brand-secondary text-brand-dark/80 dark:text-brand-light/80">
-                    {quoteDetails.performanceHours} hours of dedicated on-site time, including arrival, setup, soundcheck, and performance ({quoteDetails.time}). This ensures a seamless and professional musical experience.
+                    {quoteDetails.performanceHours} hours of dedicated on-site presence, including arrival, setup, soundcheck, and performance ({quoteDetails.time}). This ensures a seamless and professional musical experience.
                     <br />
                     <span className="text-sm text-brand-dark/70 dark:text-brand-light/70">Rate: A${quoteDetails.hourlyRate}/hr</span>
                   </td>
@@ -181,7 +181,7 @@ const ErinKennedyQuotePage: React.FC = () => {
                 </tr>
                 <tr className="bg-brand-primary/10 text-brand-dark dark:text-brand-light font-bold">
                   <td className="p-3 border-b border-brand-secondary">TOTAL BASE INVOICE</td>
-                  <td className="p-3 border-b border-brand-secondary">(To be paid by {quoteDetails.client})</td>
+                  <td className="p-3 border-b border-brand-secondary">(To be paid by Erin Kennedy)</td>
                   <td className="p-3 border-b border-brand-secondary text-right">A${totalBaseInvoice}.00</td>
                 </tr>
               </tbody>
@@ -209,7 +209,7 @@ const ErinKennedyQuotePage: React.FC = () => {
         <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-lg border border-brand-secondary/30 space-y-6">
           <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center">Key Details for Your Booking</h3>
           <ul className="list-disc list-inside text-lg text-brand-dark/90 dark:text-brand-light/90 space-y-2">
-            <li>Your final invoice for the base services to {quoteDetails.client} will be A${totalBaseInvoice}.00.</li>
+            <li>Your final invoice for the base services to Erin Kennedy will be A${totalBaseInvoice}.00.</li>
             <li>A {quoteDetails.depositPercentage}% deposit (A${requiredDeposit}.00) is kindly requested immediately to formally secure the November 23rd date.</li>
             <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a tuned, weighted keyboard on stage, ready for use by 2:00 PM.</li>
           </ul>
