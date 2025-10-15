@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { cn } from '@/lib/utils'; // Import cn for conditional class merging
 
 // Define the form schema using zod
 const formSchema = z.object({
@@ -136,7 +137,7 @@ const ErinKennedyQuotePage: React.FC = () => {
 
       <main className="flex-grow max-w-7xl mx-auto px-4 py-16 space-y-12">
         <section className="text-center space-y-6">
-          <h2 className="text-5xl md:text-6xl font-libre-baskerville font-extrabold text-brand-primary mb-6 leading-none text-shadow-lg">
+          <h2 className="text-5xl md:text-6xl font-extrabold text-brand-primary mb-6 leading-none"> {/* Removed font-libre-baskerville and text-shadow-lg */}
             {quoteDetails.eventTitle} – Live Piano Quote
           </h2>
           <div className="text-xl text-brand-dark/90 dark:text-brand-light/90 max-w-3xl mx-auto space-y-3 font-medium">
@@ -150,8 +151,8 @@ const ErinKennedyQuotePage: React.FC = () => {
         </section>
 
         {/* Quote Details Table */}
-        <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-2xl border border-brand-secondary/30 space-y-6">
-          <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center text-shadow-sm">Quote Breakdown</h3>
+        <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-lg border border-brand-secondary/30 space-y-6"> {/* Reduced shadow */}
+          <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center">Quote Breakdown</h3> {/* Removed text-shadow-sm */}
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
@@ -164,19 +165,19 @@ const ErinKennedyQuotePage: React.FC = () => {
               <tbody>
                 <tr className="hover:bg-brand-secondary/10 transition-colors">
                   <td className="p-3 border-b border-brand-secondary font-semibold text-brand-primary">I. Performance & On-Site Engagement</td>
-                  <td className="p-3 border-b border-brand-secondary">
+                  <td className="p-3 border-b border-brand-secondary text-brand-dark/80 dark:text-brand-light/80"> {/* Added text color */}
                     {quoteDetails.performanceHours} hours of dedicated on-site time, including arrival, setup, soundcheck, and performance ({quoteDetails.time}). This ensures a seamless and professional musical experience.
                     <br />
                     <span className="text-sm text-brand-dark/70 dark:text-brand-light/70">Rate: A${quoteDetails.hourlyRate}/hr</span>
                   </td>
-                  <td className="p-3 border-b border-brand-secondary text-right">A${onSitePerformanceCost}.00</td>
+                  <td className="p-3 border-b border-brand-secondary text-right text-brand-dark dark:text-brand-light">A${onSitePerformanceCost}.00</td> {/* Added text color */}
                 </tr>
                 <tr className="hover:bg-brand-secondary/10 transition-colors">
                   <td className="p-3 border-b border-brand-secondary font-semibold text-brand-primary">II. Production Coordination & Music Preparation</td>
-                  <td className="p-3 border-b border-brand-secondary">
+                  <td className="p-3 border-b border-brand-secondary text-brand-dark/80 dark:text-brand-light/80"> {/* Added text color */}
                     A flat fee covering essential behind-the-scenes work: coordinating with all students, collecting and formatting sheet music, managing the performance schedule, and liaising with the venue to ensure a smooth production.
                   </td>
-                  <td className="p-3 border-b border-brand-secondary text-right">A${quoteDetails.showPreparationFee}.00</td>
+                  <td className="p-3 border-b border-brand-secondary text-right text-brand-dark dark:text-brand-light">A${quoteDetails.showPreparationFee}.00</td> {/* Added text color */}
                 </tr>
                 <tr className="bg-brand-primary/10 text-brand-dark dark:text-brand-light font-bold">
                   <td className="p-3 border-b border-brand-secondary">TOTAL BASE INVOICE</td>
@@ -189,13 +190,13 @@ const ErinKennedyQuotePage: React.FC = () => {
         </section>
 
         {/* Optional Rehearsal Bundle */}
-        <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-2xl border border-brand-secondary/30 space-y-6">
-          <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center text-shadow-sm">III. Optional Rehearsal Support for Students</h3>
+        <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-lg border border-brand-secondary/30 space-y-6"> {/* Reduced shadow */}
+          <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center">III. Optional Rehearsal Support for Students</h3> {/* Removed text-shadow-sm */}
           <p className="text-xl text-brand-dark/90 dark:text-brand-light/90 text-center max-w-3xl mx-auto">
             To help students feel fully prepared and confident for their performance, I offer a dedicated rehearsal opportunity.
           </p>
           <div className="text-center">
-            <p className="text-3xl font-semibold text-brand-primary text-shadow-sm">
+            <p className="text-3xl font-semibold text-brand-primary"> {/* Removed text-shadow-sm */}
               Investment per student: <span className="text-brand-dark dark:text-brand-light text-4xl">A${quoteDetails.rehearsalBundleCost} for a 15-minute rehearsal</span>
             </p>
             <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
@@ -205,8 +206,8 @@ const ErinKennedyQuotePage: React.FC = () => {
         </section>
 
         {/* Key Details for Your Booking */}
-        <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-2xl border border-brand-secondary/30 space-y-6">
-          <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center text-shadow-sm">Key Details for Your Booking</h3>
+        <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-lg border border-brand-secondary/30 space-y-6"> {/* Reduced shadow */}
+          <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center">Key Details for Your Booking</h3> {/* Removed text-shadow-sm */}
           <ul className="list-disc list-inside text-lg text-brand-dark/90 dark:text-brand-light/90 space-y-2">
             <li>Your final invoice for the base services to {quoteDetails.client} will be A${totalBaseInvoice}.00.</li>
             <li>A {quoteDetails.depositPercentage}% deposit (A${requiredDeposit}.00) is kindly requested immediately to formally secure the November 23rd date.</li>
@@ -216,7 +217,7 @@ const ErinKennedyQuotePage: React.FC = () => {
 
         {/* Client Acceptance Form */}
         <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-2xl border border-brand-primary/50 space-y-8">
-          <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center text-shadow-sm">Accept Your Quote</h3>
+          <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center">Accept Your Quote</h3> {/* Removed text-shadow-sm */}
           <p className="text-xl text-brand-dark/90 dark:text-brand-light/90 text-center max-w-3xl mx-auto">
             Please fill out your details below to formally accept this quote.
           </p>
