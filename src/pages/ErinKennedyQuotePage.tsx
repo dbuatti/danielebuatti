@@ -1,28 +1,51 @@
 "use client";
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import DynamicImage from "@/components/DynamicImage";
 import { ArrowLeft, Mail, Phone } from 'lucide-react';
 import { Separator } from "@/components/ui/separator";
-import Footer from '@/components/Footer'; // Re-using the main Footer for consistency
-import { useTheme } from "next-themes"; // Import useTheme to get current theme
+import Footer from '@/components/Footer';
+import { useTheme } from "next-themes";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+
+// Define the form schema using zod
+const formSchema = z.object({
+  clientName: z.string().min(2, { message: "Your full name is required." }),
+  clientEmail: z.string().email({ message: "A valid email address is required." }),
+  acceptQuote: z.boolean().refine(val => val === true, { message: "You must accept the quote to proceed." }),
+});
 
 const ErinKennedyQuotePage: React.FC = () => {
-  const { theme } = useTheme(); // Get the current theme
+  const { theme } = useTheme();
+  const navigate = useNavigate();
 
   const quoteDetails = {
     client: "Erin Kennedy",
     eventTitle: "2025 Vocal Showcase",
     dateOfEvent: "Saturday 23 November 2025",
-    time: "2:00 PM – 6:00 PM", // Adjusted time to include setup
+    time: "2:00 PM – 6:00 PM",
     location: "MC Showroom",
     preparedBy: "Daniele Buatti",
     hourlyRate: 100,
-    performanceHours: 4, // 2:00 PM - 6:00 PM
+    performanceHours: 4,
     showPreparationFee: 100,
-    rehearsalBundleCost: 30, // Updated to $30 per student
+    rehearsalBundleCost: 30, // Per student for 15 min
     depositPercentage: 50,
   };
 
@@ -32,6 +55,53 @@ const ErinKennedyQuotePage: React.FC = () => {
 
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      clientName: '',
+      clientEmail: '',
+      acceptQuote: false,
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const loadingToastId = toast.loading("Submitting your quote acceptance...");
+
+    try {
+      const { data, error } = await supabase.functions.invoke('submit-erin-kennedy-quote', {
+        body: {
+          clientName: values.clientName,
+          clientEmail: values.clientEmail,
+          eventTitle: quoteDetails.eventTitle,
+          eventDate: quoteDetails.dateOfEvent,
+          eventLocation: quoteDetails.location,
+          preparedBy: quoteDetails.preparedBy,
+          onSitePerformanceCost: onSitePerformanceCost,
+          showPreparationFee: quoteDetails.showPreparationFee,
+          totalBaseInvoice: totalBaseInvoice,
+          rehearsalBundleCostPerStudent: quoteDetails.rehearsalBundleCost,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast.success("Quote accepted successfully!", {
+        id: loadingToastId,
+        description: "Thank you! Daniele will be in touch shortly to finalize details.",
+      });
+      form.reset();
+      navigate('/live-piano-services/quote-confirmation'); // Reusing existing confirmation page
+    } catch (error) {
+      console.error("Error submitting quote acceptance:", error);
+      toast.error("Failed to submit quote acceptance.", {
+        id: loadingToastId,
+        description: "Please try again later.",
+      });
+    }
+  }
 
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light flex flex-col">
@@ -88,23 +158,23 @@ const ErinKennedyQuotePage: React.FC = () => {
                 <tr className="bg-brand-primary/20 text-brand-dark dark:text-brand-light">
                   <th className="p-3 border-b border-brand-secondary">Component</th>
                   <th className="p-3 border-b border-brand-secondary">Detail</th>
-                  <th className="p-3 border-b border-brand-secondary text-right">Cost / Investment</th>
+                  <th className="p-3 border-b border-brand-secondary text-right">Investment</th>
                 </tr>
               </thead>
               <tbody>
                 <tr className="hover:bg-brand-secondary/10 transition-colors">
-                  <td className="p-3 border-b border-brand-secondary font-semibold text-brand-primary">I. On-Site Performance Fee</td>
+                  <td className="p-3 border-b border-brand-secondary font-semibold text-brand-primary">I. Performance & On-Site Engagement</td>
                   <td className="p-3 border-b border-brand-secondary">
-                    {quoteDetails.performanceHours} Hours contracted time, covering arrival, setup, performance ({quoteDetails.time}).
+                    {quoteDetails.performanceHours} hours of dedicated on-site time, including arrival, setup, soundcheck, and performance ({quoteDetails.time}). This ensures a seamless and professional musical experience.
                     <br />
                     <span className="text-sm text-brand-dark/70 dark:text-brand-light/70">Rate: A${quoteDetails.hourlyRate}/hr</span>
                   </td>
                   <td className="p-3 border-b border-brand-secondary text-right">A${onSitePerformanceCost}.00</td>
                 </tr>
                 <tr className="hover:bg-brand-secondary/10 transition-colors">
-                  <td className="p-3 border-b border-brand-secondary font-semibold text-brand-primary">II. Show Preparation Fee</td>
+                  <td className="p-3 border-b border-brand-secondary font-semibold text-brand-primary">II. Production Coordination & Music Preparation</td>
                   <td className="p-3 border-b border-brand-secondary">
-                    Mandatory flat fee to cover all music collection, printing, sequencing, and administrative coordination with the students and venue.
+                    A flat fee covering essential behind-the-scenes work: coordinating with all students, collecting and formatting sheet music, managing the performance schedule, and liaising with the venue to ensure a smooth production.
                   </td>
                   <td className="p-3 border-b border-brand-secondary text-right">A${quoteDetails.showPreparationFee}.00</td>
                 </tr>
@@ -120,28 +190,107 @@ const ErinKennedyQuotePage: React.FC = () => {
 
         {/* Optional Rehearsal Bundle */}
         <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-2xl border border-brand-secondary/30 space-y-6">
-          <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center text-shadow-sm">III. Optional Rehearsal Bundle (Upsell)</h3>
+          <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center text-shadow-sm">III. Optional Rehearsal Support for Students</h3>
           <p className="text-xl text-brand-dark/90 dark:text-brand-light/90 text-center max-w-3xl mx-auto">
-            Offer a "Discounted Rehearsal Bundle" that students can pre-purchase to prepare for the showcase.
+            To help students feel fully prepared and confident for their performance, I offer a dedicated rehearsal opportunity.
           </p>
           <div className="text-center">
             <p className="text-3xl font-semibold text-brand-primary text-shadow-sm">
-              Cost per student: <span className="text-brand-dark dark:text-brand-light text-4xl">A${quoteDetails.rehearsalBundleCost} for a 15-minute rehearsal</span>
+              Investment per student: <span className="text-brand-dark dark:text-brand-light text-4xl">A${quoteDetails.rehearsalBundleCost} for a 15-minute rehearsal</span>
             </p>
             <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
-              (Suggested as a required purchase for students to book rehearsal time)
+              (This can be offered as a recommended purchase for students to book their individual rehearsal time.)
             </p>
           </div>
         </section>
 
-        {/* Important Notes */}
+        {/* Key Details for Your Booking */}
         <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-2xl border border-brand-secondary/30 space-y-6">
-          <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center text-shadow-sm">Important Notes</h3>
+          <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center text-shadow-sm">Key Details for Your Booking</h3>
           <ul className="list-disc list-inside text-lg text-brand-dark/90 dark:text-brand-light/90 space-y-2">
-            <li>Your final invoice to {quoteDetails.client} will be a clean A${totalBaseInvoice}.00.</li>
-            <li>A {quoteDetails.depositPercentage}% deposit (A${requiredDeposit}.00) is required immediately to formally secure the November 23rd date.</li>
-            <li><strong className="text-brand-primary">Keyboard Requirement:</strong> MC Showroom to provide a tuned, weighted keyboard on stage prior to 2:00 PM.</li>
+            <li>Your final invoice for the base services to {quoteDetails.client} will be A${totalBaseInvoice}.00.</li>
+            <li>A {quoteDetails.depositPercentage}% deposit (A${requiredDeposit}.00) is kindly requested immediately to formally secure the November 23rd date.</li>
+            <li><strong className="text-brand-primary">Keyboard Provision:</strong> We kindly request that MC Showroom provides a tuned, weighted keyboard on stage, ready for use by 2:00 PM.</li>
           </ul>
+        </section>
+
+        {/* Client Acceptance Form */}
+        <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-2xl border border-brand-primary/50 space-y-8">
+          <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center text-shadow-sm">Accept Your Quote</h3>
+          <p className="text-xl text-brand-dark/90 dark:text-brand-light/90 text-center max-w-3xl mx-auto">
+            Please fill out your details below to formally accept this quote.
+          </p>
+
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-xl mx-auto">
+              <FormField
+                control={form.control}
+                name="clientName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-brand-dark dark:text-brand-light">Your Full Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Erin Kennedy"
+                        className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="clientEmail"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-brand-dark dark:text-brand-light">Your Email Address</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="erin@example.com"
+                        className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="acceptQuote"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-brand-secondary p-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        id="accept-quote"
+                        className="h-5 w-5 border-brand-primary text-brand-dark data-[state=checked]:bg-brand-primary data-[state=checked]:text-brand-light"
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel htmlFor="accept-quote" className="text-brand-dark dark:text-brand-light text-base font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        I, <span className="text-brand-primary font-semibold">{form.watch("clientName") || "Erin Kennedy"}</span>, accept this quote for the {quoteDetails.eventTitle} on {quoteDetails.dateOfEvent}.
+                      </FormLabel>
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                type="submit"
+                size="lg"
+                className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-xl py-7 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+                disabled={form.formState.isSubmitting || !form.formState.isValid}
+              >
+                {form.formState.isSubmitting ? "Submitting..." : "Accept Quote & Proceed"}
+              </Button>
+            </form>
+          </Form>
         </section>
       </main>
 
