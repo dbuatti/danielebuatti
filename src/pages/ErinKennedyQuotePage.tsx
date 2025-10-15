@@ -40,11 +40,11 @@ const ErinKennedyQuotePage: React.FC = () => {
     client: "Erin Kennedy",
     eventTitle: "2025 Vocal Showcase",
     dateOfEvent: "Saturday 23 November 2025",
-    time: "2:00 PM – 6:00 PM",
+    time: "2:30 PM – 6:00 PM", // Changed start time to 2:30 PM
     location: "MC Showroom",
     preparedBy: "Daniele Buatti",
     hourlyRate: 100,
-    performanceHours: 4,
+    performanceHours: 3.5, // Updated to 3.5 hours (2:30 PM - 6:00 PM)
     showPreparationFee: 100,
     rehearsalBundleCost: 30, // Per student for 15 min
     depositPercentage: 50,
@@ -79,7 +79,7 @@ const ErinKennedyQuotePage: React.FC = () => {
           eventLocation: quoteDetails.location,
           preparedBy: quoteDetails.preparedBy,
           onSitePerformanceCost: onSitePerformanceCost,
-          showPreparationFee: quoteDetails.showPreparationFee, // Corrected variable name
+          showPreparationFee: quoteDetails.showPreparationFee,
           totalBaseInvoice: totalBaseInvoice,
           rehearsalBundleCostPerStudent: quoteDetails.rehearsalBundleCost,
         },
@@ -164,18 +164,18 @@ const ErinKennedyQuotePage: React.FC = () => {
               </thead>
               <tbody>
                 <tr className="hover:bg-brand-secondary/10 transition-colors">
-                  <td className="p-3 border-b border-brand-secondary font-semibold text-brand-primary">I. Performance & On-Site Engagement</td>
+                  <td className="p-3 border-b border-brand-secondary font-semibold text-brand-primary">Performance & On-Site Engagement</td> {/* Removed I. */}
                   <td className="p-3 border-b border-brand-secondary text-brand-dark/80 dark:text-brand-light/80">
-                    {quoteDetails.performanceHours} hours of dedicated on-site presence, including arrival, setup, soundcheck, and performance ({quoteDetails.time}). This ensures a seamless and professional musical experience.
+                    {quoteDetails.performanceHours} hours of dedicated on-site presence, including arrival, setup, soundcheck, and performance ({quoteDetails.time}).
                     <br />
                     <span className="text-sm text-brand-dark/70 dark:text-brand-light/70">Rate: A${quoteDetails.hourlyRate}/hr</span>
                   </td>
                   <td className="p-3 border-b border-brand-secondary text-right text-brand-dark dark:text-brand-light">A${onSitePerformanceCost}.00</td>
                 </tr>
                 <tr className="hover:bg-brand-secondary/10 transition-colors">
-                  <td className="p-3 border-b border-brand-secondary font-semibold text-brand-primary">II. Production Coordination & Music Preparation</td>
+                  <td className="p-3 border-b border-brand-secondary font-semibold text-brand-primary">Production Coordination & Music Preparation</td> {/* Removed II. */}
                   <td className="p-3 border-b border-brand-secondary text-brand-dark/80 dark:text-brand-light/80">
-                    A flat fee covering essential behind-the-scenes work: coordinating with all students, collecting and formatting sheet music, managing the performance schedule, and liaising with the venue to ensure a smooth production.
+                    A flat fee covering essential behind-the-scenes work: coordinating with all students, collecting and formatting sheet music, and preparing for a seamless production.
                   </td>
                   <td className="p-3 border-b border-brand-secondary text-right text-brand-dark dark:text-brand-light">A${quoteDetails.showPreparationFee}.00</td>
                 </tr>
@@ -191,7 +191,7 @@ const ErinKennedyQuotePage: React.FC = () => {
 
         {/* Optional Rehearsal Bundle */}
         <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-lg border border-brand-secondary/30 space-y-6">
-          <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center">III. Optional Rehearsal Support for Students</h3>
+          <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center">Optional Rehearsal Support for Students</h3> {/* Removed III. */}
           <p className="text-xl text-brand-dark/90 dark:text-brand-light/90 text-center max-w-3xl mx-auto">
             To help students feel fully prepared and confident for their performance, Daniele offers a dedicated rehearsal opportunity.
           </p>
@@ -200,18 +200,18 @@ const ErinKennedyQuotePage: React.FC = () => {
               Investment per student: <span className="text-brand-dark dark:text-brand-light text-4xl">A${quoteDetails.rehearsalBundleCost} for a 15-minute rehearsal</span>
             </p>
             <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
-              (This can be offered as a recommended purchase for students to book their individual rehearsal time.)
+              {/* Removed parenthetical note */}
             </p>
           </div>
         </section>
 
         {/* Key Details for Your Booking */}
         <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-lg border border-brand-secondary/30 space-y-6">
-          <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center">Key Details for Your Booking</h3>
+          <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center">Important Booking Details</h3>
           <ul className="list-disc list-inside text-lg text-brand-dark/90 dark:text-brand-light/90 space-y-2">
             <li>Your final invoice for the base services to Erin Kennedy will be A${totalBaseInvoice}.00.</li>
             <li>A {quoteDetails.depositPercentage}% deposit (A${requiredDeposit}.00) is kindly requested immediately to formally secure the November 23rd date.</li>
-            <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a tuned, weighted keyboard on stage, ready for use by 2:00 PM.</li>
+            <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by 2:30 PM.</li> {/* Simplified wording and updated time */}
           </ul>
         </section>
 
