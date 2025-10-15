@@ -22,7 +22,7 @@ const ErinKennedyQuotePage: React.FC = () => {
     hourlyRate: 100,
     performanceHours: 4, // 2:00 PM - 6:00 PM
     showPreparationFee: 100,
-    rehearsalBundleCost: 75, // Per student
+    rehearsalBundleCost: 30, // Updated to $30 per student
     depositPercentage: 50,
   };
 
@@ -126,7 +126,7 @@ const ErinKennedyQuotePage: React.FC = () => {
           </p>
           <div className="text-center">
             <p className="text-3xl font-semibold text-brand-primary text-shadow-sm">
-              Cost per student: <span className="text-brand-dark dark:text-brand-light text-4xl">A${quoteDetails.rehearsalBundleCost}</span>
+              Cost per student: <span className="text-brand-dark dark:text-brand-light text-4xl">A${quoteDetails.rehearsalBundleCost} for a 15-minute rehearsal</span>
             </p>
             <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
               (Suggested as a required purchase for students to book rehearsal time)
