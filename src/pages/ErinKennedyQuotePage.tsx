@@ -40,11 +40,11 @@ const ErinKennedyQuotePage: React.FC = () => {
     client: "Erin Kennedy",
     eventTitle: "2025 Vocal Showcase",
     dateOfEvent: "Saturday 23 November 2025",
-    time: "2:30 PM – 6:00 PM", // Changed start time to 2:30 PM
+    time: "2:30 PM – 6:00 PM",
     location: "MC Showroom",
     preparedBy: "Daniele Buatti",
     hourlyRate: 100,
-    performanceHours: 3.5, // Updated to 3.5 hours (2:30 PM - 6:00 PM)
+    performanceHours: 3.5,
     showPreparationFee: 100,
     rehearsalBundleCost: 30, // Per student for 15 min
     depositPercentage: 50,
@@ -164,7 +164,7 @@ const ErinKennedyQuotePage: React.FC = () => {
               </thead>
               <tbody>
                 <tr className="hover:bg-brand-secondary/10 transition-colors">
-                  <td className="p-3 border-b border-brand-secondary font-semibold text-brand-primary">Performance & On-Site Engagement</td> {/* Removed I. */}
+                  <td className="p-3 border-b border-brand-secondary font-semibold text-brand-primary">Performance & On-Site Engagement</td>
                   <td className="p-3 border-b border-brand-secondary text-brand-dark/80 dark:text-brand-light/80">
                     {quoteDetails.performanceHours} hours of dedicated on-site presence, including arrival, setup, soundcheck, and performance ({quoteDetails.time}).
                     <br />
@@ -173,7 +173,7 @@ const ErinKennedyQuotePage: React.FC = () => {
                   <td className="p-3 border-b border-brand-secondary text-right text-brand-dark dark:text-brand-light">A${onSitePerformanceCost}.00</td>
                 </tr>
                 <tr className="hover:bg-brand-secondary/10 transition-colors">
-                  <td className="p-3 border-b border-brand-secondary font-semibold text-brand-primary">Production Coordination & Music Preparation</td> {/* Removed II. */}
+                  <td className="p-3 border-b border-brand-secondary font-semibold text-brand-primary">Production Coordination & Music Preparation</td>
                   <td className="p-3 border-b border-brand-secondary text-brand-dark/80 dark:text-brand-light/80">
                     A flat fee covering essential behind-the-scenes work: coordinating with all students, collecting and formatting sheet music, and preparing for a seamless production.
                   </td>
@@ -191,16 +191,32 @@ const ErinKennedyQuotePage: React.FC = () => {
 
         {/* Optional Rehearsal Bundle */}
         <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-lg border border-brand-secondary/30 space-y-6">
-          <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center">Optional Rehearsal Support for Students</h3> {/* Removed III. */}
+          <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center">Optional Rehearsal Support for Students</h3>
           <p className="text-xl text-brand-dark/90 dark:text-brand-light/90 text-center max-w-3xl mx-auto">
-            To help students feel fully prepared and confident for their performance, Daniele offers a dedicated rehearsal opportunity.
+            To help students feel fully prepared and confident for their performance, Daniele offers dedicated rehearsal opportunities.
           </p>
           <div className="text-center">
             <p className="text-3xl font-semibold text-brand-primary">
-              Investment per student: <span className="text-brand-dark dark:text-brand-light text-4xl">A${quoteDetails.rehearsalBundleCost} for a 15-minute rehearsal</span>
+              Base Investment per student: <span className="text-brand-dark dark:text-brand-light text-4xl">A${quoteDetails.rehearsalBundleCost} for a 15-minute rehearsal</span>
             </p>
             <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
-              {/* Removed parenthetical note */}
+              A 15-minute session includes one full run-through of their piece and any necessary touch-ups.
+            </p>
+            <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
+              Students can request longer rehearsal times:
+              <ul className="list-disc list-inside text-left max-w-xs mx-auto mt-2">
+                <li>30 minutes for A$50</li>
+                <li>45 minutes for A$75</li>
+              </ul>
+            </p>
+            <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-4">
+              Daniele requires PDF sheet music of all songs and a song list at least two weeks prior to the event, if not earlier.
+            </p>
+            <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
+              Daniele will not be recording additional backing tracks between rehearsals unless specifically requested, which will incur an additional cost for the student. Daniele will do his best to record rehearsal accompaniment while rehearsing with students, but this will not be the main priority.
+            </p>
+            <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
+              Daniele will need to know how many students are participating in the concert as soon as possible and will endeavor to schedule them in a similar time block.
             </p>
           </div>
         </section>
@@ -211,7 +227,7 @@ const ErinKennedyQuotePage: React.FC = () => {
           <ul className="list-disc list-inside text-lg text-brand-dark/90 dark:text-brand-light/90 space-y-2">
             <li>Your final invoice for the base services to Erin Kennedy will be A${totalBaseInvoice}.00.</li>
             <li>A {quoteDetails.depositPercentage}% deposit (A${requiredDeposit}.00) is kindly requested immediately to formally secure the November 23rd date.</li>
-            <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by 2:30 PM.</li> {/* Simplified wording and updated time */}
+            <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by 2:30 PM.</li>
           </ul>
         </section>
 
