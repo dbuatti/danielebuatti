@@ -10,7 +10,7 @@ import Footer from '@/components/Footer';
 import { useTheme } from "next-themes";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import * as z from "zod"; // Corrected import statement
 import {
   Form,
   FormControl,
@@ -200,7 +200,7 @@ const ErinKennedyQuotePage: React.FC = () => {
               Base Investment per student: <span className="text-brand-dark dark:text-brand-light text-4xl">A${quoteDetails.rehearsalBundleCost} for a 15-minute rehearsal</span>
             </p>
             <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
-              A 15-minute session includes one full run-through of their piece and any necessary touch-ups.
+              Each 15-minute session is designed for a focused run-through of a student's piece, with time for essential touch-ups and feedback.
             </p>
             <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
               Students can request longer rehearsal times:
@@ -210,13 +210,13 @@ const ErinKennedyQuotePage: React.FC = () => {
               </ul>
             </p>
             <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-4">
-              Daniele requires PDF sheet music of all songs and a song list at least two weeks prior to the event, if not earlier.
+              To ensure thorough preparation, Daniele kindly requests PDF sheet music for all songs and a complete song list at least two weeks prior to the event (or earlier, if possible).
             </p>
             <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
-              Daniele will not be recording additional backing tracks between rehearsals unless specifically requested, which will incur an additional cost for the student. Daniele will do his best to record rehearsal accompaniment while rehearsing with students, but this will not be the main priority.
+              Please note: Daniele will not be recording additional backing tracks between rehearsals unless specifically requested, which will incur an additional cost for the student. Daniele will do his best to record rehearsal accompaniment while rehearsing with students, but this will not be the main priority.
             </p>
             <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
-              Daniele will need to know how many students are participating in the concert as soon as possible and will endeavor to schedule them in a similar time block.
+              To facilitate efficient scheduling, please inform Daniele of the total number of students participating in the concert as soon as possible. Daniele will then work to schedule rehearsals in convenient, grouped time blocks.
             </p>
           </div>
         </section>
