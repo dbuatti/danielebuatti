@@ -10,7 +10,7 @@ import Footer from '@/components/Footer';
 import { useTheme } from "next-themes";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod"; // Corrected import statement
+import * as z from "zod";
 import {
   Form,
   FormControl,
@@ -211,9 +211,6 @@ const ErinKennedyQuotePage: React.FC = () => {
             </p>
             <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-4">
               To ensure thorough preparation, Daniele kindly requests PDF sheet music for all songs and a complete song list at least two weeks prior to the event (or earlier, if possible).
-            </p>
-            <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
-              Please note: Daniele will not be recording additional backing tracks between rehearsals unless specifically requested, which will incur an additional cost for the student. Daniele will do his best to record rehearsal accompaniment while rehearsing with students, but this will not be the main priority.
             </p>
             <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
               To facilitate efficient scheduling, please inform Daniele of the total number of students participating in the concert as soon as possible. Daniele will then work to schedule rehearsals in convenient, grouped time blocks.
