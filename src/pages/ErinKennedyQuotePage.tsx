@@ -39,7 +39,7 @@ const ErinKennedyQuotePage: React.FC = () => {
   const quoteDetails = {
     client: "Erin Kennedy",
     eventTitle: "2025 Vocal Showcase",
-    dateOfEvent: "Saturday 23 November 2025",
+    dateOfEvent: "Sunday 23 November 2025", // Changed from Saturday to Sunday
     time: "2:30 PM – 6:00 PM",
     location: "MC Showroom",
     preparedBy: "Daniele Buatti",
@@ -223,7 +223,7 @@ const ErinKennedyQuotePage: React.FC = () => {
           <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center">Important Booking Details</h3>
           <ul className="list-disc list-inside text-lg text-brand-dark/90 dark:text-brand-light/90 space-y-2">
             <li>Your final invoice for the base services to Erin Kennedy will be A${totalBaseInvoice}.00.</li>
-            <li>A {quoteDetails.depositPercentage}% deposit (A${requiredDeposit}.00) is kindly requested immediately to formally secure the November 23rd date.</li>
+            <li><strong className="text-brand-primary">A non-refundable {quoteDetails.depositPercentage}% deposit (A${requiredDeposit}.00) is required immediately</strong> to formally secure the November 23rd date.</li>
             <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by 2:30 PM.</li>
           </ul>
         </section>
