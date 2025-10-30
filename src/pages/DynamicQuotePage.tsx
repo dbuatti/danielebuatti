@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import DynamicImage from "@/components/DynamicImage";
-import { ArrowLeft, Phone, Mail, Checkbox } from 'lucide-react';
+import { ArrowLeft, Phone, Mail, Loader2 } from 'lucide-react'; // Added Loader2 here
 import Footer from '@/components/Footer';
 import { useTheme } from "next-themes";
 import { toast } from 'sonner';
@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from '@/lib/utils';
+import { Checkbox } from '@/components/ui/checkbox'; // Moved Checkbox to its correct import path
 
 interface Quote {
   id: string;
@@ -77,7 +78,7 @@ const DynamicQuotePage: React.FC = () => {
     defaultValues: {
       clientName: '',
       clientEmail: '',
-      acceptQuote: false,
+      acceptQuote: false, // Always start as false for acceptance
     },
   });
 
