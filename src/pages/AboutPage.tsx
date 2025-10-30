@@ -5,11 +5,13 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SectionHeading from "@/components/SectionHeading";
 import { Separator } from "@/components/ui/separator";
-import PhilosophyStatement from "@/components/PhilosophyStatement";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Brain, Lightbulb, Volume2 } from 'lucide-react';
-import ImageCarouselSection from "@/components/pages/landing-page-v3/ImageCarouselSection"; // Import ImageCarouselSection
-// import DynamicImage from "@/components/DynamicImage"; // Removed
+// Removed PhilosophyStatement import
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'; // Card imports are no longer needed for the principles section, but might be used elsewhere. Keeping for now.
+import { Brain, Lightbulb, Volume2 } from 'lucide-react'; // Icons are no longer needed for the principles section. Keeping for now.
+import ImageCarouselSection from "@/components/pages/landing-page-v3/ImageCarouselSection";
+import DynamicImage from "@/components/DynamicImage"; // Re-added as it's used in the Hero section of the About page
+import { Button } from "@/components/ui/button"; // Re-added as it's used in the Embodied Approach section
+import { Link } from "react-router-dom"; // Re-added as it's used in the Embodied Approach section
 
 const AboutPage: React.FC = () => {
   return (
@@ -24,57 +26,9 @@ const AboutPage: React.FC = () => {
           <Separator className="max-w-xs mx-auto bg-brand-secondary" />
         </div>
 
-        {/* Detailed Embodied Approach Section (Moved from CoachingPage) */}
-        <section id="embodied-approach" className="max-w-4xl mx-auto space-y-10 py-12">
-          <SectionHeading>My Embodied Holistic Approach</SectionHeading>
-          <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
-            All my teachings are informed by Buddhist and yogic philosophies, fostering a heart-centred, process-oriented journey focused on truth and transformation, not just the destination.
-          </p>
-          
-          <PhilosophyStatement className="max-w-4xl mx-auto my-10" />
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 text-center space-y-4">
-              <CardHeader className="p-0 pb-4">
-                <Brain className="h-12 w-12 text-brand-primary mx-auto mb-4 drop-shadow-sm" />
-                <CardTitle className="text-2xl text-brand-primary">1. Embodiment & Alignment</CardTitle>
-              </CardHeader>
-              <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Rooted in Kinesiology, Yoga, and Somatic Therapy, we soften the body, lift posture, and free the breath so it supports your voice with ease. Cultivate a deeper connection between mind and body to unlock your natural vocal resonance.
-              </CardContent>
-            </Card>
-            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 text-center space-y-4">
-              <CardHeader className="p-0 pb-4">
-                <Lightbulb className="h-12 w-12 text-brand-primary mx-auto mb-4 drop-shadow-sm" />
-                <CardTitle className="text-2xl text-brand-primary">2. Mindset & Performance Coaching</CardTitle>
-              </CardHeader>
-              <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Utilising Mindfulness and therapeutic techniques, we manage nerves, setbacks, and creative blocks. Build unwavering confidence in practice, on stage, or on camera, understanding your mind to overcome performance anxiety.
-              </CardContent>
-            </Card>
-            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 text-center space-y-4">
-              <CardHeader className="p-0 pb-4">
-                <Volume2 className="h-12 w-12 text-brand-primary mx-auto mb-4 drop-shadow-sm" />
-                <CardTitle className="text-2xl text-brand-primary">3. Integrated Skill Development</CardTitle>
-                </CardHeader>
-              <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-                Voice, piano, public speaking, acting, on-camera presence—tailored to your goals. Coaching is practical, creative, and always aligned with your unique vision, helping you refine repertoire and improve musicianship.
-              </CardContent>
-            </Card>
-          </div>
-          <p className="text-center text-xl italic text-brand-dark/70 dark:text-brand-light/70 mt-8">
-            “Daniele doesn’t just teach technique—he teaches how to inhabit your artistry and presence fully.”
-          </p>
-        </section>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
-
-        {/* Daniele's Moments (Image Carousel Section - Moved from LandingPageV3) */}
-        <ImageCarouselSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
-
-        {/* Placeholder for full bio text if needed */}
-        <section className="max-w-4xl mx-auto space-y-6 py-12">
-          <SectionHeading>Daniele's Story</SectionHeading>
+        {/* 1. Daniele's Story: Experience & Credibility */}
+        <section id="daniele-story" className="max-w-4xl mx-auto space-y-6 py-12">
+          <SectionHeading>Daniele Buatti: Musician, Coach, and Embodiment Practitioner</SectionHeading>
           <div className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed space-y-4">
             <p>
               With over 12 years of experience as a Music Director, Pianist, Arranger, Vocal Coach, and Educator, Daniele Buatti brings together professional music theatre expertise, vocal pedagogy, and somatic practices influenced by kinesiology and yoga. This integrated approach forms the foundation for his unique, embodied coaching — training versatile, resilient, and expressive performers and communicators.
@@ -90,6 +44,59 @@ const AboutPage: React.FC = () => {
             </p>
           </div>
         </section>
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
+
+        {/* 2. My Embodied Holistic Approach (Narrative text only) */}
+        <section id="embodied-approach-narrative" className="max-w-4xl mx-auto space-y-10 py-12">
+          <SectionHeading>My Embodied Holistic Approach</SectionHeading>
+          <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
+            All my teachings are informed by Buddhist and yogic philosophies, fostering a heart-centred, process-oriented journey focused on truth and transformation, not just the destination.
+          </p>
+          <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
+            I help performers and communicators connect body, breath, and voice so they can express themselves with freedom, authenticity, and ease. My work is about discovering a voice that feels grounded, resonant, and spacious — one that grows out of the whole body rather than being forced or strained.
+          </p>
+          <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
+            With over 12 years of experience as a Music Director, Pianist, Arranger, Vocal Coach, and Educator, I bring together professional music theatre expertise, vocal pedagogy, and somatic practices influenced by kinesiology and yoga. This integrated approach forms the foundation for my unique, embodied coaching.
+          </p>
+          <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
+            Ready to dive deeper into how this approach can transform your performance and communication?
+          </p>
+          <div className="text-center">
+            <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+              <Link to="/coaching#embodied-approach">
+                Explore My Full Approach
+              </Link>
+            </Button>
+          </div>
+        </section>
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
+
+        {/* 3. The Guiding Principles: THOUGHT • INTENTION • BREATH • EXPRESSION */}
+        <section id="guiding-principles" className="max-w-4xl mx-auto space-y-10 py-12">
+          <SectionHeading>My Core Principles: THOUGHT • INTENTION • BREATH • EXPRESSION</SectionHeading>
+          <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
+            My coaching is built upon a simple yet powerful framework that integrates the mind, body, and voice to unlock true expressive freedom. This process ensures your performance is authentic, grounded, and sustainable.
+          </p>
+          <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-4 pl-4">
+            <li>
+              <strong className="text-brand-primary">THOUGHT:</strong> We address the mental blocks and patterned behaviors that hinder your freedom. This involves conscious intention-setting and cultivating the self-awareness necessary for growth.
+            </li>
+            <li>
+              <strong className="text-brand-primary">INTENTION:</strong> We clarify your artistic purpose and desired outcome for every performance and interaction. When your physical body aligns with your intention, your expression becomes effortlessly powerful.
+            </li>
+            <li>
+              <strong className="text-brand-primary">BREATH:</strong> We establish the physical foundation for sound. By deepening and freeing your breath, we release physical tension, calm the nervous system, and create the space for a resonant, authentic voice to emerge.
+            </li>
+            <li>
+              <strong className="text-brand-primary">EXPRESSION:</strong> This is the culmination of the process—your authentic voice in action. It is the moment when technique, body, and intention integrate, allowing you to connect confidently and compellingly with your audience.
+            </li>
+          </ul>
+        </section>
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
+
+        {/* 4. Daniele's Moments (Image Gallery) */}
+        <ImageCarouselSection />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
       </main>
       <Footer />
     </div>
