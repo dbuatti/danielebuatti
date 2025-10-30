@@ -32,6 +32,7 @@ import {
 import { Loader2, Send } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
+import { format } from 'date-fns'; // Import format for date placeholders
 
 const formSchema = z.object({
   recipientEmail: z.string().email({ message: 'A valid recipient email is required.' }),
@@ -49,12 +50,23 @@ interface EmailTemplate {
   body: string;
 }
 
+interface AmebBookingDetails {
+  student_parent_name: string;
+  contact_email: string;
+  exam_date: string;
+  exam_time: string;
+  exam_board_grade: string;
+  teacher_name?: string;
+  service_required: string[];
+}
+
 interface EmailComposerModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialRecipientEmail: string;
   initialSubject?: string;
   initialBody?: string;
+  bookingDetails?: AmebBookingDetails; // New prop for booking details
 }
 
 const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
@@ -63,6 +75,7 @@ const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
   initialRecipientEmail,
   initialSubject = '',
   initialBody = '',
+  bookingDetails, // Destructure new prop
 }) => {
   const [templates, setTemplates] = useState<EmailTemplate[]>([]);
   const [isLoadingTemplates, setIsLoadingTemplates] = useState(true);
@@ -77,6 +90,23 @@ const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
       templateId: '',
     },
   });
+
+  // Function to replace placeholders
+  const replacePlaceholders = (text: string, details?: AmebBookingDetails) => {
+    if (!details) return text;
+
+    let newText = text;
+    newText = newText.replace(/{{studentParentName}}/g, details.student_parent_name || '');
+    newText = newText.replace(/{{contactEmail}}/g, details.contact_email || '');
+    newText = newText.replace(/{{examDate}}/g, details.exam_date ? format(new Date(details.exam_date), 'PPP') : '');
+    newText = newText.replace(/{{examTime}}/g, details.exam_time || '');
+    newText = newText.replace(/{{examBoardGrade}}/g, details.exam_board_grade || '');
+    newText = newText.replace(/{{teacherName}}/g, details.teacher_name || 'N/A');
+    newText = newText.replace(/{{serviceRequired}}/g, details.service_required?.join(', ') || '');
+    // Add more placeholders as needed
+
+    return newText;
+  };
 
   // Fetch templates on mount
   useEffect(() => {
@@ -100,25 +130,30 @@ const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
 
   // Update form fields when initial props change or template is selected
   useEffect(() => {
+    const populatedSubject = replacePlaceholders(initialSubject, bookingDetails);
+    const populatedBody = replacePlaceholders(initialBody, bookingDetails);
+
     form.reset({
       recipientEmail: initialRecipientEmail,
-      subject: initialSubject,
-      body: initialBody,
+      subject: populatedSubject,
+      body: populatedBody,
       templateId: '', // Reset template selection
     });
-  }, [initialRecipientEmail, initialSubject, initialBody, form]);
+  }, [initialRecipientEmail, initialSubject, initialBody, bookingDetails, form]);
 
   const handleTemplateChange = (templateId: string) => {
     const selectedTemplate = templates.find((t) => t.id === templateId);
     if (selectedTemplate) {
-      form.setValue('subject', selectedTemplate.subject);
-      form.setValue('body', selectedTemplate.body);
+      const populatedSubject = replacePlaceholders(selectedTemplate.subject, bookingDetails);
+      const populatedBody = replacePlaceholders(selectedTemplate.body, bookingDetails);
+      form.setValue('subject', populatedSubject);
+      form.setValue('body', populatedBody);
       form.setValue('templateId', templateId);
     } else {
       form.setValue('templateId', '');
-      // Optionally clear subject/body if no template is selected
-      // form.setValue('subject', initialSubject);
-      // form.setValue('body', initialBody);
+      // If no template is selected, revert to initial (placeholder-populated) values
+      form.setValue('subject', replacePlaceholders(initialSubject, bookingDetails));
+      form.setValue('body', replacePlaceholders(initialBody, bookingDetails));
     }
   };
 
@@ -150,13 +185,23 @@ const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
     }
   };
 
+  const availablePlaceholders = [
+    '{{studentParentName}}',
+    '{{contactEmail}}',
+    '{{examDate}}',
+    '{{examTime}}',
+    '{{examBoardGrade}}',
+    '{{teacherName}}',
+    '{{serviceRequired}}',
+  ];
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[700px] bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50">
         <DialogHeader>
           <DialogTitle className="text-brand-primary">Compose Email</DialogTitle>
           <DialogDescription className="text-brand-dark/70 dark:text-brand-light/70">
-            Send a direct email to the client.
+            Send a direct email to the client. Use placeholders like `{{studentParentName}}` in your templates.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -234,6 +279,16 @@ const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
                 </FormItem>
               )}
             />
+
+            <div className="text-sm text-brand-dark/70 dark:text-brand-light/70">
+              <p className="font-semibold mb-1">Available Placeholders:</p>
+              <ul className="list-disc list-inside grid grid-cols-2 gap-1">
+                {availablePlaceholders.map((placeholder) => (
+                  <li key={placeholder}>{placeholder}</li>
+                ))}
+              </ul>
+            </div>
+
             <Button
               type="submit"
               className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
