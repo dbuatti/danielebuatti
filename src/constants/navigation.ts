@@ -9,6 +9,6 @@ export const navLinks = [
   { name: "Services", href: "/services" }, // Consolidated services page
   { name: "Programs", href: "/programs" }, // New Programs page
   // Removed specific anchor links to /services#...
-  { name: "AMEB Accompanying", href: "/ameb-accompanying" },
+  { name: "AMEB Accompanying", href: "/services/ameb-accompanying" },
   { name: "Live Piano Services", href: "/live-piano-services" },
 ];

@@ -39,7 +39,7 @@ function App() {
           <Route path="/book-voice-piano" element={<VoicePianoBookingPage />} />
           <Route path="/book-embodiment-somatic" element={<EmbodimentSomaticBookingPage />} />
           <Route path="/book-presence-communication" element={<PresenceCommunicationBookingPage />} />
-          <Route path="/ameb-accompanying" element={<AmebAccompanyingPage />} />
+          <Route path="/services/ameb-accompanying" element={<AmebAccompanyingPage />} />
           <Route path="/live-piano-services/quote-confirmation" element={<QuoteConfirmationPage />} />
           <Route path="/archive" element={<ArchivePage />} />
           <Route path="/music-director-pianist" element={<MusicDirectorPianistPage />} />

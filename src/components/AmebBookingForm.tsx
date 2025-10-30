@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { CheckCircle2 } from 'lucide-react'; // Import CheckCircle2 for the confirmation message
 
 
 const formSchema = z.object({
@@ -32,7 +32,7 @@ const formSchema = z.object({
 
 const AmebBookingForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const [isSubmitted, setIsSubmitted] = useState(false); // New state for in-page confirmation
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -65,7 +65,7 @@ const AmebBookingForm: React.FC = () => {
         description: "Daniele will review your request and get back to you shortly.",
       });
       form.reset();
-      navigate('/live-piano-services/quote-confirmation'); // Reusing existing confirmation page
+      setIsSubmitted(true); // Set submitted state to true
     } catch (error) {
       console.error("Error submitting AMEB booking form:", error);
       toast.error("Failed to send booking inquiry.", {
@@ -75,6 +75,29 @@ const AmebBookingForm: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (isSubmitted) {
+    return (
+      <div className="text-center space-y-6 p-8 bg-livePiano-darker rounded-xl shadow-lg border border-livePiano-border/30 max-w-lg mx-auto">
+        <CheckCircle2 className="h-24 w-24 text-livePiano-primary mx-auto animate-bounce" />
+        <h3 className="text-4xl font-bold text-livePiano-light">Booking Confirmed!</h3>
+        <p className="text-xl text-livePiano-light/90">
+          Thank you for your AMEB accompanying inquiry. Daniele will review your request and get back to you shortly to finalize the details.
+        </p>
+        <Button
+          type="button"
+          size="lg"
+          className="mt-6 bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-darker text-lg py-3 rounded-full"
+          onClick={() => {
+            setIsSubmitted(false); // Reset submitted state
+            form.reset(); // Reset the form fields
+          }}
+        >
+          Book Another Inquiry
+        </Button>
+      </div>
+    );
   }
 
   return (
