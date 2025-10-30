@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef, useCallback } from "react";
-import { navLinks } from "@/constants/navigation";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom"; // Added useLocation import
 
 export function useSmoothScroll() {
   const location = useLocation();
@@ -10,19 +10,15 @@ export function useSmoothScroll() {
       const element = document.getElementById(id);
 
       if (element) {
-        // Use a timeout to ensure the element is rendered and the page has settled
-        // This is especially important when navigating between pages with hashes
         const timer = setTimeout(() => {
           element.scrollIntoView({
             behavior: "smooth",
             block: "start",
           });
-        }, 100); // Small delay to allow page to render
+        }, 100);
 
         return () => clearTimeout(timer);
       }
     }
-    // Removed the else block that scrolled to top for the home page,
-    // as ScrollToTop component now handles all general page-top scrolling.
-  }, [location]); // Re-run when location object changes (including hash)
+  }, [location]);
 }
