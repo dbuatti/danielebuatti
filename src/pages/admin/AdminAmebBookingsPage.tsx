@@ -5,9 +5,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns';
-import { Loader2, Mail, CalendarDays, GraduationCap } from 'lucide-react'; // Removed CheckCircle2, XCircle
-import { showError } from '@/utils/toast';
-import { Badge } from '@/components/ui/badge';
+import { Loader2, Mail, CalendarDays, GraduationCap, Copy } from 'lucide-react'; // Added Copy icon
+import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast'; // Import toast utilities
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'; // Import Select components
+import { Button } from '@/components/ui/button'; // Import Button
 
 interface AmebBooking {
   id: string;
@@ -46,18 +47,53 @@ const AdminAmebBookingsPage: React.FC = () => {
     fetchBookings();
   }, []);
 
-  const getStatusBadgeVariant = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'pending':
-        return 'default';
-      case 'contacted':
-        return 'secondary';
-      case 'booked':
-        return 'outline'; // Changed from 'success' to 'outline'
-      case 'cancelled':
-        return 'destructive';
-      default:
-        return 'default';
+  const handleStatusChange = async (bookingId: string, newStatus: string) => {
+    const toastId = showLoading('Updating status...');
+    const { error } = await supabase
+      .from('ameb_bookings')
+      .update({ status: newStatus })
+      .eq('id', bookingId);
+
+    if (error) {
+      console.error('Error updating AMEB booking status:', error);
+      showError('Failed to update status.', { id: toastId });
+    } else {
+      setBookings(prevBookings =>
+        prevBookings.map(booking =>
+          booking.id === bookingId ? { ...booking, status: newStatus } : booking
+        )
+      );
+      showSuccess('Status updated successfully!', { id: toastId });
+    }
+    dismissToast(toastId);
+  };
+
+  const handleCopyAndEmail = async (booking: AmebBooking) => {
+    const emailBody = `Hi ${booking.student_parent_name},
+
+Thank you for your AMEB accompanying inquiry!
+
+Yes, I'm available for your exam. Please book a rehearsal via these links:
+
+15 Minutes (A$30): https://danielebuatti.as.me/rehearsal-15
+30 Minutes (A$50): https://danielebuatti.as.me/rehearsal-30
+45 Minutes (A$75): https://danielebuatti.as.me/rehearsal-45
+
+Please attach/send your sheet music before the rehearsal.
+
+Looking forward to working with you!
+
+Best,
+Daniele Buatti`;
+
+    try {
+      await navigator.clipboard.writeText(emailBody);
+      showSuccess('Email template copied to clipboard!');
+      // Open mailto link
+      window.open(`mailto:${booking.contact_email}?subject=AMEB Accompanying Inquiry Reply&body=${encodeURIComponent(emailBody)}`, '_blank');
+    } catch (err) {
+      console.error('Failed to copy email text:', err);
+      showError('Failed to copy email. Please copy manually.');
     }
   };
 
@@ -91,6 +127,7 @@ const AdminAmebBookingsPage: React.FC = () => {
                     <TableHead className="text-brand-primary">Services</TableHead>
                     <TableHead className="text-brand-primary">Status</TableHead>
                     <TableHead className="text-brand-primary">Inquired On</TableHead>
+                    <TableHead className="text-brand-primary text-center">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -123,10 +160,33 @@ const AdminAmebBookingsPage: React.FC = () => {
                         </ul>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={getStatusBadgeVariant(booking.status)}>{booking.status}</Badge>
+                        <Select
+                          value={booking.status}
+                          onValueChange={(newStatus) => handleStatusChange(booking.id, newStatus)}
+                        >
+                          <SelectTrigger className="w-[140px] h-8 text-brand-dark dark:text-brand-light border-brand-secondary/50 bg-brand-light dark:bg-brand-dark-alt">
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50">
+                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="contacted">Contacted</SelectItem>
+                            <SelectItem value="booked">Booked</SelectItem>
+                            <SelectItem value="cancelled">Cancelled</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </TableCell>
                       <TableCell className="text-brand-dark/70 dark:text-brand-light/70">
                         {format(new Date(booking.created_at), 'PPP p')}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleCopyAndEmail(booking)}
+                          className="text-brand-primary border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50"
+                        >
+                          <Copy className="h-4 w-4 mr-2" /> Reply
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
