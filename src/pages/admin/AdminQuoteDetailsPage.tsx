@@ -5,12 +5,12 @@ import { useParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Loader2, CheckCircle2, XCircle, ExternalLink, Save } from 'lucide-react';
-import { format } from 'date-fns';
+import { ArrowLeft, Loader2, CheckCircle2, XCircle, ExternalLink, Save, Mail } from 'lucide-react'; // Added Mail icon
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { createSlug } from '@/lib/utils'; // Import createSlug
+import { createSlug } from '@/lib/utils';
+import EmailComposerModal from '@/components/admin/EmailComposerModal'; // Import the new modal
 
 interface Quote {
   id: string;
@@ -24,7 +24,7 @@ interface Quote {
   total_amount: number;
   details: any; // JSONB column
   accepted_at: string;
-  slug?: string | null; // Add slug to the interface
+  slug?: string | null;
 }
 
 const AdminQuoteDetailsPage: React.FC = () => {
@@ -33,6 +33,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [editableSlug, setEditableSlug] = useState<string>('');
   const [isSavingSlug, setIsSavingSlug] = useState(false);
+  const [isComposerModalOpen, setIsComposerModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchQuote = async () => {
@@ -51,7 +52,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
         setQuote(null);
       } else {
         setQuote(data as Quote);
-        setEditableSlug(data.slug || createSlug(data.event_title || data.client_name || data.id)); // Initialize with existing slug or generate from title/name/id
+        setEditableSlug(data.slug || createSlug(data.event_title || data.client_name || data.id));
       }
       setIsLoading(false);
     };
@@ -84,6 +85,14 @@ const AdminQuoteDetailsPage: React.FC = () => {
       setIsSavingSlug(false);
       dismissToast(toastId);
     }
+  };
+
+  const handleOpenEmailComposer = () => {
+    setIsComposerModalOpen(true);
+  };
+
+  const handleCloseEmailComposer = () => {
+    setIsComposerModalOpen(false);
   };
 
   if (isLoading) {
@@ -150,20 +159,43 @@ const AdminQuoteDetailsPage: React.FC = () => {
     );
   };
 
-  // The public link will now use the slug if available, otherwise fallback to ID
   const currentSlug = quote.slug || quote.id;
   const publicQuoteLink = `/quotes/${currentSlug}`;
   const publicQuoteLinkText = `View Public ${quote.invoice_type} Page`;
+
+  // Prepare dynamicDetails for the EmailComposerModal
+  const quoteDynamicDetails = {
+    clientName: quote.client_name,
+    clientEmail: quote.client_email,
+    invoiceType: quote.invoice_type,
+    eventTitle: quote.event_title,
+    eventDate: quote.event_date,
+    eventLocation: quote.event_location,
+    preparedBy: quote.prepared_by,
+    totalAmount: quote.total_amount,
+    acceptedAt: quote.accepted_at,
+    quoteLink: `${window.location.origin}${publicQuoteLink}`,
+    ...quote.details, // Include all details from the JSONB column
+  };
 
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Quote Details</h2>
-        <Button asChild variant="outline" className="text-brand-dark dark:text-brand-light border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50">
-          <Link to="/admin/quotes">
-            <ArrowLeft className="h-4 w-4 mr-2" /> Back to Quotes
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button asChild variant="outline" className="text-brand-dark dark:text-brand-light border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50">
+            <Link to="/admin/quotes">
+              <ArrowLeft className="h-4 w-4 mr-2" /> Back to Quotes
+            </Link>
+          </Button>
+          <Button
+            variant="outline"
+            className="text-brand-primary border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50"
+            onClick={handleOpenEmailComposer}
+          >
+            <Mail className="h-4 w-4 mr-2" /> Compose Email
+          </Button>
+        </div>
       </div>
 
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
@@ -199,7 +231,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
                 <Input
                   id="quote-slug"
                   value={editableSlug}
-                  onChange={(e) => setEditableSlug(createSlug(e.target.value))} // Auto-slugify input
+                  onChange={(e) => setEditableSlug(createSlug(e.target.value))}
                   placeholder="e.g., christmas-carols-2025"
                   className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
                 />
@@ -224,6 +256,17 @@ const AdminQuoteDetailsPage: React.FC = () => {
           )}
         </CardContent>
       </Card>
+
+      {quote && (
+        <EmailComposerModal
+          isOpen={isComposerModalOpen}
+          onClose={handleCloseEmailComposer}
+          initialRecipientEmail={quote.client_email}
+          initialSubject={`Regarding your quote for ${quote.event_title || quote.invoice_type}`}
+          initialBody={`Hi {{clientName}},\n\nRegarding your quote for {{eventTitle}} on {{eventDate}}...\n\n`}
+          dynamicDetails={quoteDynamicDetails}
+        />
+      )}
     </div>
   );
 };

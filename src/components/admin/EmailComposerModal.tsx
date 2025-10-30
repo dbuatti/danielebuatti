@@ -50,23 +50,13 @@ interface EmailTemplate {
   body: string;
 }
 
-interface AmebBookingDetails {
-  student_parent_name: string;
-  contact_email: string;
-  exam_date: string;
-  exam_time: string;
-  exam_board_grade: string;
-  teacher_name?: string;
-  service_required: string[];
-}
-
 interface EmailComposerModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialRecipientEmail: string;
   initialSubject?: string;
   initialBody?: string;
-  bookingDetails?: AmebBookingDetails; // New prop for booking details
+  dynamicDetails?: Record<string, any>; // Generic prop for any dynamic data
 }
 
 const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
@@ -75,7 +65,7 @@ const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
   initialRecipientEmail,
   initialSubject = '',
   initialBody = '',
-  bookingDetails, // Destructure new prop
+  dynamicDetails, // Destructure new generic prop
 }) => {
   const [templates, setTemplates] = useState<EmailTemplate[]>([]);
   const [isLoadingTemplates, setIsLoadingTemplates] = useState(true);
@@ -92,19 +82,27 @@ const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
   });
 
   // Function to replace placeholders
-  const replacePlaceholders = (text: string, details?: AmebBookingDetails) => {
+  const replacePlaceholders = (text: string, details?: Record<string, any>) => {
     if (!details) return text;
 
     let newText = text;
-    newText = newText.replace(/{{studentParentName}}/g, details.student_parent_name || '');
-    newText = newText.replace(/{{contactEmail}}/g, details.contact_email || '');
-    newText = newText.replace(/{{examDate}}/g, details.exam_date ? format(new Date(details.exam_date), 'PPP') : '');
-    newText = newText.replace(/{{examTime}}/g, details.exam_time || '');
-    newText = newText.replace(/{{examBoardGrade}}/g, details.exam_board_grade || '');
-    newText = newText.replace(/{{teacherName}}/g, details.teacher_name || 'N/A');
-    newText = newText.replace(/{{serviceRequired}}/g, details.service_required?.join(', ') || '');
-    // Add more placeholders as needed
+    for (const key in details) {
+      if (Object.prototype.hasOwnProperty.call(details, key)) {
+        const placeholder = `{{${key}}}`;
+        let value = details[key];
 
+        // Special handling for dates if they look like ISO strings
+        if (key.includes('date') && typeof value === 'string' && !isNaN(new Date(value).getTime())) {
+          value = format(new Date(value), 'PPP'); // Format date nicely
+        } else if (Array.isArray(value)) {
+          value = value.join(', '); // Join array values
+        } else if (typeof value === 'object' && value !== null) {
+          value = JSON.stringify(value); // Stringify objects
+        }
+
+        newText = newText.replace(new RegExp(placeholder, 'g'), value || '');
+      }
+    }
     return newText;
   };
 
@@ -130,8 +128,8 @@ const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
 
   // Update form fields when initial props change or template is selected
   useEffect(() => {
-    const populatedSubject = replacePlaceholders(initialSubject, bookingDetails);
-    const populatedBody = replacePlaceholders(initialBody, bookingDetails);
+    const populatedSubject = replacePlaceholders(initialSubject, dynamicDetails);
+    const populatedBody = replacePlaceholders(initialBody, dynamicDetails);
 
     form.reset({
       recipientEmail: initialRecipientEmail,
@@ -139,21 +137,21 @@ const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
       body: populatedBody,
       templateId: '', // Reset template selection
     });
-  }, [initialRecipientEmail, initialSubject, initialBody, bookingDetails, form]);
+  }, [initialRecipientEmail, initialSubject, initialBody, dynamicDetails, form]);
 
   const handleTemplateChange = (templateId: string) => {
     const selectedTemplate = templates.find((t) => t.id === templateId);
     if (selectedTemplate) {
-      const populatedSubject = replacePlaceholders(selectedTemplate.subject, bookingDetails);
-      const populatedBody = replacePlaceholders(selectedTemplate.body, bookingDetails);
+      const populatedSubject = replacePlaceholders(selectedTemplate.subject, dynamicDetails);
+      const populatedBody = replacePlaceholders(selectedTemplate.body, dynamicDetails);
       form.setValue('subject', populatedSubject);
       form.setValue('body', populatedBody);
       form.setValue('templateId', templateId);
     } else {
       form.setValue('templateId', '');
       // If no template is selected, revert to initial (placeholder-populated) values
-      form.setValue('subject', replacePlaceholders(initialSubject, bookingDetails));
-      form.setValue('body', replacePlaceholders(initialBody, bookingDetails));
+      form.setValue('subject', replacePlaceholders(initialSubject, dynamicDetails));
+      form.setValue('body', replacePlaceholders(initialBody, dynamicDetails));
     }
   };
 
@@ -185,15 +183,8 @@ const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
     }
   };
 
-  const availablePlaceholders = [
-    '{{studentParentName}}',
-    '{{contactEmail}}',
-    '{{examDate}}',
-    '{{examTime}}',
-    '{{examBoardGrade}}',
-    '{{teacherName}}',
-    '{{serviceRequired}}',
-  ];
+  // Generate available placeholders dynamically from dynamicDetails keys
+  const availablePlaceholders = dynamicDetails ? Object.keys(dynamicDetails).map(key => `{{${key}}}`) : [];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -280,14 +271,16 @@ const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
               )}
             />
 
-            <div className="text-sm text-brand-dark/70 dark:text-brand-light/70">
-              <p className="font-semibold mb-1">Available Placeholders:</p>
-              <ul className="list-disc list-inside grid grid-cols-2 gap-1">
-                {availablePlaceholders.map((placeholder) => (
-                  <li key={placeholder}>{placeholder}</li>
-                ))}
-              </ul>
-            </div>
+            {availablePlaceholders.length > 0 && (
+              <div className="text-sm text-brand-dark/70 dark:text-brand-light/70">
+                <p className="font-semibold mb-1">Available Placeholders:</p>
+                <ul className="list-disc list-inside grid grid-cols-2 gap-1">
+                  {availablePlaceholders.map((placeholder) => (
+                    <li key={placeholder}>{placeholder}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             <Button
               type="submit"
