@@ -31,7 +31,7 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       <>
-        <ScrollToTop /> {/* Add ScrollToTop to ensure pages start at top */}
+        <ScrollToTop />
         <RootLayout />
       </>
     ),
