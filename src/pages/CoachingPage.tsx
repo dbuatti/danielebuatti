@@ -45,7 +45,7 @@ const CoachingPage: React.FC = () => {
           <section id="embodied-approach" className="bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-8 rounded-xl shadow-inner space-y-6 text-center">
             <h3 className="text-3xl font-bold text-brand-primary text-center">The Holistic Difference</h3>
             <ul className="list-disc list-inside text-xl text-brand-dark/80 dark:text-brand-light/80 leading-relaxed space-y-3 text-left">
-              <li>Unlock your full vocal and musical potential with personalized 1:1 coaching, integrating technical mastery with body awareness and mindset strategies for authentic, confident expression.</li>
+              <li>Unlock your full vocal and musical potential with personalised 1:1 coaching, integrating technical mastery with body awareness and mindset strategies for authentic, confident expression.</li>
               <li>This work is deeply connected to overall well-being. By integrating body-voice practices and healing modalities, we can release physical tension, calm the nervous system, and clear mental blocks that might be hindering your vocal performance, confidence, and overall expressive freedom.</li>
             </ul>
             <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 max-w-3xl mx-auto">
@@ -124,7 +124,7 @@ const CoachingPage: React.FC = () => {
                 <Users className="h-8 w-8" /> Workshops & Group Coaching
               </h3>
               <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-                Join specialized group sessions for public speaking and on-camera presence, or explore the "Body Voice Sound Workshop" for movement, improvisation, and sound exploration. These collaborative environments offer unique opportunities for growth and connection.
+                Join specialised group sessions for public speaking and on-camera presence, or explore the "Body Voice Sound Workshop" for movement, improvisation, and sound exploration. These collaborative environments offer unique opportunities for growth and connection.
               </p>
               <div className="mt-6 text-center">
                 <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
@@ -138,7 +138,7 @@ const CoachingPage: React.FC = () => {
 
           <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
 
-          {/* Pricing & Packages Section */}
+          {/* NEW: Pricing & Packages Section (Moved up) */}
           <section id="pricing" className="max-w-4xl mx-auto space-y-10 py-12">
             <SectionHeading>Pricing & Packages</SectionHeading>
             <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
