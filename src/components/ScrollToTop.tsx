@@ -4,16 +4,24 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 const ScrollToTop = () => {
-  const { pathname } = useLocation(); // Only need pathname now
+  const { pathname } = useLocation();
 
   useEffect(() => {
-    // Use a timeout to ensure the scroll happens after the DOM is fully updated
     const timer = setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 100); // Increased delay to 100ms
+      // Attempt to scroll both document.documentElement (for modern browsers)
+      // and document.body (for older browsers/quirks mode)
+      document.documentElement.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+      document.body.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }, 100); // Keeping the 100ms delay
 
     return () => clearTimeout(timer);
-  }, [pathname]); // Re-run if pathname changes
+  }, [pathname]);
 
   return null;
 };
