@@ -2,11 +2,23 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, FileText, DollarSign } from 'lucide-react';
+import { Users, FileText, DollarSign, ExternalLink, Loader2 } from 'lucide-react'; // Added Loader2
 import { useSession } from '@/components/SessionContextProvider';
-import { supabase } from '@/integrations/supabase/client'; // Import supabase client
-import { showError } from '@/utils/toast'; // Import toast for error handling
+import { supabase } from '@/integrations/supabase/client';
+import { showError } from '@/utils/toast';
 import { format } from 'date-fns';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
+
+interface Quote {
+  id: string;
+  client_name: string;
+  invoice_type: string;
+  event_date?: string;
+  total_amount: number;
+  accepted_at: string;
+}
 
 const AdminDashboardPage: React.FC = () => {
   const { user } = useSession();
@@ -14,7 +26,9 @@ const AdminDashboardPage: React.FC = () => {
   const [monthlyRevenue, setMonthlyRevenue] = useState<number>(0);
   const [previousMonthlyRevenue, setPreviousMonthlyRevenue] = useState<number>(0);
   const [totalInvoices, setTotalInvoices] = useState<number>(0);
+  const [recentQuotes, setRecentQuotes] = useState<Quote[]>([]);
   const [isLoadingRevenue, setIsLoadingRevenue] = useState(true);
+  const [isLoadingRecentQuotes, setIsLoadingRecentQuotes] = useState(true);
 
   useEffect(() => {
     const fetchRevenueData = async () => {
@@ -75,7 +89,25 @@ const AdminDashboardPage: React.FC = () => {
       }
     };
 
+    const fetchRecentQuotes = async () => {
+      setIsLoadingRecentQuotes(true);
+      const { data, error } = await supabase
+        .from('invoices')
+        .select('id, client_name, invoice_type, event_date, total_amount, accepted_at')
+        .order('accepted_at', { ascending: false })
+        .limit(5); // Fetch only the 5 most recent quotes
+
+      if (error) {
+        console.error('Error fetching recent quotes:', error);
+        showError('Failed to load recent quotes.');
+      } else {
+        setRecentQuotes(data || []);
+      }
+      setIsLoadingRecentQuotes(false);
+    };
+
     fetchRevenueData();
+    fetchRecentQuotes();
   }, []);
 
   const revenueDifference = monthlyRevenue - previousMonthlyRevenue;
@@ -143,6 +175,57 @@ const AdminDashboardPage: React.FC = () => {
           <li>Access detailed reports (future feature).</li>
         </ul>
       </div>
+
+      {/* New Recent Quotes Section */}
+      <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50 mt-8">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-xl text-brand-primary">Recent Accepted Quotes</CardTitle>
+          <Button asChild variant="outline" className="text-brand-dark dark:text-brand-light border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50">
+            <Link to="/admin/quotes">
+              View All Quotes <ExternalLink className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </CardHeader>
+        <CardContent>
+          {isLoadingRecentQuotes ? (
+            <div className="flex items-center justify-center h-32">
+              <Loader2 className="h-8 w-8 animate-spin text-brand-primary" />
+              <span className="sr-only">Loading recent quotes...</span>
+            </div>
+          ) : recentQuotes.length === 0 ? (
+            <p className="text-center text-brand-dark/70 dark:text-brand-light/70">No recent accepted quotes found.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-brand-secondary/10 dark:bg-brand-dark/50">
+                    <TableHead className="text-brand-primary">Client Name</TableHead>
+                    <TableHead className="text-brand-primary">Quote Type</TableHead>
+                    <TableHead className="text-brand-primary">Event Date</TableHead>
+                    <TableHead className="text-brand-primary text-right">Amount</TableHead>
+                    <TableHead className="text-brand-primary">Accepted On</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {recentQuotes.map((quote) => (
+                    <TableRow key={quote.id} className="hover:bg-brand-secondary/5 dark:hover:bg-brand-dark/30">
+                      <TableCell className="font-medium text-brand-dark dark:text-brand-light">
+                        <Link to={`/admin/quotes/${quote.id}`} className="hover:underline">
+                          {quote.client_name}
+                        </Link>
+                      </TableCell>
+                      <TableCell className="text-brand-dark/80 dark:text-brand-light/80">{quote.invoice_type}</TableCell>
+                      <TableCell className="text-brand-dark/80 dark:text-brand-light/80">{quote.event_date || 'N/A'}</TableCell>
+                      <TableCell className="text-right font-semibold text-brand-primary">A${quote.total_amount.toFixed(2)}</TableCell>
+                      <TableCell className="text-brand-dark/70 dark:text-brand-light/70">{format(new Date(quote.accepted_at), 'MMM d, yyyy')}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };
