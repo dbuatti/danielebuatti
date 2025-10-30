@@ -78,7 +78,7 @@ const CoachingPage: React.FC = () => {
                 <Mic className="h-8 w-8" /> Vocal & Instrumental Mastery
               </h3>
               <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-                Develop effortless breath control, expand your range, refine tone, and master various vocal styles (contemporary, classical, musical theatre). Enhance your instrumental skills, improve sight-reading, deepen your understanding of music theory, and develop expressive piano performance for solo work and musicianship. This includes composition, songwriting, and score preparation with music technology. Includes audition preparation and repertoire building.
+                Develop effortless breath control, expand your range, refine tone, and master various vocal styles (contemporary, classical, musical theatre). Enhance your instrumental skills, improve sight-reading, deepen your understanding of music theory, and develop expressive piano performance for musicianship and solo repertoire. This includes composition, songwriting, and score preparation with music technology. Includes audition preparation and repertoire building.
               </p>
               <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-2 pl-4">
                 <li>Vocal Coaching</li>
@@ -126,9 +126,13 @@ const CoachingPage: React.FC = () => {
               <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
                 Join specialized group sessions for public speaking and on-camera presence, or explore the "Body Voice Sound Workshop" for movement, improvisation, and sound exploration. These collaborative environments offer unique opportunities for growth and connection.
               </p>
-              <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-                Check the <Link to="/projects-resources" className="text-brand-primary hover:underline font-semibold">Projects & Resources page</Link> for upcoming workshop dates and details.
-              </p>
+              <div className="mt-6 text-center">
+                <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+                  <Link to="/projects-resources">
+                    View Upcoming Workshop Dates
+                  </Link>
+                </Button>
+              </div>
             </Card>
           </div>
 
