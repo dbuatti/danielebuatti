@@ -8,6 +8,10 @@
     overflow-y: auto; /* Explicitly manage vertical scrolling */
   }
 
+  html {
+    scroll-behavior: auto !important; /* Force instant scroll to top */
+  }
+
   :root {
     --background: 0 0% 100%; /* White */
     --foreground: 222.2 84% 4.9%; /* Dark Blue (default, will be overridden by brand dark blue) */
