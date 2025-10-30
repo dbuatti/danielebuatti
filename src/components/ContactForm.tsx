@@ -83,7 +83,7 @@ const ContactForm: React.FC = () => {
             For AMEB accompanying inquiries, please use the dedicated form for a faster and more tailored response:
           </p>
           <Button asChild size="sm" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-            <Link to="/services/ameb-accompanying#ameb-top">Go to AMEB Booking Form</Link> {/* Updated link */}
+            <a href="/services/ameb-accompanying#ameb-top">Go to AMEB Booking Form</a> {/* Changed from Link to a tag */}
           </Button>
         </div>
         <FormField
