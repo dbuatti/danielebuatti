@@ -8,21 +8,21 @@ import VoicePianoBookingPage from './pages/VoicePianoBookingPage';
 import EmbodimentSomaticBookingPage from './pages/EmbodimentSomaticBookingPage';
 import AmebAccompanyingPage from './pages/AmebAccompanyingPage';
 import ServicesPage from './pages/ServicesPage';
-import QuoteProposalPage from './pages/QuoteProposalPage';
+// Removed QuoteProposalPage and ErinKennedyQuotePage imports
 import QuoteConfirmationPage from './pages/QuoteConfirmationPage';
 import ProgramsPage from './pages/ProgramsPage';
 import PresenceCommunicationBookingPage from './pages/PresenceCommunicationBookingPage';
 import ArchivePage from './pages/ArchivePage';
 import MusicDirectorPianistPage from './pages/MusicDirectorPianistPage';
-import ErinKennedyQuotePage from './pages/ErinKennedyQuotePage';
+import DynamicQuotePage from './pages/DynamicQuotePage'; // New import for dynamic quote page
 import { Toaster } from 'sonner';
 import ScrollToTop from './components/ScrollToTop';
 import { SessionContextProvider } from './components/SessionContextProvider';
 import Login from './pages/Login';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
-import AdminQuotesPage from './pages/admin/AdminQuotesPage'; // Updated import
-import AdminQuoteDetailsPage from './pages/admin/AdminQuoteDetailsPage'; // Updated import
+import AdminQuotesPage from './pages/admin/AdminQuotesPage';
+import AdminQuoteDetailsPage from './pages/admin/AdminQuoteDetailsPage';
 
 function App() {
   return (
@@ -40,19 +40,21 @@ function App() {
           <Route path="/book-embodiment-somatic" element={<EmbodimentSomaticBookingPage />} />
           <Route path="/book-presence-communication" element={<PresenceCommunicationBookingPage />} />
           <Route path="/ameb-accompanying" element={<AmebAccompanyingPage />} />
-          <Route path="/live-piano-services/quote-proposal" element={<QuoteProposalPage />} />
+          {/* Removed old hardcoded quote routes */}
           <Route path="/live-piano-services/quote-confirmation" element={<QuoteConfirmationPage />} />
           <Route path="/archive" element={<ArchivePage />} />
           <Route path="/music-director-pianist" element={<MusicDirectorPianistPage />} />
-          <Route path="/erin-kennedy-2025-quote" element={<ErinKennedyQuotePage />} />
+          
+          {/* New dynamic quote page route */}
+          <Route path="/quotes/:id" element={<DynamicQuotePage />} />
 
           <Route path="/login" element={<Login />} />
 
           {/* Admin Routes */}
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboardPage />} />
-            <Route path="quotes" element={<AdminQuotesPage />} /> {/* Updated path */}
-            <Route path="quotes/:id" element={<AdminQuoteDetailsPage />} /> {/* Updated path */}
+            <Route path="quotes" element={<AdminQuotesPage />} />
+            <Route path="quotes/:id" element={<AdminQuoteDetailsPage />} />
           </Route>
         </Routes>
       </SessionContextProvider>

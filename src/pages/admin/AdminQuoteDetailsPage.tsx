@@ -5,7 +5,7 @@ import { useParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Loader2, CheckCircle2, XCircle, ExternalLink } from 'lucide-react'; // Added ExternalLink for the new button
+import { ArrowLeft, Loader2, CheckCircle2, XCircle, ExternalLink } from 'lucide-react';
 import { format } from 'date-fns';
 import { showError } from '@/utils/toast';
 
@@ -116,16 +116,10 @@ const AdminQuoteDetailsPage: React.FC = () => {
     );
   };
 
-  let publicQuoteLink = '';
-  let publicQuoteLinkText = '';
+  // The public link will now always be dynamic
+  const publicQuoteLink = `/quotes/${quote.id}`;
+  const publicQuoteLinkText = `View Public ${quote.invoice_type} Page`;
 
-  if (quote.invoice_type === "Live Piano Services Quote") {
-    publicQuoteLink = '/live-piano-services/quote-proposal';
-    publicQuoteLinkText = 'View Live Piano Quote Page';
-  } else if (quote.invoice_type === "Erin Kennedy Quote") {
-    publicQuoteLink = '/erin-kennedy-2025-quote';
-    publicQuoteLinkText = "View Erin Kennedy Quote Page";
-  }
 
   return (
     <div className="space-y-8">
