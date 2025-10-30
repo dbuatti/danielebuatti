@@ -68,47 +68,49 @@ const CoachingPage: React.FC = () => {
             {/* Performance & Musicianship Category */}
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
               <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
-                <Mic className="h-8 w-8" /> Performance & Musicianship
+                <Mic className="h-8 w-8" /> Vocal & Instrumental Mastery
               </h3>
               <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
                 Develop effortless breath control, expand your range, refine tone, and master various vocal styles (contemporary, classical, musical theatre). Enhance your instrumental skills, improve sight-reading, deepen your understanding of music theory, and develop expressive piano performance for accompaniment or solo work. Includes audition preparation and repertoire building.
               </p>
               <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-2 pl-4">
-                <li>Vocal Coaching (contemporary, classical, musical theatre)</li>
-                <li>Piano & Keyboard Performance</li>
+                <li>Vocal Coaching</li>
+                <li>Piano & Keyboard</li>
+                <li>Composition and Song Writing</li>
+                <li>Accompanying</li>
                 <li>Score Preparation & Technology</li>
-                <li>Audition Cut Playthrough</li>
               </ul>
             </Card>
 
             {/* Embodiment & Somatic Work Category - Enhanced description */}
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
               <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
-                <Leaf className="h-8 w-8" /> Embodiment & Somatic Work
+                <Leaf className="h-8 w-8" /> Embodiment & Somatic Healing
               </h3>
               <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
                 Explore deep body-mind integration through <strong className="text-brand-primary">Kinesiology</strong>, energy balancing, and sound healing. These sessions are designed to restore balance, ease stress and tension, and release unhelpful patterns, fostering a profound connection between your inner self and your expressive voice. This work directly supports greater freedom and authenticity in all forms of communication and performance.
               </p>
               <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-2 pl-4">
-                <li>Kinesiology</li>
-                <li>Holistic Voice & Somatic Techniques (Breath-Body-Mind, Yoga, Mindfulness)</li>
-                <li>Tension Release for vocal freedom</li>
-                <li>Mind-Body Connection for natural resonance</li>
+                <li>Kinesiology & Body-Mind Integration</li>
+                <li>Breath–Body–Mind, Yoga, Mindfulness</li>
+                <li>Tension Release for a healthier body, heart, and mind</li>
+                <li>Mind–Body Connection for natural resonance</li>
               </ul>
             </Card>
 
             {/* Presence & Communication Category */}
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
               <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
-                <Megaphone className="h-8 w-8" /> Presence & Communication
+                <Megaphone className="h-8 w-8" /> Presence and Communication
               </h3>
               <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
                 Refine your impact in any setting. These sessions focus on public speaking, on-camera performance, acting, and streaming presence. Learn to command attention, articulate clearly, and connect authentically with your audience, whether live or virtual. Develop techniques to manage nerves, enhance vocal projection, and embody confidence for powerful and memorable communication.
               </p>
               <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-2 pl-4">
-                <li>Public Speaking & Presentation</li>
-                <li>Acting & Film Performance</li>
-                <li>On-Camera & Streaming Presence</li>
+                <li>Cultivating authentic presence and grounded awareness</li>
+                <li>Integrating voice, body, and energy for impactful delivery</li>
+                <li>Building emotional intelligence and conscious communication</li>
+                <li>Expressing with clarity, confidence, and resonance</li>
               </ul>
             </Card>
 
@@ -252,16 +254,7 @@ const CoachingPage: React.FC = () => {
           </div>
 
           {/* CTA 2: At the bottom of the page */}
-          <div className="text-center mt-12">
-            <p className="text-2xl font-semibold text-brand-dark dark:text-brand-light mb-6">
-              Ready to take the next step in your artistic journey?
-            </p>
-            <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-              <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
-                Book Your Discovery Session
-              </a>
-            </Button>
-          </div>
+          {/* Removed this section as requested */}
         </section>
       </main>
       <Footer />
