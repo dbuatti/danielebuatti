@@ -3,7 +3,8 @@
 import React from "react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import DynamicImage from "@/components/DynamicImage";
-import SectionHeading from "@/components/SectionHeading";
+// Removed import of SectionHeading
+
 import { Card, CardContent } from "@/components/ui/card";
 
 const imagesData = [
@@ -43,8 +44,8 @@ const imagesData = [
 
 const ImageCarouselSection: React.FC = () => {
   return (
-    <section className="max-w-7xl mx-auto text-center space-y-10 py-12">
-      <SectionHeading>Daniele's Moments</SectionHeading>
+    <section className="max-w-7xl mx-auto text-center space-y-10 py-6"> {/* Reduced py-12 to py-6 */}
+      {/* Removed SectionHeading component */}
       <Carousel
         opts={{
           align: "start",
