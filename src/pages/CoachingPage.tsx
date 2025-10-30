@@ -10,7 +10,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionHeading from '@/components/SectionHeading';
 import { Separator } from '@/components/ui/separator';
-import PhilosophyStatement from '@/components/PhilosophyStatement';
+// Removed PhilosophyStatement import
 import WhyWorkWithMeSection from '@/components/pages/landing-page-v3/WhyWorkWithMeSection';
 import WhoIWorkWithSection from '@/components/pages/landing-page-v3/WhoIWorkWithSection';
 // Removed SessionsFormatsAvailabilitySection import
