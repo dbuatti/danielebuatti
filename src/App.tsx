@@ -21,14 +21,15 @@ import AdminQuotesPage from './pages/admin/AdminQuotesPage';
 import AdminQuoteDetailsPage from './pages/admin/AdminQuoteDetailsPage';
 import AdminAmebBookingsPage from './pages/admin/AdminAmebBookingsPage';
 import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage';
-import AboutPage from './pages/AboutPage'; // Import the new AboutPage
-import NotFound from './pages/NotFound'; // Import NotFound page
+import AboutPage from './pages/AboutPage';
+import NotFound from './pages/NotFound';
+import ScrollToTop from './components/ScrollToTop'; // Import the new ScrollToTop component
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <LandingPageV3 />,
-    errorElement: <NotFound />, // Add error element for root route
+    errorElement: <NotFound />,
   },
   {
     path: "/coaching",
@@ -83,7 +84,7 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "/about", // New About page route
+    path: "/about",
     element: <AboutPage />,
   },
   {
@@ -98,13 +99,17 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "*", // Catch-all route for 404
+    path: "*",
     element: <NotFound />,
   },
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <ScrollToTop> {/* Wrap RouterProvider with ScrollToTop */}
+      <RouterProvider router={router} />
+    </ScrollToTop>
+  );
 }
 
 export default App;

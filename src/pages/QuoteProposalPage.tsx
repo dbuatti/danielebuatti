@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client'; // Keep Supabase client import for invoking functions
+import { supabase } from '@/integrations/supabase/client';
 import { Separator } from "@/components/ui/separator";
 import { cn } from '@/lib/utils';
 
