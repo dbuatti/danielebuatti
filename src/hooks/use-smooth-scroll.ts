@@ -1,32 +1,32 @@
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 export function useSmoothScroll() {
+  const location = useLocation();
+
   useEffect(() => {
-    const handleAnchorClick = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      const anchor = target.closest('a[href^="#"]');
+    if (location.hash) {
+      const id = location.hash.substring(1);
+      const element = document.getElementById(id);
 
-      if (anchor && anchor.getAttribute("href") !== "#") {
-        const href = anchor.getAttribute("href");
-        if (href) {
-          const id = href.substring(1);
-          const element = document.getElementById(id);
+      if (element) {
+        // Use a timeout to ensure the element is rendered and the page has settled
+        // This is especially important when navigating between pages with hashes
+        const timer = setTimeout(() => {
+          element.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }, 100); // Small delay to allow page to render
 
-          if (element) {
-            event.preventDefault();
-            element.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          }
-        }
+        return () => clearTimeout(timer);
       }
-    };
-
-    document.addEventListener("click", handleAnchorClick);
-
-    return () => {
-      document.removeEventListener("click", handleAnchorClick);
-    };
-  }, []);
+    } else {
+      // If no hash, and we're on the home page, ensure it's at the top
+      // This might be redundant with ScrollToTop, but good for robustness
+      if (location.pathname === '/') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  }, [location]); // Re-run when location object changes (including hash)
 }
