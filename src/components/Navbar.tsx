@@ -29,13 +29,7 @@ const Navbar = () => {
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
 
   // Define main navigation links (excluding service-related ones and the new programs page)
-  const mainNavLinks = navLinks.filter(link => 
-    !link.href.startsWith("#") && // Exclude anchor links (though none exist now)
-    link.name !== "Services" && 
-    link.name !== "Programs" && 
-    link.name !== "AMEB Accompanying" && 
-    link.name !== "Live Piano Services"
-  );
+  // Now, all navLinks are iterated, and specific handling for anchor links vs. path links is done.
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
@@ -57,7 +51,7 @@ const Navbar = () => {
           />
         </Link>
         <nav className="hidden md:flex items-center space-x-6">
-          {mainNavLinks.map((link) => {
+          {navLinks.map((link) => {
               const isActive = link.href.startsWith("#")
                 ? (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))
                 : location.pathname === link.href;
@@ -84,29 +78,6 @@ const Navbar = () => {
               }
             })}
 
-          {/* Services Link for Desktop (no dropdown) */}
-          <Link
-            to="/services"
-            className={cn(
-              "text-sm font-medium transition-colors hover:text-brand-primary",
-              location.pathname === "/services"
-                ? "font-bold text-brand-primary dark:text-brand-primary border-b-[3px] border-brand-primary pb-2"
-                : "text-brand-dark dark:text-brand-light"
-            )}
-          >
-            Services
-          </Link>
-
-          {/* Programs Link */}
-          <Link to="/programs" className={cn(
-            "text-sm font-medium transition-colors hover:text-brand-primary",
-            location.pathname === "/programs"
-              ? "font-bold text-brand-primary dark:text-brand-primary border-b-[3px] border-brand-primary pb-2"
-              : "text-brand-dark dark:text-brand-light"
-          )}>
-            Programs
-          </Link>
-
           <Button asChild size="sm" className="h-9 px-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
             <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
               Book a session
@@ -131,7 +102,7 @@ const Navbar = () => {
             <SheetOverlay className="bg-black/60 dark:bg-black/90" />
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-brand-light dark:bg-brand-dark">
               <nav className="flex flex-col gap-4 pt-6">
-                {mainNavLinks.map((link) => {
+                {navLinks.map((link) => {
                     const isActive = link.href.startsWith("#")
                       ? (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))
                       : location.pathname === link.href;
@@ -157,30 +128,6 @@ const Navbar = () => {
                       );
                     }
                   })}
-
-                {/* Services Link for Mobile (no dropdown) */}
-                <Link
-                  to="/services"
-                  className={cn(
-                    "text-lg font-medium hover:text-brand-primary",
-                    location.pathname === "/services"
-                      ? "font-bold text-brand-primary dark:text-brand-primary"
-                      : "text-brand-dark dark:text-brand-light"
-                  )}
-                  onClick={() => setIsSheetOpen(false)}
-                >
-                  Services
-                </Link>
-
-                {/* New Programs Link for Mobile */}
-                <Link to="/programs" onClick={() => setIsSheetOpen(false)} className={cn(
-                  "text-lg font-medium hover:text-brand-primary",
-                  location.pathname === "/programs"
-                    ? "font-bold text-brand-primary dark:text-brand-primary"
-                    : "text-brand-dark dark:text-brand-light"
-                )}>
-                  Programs
-                </Link>
 
                 <Button asChild size="lg" className="h-12 px-6 py-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
                   <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer" onClick={() => setIsSheetOpen(false)}>

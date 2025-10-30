@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client"; // Import Supabase client
+import { Link } from "react-router-dom"; // Import Link
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -77,6 +78,14 @@ const ContactForm: React.FC = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-lg mx-auto">
+        <div className="bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-4 rounded-md text-sm text-brand-dark/80 dark:text-brand-light/80 mb-4">
+          <p className="mb-2">
+            For AMEB accompanying inquiries, please use the dedicated form for a faster and more tailored response:
+          </p>
+          <Button asChild size="sm" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+            <Link to="/services/ameb-accompanying">Go to AMEB Booking Form</Link>
+          </Button>
+        </div>
         <FormField
           control={form.control}
           name="name"
