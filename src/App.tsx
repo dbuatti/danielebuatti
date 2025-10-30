@@ -28,7 +28,7 @@ import RootLayout from './layouts/RootLayout';
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootLayout />, // Rely on React Router's default scroll restoration
+    element: <RootLayout />, // ScrollToTop is now inside RootLayout
     errorElement: <NotFound />,
     children: [
       { index: true, element: <LandingPageV3 /> },
@@ -61,7 +61,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <Login />, // Rely on React Router's default scroll restoration
+    element: <Login />, // Login page handles its own scroll logic if needed, but we rely on the browser for now.
   },
 ]);
 
