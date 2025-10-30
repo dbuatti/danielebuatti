@@ -5,11 +5,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns';
-import { Loader2, Mail, CalendarDays, GraduationCap, Copy, Trash2 } from 'lucide-react'; // Added Trash2 icon
-import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast'; // Import toast utilities
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'; // Import Select components
-import { Button } from '@/components/ui/button'; // Import Button
-import { toast } from 'sonner'; // Import toast from sonner for promise
+import { Loader2, Mail, CalendarDays, GraduationCap, Copy, Trash2 } from 'lucide-react';
+import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import EmailComposerModal from '@/components/admin/EmailComposerModal'; // Import the new modal
 
 interface AmebBooking {
   id: string;
@@ -27,6 +28,8 @@ interface AmebBooking {
 const AdminAmebBookingsPage: React.FC = () => {
   const [bookings, setBookings] = useState<AmebBooking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isComposerModalOpen, setIsComposerModalOpen] = useState(false);
+  const [selectedBookingForEmail, setSelectedBookingForEmail] = useState<AmebBooking | null>(null);
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -100,33 +103,14 @@ const AdminAmebBookingsPage: React.FC = () => {
     );
   };
 
-  const handleCopyAndEmail = async (booking: AmebBooking) => {
-    const emailBody = `Hi ${booking.student_parent_name},
+  const handleOpenEmailComposer = (booking: AmebBooking) => {
+    setSelectedBookingForEmail(booking);
+    setIsComposerModalOpen(true);
+  };
 
-Thank you for your AMEB accompanying inquiry!
-
-Yes, I'm available for your exam. Please book a rehearsal via these links:
-
-15 Minutes (A$30): https://danielebuatti.as.me/rehearsal-15
-30 Minutes (A$50): https://danielebuatti.as.me/rehearsal-30
-45 Minutes (A$75): https://danielebuatti.as.me/rehearsal-45
-
-Please attach/send your sheet music before the rehearsal.
-
-Looking forward to working with you!
-
-Best,
-Daniele Buatti`;
-
-    try {
-      await navigator.clipboard.writeText(emailBody);
-      showSuccess('Email template copied to clipboard!');
-      // Open mailto link
-      window.open(`mailto:${booking.contact_email}?subject=AMEB Accompanying Inquiry Reply&body=${encodeURIComponent(emailBody)}`, '_blank');
-    } catch (err) {
-      console.error('Failed to copy email text:', err);
-      showError('Failed to copy email. Please copy manually.');
-    }
+  const handleCloseEmailComposer = () => {
+    setIsComposerModalOpen(false);
+    setSelectedBookingForEmail(null);
   };
 
   return (
@@ -214,7 +198,7 @@ Daniele Buatti`;
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleCopyAndEmail(booking)}
+                          onClick={() => handleOpenEmailComposer(booking)}
                           className="text-brand-primary border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50"
                         >
                           <Copy className="h-4 w-4 mr-2" /> Reply
@@ -236,6 +220,16 @@ Daniele Buatti`;
           )}
         </CardContent>
       </Card>
+
+      {selectedBookingForEmail && (
+        <EmailComposerModal
+          isOpen={isComposerModalOpen}
+          onClose={handleCloseEmailComposer}
+          initialRecipientEmail={selectedBookingForEmail.contact_email}
+          initialSubject={`Your AMEB Accompanying Inquiry - ${selectedBookingForEmail.student_parent_name}`}
+          initialBody={`Hi ${selectedBookingForEmail.student_parent_name},\n\n`}
+        />
+      )}
     </div>
   );
 };
