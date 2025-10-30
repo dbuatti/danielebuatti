@@ -74,12 +74,12 @@ const FeaturedProgramCard: React.FC<FeaturedProgramCardProps> = ({
       {/* Content Card */}
       <Card className={cn("relative z-10 p-6 md:p-8 max-w-md mx-auto border-brand-secondary shadow-lg", cardBgClass, cardTextClass)}>
         <CardHeader className="p-0 pb-4">
-          <CardTitle className="text-3xl font-extrabold leading-tight text-shadow-sm">
+          <CardTitle className="text-3xl font-extrabold leading-tight">
             {title}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0 space-y-4">
-          <p className="text-lg text-shadow-sm">
+          <p className="text-lg">
             {description}
           </p>
           <Button asChild size="lg" className={cn("text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
