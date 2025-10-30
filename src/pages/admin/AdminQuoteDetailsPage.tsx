@@ -5,7 +5,7 @@ import { useParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Loader2, CheckCircle2, XCircle } from 'lucide-react'; // Added CheckCircle2, XCircle
+import { ArrowLeft, Loader2, CheckCircle2, XCircle, ExternalLink } from 'lucide-react'; // Added ExternalLink for the new button
 import { format } from 'date-fns';
 import { showError } from '@/utils/toast';
 
@@ -116,6 +116,17 @@ const AdminQuoteDetailsPage: React.FC = () => {
     );
   };
 
+  let publicQuoteLink = '';
+  let publicQuoteLinkText = '';
+
+  if (quote.invoice_type === "Live Piano Services Quote") {
+    publicQuoteLink = '/live-piano-services/quote-proposal';
+    publicQuoteLinkText = 'View Live Piano Quote Page';
+  } else if (quote.invoice_type === "Erin Kennedy Quote") {
+    publicQuoteLink = '/erin-kennedy-2025-quote';
+    publicQuoteLinkText = "View Erin Kennedy Quote Page";
+  }
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between mb-6">
@@ -151,6 +162,16 @@ const AdminQuoteDetailsPage: React.FC = () => {
             <h3 className="text-xl font-semibold text-brand-primary mb-3">Additional Details</h3>
             {renderAdditionalDetails(quote.details, quote.invoice_type)}
           </div>
+
+          {publicQuoteLink && (
+            <div className="mt-6 text-center">
+              <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-6 py-3 rounded-full shadow-md">
+                <Link to={publicQuoteLink} target="_blank" rel="noopener noreferrer">
+                  {publicQuoteLinkText} <ExternalLink className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
