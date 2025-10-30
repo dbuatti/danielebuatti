@@ -23,13 +23,19 @@ import AdminAmebBookingsPage from './pages/admin/AdminAmebBookingsPage';
 import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage';
 import AboutPage from './pages/AboutPage';
 import NotFound from './pages/NotFound';
-import RootLayout from './layouts/RootLayout'; // Import the new RootLayout
+import RootLayout from './layouts/RootLayout';
+import ScrollToTop from './components/ScrollToTop'; // Import ScrollToTop
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootLayout />, // Use RootLayout as the top-level element for all main app routes
-    errorElement: <NotFound />, // This NotFound will catch errors from RootLayout and its children
+    element: (
+      <>
+        <ScrollToTop /> {/* Add ScrollToTop to ensure pages start at top */}
+        <RootLayout />
+      </>
+    ),
+    errorElement: <NotFound />,
     children: [
       { index: true, element: <LandingPageV3 /> },
       { path: "coaching", element: <CoachingPage /> },
@@ -56,12 +62,17 @@ const router = createBrowserRouter([
           { path: "email-templates", element: <AdminEmailTemplatesPage /> },
         ],
       },
-      { path: "*", element: <NotFound /> }, // Catch-all route for paths under RootLayout
+      { path: "*", element: <NotFound /> },
     ],
   },
   {
-    path: "/login", // /login is a standalone route, outside the RootLayout
-    element: <Login />,
+    path: "/login",
+    element: (
+      <>
+        <ScrollToTop />
+        <Login />
+      </>
+    ),
   },
 ]);
 

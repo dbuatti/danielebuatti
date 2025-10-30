@@ -10,7 +10,7 @@ const ScrollToTop: React.FC = () => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  return null; // This component's only job is a side effect, so it renders nothing.
+  return null;
 };
 
 export default ScrollToTop;

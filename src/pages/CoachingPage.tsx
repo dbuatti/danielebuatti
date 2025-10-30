@@ -57,90 +57,110 @@ const CoachingPage: React.FC = () => {
               </Link>
             </Button>
           </section>
-          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6" />
+          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6 mb-8" />
 
           {/* Reintroduced: Why Work With Me? */}
           <div className="py-6">
             <WhyWorkWithMeSection />
           </div>
-          <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+          <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
 
           {/* Reintroduced: Who I Work With */}
           <div className="py-6">
             <WhoIWorkWithSection />
           </div>
-          <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+          <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
 
           {/* Coaching Pillars Section */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             <h2 className="text-4xl font-bold text-brand-primary text-center">My Key Expertise</h2>
             <Separator className="max-w-xs mx-auto bg-brand-secondary" />
 
             {/* Performance & Musicianship Category */}
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
-              <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
-                <Mic className="h-8 w-8" /> Vocal & Instrumental Mastery
-              </h3>
-              <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-                Develop effortless breath control, expand your range, refine tone, and master various vocal styles (contemporary, classical, musical theatre). Enhance your instrumental skills, improve sight-reading, deepen your understanding of music theory, and develop expressive piano performance for musicianship and solo repertoire. This includes composition, songwriting, and score preparation with music technology. Includes audition preparation and repertoire building.
-              </p>
-              <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-2 pl-4">
-                <li>Vocal Coaching</li>
-                <li>Piano & Keyboard</li>
-              </ul>
+              <CardHeader className="p-0 pb-4">
+                <CardTitle className="flex items-center gap-3 text-3xl text-brand-primary">
+                  <Mic className="h-8 w-8" />
+                  Vocal & Instrumental Mastery
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-4">
+                <p className="text-lg">
+                  Develop effortless breath control, expand your range, refine tone, and master various vocal styles (contemporary, classical, musical theatre). Enhance your instrumental skills, improve sight-reading, deepen your understanding of music theory, and develop expressive piano performance for musicianship and solo repertoire. This includes composition, songwriting, and score preparation with music technology. Includes audition preparation and repertoire building.
+                </p>
+                <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-2 pl-4">
+                  <li>Vocal Coaching</li>
+                  <li>Piano & Keyboard</li>
+                </ul>
+              </CardContent>
             </Card>
 
             {/* Embodiment & Somatic Work Category - Enhanced description */}
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
-              <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
-                <Leaf className="h-8 w-8" /> Embodiment & Somatic Healing
-              </h3>
-              <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-                Explore deep body-mind integration through <strong className="text-brand-primary">Kinesiology</strong>, energy balancing, and sound healing. These sessions are designed to restore balance, ease stress and tension, and release unhelpful patterns, fostering a profound connection between your inner self and your expressive voice. This work directly supports greater freedom and authenticity in all forms of communication and performance.
-              </p>
-              <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-2 pl-4">
-                <li>Kinesiology & Body-Mind Integration</li>
-                <li>Breath–Body–Mind, Yoga, Mindfulness</li>
-                <li>Tension Release for a healthier body, heart, and mind</li>
-                <li>Mind–Body Connection for natural resonance</li>
-              </ul>
+              <CardHeader className="p-0 pb-4">
+                <CardTitle className="flex items-center gap-3 text-3xl text-brand-primary">
+                  <Leaf className="h-8 w-8" />
+                  Embodiment & Somatic Healing
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-4">
+                <p className="text-lg">
+                  Explore deep body-mind integration through <strong className="text-brand-primary">Kinesiology</strong>, energy balancing, and sound healing. These sessions are designed to restore balance, ease stress and tension, and release unhelpful patterns, fostering a profound connection between your inner self and your expressive voice. This work directly supports greater freedom and authenticity in all forms of communication and performance.
+                </p>
+                <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-2 pl-4">
+                  <li>Kinesiology & Body-Mind Integration</li>
+                  <li>Breath–Body–Mind, Yoga, Mindfulness</li>
+                  <li>Tension Release for a healthier body, heart, and mind</li>
+                  <li>Mind–Body Connection for natural resonance</li>
+                </ul>
+              </CardContent>
             </Card>
 
             {/* Presence & Communication Category */}
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
-              <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
-                <Megaphone className="h-8 w-8" /> Presence and Communication
-              </h3>
-              <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-                Refine your impact in any setting. These sessions focus on public speaking, on-camera performance, acting, and streaming presence. Learn to command attention, articulate clearly, and connect authentically with your audience, whether live or virtual. Develop techniques to manage nerves, enhance vocal projection, and embody confidence for powerful and memorable communication.
-              </p>
-              <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-2 pl-4">
-                <li>Cultivating authentic presence and grounded awareness</li>
-                <li>Integrating voice, body, and energy for impactful delivery</li>
-                <li>Building emotional intelligence and conscious communication</li>
-                <li>Expressing with clarity, confidence, and resonance</li>
-              </ul>
+              <CardHeader className="p-0 pb-4">
+                <CardTitle className="flex items-center gap-3 text-3xl text-brand-primary">
+                  <Megaphone className="h-8 w-8" />
+                  Presence and Communication
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-4">
+                <p className="text-lg">
+                  Refine your impact in any setting. These sessions focus on public speaking, on-camera performance, acting, and streaming presence. Learn to command attention, articulate clearly, and connect authentically with your audience, whether live or virtual. Develop techniques to manage nerves, enhance vocal projection, and embody confidence for powerful and memorable communication.
+                </p>
+                <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-2 pl-4">
+                  <li>Cultivating authentic presence and grounded awareness</li>
+                  <li>Integrating voice, body, and energy for impactful delivery</li>
+                  <li>Building emotional intelligence and conscious communication</li>
+                  <li>Expressing with clarity, confidence, and resonance</li>
+                </ul>
+              </CardContent>
             </Card>
 
             {/* Workshops & Group Coaching Card */}
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
-              <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
-                <Users className="h-8 w-8" /> Workshops & Group Coaching
-              </h3>
-              <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-                Join specialised group sessions for public speaking and on-camera presence, or explore the "Body Voice Sound Workshop" for movement, improvisation, and sound exploration. These collaborative environments offer unique opportunities for growth and connection.
-              </p>
-              <div className="mt-6 text-center">
-                <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-                  <Link to="/projects-resources">
-                    View Upcoming Workshop Dates
-                  </Link>
-                </Button>
-              </div>
+              <CardHeader className="p-0 pb-4">
+                <CardTitle className="flex items-center gap-3 text-3xl text-brand-primary">
+                  <Users className="h-8 w-8" />
+                  Workshops & Group Coaching
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-4">
+                <p className="text-lg">
+                  Join specialised group sessions for public speaking and on-camera presence, or explore the "Body Voice Sound Workshop" for movement, improvisation, and sound exploration. These collaborative environments offer unique opportunities for growth and connection.
+                </p>
+                <div className="mt-6 text-center">
+                  <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+                    <Link to="/projects-resources">
+                      View Upcoming Workshop Dates
+                    </Link>
+                  </Button>
+                </div>
+              </CardContent>
             </Card>
           </div>
 
-          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6" />
+          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-8 mb-8" />
 
           {/* NEW: Pricing & Packages Section (Moved up) */}
           <section id="pricing" className="max-w-4xl mx-auto space-y-6 py-6">
@@ -148,7 +168,7 @@ const CoachingPage: React.FC = () => {
             <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
               Invest in your growth with flexible coaching options designed to fit your needs. All sessions are tailored to your individual goals and can be conducted remotely via Zoom or in-person at my studio in Toorak, Melbourne.
             </p>
-            <div className="grid md:grid-cols-2 gap-6"> {/* Changed to 2 columns */}
+            <div className="grid md:grid-cols-2 gap-6">
               <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
                 <CardHeader className="p-0 pb-4">
                   <DollarSign className="h-12 w-12 text-brand-primary mx-auto mb-4 drop-shadow-sm" />
@@ -193,10 +213,10 @@ const CoachingPage: React.FC = () => {
               </Button>
             </div>
           </section>
-          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6" />
+          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-8 mb-8" />
 
           {/* NEW: Call-out to Projects & Resources */}
-          <div className="bg-brand-blue/10 dark:bg-brand-blue/20 p-6 rounded-xl shadow-lg text-center space-y-4 mt-6">
+          <div className="bg-brand-blue/10 dark:bg-brand-blue/20 p-6 rounded-xl shadow-lg text-center space-y-4 mt-8">
             <p className="text-xl font-semibold text-brand-dark dark:text-brand-light">
               Looking for AMEB accompaniment, live piano services, or to hire a Music Director?
             </p>

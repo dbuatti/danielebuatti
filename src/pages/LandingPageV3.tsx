@@ -30,17 +30,17 @@ const LandingPageV3: React.FC = () => {
       <Navbar />
       <main className="mx-auto px-4">
         <HeroSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
         <EducationExpertiseSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
         <WhyWorkWithMeSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
         <EmbodiedApproachOverviewSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
         <WhoIWorkWithSection id="who-i-work-with" />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
         {/* Moved 'A Personal Glimpse' here */}
-        <section className="max-w-6xl mx-auto text-center py-6 space-y-10">
+        <section className="max-w-6xl mx-auto text-center py-8 space-y-10">
           <SectionHeading>A Personal Glimpse</SectionHeading>
           <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col items-center">
             <DynamicImage
@@ -60,12 +60,12 @@ const LandingPageV3: React.FC = () => {
             </CardContent>
           </Card>
         </section>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
         <TestimonialsSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <ResonanceProgramCard className="my-6" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
+        <ResonanceProgramCard className="my-8" />
         {/* Simplified Projects & Resources call-out */}
-        <div className="bg-brand-blue/10 dark:bg-brand-blue/20 p-6 rounded-xl shadow-lg text-center space-y-4 mt-6 max-w-6xl mx-auto">
+        <div className="bg-brand-blue/10 dark:bg-brand-blue/20 p-6 rounded-xl shadow-lg text-center space-y-4 mt-8 max-w-6xl mx-auto">
           <p className="text-xl font-semibold text-brand-dark dark:text-brand-light">
             Explore all specialized services, digital products, and community initiatives.
           </p>
@@ -75,9 +75,9 @@ const LandingPageV3: React.FC = () => {
             </Link>
           </Button>
         </div>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
         <CallToActionSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
       </main>
 
       <Footer />

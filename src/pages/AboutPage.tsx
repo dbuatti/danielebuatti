@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import ImageCarouselSection from "@/components/pages/landing-page-v3/ImageCarouselSection";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import DynamicImage from "@/components/DynamicImage"; // Import DynamicImage
+import DynamicImage from "@/components/DynamicImage";
 
 const AboutPage: React.FC = () => {
   return (
@@ -110,7 +110,7 @@ const AboutPage: React.FC = () => {
         </section>
         <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6" />
 
-        {/* 4. Daniele's Moments (Image Gallery) - Removed heading text */}
+        {/* 4. Image Gallery - Removed heading text */}
         <div className="py-6">
           <ImageCarouselSection />
         </div>
