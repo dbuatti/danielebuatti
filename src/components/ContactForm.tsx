@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client"; // Import Supabase client
-import { Link } from "react-router-dom"; // Import Link
+// Removed: import { Link } from "react-router-dom";
 
 const formSchema = z.object({
   name: z.string().min(2, {
