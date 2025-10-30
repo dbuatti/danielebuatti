@@ -1,17 +1,6 @@
 export const navLinks = [
   { name: "Home", href: "/" },
   {
-    name: "About",
-    type: "dropdown",
-    subLinks: [
-      { name: "My Story", href: "#about" },
-      { name: "My Approach", href: "#approach" },
-      { name: "Who I Work With", href: "#who-i-work-with" },
-      { name: "Why Work With Me?", href: "#why-me" },
-      { name: "Testimonials", href: "#testimonials" },
-    ]
-  },
-  {
     name: "Services",
     type: "dropdown",
     subLinks: [

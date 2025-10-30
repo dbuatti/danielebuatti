@@ -17,7 +17,7 @@ const AmebAccompanyingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
       <Navbar />
-      <main className="container mx-auto px-4 pt-12 pb-12">
+      <main id="ameb-top" className="container mx-auto px-4 pt-12 pb-12"> {/* Added id="ameb-top" */}
         <div className="text-center space-y-4 mb-10">
           <SectionHeading>{pageTitle}</SectionHeading>
           {subtitle && <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70">{subtitle}</p>}
