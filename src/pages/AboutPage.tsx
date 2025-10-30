@@ -9,6 +9,7 @@ import ImageCarouselSection from "@/components/pages/landing-page-v3/ImageCarous
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import DynamicImage from "@/components/DynamicImage";
+import CorePrinciplesHeading from "@/components/CorePrinciplesHeading"; // Import new component
 
 const AboutPage: React.FC = () => {
   return (
@@ -89,7 +90,7 @@ const AboutPage: React.FC = () => {
 
         {/* 3. The Guiding Principles: THOUGHT • INTENTION • BREATH • EXPRESSION */}
         <section id="guiding-principles" className="max-w-4xl mx-auto space-y-10 py-6">
-          <SectionHeading>My Core Principles: THOUGHT • INTENTION • BREATH • EXPRESSION</SectionHeading>
+          <CorePrinciplesHeading />
           <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
             My coaching is built upon a simple yet powerful framework that integrates the mind, body, and voice to unlock true expressive freedom. This process ensures your performance is authentic, grounded, and sustainable.
           </p>
@@ -110,7 +111,7 @@ const AboutPage: React.FC = () => {
         </section>
         <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6" />
 
-        {/* 4. Image Gallery - Removed heading text */}
+        {/* 4. Daniele's Moments (Image Gallery) */}
         <div className="py-6">
           <ImageCarouselSection />
         </div>
