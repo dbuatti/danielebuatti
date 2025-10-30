@@ -4,7 +4,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Mic, Leaf, Megaphone, Users, Brain, Lightbulb, Volume2, DollarSign } from 'lucide-react';
+import { Mic, Leaf, Megaphone, Users, DollarSign } from 'lucide-react';
 import DynamicImage from '@/components/DynamicImage';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -139,15 +139,21 @@ const CoachingPage: React.FC = () => {
               <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
                 Check the <Link to="/projects-resources" className="text-brand-primary hover:underline font-semibold">Projects & Resources page</Link> for upcoming workshop dates and details.
               </p>
-              <div className="mt-6">
-                <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-                  <Link to="/projects-resources">
-                    Explore Group Options
-                  </Link>
-                </Button>
-              </div>
             </Card>
           </div>
+
+          {/* CTA 1: After expertise boxes */}
+          <div className="text-center mt-12">
+            <p className="text-2xl font-semibold text-brand-dark dark:text-brand-light mb-6">
+              Ready to unlock your full potential?
+            </p>
+            <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+              <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
+                Book a Session Now
+              </a>
+            </Button>
+          </div>
+          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
 
           {/* NEW: Pricing & Packages Section (Moved up) */}
           <section id="pricing" className="max-w-4xl mx-auto space-y-10 py-12">
