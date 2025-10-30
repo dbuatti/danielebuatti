@@ -17,7 +17,7 @@ import EmbodiedApproachOverviewSection from "@/components/pages/landing-page-v3/
 import EducationExpertiseSection from "@/components/pages/landing-page-v3/EducationExpertiseSection";
 import WhoIWorkWithSection from "@/components/pages/landing-page-v3/WhoIWorkWithSection";
 import TestimonialsSection from "@/components/pages/landing-page-v3/TestimonialsSection";
-import SessionsAvailabilitySection from "@/components/pages/landing-page-v3/SessionsAvailabilitySection";
+// import SessionsAvailabilitySection from "@/components/pages/landing-page-v3/SessionsAvailabilitySection"; // Removed
 import WhyWorkWithMeSection from "@/components/pages/landing-page-v3/WhyWorkWithMeSection";
 import CallToActionSection from "@/components/pages/landing-page-v3/CallToActionSection";
 import ResonanceProgramCard from "@/components/ResonanceProgramCard";
@@ -43,8 +43,7 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <TestimonialsSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <SessionsAvailabilitySection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        {/* Removed SessionsAvailabilitySection */}
         <section className="max-w-6xl mx-auto text-center py-12 space-y-10">
           <SectionHeading>A Personal Glimpse</SectionHeading>
           <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col items-center">

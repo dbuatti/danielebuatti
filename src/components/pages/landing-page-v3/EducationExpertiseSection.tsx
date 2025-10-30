@@ -3,7 +3,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Music, Leaf, Megaphone, CheckCircle2 } from "lucide-react"; // Import CheckCircle2
+import { Music, Leaf, Megaphone } from "lucide-react"; // Removed CheckCircle2
 import SectionHeading from "@/components/SectionHeading";
 import { Link } from "react-router-dom";
 
@@ -20,13 +20,9 @@ const EducationExpertiseSection: React.FC = () => {
               <CardTitle className="text-2xl text-brand-primary">Vocal & Instrumental Mastery</CardTitle>
             </CardHeader>
             <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3 flex-grow">
-              <ul className="space-y-2 text-left mx-auto max-w-xs">
-                <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Vocal Coaching</span></li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Piano & Keyboard</span></li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Composition and Song Writing</span></li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Accompanying</span></li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Score Preparation & Technology</span></li>
-              </ul>
+              <p>
+                Develop effortless breath control, expand your range, refine tone, and master various vocal styles. Enhance your instrumental skills, improve sight-reading, and develop expressive piano performance.
+              </p>
             </CardContent>
             <div className="mt-6">
               <Button className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
@@ -44,12 +40,9 @@ const EducationExpertiseSection: React.FC = () => {
               <CardTitle className="text-2xl text-brand-primary">Embodiment & Somatic Healing</CardTitle>
             </CardHeader>
             <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3 flex-grow">
-              <ul className="space-y-2 text-left mx-auto max-w-xs">
-                <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Kinesiology & Body-Mind Integration</span></li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Breath–Body–Mind, Yoga, Mindfulness</span></li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Tension Release for a healthier body, heart, and mind</span></li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Mind–Body Connection for natural resonance</span></li>
-              </ul>
+              <p>
+                Explore deep body-mind integration through Kinesiology, energy balancing, and sound healing. Restore balance, ease stress and tension, and release unhelpful patterns for greater freedom.
+              </p>
             </CardContent>
             <div className="mt-6">
               <Button className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
@@ -67,12 +60,9 @@ const EducationExpertiseSection: React.FC = () => {
               <CardTitle className="text-2xl text-brand-primary">Presence and Communication</CardTitle>
             </CardHeader>
             <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3 flex-grow">
-              <ul className="space-y-2 text-left mx-auto max-w-xs">
-                <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Cultivating authentic presence and grounded awareness</span></li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Integrating voice, body, and energy for impactful delivery</span></li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Building emotional intelligence and conscious communication</span></li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Expressing with clarity, confidence, and resonance</span></li>
-              </ul>
+              <p>
+                Refine your impact in any setting, focusing on public speaking, on-camera performance, and acting. Learn to command attention, articulate clearly, and connect authentically with your audience.
+              </p>
             </CardContent>
             <div className="mt-6">
               <Button className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">

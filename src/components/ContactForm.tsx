@@ -93,7 +93,7 @@ const ContactForm: React.FC = () => {
               "bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
             )}
           >
-            View AMEB Rates & Book
+            View AMEB Rates & Services
           </Link>
         </div>
         <FormField
