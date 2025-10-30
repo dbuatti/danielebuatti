@@ -7,8 +7,12 @@ const ScrollToTop = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    // Scroll instantly to the top of the page
-    window.scrollTo(0, 0);
+    // Defer scrolling to ensure it happens after the new page content has rendered.
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 0); 
+
+    return () => clearTimeout(timer);
   }, [pathname]); // Re-run if pathname changes
 
   return null;
