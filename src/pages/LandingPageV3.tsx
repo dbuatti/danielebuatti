@@ -8,21 +8,20 @@ import BackToTopButton from "@/components/BackToTopButton";
 import SeoStructuredData from "@/components/SeoStructuredData";
 import { Card, CardContent } from "@/components/ui/card";
 import SectionHeading from "@/components/SectionHeading";
-import { Button } from "@/components/ui/button"; // Import Button
-import { Link } from "react-router-dom"; // Import Link
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 // Import new modular sections
 import HeroSection from "@/components/pages/landing-page-v3/HeroSection";
-import EmbodiedApproachOverviewSection from "@/components/pages/landing-page-v3/EmbodiedApproachOverviewSection"; // Updated import
+import EmbodiedApproachOverviewSection from "@/components/pages/landing-page-v3/EmbodiedApproachOverviewSection";
 import EducationExpertiseSection from "@/components/pages/landing-page-v3/EducationExpertiseSection";
 import WhoIWorkWithSection from "@/components/pages/landing-page-v3/WhoIWorkWithSection";
 import TestimonialsSection from "@/components/pages/landing-page-v3/TestimonialsSection";
-// import SessionsAvailabilitySection from "@/components/pages/landing-page-v3/SessionsAvailabilitySection"; // Removed
 import WhyWorkWithMeSection from "@/components/pages/landing-page-v3/WhyWorkWithMeSection";
 import CallToActionSection from "@/components/pages/landing-page-v3/CallToActionSection";
 import ResonanceProgramCard from "@/components/ResonanceProgramCard";
 import DynamicImage from "@/components/DynamicImage";
-import ImageCarouselSection from "@/components/pages/landing-page-v3/ImageCarouselSection";
+// Removed ImageCarouselSection import
 
 const LandingPageV3: React.FC = () => {
 
@@ -37,13 +36,11 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <WhyWorkWithMeSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <EmbodiedApproachOverviewSection /> {/* Updated component name */}
+        <EmbodiedApproachOverviewSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <WhoIWorkWithSection id="who-i-work-with" />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <TestimonialsSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        {/* Removed SessionsAvailabilitySection */}
+        {/* Moved 'A Personal Glimpse' here */}
         <section className="max-w-6xl mx-auto text-center py-12 space-y-10">
           <SectionHeading>A Personal Glimpse</SectionHeading>
           <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col items-center">
@@ -54,16 +51,22 @@ const LandingPageV3: React.FC = () => {
               width={600}
               height={600}
             />
-            <CardContent className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-4 p-0">
-              Daniele Buatti, dedicated to embodied performance and well-being.
+            <CardContent className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-4 p-0 space-y-4">
+              <p>Daniele Buatti, dedicated to embodied performance and well-being.</p>
+              <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+                <Link to="/about">
+                  View Full Bio
+                </Link>
+              </Button>
             </CardContent>
           </Card>
         </section>
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <ImageCarouselSection />
+        <TestimonialsSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+        {/* Removed ImageCarouselSection */}
         <ResonanceProgramCard className="my-12" />
-        {/* New call-out for Projects & Resources */}
+        {/* Simplified Projects & Resources call-out */}
         <div className="bg-brand-blue/10 dark:bg-brand-blue/20 p-8 rounded-xl shadow-lg text-center space-y-4 mt-12 max-w-6xl mx-auto">
           <p className="text-xl font-semibold text-brand-dark dark:text-brand-light">
             Explore all specialized services, digital products, and community initiatives.

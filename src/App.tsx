@@ -21,6 +21,7 @@ import AdminQuotesPage from './pages/admin/AdminQuotesPage';
 import AdminQuoteDetailsPage from './pages/admin/AdminQuoteDetailsPage';
 import AdminAmebBookingsPage from './pages/admin/AdminAmebBookingsPage';
 import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage';
+import AboutPage from './pages/AboutPage'; // Import the new AboutPage
 import NotFound from './pages/NotFound'; // Import NotFound page
 
 const router = createBrowserRouter([
@@ -80,6 +81,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/about", // New About page route
+    element: <AboutPage />,
   },
   {
     path: "/admin",
