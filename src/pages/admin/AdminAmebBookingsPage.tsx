@@ -5,10 +5,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns';
-import { Loader2, Mail, CalendarDays, GraduationCap, Copy } from 'lucide-react'; // Added Copy icon
+import { Loader2, Mail, CalendarDays, GraduationCap, Copy, Trash2 } from 'lucide-react'; // Added Trash2 icon
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast'; // Import toast utilities
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'; // Import Select components
 import { Button } from '@/components/ui/button'; // Import Button
+import { toast } from 'sonner'; // Import toast from sonner for promise
 
 interface AmebBooking {
   id: string;
@@ -66,6 +67,37 @@ const AdminAmebBookingsPage: React.FC = () => {
       showSuccess('Status updated successfully!', { id: toastId });
     }
     dismissToast(toastId);
+  };
+
+  const handleDeleteBooking = async (bookingId: string) => {
+    toast.promise(
+      async () => {
+        const { error } = await supabase
+          .from('ameb_bookings')
+          .delete()
+          .eq('id', bookingId);
+
+        if (error) {
+          throw error;
+        }
+
+        setBookings(prevBookings => prevBookings.filter(booking => booking.id !== bookingId));
+        return 'Booking deleted successfully!';
+      },
+      {
+        loading: 'Deleting booking...',
+        success: (message) => message,
+        error: (err) => {
+          console.error('Error deleting AMEB booking:', err);
+          return 'Failed to delete booking.';
+        },
+        action: {
+          label: 'Confirm Delete',
+          onClick: () => { /* The promise handles the actual deletion */ },
+        },
+        description: 'Are you sure you want to delete this AMEB booking? This action cannot be undone.',
+      }
+    );
   };
 
   const handleCopyAndEmail = async (booking: AmebBooking) => {
@@ -178,7 +210,7 @@ Daniele Buatti`;
                       <TableCell className="text-brand-dark/70 dark:text-brand-light/70">
                         {format(new Date(booking.created_at), 'PPP p')}
                       </TableCell>
-                      <TableCell className="text-center">
+                      <TableCell className="text-center flex gap-2 justify-center">
                         <Button
                           variant="outline"
                           size="sm"
@@ -186,6 +218,14 @@ Daniele Buatti`;
                           className="text-brand-primary border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50"
                         >
                           <Copy className="h-4 w-4 mr-2" /> Reply
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDeleteBooking(booking.id)}
+                          className="bg-red-600 hover:bg-red-700 text-white"
+                        >
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </TableCell>
                     </TableRow>
