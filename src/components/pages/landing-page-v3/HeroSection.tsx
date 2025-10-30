@@ -21,7 +21,13 @@ const HeroSection: React.FC = () => {
           Daniele Buatti – Integrating Kinesiology, Voice, and Presence for Authentic Performance.
         </p>
         <p className="text-lg md:text-xl text-brand-dark/80 dark:text-brand-light/80 max-w-3xl md:max-w-none mx-auto">
-          Are you looking to release tension, connect more deeply with your body, and discover your most authentic voice? Through a unique blend of kinesiology, vocal coaching, and somatic awareness, I help singers, speakers, and creatives find ease, freedom, and authenticity in their expression. This work goes beyond technique — it’s about learning to listen to your body, dissolve habitual tension, and access the grounded presence that allows your natural voice to emerge. When body and voice are aligned, performance becomes effortless, expressive, and deeply resonant.
+          Are you looking to release tension, connect more deeply with your body, and discover your most authentic voice?
+        </p>
+        <p className="text-lg md:text-xl text-brand-dark/80 dark:text-brand-light/80 max-w-3xl md:max-w-none mx-auto">
+          Through a unique blend of kinesiology, vocal coaching, and somatic awareness, I help singers, speakers, and creatives find ease, freedom, and authenticity in their expression.
+        </p>
+        <p className="text-lg md:text-xl text-brand-dark/80 dark:text-brand-light/80 max-w-3xl md:max-w-none mx-auto">
+          This work goes beyond technique — it’s about learning to listen to your body, dissolve habitual tension, and access the grounded presence that allows your natural voice to emerge. When body and voice are aligned, performance becomes effortless, expressive, and deeply resonant.
         </p>
         <Dialog>
           <DialogTrigger asChild>
