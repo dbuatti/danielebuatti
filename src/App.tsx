@@ -1,6 +1,6 @@
 "use client";
 
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import LandingPageV3 from './pages/LandingPageV3';
 import LivePianoServicesPage from './pages/LivePianoServicesPage';
 import VoicePianoServicesPage from './pages/VoicePianoServicesPage';
