@@ -11,5 +11,5 @@ export const navLinks = [
       { name: "Music Director & Pianist", href: "/music-director-pianist" },
     ]
   },
-  { name: "Contact", href: "#contact" },
+  { name: "Contact", href: "/#contact" },
 ];
