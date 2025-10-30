@@ -200,7 +200,7 @@ const CoachingPage: React.FC = () => {
             </div>
             <div className="text-center mt-8">
               <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-                <a href="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:Voice%20%2B%20Piano" target="_blank" rel="noopener noreferrer">
+                <a href="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:1:1%20Coaching:%20Voice,%20Piano%20%26%20Performance" target="_blank" rel="noopener noreferrer">
                   View Detailed Availability & Book
                 </a>
               </Button>
