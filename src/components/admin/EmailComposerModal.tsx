@@ -75,8 +75,8 @@ const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       recipientEmail: initialRecipientEmail,
-      subject: initialSubject,
-      body: initialBody,
+      subject: initialSubject, // Set raw initial subject
+      body: initialBody,       // Set raw initial body
       templateId: '',
     },
   });
@@ -126,32 +126,27 @@ const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
     fetchTemplates();
   }, []);
 
-  // Update form fields when initial props change or template is selected
+  // Update form fields when initial props change
   useEffect(() => {
-    const populatedSubject = replacePlaceholders(initialSubject, dynamicDetails);
-    const populatedBody = replacePlaceholders(initialBody, dynamicDetails);
-
     form.reset({
       recipientEmail: initialRecipientEmail,
-      subject: populatedSubject,
-      body: populatedBody,
+      subject: initialSubject, // Use raw initial subject
+      body: initialBody,       // Use raw initial body
       templateId: '', // Reset template selection
     });
-  }, [initialRecipientEmail, initialSubject, initialBody, dynamicDetails, form]);
+  }, [initialRecipientEmail, initialSubject, initialBody, form]);
 
   const handleTemplateChange = (templateId: string) => {
     const selectedTemplate = templates.find((t) => t.id === templateId);
     if (selectedTemplate) {
-      const populatedSubject = replacePlaceholders(selectedTemplate.subject, dynamicDetails);
-      const populatedBody = replacePlaceholders(selectedTemplate.body, dynamicDetails);
-      form.setValue('subject', populatedSubject);
-      form.setValue('body', populatedBody);
+      form.setValue('subject', selectedTemplate.subject); // Set raw template subject
+      form.setValue('body', selectedTemplate.body);       // Set raw template body
       form.setValue('templateId', templateId);
     } else {
       form.setValue('templateId', '');
-      // If no template is selected, revert to initial (placeholder-populated) values
-      form.setValue('subject', replacePlaceholders(initialSubject, dynamicDetails));
-      form.setValue('body', replacePlaceholders(initialBody, dynamicDetails));
+      // If no template is selected, revert to initial raw values
+      form.setValue('subject', initialSubject);
+      form.setValue('body', initialBody);
     }
   };
 
@@ -160,11 +155,15 @@ const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
     const toastId = showLoading('Sending email...');
 
     try {
+      // Apply placeholder replacement just before sending
+      const finalSubject = replacePlaceholders(values.subject, dynamicDetails);
+      const finalBody = replacePlaceholders(values.body, dynamicDetails);
+
       const { error } = await supabase.functions.invoke('send-admin-email', {
         body: {
           recipientEmail: values.recipientEmail,
-          subject: values.subject,
-          body: values.body,
+          subject: finalSubject,
+          body: finalBody,
         },
       });
 
@@ -192,7 +191,7 @@ const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
         <DialogHeader>
           <DialogTitle className="text-brand-primary">Compose Email</DialogTitle>
           <DialogDescription className="text-brand-dark/70 dark:text-brand-light/70">
-            Send a direct email to the client. Use placeholders like {'{{studentParentName}}'} in your templates.
+            Send a direct email to the client. Placeholders (e.g., {'{{student_parent_name}}'}) will be replaced when the email is sent.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
