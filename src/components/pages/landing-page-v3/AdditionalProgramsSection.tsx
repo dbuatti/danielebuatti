@@ -66,7 +66,7 @@ const AdditionalProgramsSection: React.FC = () => {
         <FeaturedProgramCard
           title="AMEB Accompanying Services"
           description="Professional and supportive piano accompaniment for your AMEB exams, ensuring you feel confident and ready."
-          link="/ameb-accompanying"
+          link="/ameb-accompanying" // Updated link
           linkText="Learn More"
           backgroundImageSrc="/Piano Keys_edited_edited.avif"
           className="max-w-6xl"
