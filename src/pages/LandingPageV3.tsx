@@ -5,7 +5,6 @@ import { Separator } from "@/components/ui/separator";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
-import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 import SeoStructuredData from "@/components/SeoStructuredData";
 import { Card, CardContent } from "@/components/ui/card";
 import SectionHeading from "@/components/SectionHeading";
@@ -27,7 +26,6 @@ import DynamicImage from "@/components/DynamicImage";
 import ImageCarouselSection from "@/components/pages/landing-page-v3/ImageCarouselSection";
 
 const LandingPageV3: React.FC = () => {
-  useSmoothScroll();
 
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">

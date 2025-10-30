@@ -9,8 +9,6 @@ import { ArrowLeft, Phone, Mail } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox'; // Assuming you have a Checkbox component
 
 const QuotePage: React.FC = () => {
-  // Removed useEffect for scrolling, as ScrollToTop component now handles all scroll logic.
-
   // Removed handleExportToSheets function as it's no longer used.
 
   return (
