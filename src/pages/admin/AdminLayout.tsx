@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
 import { useSession } from '@/components/SessionContextProvider';
 import { Button } from '@/components/ui/button';
 import { LogOut, LayoutDashboard, FileText, Home } from 'lucide-react';
@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 const AdminLayout: React.FC = () => {
   const { user, isLoading } = useSession();
   const navigate = useNavigate();
+  const location = useLocation(); // Initialize useLocation
   const { theme } = useTheme();
 
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
@@ -62,12 +63,12 @@ const AdminLayout: React.FC = () => {
             <LayoutDashboard className="h-5 w-5" />
             Dashboard
           </Link>
-          <Link to="/admin/invoices" className={cn(
+          <Link to="/admin/quotes" className={cn(
             "flex items-center gap-3 p-3 rounded-md text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark/50 transition-colors",
-            location.pathname.startsWith('/admin/invoices') ? 'bg-brand-secondary/30 dark:bg-brand-dark/60 font-semibold text-brand-primary' : ''
+            location.pathname.startsWith('/admin/quotes') ? 'bg-brand-secondary/30 dark:bg-brand-dark/60 font-semibold text-brand-primary' : ''
           )}>
             <FileText className="h-5 w-5" />
-            Invoices
+            Quotes
           </Link>
         </nav>
         <div className="mt-auto space-y-2">
@@ -90,7 +91,7 @@ const AdminLayout: React.FC = () => {
         <header className="bg-brand-light dark:bg-brand-dark border-b border-brand-secondary/50 p-4 shadow-sm flex items-center justify-between">
           <h1 className="text-2xl font-bold text-brand-dark dark:text-brand-light">
             {location.pathname === '/admin' ? 'Admin Dashboard' : 
-             location.pathname.startsWith('/admin/invoices') ? 'Invoices' : 'Admin'}
+             location.pathname.startsWith('/admin/quotes') ? 'Quotes' : 'Admin'}
           </h1>
           <div className="flex items-center gap-4">
             <span className="text-brand-dark/80 dark:text-brand-light/80 text-sm">

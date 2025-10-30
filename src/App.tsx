@@ -17,19 +17,19 @@ import MusicDirectorPianistPage from './pages/MusicDirectorPianistPage';
 import ErinKennedyQuotePage from './pages/ErinKennedyQuotePage';
 import { Toaster } from 'sonner';
 import ScrollToTop from './components/ScrollToTop';
-import { SessionContextProvider } from './components/SessionContextProvider'; // Import SessionContextProvider
-import Login from './pages/Login'; // Import Login page
-import AdminLayout from './pages/admin/AdminLayout'; // Import AdminLayout
-import AdminDashboardPage from './pages/admin/AdminDashboardPage'; // Import AdminDashboardPage
-import AdminInvoicesPage from './pages/admin/AdminInvoicesPage'; // Import AdminInvoicesPage
-import AdminInvoiceDetailsPage from './pages/admin/AdminInvoiceDetailsPage'; // Import AdminInvoiceDetailsPage
+import { SessionContextProvider } from './components/SessionContextProvider';
+import Login from './pages/Login';
+import AdminLayout from './pages/admin/AdminLayout';
+import AdminDashboardPage from './pages/admin/AdminDashboardPage';
+import AdminQuotesPage from './pages/admin/AdminQuotesPage'; // Updated import
+import AdminQuoteDetailsPage from './pages/admin/AdminQuoteDetailsPage'; // Updated import
 
 function App() {
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Toaster />
       <ScrollToTop />
-      <SessionContextProvider> {/* Wrap Routes with SessionContextProvider */}
+      <SessionContextProvider>
         <Routes>
           <Route path="/" element={<LandingPageV3 />} />
           <Route path="/services" element={<ServicesPage />} />
@@ -46,14 +46,13 @@ function App() {
           <Route path="/music-director-pianist" element={<MusicDirectorPianistPage />} />
           <Route path="/erin-kennedy-2025-quote" element={<ErinKennedyQuotePage />} />
 
-          {/* New Login Route */}
           <Route path="/login" element={<Login />} />
 
           {/* Admin Routes */}
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboardPage />} />
-            <Route path="invoices" element={<AdminInvoicesPage />} />
-            <Route path="invoices/:id" element={<AdminInvoiceDetailsPage />} />
+            <Route path="quotes" element={<AdminQuotesPage />} /> {/* Updated path */}
+            <Route path="quotes/:id" element={<AdminQuoteDetailsPage />} /> {/* Updated path */}
           </Route>
         </Routes>
       </SessionContextProvider>
