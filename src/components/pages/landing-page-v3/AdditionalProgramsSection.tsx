@@ -18,7 +18,7 @@ const AdditionalProgramsSection: React.FC = () => {
           backgroundImageSrc="/daniele-conducting.jpeg"
           className="max-w-6xl"
           buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-          overlayColorClass="bg-black/20" 
+          overlayColorClass="bg-black/20"
           backgroundPosition="center"
           cardBgClass="bg-brand-light dark:bg-brand-dark-alt"
           cardTextClass="text-brand-dark dark:text-brand-light"
@@ -33,8 +33,8 @@ const AdditionalProgramsSection: React.FC = () => {
           backgroundImageSrc="/blacktie.avif"
           className="max-w-6xl"
           buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-          overlayColorClass="bg-black/20" 
-          backgroundPosition="center 70%" 
+          overlayColorClass="bg-black/20"
+          backgroundPosition="center 70%"
         />
 
         {/* FeaturedProgramCard for AMEB Accompanying Services */}
@@ -46,7 +46,7 @@ const AdditionalProgramsSection: React.FC = () => {
           backgroundImageSrc="/ameb-placeholder.jpg"
           className="max-w-6xl"
           buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
-          overlayColorClass="bg-black/20" 
+          overlayColorClass="bg-black/20"
           backgroundPosition="center"
         />
       </div>
@@ -62,7 +62,7 @@ const AdditionalProgramsSection: React.FC = () => {
           linkText="Visit Buattiverse Store"
           backgroundImageSrc="/sheetmusic.png"
           className="max-w-6xl"
-          overlayColorClass="bg-black/20" 
+          overlayColorClass="bg-black/20"
         />
 
         {/* FeaturedProgramCard for Piano Backings */}
