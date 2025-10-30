@@ -9,7 +9,6 @@ import ImageCarouselSection from "@/components/pages/landing-page-v3/ImageCarous
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import DynamicImage from "@/components/DynamicImage"; // Import DynamicImage
-import { Card, CardContent } from "@/components/ui/card"; // Import Card and CardContent
 
 const AboutPage: React.FC = () => {
   return (
@@ -24,30 +23,32 @@ const AboutPage: React.FC = () => {
           <Separator className="max-w-xs mx-auto bg-brand-secondary" />
         </div>
 
-        {/* Featured Image Section - Daniele's Portrait */}
-        <section className="max-w-3xl mx-auto py-12">
-          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col items-center">
+        {/* Introduction with Integrated Image */}
+        <section className="max-w-4xl mx-auto py-8 flex flex-col md:flex-row items-center gap-8">
+          <div className="md:w-1/3 flex justify-center">
             <DynamicImage
               src="/daniele simple.jpeg"
-              alt="Daniele Buatti smiling warmly"
-              className="w-full max-w-md h-auto rounded-xl shadow-2xl object-cover border-4 border-brand-primary mx-auto transform rotate-2 hover:rotate-0 transition-transform duration-500"
-              width={600}
-              height={600}
+              alt="Daniele Buatti"
+              className="rounded-full shadow-xl border-4 border-brand-primary w-48 h-48 object-cover"
+              width={192}
+              height={192}
             />
-            <CardContent className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-4 p-0">
-              <p>Daniele Buatti: Dedicated to embodied performance and well-being.</p>
-            </CardContent>
-          </Card>
+          </div>
+          <div className="md:w-2/3 text-center md:text-left">
+            <h2 className="text-2xl font-bold text-brand-primary mb-4">Dedicated to Embodied Performance and Well-being</h2>
+            <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
+              With over 12 years of experience as a Music Director, Pianist, Arranger, Vocal Coach, and Educator, 
+              Daniele Buatti brings together professional music theatre expertise with somatic practices to train 
+              versatile, resilient, and expressive performers.
+            </p>
+          </div>
         </section>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6 mb-12" />
 
         {/* 1. Daniele's Story: Experience & Credibility */}
         <section id="daniele-story" className="max-w-4xl mx-auto space-y-6 py-12">
           <SectionHeading>Daniele Buatti: Musician, Coach, and Embodiment Practitioner</SectionHeading>
           <div className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed space-y-4">
-            <p>
-              With over 12 years of experience as a Music Director, Pianist, Arranger, Vocal Coach, and Educator, Daniele Buatti brings together professional music theatre expertise, vocal pedagogy, and somatic practices influenced by kinesiology and yoga. This integrated approach forms the foundation for his unique, embodied coaching — training versatile, resilient, and expressive performers and communicators.
-            </p>
             <p>
               Daniele's journey began with a deep passion for music and performance, leading him to a Bachelor of Music at the Australian Institute of Music. His career has spanned a wide range of productions, from large-scale musicals to intimate workshops, where he has collaborated with artists to unlock their full potential.
             </p>
