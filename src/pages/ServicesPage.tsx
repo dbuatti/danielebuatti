@@ -1,15 +1,13 @@
 "use client";
 
-import React from 'react'; // Removed useEffect and useLocation
-import { Link } from 'react-router-dom';
+import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import DynamicImage from '@/components/DynamicImage';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionHeading from '@/components/SectionHeading';
-import { Mic, Leaf, Megaphone, Piano, FileText } from 'lucide-react';
+import { Mic, Leaf, Megaphone } from 'lucide-react';
 
 const ServicesPage: React.FC = () => {
   // Removed useEffect for scrolling, as ScrollToTop component now handles all scroll logic.
@@ -38,7 +36,7 @@ const ServicesPage: React.FC = () => {
               width={800}
               height={533}
             />
-            {/* Gradient Overlay */}
+            {/* Gradient Overlay for text readability */}
             <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/50 to-transparent"></div>
           </section>
 

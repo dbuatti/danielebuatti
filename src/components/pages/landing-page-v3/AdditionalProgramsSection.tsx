@@ -1,5 +1,4 @@
 import React from "react";
-import SectionHeading from "@/components/SectionHeading";
 import FeaturedProgramCard from "@/components/FeaturedProgramCard";
 import ResonanceProgramCard from "@/components/ResonanceProgramCard";
 // Removed MusicDirectorPianistCard import as it's now rendered directly in ProgramsPage

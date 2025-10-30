@@ -47,22 +47,24 @@ serve(async (req) => {
       });
     }
 
-    // Insert data into erin_kennedy_quotes table
+    // Insert data into the new 'invoices' table
     const { data, error: insertError } = await supabaseClient
-      .from('erin_kennedy_quotes')
+      .from('invoices')
       .insert([
         {
           client_name: clientName,
           client_email: clientEmail,
+          invoice_type: "Erin Kennedy Quote", // Specific type for this quote
           event_title: eventTitle,
           event_date: eventDate,
           event_location: eventLocation,
           prepared_by: preparedBy,
-          on_site_performance_cost: onSitePerformanceCost,
-          show_preparation_fee: showPreparationFee,
-          total_base_invoice: totalBaseInvoice,
-          rehearsal_bundle_cost_per_student: rehearsalBundleCostPerStudent,
-          accepted_at: new Date().toISOString(),
+          total_amount: totalBaseInvoice, // Total base invoice for Erin Kennedy
+          details: { // Store specific details in the JSONB column
+            on_site_performance_cost: onSitePerformanceCost,
+            show_preparation_fee: showPreparationFee,
+            rehearsal_bundle_cost_per_student: rehearsalBundleCostPerStudent,
+          },
         },
       ])
       .select(); // Select the inserted record to get its details
@@ -124,19 +126,19 @@ serve(async (req) => {
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Performance Cost:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${insertedRecord.on_site_performance_cost}.00</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${insertedRecord.details.on_site_performance_cost}.00</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Preparation Fee:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${insertedRecord.show_preparation_fee}.00</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${insertedRecord.details.show_preparation_fee}.00</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Total Base Invoice:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${insertedRecord.total_base_invoice}.00</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${insertedRecord.total_amount}.00</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Rehearsal Bundle Cost (per student):</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${insertedRecord.rehearsal_bundle_cost_per_student}.00</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${insertedRecord.details.rehearsal_bundle_cost_per_student}.00</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Accepted On:</td>

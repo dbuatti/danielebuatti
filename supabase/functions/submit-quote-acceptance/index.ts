@@ -36,24 +36,27 @@ serve(async (req) => {
       });
     }
 
-    // Insert data into quote_acceptances table
+    // Insert data into the new 'invoices' table
     const { data, error: insertError } = await supabaseClient
-      .from('quote_acceptances')
+      .from('invoices')
       .insert([
         {
           client_name: clientName,
           client_email: clientEmail,
-          selected_package_id: "Custom Quote",
-          has_add_on: wantsExtraHour || wantsRehearsal,
-          selected_add_ons: JSON.stringify({
-            extraHour: wantsExtraHour,
-            rehearsal: wantsRehearsal,
-          }),
-          total_amount: totalAmount,
+          invoice_type: "Live Piano Services Quote",
+          event_title: "Christmas Carols – Live Piano Quote", // Specific title for this quote type
           event_date: proposalDetails.dateOfEvent,
           event_location: proposalDetails.location,
-          quote_title: "Christmas Carols – Live Piano Quote",
-          quote_prepared_by: proposalDetails.preparedBy,
+          prepared_by: proposalDetails.preparedBy,
+          total_amount: totalAmount,
+          details: { // Store specific details in the JSONB column
+            selected_package_id: "Custom Quote",
+            has_add_on: wantsExtraHour || wantsRehearsal,
+            selected_add_ons: {
+              extraHour: wantsExtraHour,
+              rehearsal: wantsRehearsal,
+            },
+          },
         },
       ])
       .select(); // Select the inserted record to get its details
@@ -82,7 +85,7 @@ serve(async (req) => {
       });
     }
 
-    const subject = `🎉 New Quote Acceptance: ${insertedRecord.quote_title} from ${insertedRecord.client_name}`;
+    const subject = `🎉 New Quote Acceptance: ${insertedRecord.event_title} from ${insertedRecord.client_name}`;
     const emailHtml = `
       <div style="font-family: 'Outfit', sans-serif; color: #1b1b1b; background-color: #F8F8F8; padding: 20px; border-radius: 8px;">
         <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
@@ -99,15 +102,15 @@ serve(async (req) => {
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Quote Title:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${insertedRecord.quote_title}</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${insertedRecord.event_title}</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Selected Package:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${insertedRecord.selected_package_id}</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${insertedRecord.details.selected_package_id}</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Optional Add-On:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${insertedRecord.has_add_on ? 'Yes' : 'No'}</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${insertedRecord.details.has_add_on ? 'Yes' : 'No'}</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Total Amount:</td>
@@ -123,11 +126,11 @@ serve(async (req) => {
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Prepared By:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${insertedRecord.quote_prepared_by}</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${insertedRecord.prepared_by}</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Accepted On:</td>
-              <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;">${new Date(insertedRecord.created_at).toLocaleString()}</td>
+              <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;">${new Date(insertedRecord.accepted_at).toLocaleString()}</td>
             </tr>
           </table>
           <p style="font-size: 14px; color: #666666; text-align: center; margin-top: 30px;">

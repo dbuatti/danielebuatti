@@ -3,11 +3,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import DynamicImage from "@/components/DynamicImage";
-import { ArrowLeft, Phone, Mail } from 'lucide-react'; // Removed Download icon as it's no longer needed
-import { toast } from 'sonner';
+import { ArrowLeft, Phone, Mail } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox'; // Assuming you have a Checkbox component
 
 const QuotePage: React.FC = () => {
@@ -106,6 +104,7 @@ const QuotePage: React.FC = () => {
                 <li>Clear, focused time commitment.</li>
                 <li>2 × 45-minute carol sets.</li>
                 <li>Support for both choristers and non-choristers alike.</li>
+              <li>Prepared based on your final song list.</li>
               </ul>
             </div>
           </div>

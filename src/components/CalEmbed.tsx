@@ -42,7 +42,8 @@ const CalEmbed: React.FC<CalEmbedProps> = ({ calLink, layout = "month_view" }) =
         if (ar[0] === L) {
           const api = function () { p(api, arguments); };
           const ns = ar[1];
-          api.q = api.q || [];
+          // @ts-ignore
+          api.q = api.q || []; // Suppress TS7022 error for external script
           if (typeof ns === "string") {
             cal.ns[ns] = cal.ns[ns] || api;
             p(cal.ns[ns], ar);

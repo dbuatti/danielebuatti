@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useAcuityEmbedScript } from '@/hooks/use-acuity-embed-script';
 
 interface AcuityEmbedProps {

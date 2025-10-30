@@ -1,5 +1,4 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
 import DynamicImage from "@/components/DynamicImage";
 import SectionHeading from "@/components/SectionHeading";
 // Removed GraduationCap as it's moving with the education section

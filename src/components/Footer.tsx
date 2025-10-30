@@ -1,5 +1,4 @@
-import React from "react";
-import { Instagram, Youtube, Mail, Phone, Newspaper, Twitch, Facebook } from "lucide-react"; // Removed LinkIcon
+import { Instagram, Youtube, Mail, Phone, Newspaper, Twitch, Facebook } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import DynamicImage from "@/components/DynamicImage";
 import NewsletterSignup from "@/components/NewsletterSignup";
@@ -11,7 +10,6 @@ const Footer = () => {
     { name: "Twitch", href: "https://twitch.tv/danielebuatti", icon: Twitch },
     { name: "Substack", href: "https://substack.com/@danielebuatti", icon: Newspaper },
     { name: "Facebook", href: "http://www.facebook.com/danielebuatti", icon: Facebook },
-    // Removed: { name: "Mailing List", href: "http://eepurl.com/hg2ptX", icon: LinkIcon },
   ];
 
   const currentYear = new Date().getFullYear();

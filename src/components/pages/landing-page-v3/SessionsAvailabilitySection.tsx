@@ -4,7 +4,6 @@ import { CalendarDays, Users, Monitor } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { cn } from "@/lib/utils";
 
 const SessionsAvailabilitySection: React.FC = () => {
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from 'react'; // Removed useEffect
+import React, { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -45,9 +45,6 @@ const QuoteProposalPage: React.FC = () => {
     location: "Kew (Private Home)",
     preparedBy: "Daniele Buatti",
   };
-
-  // Base hourly rate for performance and rehearsal
-  const hourlyRate = 350; 
 
   // Base engagement fee is now all-inclusive
   const baseEngagementFee = 1200; 
@@ -99,7 +96,7 @@ const QuoteProposalPage: React.FC = () => {
 
     try {
       // Invoke the new Supabase Edge Function
-      const { data, error } = await supabase.functions.invoke('submit-quote-acceptance', {
+      const { error } = await supabase.functions.invoke('submit-quote-acceptance', {
         body: {
           clientName: values.clientName,
           clientEmail: values.clientEmail,

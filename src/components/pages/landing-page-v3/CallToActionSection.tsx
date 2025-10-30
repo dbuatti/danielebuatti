@@ -1,6 +1,4 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { Mail, Phone } from "lucide-react";
 import ContactForm from "@/components/ContactForm"; // Keep import for now, but it won't be rendered
 import SectionHeading from "@/components/SectionHeading";
 

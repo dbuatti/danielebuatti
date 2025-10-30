@@ -4,7 +4,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import DynamicImage from "@/components/DynamicImage";
-import { ArrowLeft, Mail, Phone } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Separator } from "@/components/ui/separator";
 import Footer from '@/components/Footer';
 import { useTheme } from "next-themes";
@@ -23,7 +23,6 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { cn } from '@/lib/utils';
 
 // Define the form schema using zod
 const formSchema = z.object({
@@ -70,7 +69,7 @@ const ErinKennedyQuotePage: React.FC = () => {
     const loadingToastId = toast.loading("Submitting your quote acceptance...");
 
     try {
-      const { data, error } = await supabase.functions.invoke('submit-erin-kennedy-quote', {
+      const { error } = await supabase.functions.invoke('submit-erin-kennedy-quote', {
         body: {
           clientName: values.clientName,
           clientEmail: values.clientEmail,
