@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import DynamicImage from "@/components/DynamicImage";
 import SectionHeading from "@/components/SectionHeading";
@@ -19,9 +21,7 @@ const EmbodiedApproachOverviewSection: React.FC = () => {
             width={400}
             height={500}
           />
-          <div className="absolute -top-10 -right-10 bg-brand-primary/20 dark:bg-brand-primary/30 p-6 rounded-xl shadow-lg hidden md:block transform rotate-3">
-            <p className="text-sm text-brand-dark dark:text-brand-light italic">"My therapeutic approach fosters authentic connection."</p>
-          </div>
+          {/* Removed the small quote bubble to reduce clutter */}
         </div>
         <div className="text-center md:text-left space-y-6">
           <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
@@ -34,7 +34,6 @@ const EmbodiedApproachOverviewSection: React.FC = () => {
         </div>
       </div>
 
-      {/* Content from original EmbodiedApproachSection */}
       <div className="space-y-6">
         <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
           All my teachings are informed by Buddhist and yogic philosophies, fostering a heart-centred, process-oriented journey focused on truth and transformation, not just the destination.
