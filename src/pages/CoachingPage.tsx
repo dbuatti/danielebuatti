@@ -10,10 +10,8 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionHeading from '@/components/SectionHeading';
 import { Separator } from '@/components/ui/separator';
-// Removed PhilosophyStatement import
 import WhyWorkWithMeSection from '@/components/pages/landing-page-v3/WhyWorkWithMeSection';
 import WhoIWorkWithSection from '@/components/pages/landing-page-v3/WhoIWorkWithSection';
-// Removed SessionsFormatsAvailabilitySection import
 
 const CoachingPage: React.FC = () => {
   const pageTitle = "My Coaching Services";
@@ -43,18 +41,13 @@ const CoachingPage: React.FC = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/50 to-transparent"></div>
           </section>
 
-          {/* The Holistic Difference - Refined Pitch */}
-          <section className="bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-8 rounded-xl shadow-inner space-y-6">
+          {/* Consolidated Philosophy Section */}
+          <section id="embodied-approach" className="bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-8 rounded-xl shadow-inner space-y-6 text-center">
             <h3 className="text-3xl font-bold text-brand-primary text-center">The Holistic Difference</h3>
-            <ul className="list-disc list-inside text-xl text-brand-dark/80 dark:text-brand-light/80 leading-relaxed space-y-3">
+            <ul className="list-disc list-inside text-xl text-brand-dark/80 dark:text-brand-light/80 leading-relaxed space-y-3 text-left">
               <li>Unlock your full vocal and musical potential with personalized 1:1 coaching, integrating technical mastery with body awareness and mindset strategies for authentic, confident expression.</li>
               <li>This work is deeply connected to overall well-being. By integrating body-voice practices and healing modalities, we can release physical tension, calm the nervous system, and clear mental blocks that might be hindering your vocal performance, confidence, and overall expressive freedom.</li>
             </ul>
-          </section>
-
-          {/* Brief Embodied Approach Section with link to About page */}
-          <section id="embodied-approach" className="max-w-4xl mx-auto space-y-10 py-12 text-center">
-            <SectionHeading>My Embodied Holistic Approach</SectionHeading>
             <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 max-w-3xl mx-auto">
               My unique approach integrates embodiment, mindset, and skill development to help you achieve authentic, confident expression without strain or burnout. I guide you to connect body, breath, and voice, fostering a deeper understanding of your own expressive patterns.
             </p>
@@ -85,14 +78,11 @@ const CoachingPage: React.FC = () => {
                 <Mic className="h-8 w-8" /> Vocal & Instrumental Mastery
               </h3>
               <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-                Develop effortless breath control, expand your range, refine tone, and master various vocal styles (contemporary, classical, musical theatre). Enhance your instrumental skills, improve sight-reading, deepen your understanding of music theory, and develop expressive piano performance for accompaniment or solo work. Includes audition preparation and repertoire building.
+                Develop effortless breath control, expand your range, refine tone, and master various vocal styles (contemporary, classical, musical theatre). Enhance your instrumental skills, improve sight-reading, deepen your understanding of music theory, and develop expressive piano performance for solo work and musicianship. This includes composition, songwriting, and score preparation with music technology. Includes audition preparation and repertoire building.
               </p>
               <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-2 pl-4">
                 <li>Vocal Coaching</li>
                 <li>Piano & Keyboard</li>
-                <li>Composition and Song Writing</li>
-                {/* Removed Accompanying */}
-                <li>Score Preparation & Technology</li>
               </ul>
             </Card>
 
@@ -142,20 +132,10 @@ const CoachingPage: React.FC = () => {
             </Card>
           </div>
 
-          {/* CTA 1: After expertise boxes */}
-          <div className="text-center mt-12">
-            <p className="text-2xl font-semibold text-brand-dark dark:text-brand-light mb-6">
-              Ready to unlock your full potential?
-            </p>
-            <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-              <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
-                Book a Session Now
-              </a>
-            </Button>
-          </div>
+          {/* Removed redundant CTA: "Ready to unlock your full potential? Book a Session Now" */}
           <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
 
-          {/* NEW: Pricing & Packages Section (Moved up) */}
+          {/* Pricing & Packages Section */}
           <section id="pricing" className="max-w-4xl mx-auto space-y-10 py-12">
             <SectionHeading>Pricing & Packages</SectionHeading>
             <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
