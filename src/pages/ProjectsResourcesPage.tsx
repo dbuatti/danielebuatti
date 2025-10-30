@@ -7,10 +7,7 @@ import SectionHeading from '@/components/SectionHeading';
 import { Separator } from '@/components/ui/separator';
 import AdditionalProgramsSection from '@/components/pages/landing-page-v3/AdditionalProgramsSection';
 import BackToTopButton from '@/components/BackToTopButton';
-import { Card, CardContent } from '@/components/ui/card';
-import DynamicImage from '@/components/DynamicImage';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+// Removed unused imports: Card, CardContent, DynamicImage, Button, Link
 
 const ProjectsResourcesPage: React.FC = () => {
   return (
@@ -26,36 +23,8 @@ const ProjectsResourcesPage: React.FC = () => {
         </div>
 
         <section className="py-12 space-y-12">
-          {/* Music Director & Pianist Section - Integrated as a card (now simplified as it's also in AdditionalProgramsSection) */}
-          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 md:p-8 flex flex-col lg:flex-row items-center gap-8 max-w-6xl mx-auto">
-            <div className="lg:w-1/3 flex-shrink-0 flex justify-center">
-              <DynamicImage
-                src="/daniele simple.jpeg"
-                alt="Daniele Buatti simple headshot"
-                className="w-full max-w-sm h-auto rounded-xl shadow-lg object-cover border-4 border-brand-primary"
-                width={400}
-                height={400}
-              />
-            </div>
-            <div className="lg:w-2/3 text-center lg:text-left space-y-6">
-              <h3 className="text-4xl font-bold text-brand-primary">Music Director & Pianist</h3>
-              <CardContent className="p-0 text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed space-y-4">
-                <p>
-                  I am a versatile music theatre practitioner with extensive experience as a vocal coach, pianist, music director, and performer. With a career spanning over a decade, I have collaborated on a wide range of productions, from large-scale musicals to intimate workshops. My approach blends technical expertise with a deep understanding of embodiment, performance psychology, and improvisation, helping performers find freedom, resonance, and authenticity in their voice.
-                </p>
-                <p>
-                  As a pianist and music director, I bring a nuanced, collaborative energy to every production, tailoring musical direction to support both performers and the narrative. My teaching and coaching practice focuses on helping artists unlock their potential, manage performance stress, and develop a sustainable, expressive relationship with their craft.
-                </p>
-              </CardContent>
-              <Button asChild size="lg" className="mt-4 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-                <Link to="/music-director-pianist">
-                  View My MD/Pianist Profile
-                </Link>
-              </Button>
-            </div>
-          </Card>
-
-          {/* Other Programs Section (now includes subheadings and grouped cards) */}
+          {/* The redundant 'Music Director & Pianist' top block has been removed. */}
+          {/* The content is now exclusively managed within AdditionalProgramsSection. */}
           <AdditionalProgramsSection />
         </section>
       </main>
