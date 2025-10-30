@@ -21,7 +21,6 @@ const EmbodiedApproachOverviewSection: React.FC = () => {
             width={400}
             height={500}
           />
-          {/* Removed the small quote bubble to reduce clutter */}
         </div>
         <div className="text-center md:text-left space-y-6">
           <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
@@ -31,28 +30,26 @@ const EmbodiedApproachOverviewSection: React.FC = () => {
           <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
             With over 12 years of experience as a Music Director, Pianist, Arranger, Vocal Coach, and Educator, I bring together professional music theatre expertise, vocal pedagogy, and somatic practices influenced by kinesiology and yoga. This integrated approach forms the foundation for my unique, embodied coaching.
           </p>
-        </div>
-      </div>
+          
+          {/* PhilosophyStatement integrated directly into the text column */}
+          <PhilosophyStatement className="my-10 max-w-full mx-auto" /> {/* Adjusted width for better fit */}
 
-      <div className="space-y-6">
-        <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
-          All my teachings are informed by Buddhist and yogic philosophies, fostering a heart-centred, process-oriented journey focused on truth and transformation, not just the destination.
-        </p>
-        
-        <PhilosophyStatement className="max-w-4xl mx-auto my-10" />
-
-        <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
-          My unique approach integrates embodiment, mindset, and skill development to help you achieve authentic, confident expression without strain or burnout. I guide you to connect body, breath, and voice, fostering a deeper understanding of your own expressive patterns.
-        </p>
-        <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
-          Ready to dive deeper into how this approach can transform your performance and communication?
-        </p>
-        <div className="text-center">
-          <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-            <Link to="/coaching#embodied-approach">
-              Explore My Full Approach
-            </Link>
-          </Button>
+          <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
+            All my teachings are informed by Buddhist and yogic philosophies, fostering a heart-centred, process-oriented journey focused on truth and transformation, not just the destination.
+          </p>
+          <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
+            My unique approach integrates embodiment, mindset, and skill development to help you achieve authentic, confident expression without strain or burnout. I guide you to connect body, breath, and voice, fostering a deeper understanding of your own expressive patterns.
+          </p>
+          <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
+            Ready to dive deeper into how this approach can transform your performance and communication?
+          </p>
+          <div className="text-center md:text-left">
+            <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+              <Link to="/coaching#embodied-approach">
+                Explore My Full Approach
+              </Link>
+            </Button>
+          </div>
         </div>
       </div>
     </section>
