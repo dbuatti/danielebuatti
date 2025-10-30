@@ -6,8 +6,8 @@ import SectionHeading from "@/components/SectionHeading"; // Import SectionHeadi
 const AdditionalProgramsSection: React.FC = () => {
   return (
     <section className="py-12 space-y-12">
-      {/* Subheading: Specialized Services */}
-      <SectionHeading>Specialized Services</SectionHeading>
+      {/* Subheading: Specialised Services */}
+      <SectionHeading>Specialised Services</SectionHeading>
       <div className="space-y-12">
         {/* FeaturedProgramCard for Music Director & Pianist */}
         <FeaturedProgramCard
