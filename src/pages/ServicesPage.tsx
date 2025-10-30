@@ -57,7 +57,7 @@ const ServicesPage: React.FC = () => {
                 <li>Music Direction & Conducting</li>
                 <li>Score Preparation & Technology</li>
                 <li>
-                  <Link to="/ameb-accompanying" className="text-brand-primary hover:underline">AMEB Accompanying</Link>
+                  <Link to="/services/ameb-accompanying" className="text-brand-primary hover:underline">AMEB Accompanying</Link>
                 </li>
                 <li>
                   <strong>Audition Cut Playthrough:</strong> A focused 15-minute online drop-in session to run your 16–32 bar audition cut with an experienced audition pianist. Receive live playthrough and practical feedback, perfect for auditions and self-tapes. Please upload your clear PDF sheet music when booking.
