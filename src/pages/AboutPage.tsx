@@ -73,20 +73,20 @@ const AboutPage: React.FC = () => {
           <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
             My coaching is built upon a simple yet powerful framework that integrates the mind, body, and voice to unlock true expressive freedom. This process ensures your performance is authentic, grounded, and sustainable.
           </p>
-          <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-4 pl-4">
-            <li>
+          <div className="text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-4 pl-4"> {/* Changed ul to div and removed list-disc */}
+            <p>
               <strong className="text-brand-primary">THOUGHT:</strong> We address the mental blocks and patterned behaviors that hinder your freedom. This involves conscious intention-setting and cultivating the self-awareness necessary for growth.
-            </li>
-            <li>
+            </p>
+            <p>
               <strong className="text-brand-primary">INTENTION:</strong> We clarify your artistic purpose and desired outcome for every performance and interaction. When your physical body aligns with your intention, your expression becomes effortlessly powerful.
-            </li>
-            <li>
+            </p>
+            <p>
               <strong className="text-brand-primary">BREATH:</strong> We establish the physical foundation for sound. By deepening and freeing your breath, we release physical tension, calm the nervous system, and create the space for a resonant, authentic voice to emerge.
-            </li>
-            <li>
+            </p>
+            <p>
               <strong className="text-brand-primary">EXPRESSION:</strong> This is the culmination of the process—your authentic voice in action. It is the moment when technique, body, and intention integrate, allowing you to connect confidently and compellingly with your audience.
-            </li>
-          </ul>
+            </p>
+          </div>
         </section>
         <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
 
