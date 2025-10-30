@@ -10,7 +10,7 @@ const ScrollToTop = () => {
     // Use a timeout to ensure the scroll happens after the DOM is fully updated
     const timer = setTimeout(() => {
       window.scrollTo(0, 0);
-    }, 0); // A small delay to ensure DOM is ready
+    }, 100); // Increased delay to 100ms
 
     return () => clearTimeout(timer);
   }, [pathname]); // Re-run if pathname changes
