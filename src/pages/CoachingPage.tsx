@@ -4,20 +4,20 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Mic, Leaf, Megaphone, Users, DollarSign } from 'lucide-react'; // Removed Brain, Lightbulb, Volume2
+import { Mic, Leaf, Megaphone, Users, Brain, Lightbulb, Volume2, DollarSign } from 'lucide-react';
 import DynamicImage from '@/components/DynamicImage';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionHeading from '@/components/SectionHeading';
 import { Separator } from '@/components/ui/separator';
-// import PhilosophyStatement from '@/components/PhilosophyStatement'; // Removed
+import PhilosophyStatement from '@/components/PhilosophyStatement';
 import WhyWorkWithMeSection from '@/components/pages/landing-page-v3/WhyWorkWithMeSection';
 import WhoIWorkWithSection from '@/components/pages/landing-page-v3/WhoIWorkWithSection';
-import SessionsFormatsAvailabilitySection from '@/components/SessionsFormatsAvailabilitySection';
+// Removed SessionsFormatsAvailabilitySection import
 
 const CoachingPage: React.FC = () => {
   const pageTitle = "My Coaching Services";
-  const subtitle = "Your Three-Pillar Journey to Performance Freedom."; // Refined subtitle
+  const subtitle = "Your Three-Pillar Journey to Performance Freedom.";
 
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
@@ -91,7 +91,7 @@ const CoachingPage: React.FC = () => {
                 <li>Vocal Coaching</li>
                 <li>Piano & Keyboard</li>
                 <li>Composition and Song Writing</li>
-                <li>Accompanying</li>
+                {/* Removed Accompanying */}
                 <li>Score Preparation & Technology</li>
               </ul>
             </Card>
@@ -139,27 +139,21 @@ const CoachingPage: React.FC = () => {
               <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
                 Check the <Link to="/projects-resources" className="text-brand-primary hover:underline font-semibold">Projects & Resources page</Link> for upcoming workshop dates and details.
               </p>
+              <div className="mt-6">
+                <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+                  <Link to="/projects-resources">
+                    Explore Group Options
+                  </Link>
+                </Button>
+              </div>
             </Card>
           </div>
 
-          {/* CTA 1: After expertise boxes */}
-          <div className="text-center mt-12">
-            <p className="text-2xl font-semibold text-brand-dark dark:text-brand-light mb-6">
-              Ready to unlock your full potential?
-            </p>
-            <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-              <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
-                Book a Session Now
-              </a>
-            </Button>
-          </div>
-          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
-
-          {/* New Section: Pricing & Packages */}
+          {/* NEW: Pricing & Packages Section (Moved up) */}
           <section id="pricing" className="max-w-4xl mx-auto space-y-10 py-12">
             <SectionHeading>Pricing & Packages</SectionHeading>
             <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
-              Invest in your growth with flexible coaching options designed to fit your needs. All sessions are tailored to your individual goals and can be conducted remotely or in-person.
+              Invest in your growth with flexible coaching options designed to fit your needs. All sessions are tailored to your individual goals and can be conducted remotely via Zoom or in-person at my studio in Toorak, Melbourne.
             </p>
             <div className="grid md:grid-cols-2 gap-8">
               <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
@@ -207,9 +201,6 @@ const CoachingPage: React.FC = () => {
             </div>
           </section>
           <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
-
-          {/* New Section: Session Formats & Availability */}
-          <SessionsFormatsAvailabilitySection />
 
           {/* NEW: Call-out to Projects & Resources */}
           <div className="bg-brand-blue/10 dark:bg-brand-blue/20 p-8 rounded-xl shadow-lg text-center space-y-4 mt-12">
