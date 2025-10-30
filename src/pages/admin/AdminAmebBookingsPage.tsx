@@ -227,7 +227,7 @@ const AdminAmebBookingsPage: React.FC = () => {
           onClose={handleCloseEmailComposer}
           initialRecipientEmail={selectedBookingForEmail.contact_email}
           initialSubject={`Your AMEB Accompanying Inquiry - ${selectedBookingForEmail.student_parent_name}`}
-          initialBody={`Hi {{studentParentName}},\n\nThank you for your AMEB accompanying inquiry regarding your exam on {{examDate}} at {{examTime}} for {{examBoardGrade}}.\n\n`}
+          initialBody={`Hi {{student_parent_name}},\n\nThank you for your AMEB accompanying inquiry regarding your exam on {{exam_date}} at {{exam_time}} for {{exam_board_grade}}.\n\n`}
           dynamicDetails={selectedBookingForEmail} // Pass the full booking details as dynamicDetails
         />
       )}
