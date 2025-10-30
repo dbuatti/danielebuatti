@@ -1,13 +1,26 @@
 export const navLinks = [
   { name: "Home", href: "/" },
-  { name: "About", href: "#about" },
-  { name: "Approach", href: "#approach" },
-  { name: "Testimonials", href: "#testimonials" },
-  { name: "Sessions", href: "#sessions" },
-  { name: "Why Work With Me?", href: "#why-me" },
-  { name: "AMEB Accompanying", href: "/services/ameb-accompanying" }, // Promoted to top-level
-  { name: "Services", href: "/services" }, // Consolidated services page
-  { name: "Programs", href: "/programs" }, // New Programs page
-  { name: "Contact", href: "#contact" }, // Moved to end
-  { name: "Live Piano Services", href: "/live-piano-services" },
+  {
+    name: "About",
+    type: "dropdown",
+    subLinks: [
+      { name: "My Story", href: "#about" },
+      { name: "My Approach", href: "#approach" },
+      { name: "Who I Work With", href: "#who-i-work-with" },
+      { name: "Why Work With Me?", href: "#why-me" },
+      { name: "Testimonials", href: "#testimonials" },
+    ]
+  },
+  {
+    name: "Services",
+    type: "dropdown",
+    subLinks: [
+      { name: "All Coaching Services", href: "/services" },
+      { name: "AMEB Accompanying", href: "/services/ameb-accompanying" },
+      { name: "Live Piano Services", href: "/live-piano-services" },
+      { name: "All Programs & Projects", href: "/programs" },
+      { name: "Music Director & Pianist", href: "/music-director-pianist" },
+    ]
+  },
+  { name: "Contact", href: "#contact" },
 ];

@@ -47,7 +47,7 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <EmbodiedApproachSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <WhoIWorkWithSection />
+        <WhoIWorkWithSection id="who-i-work-with" /> {/* Added id for anchor linking */}
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <TestimonialsSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
@@ -74,29 +74,6 @@ const LandingPageV3: React.FC = () => {
         <ImageCarouselSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <ResonanceProgramCard className="my-12" />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        {/* THIS IS THE AUDITION CUT PLAYTHROUGH BANNER THAT IS NOW REMOVED */}
-        {/* <AdditionalProgramBanner
-          title={<span className="text-brand-primary">AUDITION CUT PLAYTHROUGH</span>}
-          subtitle="Live run through of your audition cut"
-          description={
-            <ul className="list-disc list-inside space-y-2 text-lg text-brand-light">
-              <li>15 minute online drop-in</li>
-              <li>Run your 16–32 bar cut with an experienced audition pianist</li>
-              <li>Live playthrough + practical feedback</li>
-              <li>Perfect for auditions & self-tapes</li>
-              <li>Upload your clear PDF when booking</li>
-            </ul>
-          }
-          link="https://danielebuatti.as.me/audition-cut-playthrough-15"
-          linkText="Book a Playthrough"
-          bgColorClass="bg-brand-dark"
-          textColorClass="text-brand-light"
-          buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-          titleClassName="text-5xl md:text-6xl font-extrabold uppercase"
-          backgroundImageSrc="/danielepianolaugh.jpeg"
-          backgroundPosition="80% center"
-        /> */}
         <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
         <CallToActionSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
