@@ -5,13 +5,9 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SectionHeading from "@/components/SectionHeading";
 import { Separator } from "@/components/ui/separator";
-// Removed PhilosophyStatement import
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'; // Card imports are no longer needed for the principles section, but might be used elsewhere. Keeping for now.
-import { Brain, Lightbulb, Volume2 } from 'lucide-react'; // Icons are no longer needed for the principles section. Keeping for now.
 import ImageCarouselSection from "@/components/pages/landing-page-v3/ImageCarouselSection";
-import DynamicImage from "@/components/DynamicImage"; // Re-added as it's used in the Hero section of the About page
-import { Button } from "@/components/ui/button"; // Re-added as it's used in the Embodied Approach section
-import { Link } from "react-router-dom"; // Re-added as it's used in the Embodied Approach section
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const AboutPage: React.FC = () => {
   return (
