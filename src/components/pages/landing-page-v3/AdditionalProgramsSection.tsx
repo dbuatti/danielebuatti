@@ -43,7 +43,7 @@ const AdditionalProgramsSection: React.FC = () => {
           description="Professional and supportive piano accompaniment for your AMEB exams, ensuring you feel confident and ready."
           link="/ameb-accompanying"
           linkText="Learn More"
-          backgroundImageSrc="/public/placeholder.svg"
+          backgroundImageSrc="/ameb-placeholder.jpg"
           className="max-w-6xl"
           buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
           overlayColorClass="bg-black/60"
