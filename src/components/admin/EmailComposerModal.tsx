@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import *s z from 'zod';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -59,7 +59,7 @@ interface EmailComposerModalProps {
   dynamicDetails?: Record<string, any>; // Generic prop for any dynamic data
 }
 
-const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
+const EmailComposerModal: React.FC<EmailComposerModalModalProps> = ({
   isOpen,
   onClose,
   initialRecipientEmail,
@@ -192,7 +192,7 @@ const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
         <DialogHeader>
           <DialogTitle className="text-brand-primary">Compose Email</DialogTitle>
           <DialogDescription className="text-brand-dark/70 dark:text-brand-light/70">
-            Send a direct email to the client. Use placeholders like `{{studentParentName}}` in your templates.
+            {'Send a direct email to the client. Use placeholders like `{{clientName}}` in your templates.'}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>

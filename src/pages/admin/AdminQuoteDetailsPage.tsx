@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { createSlug } from '@/lib/utils';
 import EmailComposerModal from '@/components/admin/EmailComposerModal'; // Import the new modal
+import { format } from 'date-fns'; // Import format
 
 interface Quote {
   id: string;
