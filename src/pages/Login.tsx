@@ -1,96 +1,120 @@
 "use client";
 
-import React from 'react';
-import { Auth } from '@supabase/auth-ui-react';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { useTheme } from 'next-themes';
-import DynamicImage from '@/components/DynamicImage';
-import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { toast } from 'sonner';
+import DynamicImage from '@/components/DynamicImage';
+import { useTheme } from 'next-themes';
+import { Loader2 } from 'lucide-react';
 
 const Login: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const { theme } = useTheme();
 
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
 
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const loadingToastId = toast.loading("Attempting to log in...");
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        throw error;
+      }
+
+      toast.success("Logged in successfully!", { id: loadingToastId });
+      navigate('/admin');
+    } catch (error: any) {
+      console.error('Login error:', error.message);
+      toast.error("Login failed.", {
+        id: loadingToastId,
+        description: error.message || "Please check your credentials and try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light p-4">
-      <div className="absolute top-4 left-4">
-        <Button asChild variant="ghost" className="text-brand-dark dark:text-brand-light hover:text-brand-primary transition-colors duration-200 px-0 py-0 h-auto">
-          <Link to="/">
-            <span className="flex items-center text-base md:text-lg font-semibold">
-              <ArrowLeft className="h-5 w-5 mr-2" /> <span>Back to Home</span>
-            </span>
-          </Link>
-        </Button>
-      </div>
-      <div className="flex flex-col items-center mb-8">
-        <DynamicImage
-          src={brandSymbolSrc}
-          alt="Daniele Buatti Brand Symbol"
-          className="h-12 w-auto mb-2"
-          width={48}
-          height={48}
-        />
-        <DynamicImage
-          src={textLogoSrc}
-          alt="Daniele Buatti Logo"
-          className="h-16 w-auto"
-          width={220}
-          height={64}
-        />
-      </div>
-      <div className="w-full max-w-md p-8 bg-brand-light dark:bg-brand-dark-alt rounded-lg shadow-xl border border-brand-secondary/50">
-        <h2 className="text-3xl font-bold text-center text-brand-primary mb-6">Admin Login</h2>
-        <Auth
-          supabaseClient={supabase}
-          providers={['google']}
-          appearance={{
-            theme: ThemeSupa,
-            variables: {
-              default: {
-                colors: {
-                  brand: 'hsl(var(--brand-primary))',
-                  brandAccent: 'hsl(var(--brand-primary))',
-                  inputBackground: 'hsl(var(--background))',
-                  inputBorder: 'hsl(var(--border))',
-                  inputPlaceholder: 'hsl(var(--muted-foreground))',
-                  inputText: 'hsl(var(--foreground))',
-                  defaultButtonBackground: 'hsl(var(--brand-primary))',
-                  defaultButtonBackgroundHover: 'hsl(var(--brand-primary)/90%)',
-                  defaultButtonBorder: 'hsl(var(--brand-primary))',
-                  defaultButtonText: 'hsl(var(--brand-light))',
-                  dividerBackground: 'hsl(var(--brand-secondary))',
-                  anchorTextColor: 'hsl(var(--brand-primary))',
-                  anchorTextHoverColor: 'hsl(var(--brand-primary)/90%)',
-                },
-              },
-              dark: {
-                colors: {
-                  brand: 'hsl(var(--brand-primary))',
-                  brandAccent: 'hsl(var(--brand-primary))',
-                  inputBackground: 'hsl(var(--brand-dark))',
-                  inputBorder: 'hsl(var(--brand-secondary))',
-                  inputPlaceholder: 'hsl(var(--muted-foreground))',
-                  inputText: 'hsl(var(--brand-light))',
-                  defaultButtonBackground: 'hsl(var(--brand-primary))',
-                  defaultButtonBackgroundHover: 'hsl(var(--brand-primary)/90%)',
-                  defaultButtonBorder: 'hsl(var(--brand-primary))',
-                  defaultButtonText: 'hsl(var(--brand-light))',
-                  dividerBackground: 'hsl(var(--brand-secondary))',
-                  anchorTextColor: 'hsl(var(--brand-primary))',
-                  anchorTextHoverColor: 'hsl(var(--brand-primary)/90%)',
-                },
-              },
-            },
-          }}
-          theme={theme === 'dark' ? 'dark' : 'light'}
-          redirectTo={window.location.origin + '/admin'}
-        />
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-brand-light dark:bg-brand-dark p-4">
+      <Card className="w-full max-w-md bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
+        <CardHeader className="text-center">
+          <div className="flex flex-col items-center mb-4">
+            <DynamicImage
+              src={brandSymbolSrc}
+              alt="Daniele Buatti Brand Symbol"
+              className="h-10 w-auto mb-2"
+              width={40}
+              height={40}
+            />
+            <DynamicImage
+              src={textLogoSrc}
+              alt="Daniele Buatti Logo"
+              className="h-14 w-auto"
+              width={220}
+              height={56}
+            />
+          </div>
+          <CardTitle className="text-3xl font-bold text-brand-primary">Admin Login</CardTitle>
+          <CardDescription className="text-brand-dark/70 dark:text-brand-light/70">
+            Enter your credentials to authorise access to the admin panel. {/* Changed 'authorize' to 'authorise' */}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-brand-dark dark:text-brand-light">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="admin@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="bg-brand-background border-brand-border/50 text-brand-dark dark:text-brand-light placeholder:text-brand-dark/60 dark:placeholder:text-brand-light/60"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-brand-dark dark:text-brand-light">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="********"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="bg-brand-background border-brand-border/50 text-brand-dark dark:text-brand-light placeholder:text-brand-dark/60 dark:placeholder:text-brand-light/60"
+              />
+            </div>
+            <Button
+              type="submit"
+              className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-darker text-lg py-3 rounded-full"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Logging in...
+                </>
+              ) : (
+                "Login"
+              )}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 };

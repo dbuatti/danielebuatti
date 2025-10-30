@@ -1,365 +1,129 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import DynamicImage from '@/components/DynamicImage';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import SectionHeading from '@/components/SectionHeading';
+import { Piano, Mic, Users, Sparkles, Music } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import { Mail, Phone } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import DynamicImage from "@/components/DynamicImage";
-
-// Define the form schema using zod
-const formSchema = z.object({
-  firstName: z.string().min(1, { message: "First name is required." }),
-  lastName: z.string().min(1, { message: "Last name is required." }),
-  email: z.string().email({ message: "Please enter a valid email address." }),
-  phone: z.string().optional(),
-  suburb: z.string().optional(),
-  eventDescription: z.string().min(10, { message: "Please describe your event (at least 10 characters)." }).max(500, { message: "Event description must not be longer than 500 characters." }),
-  pianoType: z.string().optional(),
-});
 
 const LivePianoServicesPage: React.FC = () => {
-  const [loading, setLoading] = useState(false);
-
-  const [api, setApi] = useState<CarouselApi>();
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-
-  const galleryImages = [
-    "/blacktie.avif",
-    "/blacktie1.avif",
-    "/blacktie3.avif",
-    "/blacktie4.avif",
-    "/other.avif",
-  ];
-
-  // Initialize react-hook-form
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      suburb: '',
-      eventDescription: '',
-      pianoType: '',
-    },
-  });
-
-  useEffect(() => {
-    if (!api) {
-      return;
-    }
-
-    setSelectedImageIndex(api.selectedScrollSnap());
-
-    api.on("select", () => {
-      setSelectedImageIndex(api.selectedScrollSnap());
-    });
-  }, [api]);
-
-  const handleContactSubmit = async (values: z.infer<typeof formSchema>) => {
-    setLoading(true);
-    const loadingToastId = toast.loading("Sending your inquiry...");
-
-    const { firstName, lastName, email, phone, suburb, eventDescription, pianoType } = values;
-
-    const messageContent = `
-      Event Description: ${eventDescription}
-      Piano Type: ${pianoType || 'Not specified'}
-      Phone: ${phone || 'Not provided'}
-      Suburb: ${suburb || 'Not provided'}
-    `;
-
-    try {
-      const { error } = await supabase
-        .from('contact_messages')
-        .insert([
-          {
-            name: `${firstName} ${lastName}`,
-            email: email,
-            message: messageContent,
-          },
-        ]);
-
-      if (error) {
-        throw error;
-      }
-
-      toast.success('Inquiry sent successfully! Daniele will be in touch soon.', { id: loadingToastId });
-      form.reset(); // Reset the form after successful submission
-    } catch (error) {
-      console.error('Error submitting contact form:', error);
-      toast.error('Failed to send inquiry. Please try again.', { id: loadingToastId });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const pageTitle = "Live Piano Services";
+  const subtitle = "Elevate Your Event with Professional Live Piano Music";
 
   return (
-    <div className="live-piano-theme min-h-screen bg-livePiano-background text-livePiano-light">
-      {/* Header */}
-      <header className="bg-livePiano-darker py-4 px-6 md:px-12">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          {/* Left section: Back to Services */}
-          <div className="flex items-center gap-4">
-            <Button asChild className="bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light px-4 py-2 text-sm">
-              <Link to="/">Back to Home</Link>
+    <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
+      <Navbar />
+      <main className="container mx-auto px-4 pt-12 pb-12">
+        <div className="text-center space-y-4 mb-10">
+          <SectionHeading>{pageTitle}</SectionHeading>
+          {subtitle && <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70">{subtitle}</p>}
+          <Separator className="max-w-xs mx-auto bg-brand-secondary" />
+        </div>
+
+        <section className="max-w-4xl mx-auto space-y-10">
+          {/* Hero Image Section */}
+          <section className="relative mt-8 mb-8 rounded-xl overflow-hidden shadow-lg border-4 border-brand-secondary">
+            <DynamicImage
+              src="/daniele-live-piano.jpeg"
+              alt="Daniele Buatti playing live piano at an event"
+              className="w-full h-96 md:h-[450px] object-cover object-[50%_30%]"
+              width={800}
+              height={533}
+            />
+            {/* Gradient Overlay for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/50 to-transparent"></div>
+          </section>
+
+          {/* Overview Section */}
+          <section className="bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-8 rounded-xl shadow-inner space-y-6">
+            <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
+              Add a touch of elegance and sophistication to your next event with professional live piano music. From intimate gatherings to grand celebrations, I provide bespoke musical experiences tailored to your specific needs and preferences.
+            </p>
+          </section>
+
+          {/* Services Offered */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 rounded-xl space-y-4 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+              <h3 className="flex items-center gap-3 text-2xl font-bold text-brand-primary">
+                <Music className="h-7 w-7" /> Event Piano
+              </h3>
+              <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-2 pl-4">
+                <li>Weddings (ceremony, reception, cocktail hour)</li>
+                <li>Corporate events & functions</li>
+                <li>Private parties & celebrations</li>
+                <li>Gala dinners & awards nights</li>
+                <li>Background music for restaurants & hotels</li>
+              </ul>
+            </div>
+
+            <div className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 rounded-xl space-y-4 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+              <h3 className="flex items-center gap-3 text-2xl font-bold text-brand-primary">
+                <Sparkles className="h-7 w-7" /> Bespoke Musical Experiences
+              </h3>
+              <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-2 pl-4">
+                <li>Customise repertoire to match your event's theme</li> {/* Changed 'Customize' to 'Customise' */}
+                <li>Collaboration with other musicians (vocalists, instrumentalists)</li>
+                <li>Original compositions or arrangements upon request</li>
+                <li>Music for specific moments (e.g., first dance, grand entrance)</li>
+              </ul>
+            </div>
+
+            <div className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 rounded-xl space-y-4 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+              <h3 className="flex items-center gap-3 text-2xl font-bold text-brand-primary">
+                <Piano className="h-7 w-7" /> Accompaniment Services
+              </h3>
+              <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-2 pl-4">
+                <li>Vocalists & instrumentalists for performances or auditions</li>
+                <li>Choirs & ensembles</li>
+                <li>AMEB exams (see dedicated AMEB Accompanying page)</li>
+                <li>Rehearsal pianist</li>
+              </ul>
+            </div>
+
+            <div className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 rounded-xl space-y-4 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+              <h3 className="flex items-center gap-3 text-2xl font-bold text-brand-primary">
+                <Mic className="h-7 w-7" /> Vocalist & Pianist Duo
+              </h3>
+              <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-2 pl-4">
+                <li>Daniele as both vocalist and pianist for a captivating performance</li>
+                <li>Ideal for intimate settings or feature performances</li>
+                <li>Versatile repertoire across genres</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Why Choose Me Section */}
+          <section className="bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-8 rounded-xl shadow-inner space-y-6">
+            <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary justify-center">
+              <Users className="h-8 w-8" /> Why Choose Daniele?
+            </h3>
+            <ul className="list-disc list-inside text-xl text-brand-dark/80 dark:text-brand-light/80 leading-relaxed space-y-3 pl-4">
+              <li>Over 15 years of professional experience in live performance and music direction.</li>
+              <li>Extensive repertoire spanning classical, jazz, contemporary, musical theatre, and pop.</li>
+              <li>Professional-grade equipment (portable piano, sound system) if a venue piano is unavailable.</li>
+              <li>Reliable, punctual, and dedicated to making your event a success.</li>
+              <li>Personalised service from initial inquiry to the final note.</li> {/* Changed 'Personalized' to 'Personalised' */}
+            </ul>
+          </section>
+
+          {/* Call to Action */}
+          <div className="text-center mt-12">
+            <p className="text-2xl font-semibold text-brand-dark dark:text-brand-light mb-6">
+              Ready to add the perfect soundtrack to your event?
+            </p>
+            <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+              <Link to="/live-piano-services/quote">
+                Get a Quote
+              </Link>
             </Button>
           </div>
-
-          {/* Right section: Logo and Title */}
-          <div className="flex flex-col items-end">
-            <DynamicImage src="/gold-36.png" alt="Daniele Buatti Logo" className="h-16 md:h-20" width={80} height={80} />
-            <h1 className="text-xl md:text-2xl font-montserrat font-light uppercase text-livePiano-light tracking-widest mt-2">
-              Daniele Buatti
-            </h1>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 py-12 space-y-16">
-        {/* Large Image Display */}
-        <section className="py-0">
-          <Card className="bg-livePiano-darker border-livePiano-border/30 rounded-xl overflow-hidden shadow-lg">
-            <img
-              src={galleryImages[selectedImageIndex]}
-              alt={`Selected event image ${selectedImageIndex + 1}`}
-              className="w-full h-[500px] md:h-[700px] object-cover object-center"
-            />
-          </Card>
-        </section>
-
-        {/* Image Carousel */}
-        <section className="py-0">
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-              dragFree: true,
-            }}
-            setApi={setApi}
-            className="w-full"
-          >
-            <CarouselContent className="-ml-4">
-              {galleryImages.map((imageSrc, index) => (
-                <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                  <Card 
-                    className={cn(
-                      "bg-livePiano-darker border-livePiano-border/30 rounded-xl overflow-hidden shadow-lg cursor-pointer",
-                      selectedImageIndex === index ? "border-4 border-livePiano-primary" : ""
-                    )}
-                    onClick={() => api?.scrollTo(index)}
-                  >
-                    <img src={imageSrc} alt={`Event ${index + 1}`} className="w-full h-48 object-cover" />
-                  </Card>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="-left-8 flex" /> {/* Changed from hidden md:flex to flex */}
-            <CarouselNext className="-right-8 flex" /> {/* Changed from hidden md:flex to flex */}
-          </Carousel>
-        </section>
-
-        {/* Main Content */}
-        <section className="text-center py-0">
-          <h2 className="text-5xl font-libre-baskerville font-bold text-livePiano-primary mb-6 leading-tight">
-            AN UNFORGETTABLE MUSICAL EXPERIENCE
-          </h2>
-          <p className="text-xl font-libre-baskerville text-livePiano-light/90 max-w-3xl mx-auto mb-8">
-            Indulge in the elegance of live piano music and elevate your wedding, corporate event, or private party to new heights with the incomparable talent of Daniele Buatti.
-          </p>
-          <p className="text-lg font-libre-baskerville text-livePiano-light/80 max-w-2xl mx-auto mb-8">
-            Daniele's versatile, refined performance creates an unforgettable atmosphere, with a repertoire spanning classical, jazz, and pop genres. Contact Daniele today to book his services and experience the unforgettable magic of live piano music at your event.
-          </p>
-        </section>
-
-        {/* Contact Form */}
-        <section className="max-w-2xl mx-auto bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 py-0">
-          <h3 className="text-4xl font-bold text-center text-livePiano-light mb-8">Enquire now!</h3>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleContactSubmit)} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
-                  control={form.control}
-                  name="firstName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-livePiano-light">First Name *</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Your First Name"
-                          {...field}
-                          className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="lastName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-livePiano-light">Last Name *</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Your Last Name"
-                          {...field}
-                          className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-livePiano-light">Email *</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="your@email.com"
-                        {...field}
-                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-livePiano-light">Phone</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="tel"
-                        placeholder="Your Phone Number"
-                        {...field}
-                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="suburb"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-livePiano-light">Suburb</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Your Suburb"
-                        {...field}
-                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="eventDescription"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-livePiano-light">Tell us about your event *</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Describe your event, date, time, and any special requests..."
-                        {...field}
-                        rows={5}
-                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="pianoType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-livePiano-light">What piano do you have at your home?</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60">
-                          <SelectValue placeholder="Select an option" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="z-50 bg-livePiano-darker border-livePiano-border"> {/* Changed background to darker */}
-                        <SelectItem value="grand-piano" className="text-livePiano-light focus:bg-livePiano-primary focus:text-livePiano-light data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker">Grand Piano</SelectItem>
-                        <SelectItem value="upright-piano" className="text-livePiano-light focus:bg-livePiano-primary focus:text-livePiano-light data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker">Upright Piano</SelectItem>
-                        <SelectItem value="digital-piano" className="text-livePiano-light focus:bg-livePiano-primary focus:text-livePiano-light data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker">Digital Piano</SelectItem>
-                        <SelectItem value="none" className="text-livePiano-light focus:bg-livePiano-primary focus:text-livePiano-light data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker">None (I need one provided)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" size="lg" className="w-full bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light text-lg py-3 rounded-full" disabled={loading}>
-                {loading ? 'Sending...' : 'Send'}
-              </Button>
-            </form>
-          </Form>
         </section>
       </main>
-
-      {/* Footer */}
-      <footer 
-        className="relative py-16 text-center overflow-hidden"
-        style={{ backgroundImage: `url(/bowtie.avif)`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-      >
-        <div className="absolute inset-0 bg-black/60"></div> {/* Overlay for readability */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4">
-          <p className="text-livePiano-light text-2xl font-semibold flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
-            <a 
-              href="https://wa.me/61424174067" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="flex items-center gap-2 hover:text-livePiano-primary transition-colors"
-            >
-              <Phone size={24} /> 0424 174 067
-            </a>
-            <a 
-              href="mailto:info@danielebuatti.com" 
-              className="flex items-center gap-2 hover:text-livePiano-primary transition-colors"
-            >
-              <Mail size={24} /> info@danielebuatti.com
-            </a>
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
