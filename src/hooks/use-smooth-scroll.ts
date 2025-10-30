@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState, useRef, useCallback } from "react";
+import { navLinks } from "@/constants/navigation";
 
 export function useSmoothScroll() {
   const location = useLocation();
@@ -21,12 +21,8 @@ export function useSmoothScroll() {
 
         return () => clearTimeout(timer);
       }
-    } else {
-      // If no hash, and we're on the home page, ensure it's at the top
-      // This might be redundant with ScrollToTop, but good for robustness
-      if (location.pathname === '/') {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
     }
+    // Removed the else block that scrolled to top for the home page,
+    // as ScrollToTop component now handles all general page-top scrolling.
   }, [location]); // Re-run when location object changes (including hash)
 }
