@@ -7,22 +7,27 @@ import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
 import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 import SeoStructuredData from "@/components/SeoStructuredData";
-import { Card, CardContent } from "@/components/ui/card";
-import SectionHeading from "@/components/SectionHeading";
+import { Card, CardContent } from "@/components/ui/card"; // Import Card and CardContent
+import SectionHeading from "@/components/SectionHeading"; // Import SectionHeading
 
 // Import new modular sections
 import HeroSection from "@/components/pages/landing-page-v3/HeroSection";
 import UnifiedAboutSection from "@/components/pages/landing-page-v3/UnifiedAboutSection";
 import EducationExpertiseSection from "@/components/pages/landing-page-v3/EducationExpertiseSection";
+// Removed GreenroomAwardsSection import
 import WhoIWorkWithSection from "@/components/pages/landing-page-v3/WhoIWorkWithSection";
+// Removed DanieleSmileHostSection import
 import EmbodiedApproachSection from "@/components/pages/landing-page-v3/EmbodiedApproachSection";
+// Removed DanieleCalmAtPianoSection import
 import TestimonialsSection from "@/components/pages/landing-page-v3/TestimonialsSection";
 import SessionsAvailabilitySection from "@/components/pages/landing-page-v3/SessionsAvailabilitySection";
 import WhyWorkWithMeSection from "@/components/pages/landing-page-v3/WhyWorkWithMeSection";
+// Removed TulipsSection import
 import CallToActionSection from "@/components/pages/landing-page-v3/CallToActionSection";
-import DynamicImage from "@/components/DynamicImage";
-import ImageCarouselSection from "@/components/pages/landing-page-v3/ImageCarouselSection";
-import ResonanceProgramCard from "@/components/ResonanceProgramCard"; // Keep this for the standalone card
+// import AdditionalProgramBanner from "@/components/AdditionalProgramBanner"; // This import is now truly not needed
+import ResonanceProgramCard from "@/components/ResonanceProgramCard";
+import DynamicImage from "@/components/DynamicImage"; // Import DynamicImage
+import ImageCarouselSection from "@/components/pages/landing-page-v3/ImageCarouselSection"; // New import for carousel
 
 const LandingPageV3: React.FC = () => {
   useSmoothScroll();
@@ -42,7 +47,7 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <EmbodiedApproachSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <WhoIWorkWithSection id="who-i-work-with" />
+        <WhoIWorkWithSection id="who-i-work-with" /> {/* Added id for anchor linking */}
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <TestimonialsSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
@@ -50,7 +55,7 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         {/* Standalone image now wrapped in a Card with a SectionHeading */}
         <section className="max-w-6xl mx-auto text-center py-12 space-y-10">
-          <SectionHeading>A Personal Glimpse</SectionHeading>
+          <SectionHeading>A Personal Glimpse</SectionHeading> {/* New SectionHeading */}
           <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col items-center">
             <DynamicImage
               src="/daniele simple.jpeg"
@@ -68,10 +73,7 @@ const LandingPageV3: React.FC = () => {
         {/* Replaced individual image sections with the new carousel */}
         <ImageCarouselSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        {/* The ResonanceProgramCard is now a standalone component on the landing page */}
-        <section className="py-12">
-          <ResonanceProgramCard className="max-w-6xl" />
-        </section>
+        <ResonanceProgramCard className="my-12" />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
         <CallToActionSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
