@@ -8,11 +8,9 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionHeading from '@/components/SectionHeading';
 import { Mic, Leaf, Megaphone } from 'lucide-react';
+import { Link } from 'react-router-dom'; // Ensure Link is imported
 
 const ServicesPage: React.FC = () => {
-  // Removed useEffect for scrolling, as ScrollToTop component now handles all scroll logic.
-  // The location hook is no longer needed here.
-
   const pageTitle = "My Coaching Services";
   const subtitle = "Holistic Coaching for Your Voice, Body, and Performance";
 
@@ -58,12 +56,13 @@ const ServicesPage: React.FC = () => {
                 <li>Piano & Keyboard Performance</li>
                 <li>Music Direction & Conducting</li>
                 <li>Score Preparation & Technology</li>
-                <li>AMEB Accompanying</li>
+                <li>
+                  <Link to="/ameb-accompanying" className="text-brand-primary hover:underline">AMEB Accompanying</Link>
+                </li>
                 <li>
                   <strong>Audition Cut Playthrough:</strong> A focused 15-minute online drop-in session to run your 16–32 bar audition cut with an experienced audition pianist. Receive live playthrough and practical feedback, perfect for auditions and self-tapes. Please upload your clear PDF sheet music when booking.
                 </li>
               </ul>
-              {/* Removed the "Book Performance & Musicianship Session" button */}
             </div>
 
             {/* Embodiment & Somatic Work Category */}
@@ -80,7 +79,6 @@ const ServicesPage: React.FC = () => {
                 <li>Tension Release for vocal freedom</li>
                 <li>Mind-Body Connection for natural resonance</li>
               </ul>
-              {/* Removed the "Book Embodiment & Somatic Session" button */}
             </div>
 
             {/* Presence & Communication Category */}
@@ -96,7 +94,6 @@ const ServicesPage: React.FC = () => {
                 <li>Acting & Film Performance</li>
                 <li>On-Camera & Streaming Presence</li>
               </ul>
-              {/* Removed the "Book Presence & Communication Session" button */}
             </div>
           </div>
 
