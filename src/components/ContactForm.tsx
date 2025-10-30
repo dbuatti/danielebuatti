@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client"; // Import Supabase client
 import { Link } from "react-router-dom"; // Re-added Link import
+import { cn } from "@/lib/utils"; // Import cn for conditional class merging
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -82,9 +83,19 @@ const ContactForm: React.FC = () => {
           <p className="mb-2">
             For AMEB accompanying inquiries, please use the dedicated form for a faster and more tailored response:
           </p>
-          <Button asChild size="sm" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-            <Link to="/ameb-accompanying#ameb-top">Go to AMEB Services</Link> {/* Changed <a> to <Link> */}
-          </Button>
+          {/* Apply button styling directly to Link component */}
+          <Link
+            to="/ameb-accompanying#ameb-top"
+            className={cn(
+              "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium",
+              "ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              "disabled:pointer-events-none disabled:opacity-50",
+              "h-9 px-3", // Equivalent to Button size="sm"
+              "bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
+            )}
+          >
+            Go to AMEB Services
+          </Link>
         </div>
         <FormField
           control={form.control}
