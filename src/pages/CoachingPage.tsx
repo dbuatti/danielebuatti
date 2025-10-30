@@ -136,31 +136,47 @@ const CoachingPage: React.FC = () => {
             </Card>
           </div>
 
-          {/* Removed redundant CTA: "Ready to unlock your full potential? Book a Session Now" */}
           <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
 
-          {/* Pricing & Packages Section */}
+          {/* NEW: Pricing & Packages Section (Moved up) */}
           <section id="pricing" className="max-w-4xl mx-auto space-y-10 py-12">
             <SectionHeading>Pricing & Packages</SectionHeading>
             <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
               Invest in your growth with flexible coaching options designed to fit your needs. All sessions are tailored to your individual goals and can be conducted remotely via Zoom or in-person at my studio in Toorak, Melbourne.
             </p>
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-3 gap-8"> {/* Changed to 3 columns */}
               <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
                 <CardHeader className="p-0 pb-4">
                   <DollarSign className="h-12 w-12 text-brand-primary mx-auto mb-4 drop-shadow-sm" />
-                  <CardTitle className="text-2xl text-brand-primary">Single Sessions</CardTitle>
+                  <CardTitle className="text-2xl text-brand-primary">Single Coaching Sessions (Voice + Piano)</CardTitle>
                 </CardHeader>
                 <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3 flex-grow">
                   <p className="text-lg font-semibold">Flexible durations for focused work:</p>
                   <ul className="list-disc list-inside text-left mx-auto max-w-xs">
-                    <li>30-minute session: A$75</li>
-                    <li>45-minute session: A$100</li>
-                    <li>60-minute session: A$125</li>
-                    <li>90-minute session: A$180</li>
+                    <li>30-minute session: A$50</li>
+                    <li>45-minute session: A$75</li>
+                    <li>60-minute session: A$95</li>
+                    <li>90-minute session: A$140</li> {/* Adjusted 90 min price based on A$95/hr logic */}
                   </ul>
                   <p className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-2">
-                    Perfect for specific challenges, quick check-ins, or exploring a new area.
+                    Perfect for technical deep dives, repertoire building, and communication skills.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+                <CardHeader className="p-0 pb-4">
+                  <Leaf className="h-12 w-12 text-brand-primary mx-auto mb-4 drop-shadow-sm" />
+                  <CardTitle className="text-2xl text-brand-primary">Healing & Integration Sessions</CardTitle>
+                </CardHeader>
+                <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3 flex-grow">
+                  <p className="text-lg font-semibold">Specialized sessions for deeper work:</p>
+                  <ul className="list-disc list-inside text-left mx-auto max-w-xs">
+                    <li>Kinesiology & Energy Balancing (90 min): A$100</li>
+                    <li>Kinesiology + Voice Integration (90 min): A$100</li>
+                    <li>Sound Healing / Piano Sound Bath (30 min): A$30</li>
+                  </ul>
+                  <p className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-2">
+                    See Acuity link for Community/Discounted sessions.
                   </p>
                 </CardContent>
               </Card>
@@ -172,8 +188,8 @@ const CoachingPage: React.FC = () => {
                 <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3 flex-grow">
                   <p className="text-lg font-semibold">Commit to deeper transformation and save:</p>
                   <ul className="list-disc list-inside text-left mx-auto max-w-xs">
-                    <li>4 x 60-minute sessions: A$450 (Save A$50)</li>
-                    <li>8 x 60-minute sessions: A$850 (Save A$150)</li>
+                    <li>4 x 60-minute sessions: A$360 (Save A$20)</li>
+                    <li>8 x 60-minute sessions: A$700 (Save A$60)</li>
                     <li>Custom packages available upon request.</li>
                   </ul>
                   <p className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-2">
@@ -184,7 +200,7 @@ const CoachingPage: React.FC = () => {
             </div>
             <div className="text-center mt-8">
               <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-                <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
+                <a href="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:Voice%20%2B%20Piano" target="_blank" rel="noopener noreferrer">
                   View Detailed Availability & Book
                 </a>
               </Button>
