@@ -15,7 +15,7 @@ const AdditionalProgramsSection: React.FC = () => {
           description="Explore my extensive experience as a music director, vocal coach, pianist, and performer in music theatre."
           link="/music-director-pianist"
           linkText="View My MD/Pianist Profile" // Updated button text
-          backgroundImageSrc="/daniele simple.jpeg"
+          backgroundImageSrc="/daniele-conducting.jpeg"
           className="max-w-6xl"
           buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
           overlayColorClass="bg-black/50"
