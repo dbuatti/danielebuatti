@@ -8,6 +8,8 @@ import { Separator } from "@/components/ui/separator";
 import ImageCarouselSection from "@/components/pages/landing-page-v3/ImageCarouselSection";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import DynamicImage from "@/components/DynamicImage"; // Import DynamicImage
+import { Card, CardContent } from "@/components/ui/card"; // Import Card and CardContent
 
 const AboutPage: React.FC = () => {
   return (
@@ -21,6 +23,23 @@ const AboutPage: React.FC = () => {
           </p>
           <Separator className="max-w-xs mx-auto bg-brand-secondary" />
         </div>
+
+        {/* Featured Image Section - Daniele's Portrait */}
+        <section className="max-w-3xl mx-auto py-12">
+          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col items-center">
+            <DynamicImage
+              src="/daniele simple.jpeg"
+              alt="Daniele Buatti smiling warmly"
+              className="w-full max-w-md h-auto rounded-xl shadow-2xl object-cover border-4 border-brand-primary mx-auto transform rotate-2 hover:rotate-0 transition-transform duration-500"
+              width={600}
+              height={600}
+            />
+            <CardContent className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-4 p-0">
+              <p>Daniele Buatti: Dedicated to embodied performance and well-being.</p>
+            </CardContent>
+          </Card>
+        </section>
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
 
         {/* 1. Daniele's Story: Experience & Credibility */}
         <section id="daniele-story" className="max-w-4xl mx-auto space-y-6 py-12">
@@ -73,7 +92,7 @@ const AboutPage: React.FC = () => {
           <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
             My coaching is built upon a simple yet powerful framework that integrates the mind, body, and voice to unlock true expressive freedom. This process ensures your performance is authentic, grounded, and sustainable.
           </p>
-          <div className="text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-4 pl-4"> {/* Changed ul to div and removed list-disc */}
+          <div className="text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-4 pl-4">
             <p>
               <strong className="text-brand-primary">THOUGHT:</strong> We address the mental blocks and patterned behaviors that hinder your freedom. This involves conscious intention-setting and cultivating the self-awareness necessary for growth.
             </p>
