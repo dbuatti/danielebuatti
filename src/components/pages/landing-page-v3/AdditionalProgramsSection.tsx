@@ -5,10 +5,10 @@ import SectionHeading from "@/components/SectionHeading"; // Import SectionHeadi
 
 const AdditionalProgramsSection: React.FC = () => {
   return (
-    <section className="py-12 space-y-12">
+    <section className="py-8 space-y-8"> {/* Adjusted overall padding and spacing */}
       {/* Subheading: Specialised Services */}
-      <SectionHeading>Specialised Services</SectionHeading>
-      <div className="space-y-12">
+      <SectionHeading className="mb-8">Specialised Services</SectionHeading> {/* Added margin-bottom */}
+      <div className="space-y-8"> {/* Adjusted spacing between cards */}
         {/* FeaturedProgramCard for Music Director & Pianist */}
         <FeaturedProgramCard
           title="Music Director & Pianist"
@@ -52,8 +52,8 @@ const AdditionalProgramsSection: React.FC = () => {
       </div>
 
       {/* New Subheading: Digital Products & Community */}
-      <SectionHeading>Digital Products & Community</SectionHeading>
-      <div className="space-y-12">
+      <SectionHeading className="mt-12 mb-8">Digital Products & Community</SectionHeading> {/* Added top and bottom margin */}
+      <div className="space-y-8"> {/* Adjusted spacing between cards */}
         {/* FeaturedProgramCard for Buattiverse */}
         <FeaturedProgramCard
           title="Buattiverse: Sheet Music & Backing Tracks"
