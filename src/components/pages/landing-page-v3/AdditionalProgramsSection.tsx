@@ -14,11 +14,11 @@ const AdditionalProgramsSection: React.FC = () => {
           title="Music Director & Pianist"
           description="Explore my extensive experience as a music director, vocal coach, pianist, and performer in music theatre."
           link="/music-director-pianist"
-          linkText="View My MD/Pianist Profile" // Updated button text
+          linkText="View Profile & Inquire" // Updated CTA
           backgroundImageSrc="/daniele-conducting.jpeg"
           className="max-w-6xl"
           buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-          overlayColorClass="bg-black/20"
+          overlayColorClass="bg-black/20" 
           backgroundPosition="center"
           cardBgClass="bg-brand-light dark:bg-brand-dark-alt"
           cardTextClass="text-brand-dark dark:text-brand-light"
@@ -26,32 +26,32 @@ const AdditionalProgramsSection: React.FC = () => {
 
         {/* FeaturedProgramCard for Live Piano Services */}
         <FeaturedProgramCard
-          title="An Unforgettable Musical Experience"
+          title="Live Piano Services" // Updated card title
           description="Elevate your wedding, corporate event, or private party with Daniele Buatti's live piano music. His versatile, refined performance spans classical, jazz, and pop, creating an unforgettable atmosphere for any occasion."
           link="/live-piano-services" 
-          linkText="Enquire Now!"
+          linkText="Enquire Now!" // Kept as is
           backgroundImageSrc="/blacktie.avif"
           className="max-w-6xl"
           buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-          overlayColorClass="bg-black/20"
-          backgroundPosition="center 70%"
+          overlayColorClass="bg-black/20" 
+          backgroundPosition="center 70%" 
         />
 
         {/* FeaturedProgramCard for AMEB Accompanying Services */}
         <FeaturedProgramCard
-          title="AMEB Accompanying Services"
+          title="AMEB Accompanying Services" // Kept as is
           description="Professional and supportive piano accompaniment for your AMEB exams, ensuring you feel confident and ready."
           link="/ameb-accompanying"
-          linkText="Learn More"
+          linkText="View Rates & Book" // Updated CTA
           backgroundImageSrc="/ameb-placeholder.jpg"
           className="max-w-6xl"
           buttonBgClass="bg-brand-dark hover:bg-brand-dark/90 text-brand-light"
-          overlayColorClass="bg-black/20"
+          overlayColorClass="bg-black/20" 
           backgroundPosition="center"
         />
       </div>
 
-      {/* Subheading: Digital Products & Community */}
+      {/* New Subheading: Digital Products & Community */}
       <SectionHeading>Digital Products & Community</SectionHeading>
       <div className="space-y-12">
         {/* FeaturedProgramCard for Buattiverse */}
@@ -62,7 +62,7 @@ const AdditionalProgramsSection: React.FC = () => {
           linkText="Visit Buattiverse Store"
           backgroundImageSrc="/sheetmusic.png"
           className="max-w-6xl"
-          overlayColorClass="bg-black/20"
+          overlayColorClass="bg-black/20" 
         />
 
         {/* FeaturedProgramCard for Piano Backings */}
