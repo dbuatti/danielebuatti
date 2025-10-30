@@ -4,20 +4,20 @@ import React from 'react';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Mic, Leaf, Megaphone, Users, Brain, Lightbulb, Volume2 } from 'lucide-react';
+import { Mic, Leaf, Megaphone, Users, Brain, Lightbulb, Volume2, DollarSign } from 'lucide-react'; // Added DollarSign
 import DynamicImage from '@/components/DynamicImage';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionHeading from '@/components/SectionHeading';
 import { Separator } from '@/components/ui/separator';
 import PhilosophyStatement from '@/components/PhilosophyStatement';
-import WhyWorkWithMeSection from '@/components/pages/landing-page-v3/WhyWorkWithMeSection'; // Import
-import WhoIWorkWithSection from '@/components/pages/landing-page-v3/WhoIWorkWithSection'; // Import
-import SessionsFormatsAvailabilitySection from '@/components/SessionsFormatsAvailabilitySection'; // Import new component
+import WhyWorkWithMeSection from '@/components/pages/landing-page-v3/WhyWorkWithMeSection';
+import WhoIWorkWithSection from '@/components/pages/landing-page-v3/WhoIWorkWithSection';
+import SessionsFormatsAvailabilitySection from '@/components/SessionsFormatsAvailabilitySection';
 
 const CoachingPage: React.FC = () => {
   const pageTitle = "My Coaching Services";
-  const subtitle = "Holistic Coaching for Your Voice, Body, and Performance";
+  const subtitle = "Your Three-Pillar Journey to Performance Freedom."; // Refined subtitle
 
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
@@ -43,14 +43,13 @@ const CoachingPage: React.FC = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/50 to-transparent"></div>
           </section>
 
-          {/* Overview Section */}
+          {/* The Holistic Difference - Refined Pitch */}
           <section className="bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-8 rounded-xl shadow-inner space-y-6">
-            <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-              Unlock your full vocal and musical potential with personalized 1:1 coaching. Whether you're a seasoned performer or just starting your journey, my holistic approach integrates technical mastery with body awareness and mindset strategies to help you achieve authentic, confident expression.
-            </p>
-            <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-              This work is deeply connected to overall well-being. By integrating body-voice practices and healing modalities, we can release physical tension, calm the nervous system, and clear mental blocks that might be hindering your vocal performance, confidence, and overall expressive freedom.
-            </p>
+            <h3 className="text-3xl font-bold text-brand-primary text-center">The Holistic Difference</h3>
+            <ul className="list-disc list-inside text-xl text-brand-dark/80 dark:text-brand-light/80 leading-relaxed space-y-3">
+              <li>Unlock your full vocal and musical potential with personalized 1:1 coaching, integrating technical mastery with body awareness and mindset strategies for authentic, confident expression.</li>
+              <li>This work is deeply connected to overall well-being. By integrating body-voice practices and healing modalities, we can release physical tension, calm the nervous system, and clear mental blocks that might be hindering your vocal performance, confidence, and overall expressive freedom.</li>
+            </ul>
           </section>
 
           {/* Reintroduced: Why Work With Me? */}
@@ -82,13 +81,13 @@ const CoachingPage: React.FC = () => {
               </ul>
             </Card>
 
-            {/* Embodiment & Somatic Work Category */}
+            {/* Embodiment & Somatic Work Category - Enhanced description */}
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
               <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
                 <Leaf className="h-8 w-8" /> Embodiment & Somatic Work
               </h3>
               <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-                Explore deep body-mind integration through Kinesiology, energy balancing, and sound healing. These sessions are designed to restore balance, ease stress and tension, and release unhelpful patterns, fostering a profound connection between your inner self and your expressive voice. This work directly supports greater freedom and authenticity in all forms of communication and performance.
+                Explore deep body-mind integration through <strong className="text-brand-primary">Kinesiology</strong>, energy balancing, and sound healing. These sessions are designed to restore balance, ease stress and tension, and release unhelpful patterns, fostering a profound connection between your inner self and your expressive voice. This work directly supports greater freedom and authenticity in all forms of communication and performance.
               </p>
               <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-2 pl-4">
                 <li>Kinesiology</li>
@@ -175,6 +174,59 @@ const CoachingPage: React.FC = () => {
             <p className="text-center text-xl italic text-brand-dark/70 dark:text-brand-light/70 mt-8">
               “Daniele doesn’t just teach technique—he teaches how to inhabit your artistry and presence fully.”
             </p>
+          </section>
+          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
+
+          {/* New Section: Pricing & Packages */}
+          <section id="pricing" className="max-w-4xl mx-auto space-y-10 py-12">
+            <SectionHeading>Pricing & Packages</SectionHeading>
+            <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
+              Invest in your growth with flexible coaching options designed to fit your needs. All sessions are tailored to your individual goals and can be conducted remotely or in-person.
+            </p>
+            <div className="grid md:grid-cols-2 gap-8">
+              <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+                <CardHeader className="p-0 pb-4">
+                  <DollarSign className="h-12 w-12 text-brand-primary mx-auto mb-4 drop-shadow-sm" />
+                  <CardTitle className="text-2xl text-brand-primary">Single Sessions</CardTitle>
+                </CardHeader>
+                <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3 flex-grow">
+                  <p className="text-lg font-semibold">Flexible durations for focused work:</p>
+                  <ul className="list-disc list-inside text-left mx-auto max-w-xs">
+                    <li>30-minute session: A$75</li>
+                    <li>45-minute session: A$100</li>
+                    <li>60-minute session: A$125</li>
+                    <li>90-minute session: A$180</li>
+                  </ul>
+                  <p className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-2">
+                    Perfect for specific challenges, quick check-ins, or exploring a new area.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+                <CardHeader className="p-0 pb-4">
+                  <Users className="h-12 w-12 text-brand-primary mx-auto mb-4 drop-shadow-sm" />
+                  <CardTitle className="text-2xl text-brand-primary">Package Deals</CardTitle>
+                </CardHeader>
+                <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3 flex-grow">
+                  <p className="text-lg font-semibold">Commit to deeper transformation and save:</p>
+                  <ul className="list-disc list-inside text-left mx-auto max-w-xs">
+                    <li>4 x 60-minute sessions: A$450 (Save A$50)</li>
+                    <li>8 x 60-minute sessions: A$850 (Save A$150)</li>
+                    <li>Custom packages available upon request.</li>
+                  </ul>
+                  <p className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-2">
+                    Ideal for long-term development and consistent progress.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+            <div className="text-center mt-8">
+              <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+                <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
+                  View Detailed Availability & Book
+                </a>
+              </Button>
+            </div>
           </section>
           <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
 

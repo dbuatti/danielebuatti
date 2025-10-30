@@ -3,19 +3,23 @@ import { Button } from "@/components/ui/button";
 import DynamicImage from "@/components/DynamicImage";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import CalEmbed from "@/components/CalEmbed";
+import { testimonials } from '@/components/pages/landing-page-v3/TestimonialsSection'; // Import testimonials
 
 const HeroSection: React.FC = () => {
+  // Using a specific testimonial for the hero section
+  const impactfulTestimonial = testimonials.find(t => t.author === "Experienced Educator") || testimonials[0];
+
   return (
     <section id="home" className="grid md:grid-cols-2 gap-16 items-center max-w-7xl mx-auto py-12">
       <div className="text-center md:text-left space-y-8">
         <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-brand-primary">
-          Unlock Your Embodied Presence.
+          Unlock Your Embodied Presence & Performance Freedom.
         </h1>
         <p className="text-2xl md:text-3xl font-bold text-brand-dark dark:text-brand-light">
-          Daniele Buatti – Holistic Coaching for Performers & Communicators
+          Daniele Buatti – Integrating Kinesiology, Voice, and Presence for Authentic Performance.
         </p>
         <p className="text-lg md:text-xl text-brand-dark/80 dark:text-brand-light/80 max-w-3xl md:max-w-none mx-auto">
-          Whether you're preparing for a big performance, an important audition, or a crucial presentation, my coaching empowers you to communicate with freedom, confidence, and ease. I blend world-class musical and performance training with deep body awareness and a powerful mindset approach, helping you achieve more without the usual strain, stress, or burnout.
+          Tired of performance anxiety, strain, or burnout? My unique coaching blends world-class musical and performance training with deep body awareness and a powerful somatic approach, empowering you to achieve more without the usual strain, stress, or burnout. Communicate with freedom, confidence, and ease.
         </p>
         <Dialog>
           <DialogTrigger asChild>
@@ -36,9 +40,12 @@ const HeroSection: React.FC = () => {
           width={600}
           height={600}
         />
-        <div className="absolute -bottom-10 -left-10 bg-brand-light dark:bg-brand-dark-alt p-6 rounded-xl shadow-lg hidden md:block transform -rotate-3 text-brand-dark dark:text-brand-light">
-          <p className="text-sm italic">"True expression begins with the willingness to voice it."</p>
-        </div>
+        {impactfulTestimonial && (
+          <div className="absolute -bottom-10 -left-10 bg-brand-light dark:bg-brand-dark-alt p-6 rounded-xl shadow-lg hidden md:block transform -rotate-3 text-brand-dark dark:text-brand-light">
+            <p className="text-sm italic">"{impactfulTestimonial.quote}"</p>
+            <p className="text-xs font-semibold mt-1">— {impactfulTestimonial.author}</p>
+          </div>
+        )}
       </div>
     </section>
   );
