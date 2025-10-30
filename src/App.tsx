@@ -22,6 +22,7 @@ import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminQuotesPage from './pages/admin/AdminQuotesPage';
 import AdminQuoteDetailsPage from './pages/admin/AdminQuoteDetailsPage';
+import AdminAmebBookingsPage from './pages/admin/AdminAmebBookingsPage'; // Import new AMEB bookings page
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
             <Route index element={<AdminDashboardPage />} />
             <Route path="quotes" element={<AdminQuotesPage />} />
             <Route path="quotes/:id" element={<AdminQuoteDetailsPage />} />
+            <Route path="ameb-bookings" element={<AdminAmebBookingsPage />} /> {/* New AMEB bookings route */}
           </Route>
         </Routes>
       </SessionContextProvider>

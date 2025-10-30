@@ -4,7 +4,7 @@ import React from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
 import { useSession } from '@/components/SessionContextProvider';
 import { Button } from '@/components/ui/button';
-import { LogOut, LayoutDashboard, FileText, Home } from 'lucide-react';
+import { LogOut, LayoutDashboard, FileText, Home, Music } from 'lucide-react'; // Added Music icon
 import { supabase } from '@/integrations/supabase/client';
 import { useTheme } from 'next-themes';
 import DynamicImage from '@/components/DynamicImage';
@@ -70,6 +70,13 @@ const AdminLayout: React.FC = () => {
             <FileText className="h-5 w-5" />
             Quotes
           </Link>
+          <Link to="/admin/ameb-bookings" className={cn(
+            "flex items-center gap-3 p-3 rounded-md text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark/50 transition-colors",
+            location.pathname.startsWith('/admin/ameb-bookings') ? 'bg-brand-secondary/30 dark:bg-brand-dark/60 font-semibold text-brand-primary' : ''
+          )}>
+            <Music className="h-5 w-5" /> {/* Using Music icon for AMEB */}
+            AMEB Bookings
+          </Link>
         </nav>
         <div className="mt-auto space-y-2">
           <Separator className="bg-brand-secondary/50 my-4" />
@@ -90,8 +97,9 @@ const AdminLayout: React.FC = () => {
       <div className="flex-1 flex flex-col">
         <header className="bg-brand-light dark:bg-brand-dark border-b border-brand-secondary/50 p-4 shadow-sm flex items-center justify-between">
           <h1 className="text-2xl font-bold text-brand-dark dark:text-brand-light">
-            {location.pathname === '/admin' ? 'Admin Dashboard' : 
-             location.pathname.startsWith('/admin/quotes') ? 'Quotes' : 'Admin'}
+            {location.pathname === '/admin' ? 'Admin Dashboard' :
+             location.pathname.startsWith('/admin/quotes') ? 'Quotes' :
+             location.pathname.startsWith('/admin/ameb-bookings') ? 'AMEB Bookings' : 'Admin'}
           </h1>
           <div className="flex items-center gap-4">
             <span className="text-brand-dark/80 dark:text-brand-light/80 text-sm">

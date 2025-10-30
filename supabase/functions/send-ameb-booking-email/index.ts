@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0'; // Import createClient
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,6 +13,17 @@ serve(async (req: Request) => {
   }
 
   try {
+    // Create a Supabase client with the service role key to bypass RLS
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '', // Use SERVICE_ROLE_KEY
+      {
+        auth: {
+          persistSession: false,
+        },
+      }
+    );
+
     const { studentParentName, contactEmail, examDate, examTime, examBoardGrade, teacherName, serviceRequired } = await req.json();
 
     if (!studentParentName || !contactEmail || !examDate || !examTime || !examBoardGrade || !serviceRequired || serviceRequired.length === 0) {
@@ -21,14 +33,36 @@ serve(async (req: Request) => {
       });
     }
 
+    // Insert data into the new 'ameb_bookings' table
+    const { error: insertError } = await supabaseClient
+      .from('ameb_bookings')
+      .insert([
+        {
+          student_parent_name: studentParentName,
+          contact_email: contactEmail,
+          exam_date: examDate,
+          exam_time: examTime,
+          exam_board_grade: examBoardGrade,
+          teacher_name: teacherName,
+          service_required: serviceRequired,
+          status: 'pending', // Default status
+        },
+      ]);
+
+    if (insertError) {
+      console.error('Supabase insert error for AMEB booking:', insertError);
+      throw new Error(`Failed to save AMEB booking: ${insertError.message}`);
+    }
+
     const EMAIL_SERVICE_API_KEY = Deno.env.get('EMAIL_SERVICE_API_KEY');
     const CONTACT_FORM_RECIPIENT_EMAIL = Deno.env.get('CONTACT_FORM_RECIPIENT_EMAIL');
     const EMAIL_SERVICE_ENDPOINT = Deno.env.get('EMAIL_SERVICE_ENDPOINT');
 
     if (!EMAIL_SERVICE_API_KEY || !CONTACT_FORM_RECIPIENT_EMAIL || !EMAIL_SERVICE_ENDPOINT) {
       console.error('Missing email service environment variables for AMEB booking.');
-      return new Response(JSON.stringify({ error: 'Server configuration error: Missing email service credentials.' }), {
-        status: 500,
+      // We still return success for the client, but log the server error
+      return new Response(JSON.stringify({ message: 'AMEB booking saved, but email notification failed due to server config.' }), {
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
@@ -102,7 +136,7 @@ serve(async (req: Request) => {
 
     console.log(`Email notification sent for AMEB booking successfully!`);
 
-    return new Response(JSON.stringify({ message: `Email notification sent for AMEB booking` }), {
+    return new Response(JSON.stringify({ message: `AMEB booking saved and email notification sent.` }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
