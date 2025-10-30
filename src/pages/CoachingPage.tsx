@@ -1,16 +1,19 @@
 "use client";
 
 import React from 'react';
-import { Card, CardContent, CardTitle } from '@/components/ui/card'; // Added CardTitle
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Mic, Leaf, Megaphone, Users, Brain, Lightbulb, Volume2 } from 'lucide-react'; // Added Brain, Lightbulb, Volume2
+import { Mic, Leaf, Megaphone, Users, Brain, Lightbulb, Volume2 } from 'lucide-react';
 import DynamicImage from '@/components/DynamicImage';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionHeading from '@/components/SectionHeading';
 import { Separator } from '@/components/ui/separator';
-import PhilosophyStatement from '@/components/PhilosophyStatement'; // Import PhilosophyStatement
+import PhilosophyStatement from '@/components/PhilosophyStatement';
+import WhyWorkWithMeSection from '@/components/pages/landing-page-v3/WhyWorkWithMeSection'; // Import
+import WhoIWorkWithSection from '@/components/pages/landing-page-v3/WhoIWorkWithSection'; // Import
+import SessionsFormatsAvailabilitySection from '@/components/SessionsFormatsAvailabilitySection'; // Import new component
 
 const CoachingPage: React.FC = () => {
   const pageTitle = "My Coaching Services";
@@ -49,6 +52,14 @@ const CoachingPage: React.FC = () => {
               This work is deeply connected to overall well-being. By integrating body-voice practices and healing modalities, we can release physical tension, calm the nervous system, and clear mental blocks that might be hindering your vocal performance, confidence, and overall expressive freedom.
             </p>
           </section>
+
+          {/* Reintroduced: Why Work With Me? */}
+          <WhyWorkWithMeSection />
+          <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
+
+          {/* Reintroduced: Who I Work With */}
+          <WhoIWorkWithSection />
+          <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
           {/* Coaching Pillars Section */}
           <div className="space-y-8">
@@ -102,7 +113,7 @@ const CoachingPage: React.FC = () => {
               </ul>
             </Card>
 
-            {/* NEW: Workshops & Group Coaching Card */}
+            {/* Workshops & Group Coaching Card */}
             <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
               <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
                 <Users className="h-8 w-8" /> Workshops & Group Coaching
@@ -116,7 +127,20 @@ const CoachingPage: React.FC = () => {
             </Card>
           </div>
 
-          {/* Detailed Embodied Approach Section (Moved from LandingPageV3) */}
+          {/* CTA 1: After expertise boxes */}
+          <div className="text-center mt-12">
+            <p className="text-2xl font-semibold text-brand-dark dark:text-brand-light mb-6">
+              Ready to unlock your full potential?
+            </p>
+            <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+              <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
+                Book a Session Now
+              </a>
+            </Button>
+          </div>
+          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
+
+          {/* Detailed Embodied Approach Section */}
           <section id="embodied-approach" className="max-w-4xl mx-auto space-y-10 py-12">
             <SectionHeading>My Embodied Holistic Approach</SectionHeading>
             <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
@@ -152,19 +176,10 @@ const CoachingPage: React.FC = () => {
               “Daniele doesn’t just teach technique—he teaches how to inhabit your artistry and presence fully.”
             </p>
           </section>
+          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
 
-
-          {/* Call to Action to Book (Centralized) */}
-          <div className="text-center mt-12">
-            <p className="text-2xl font-semibold text-brand-dark dark:text-brand-light mb-6">
-              Ready to unlock your full potential?
-            </p>
-            <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-              <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
-                Book a Session Now
-              </a>
-            </Button>
-          </div>
+          {/* New Section: Session Formats & Availability */}
+          <SessionsFormatsAvailabilitySection />
 
           {/* NEW: Call-out to Projects & Resources */}
           <div className="bg-brand-blue/10 dark:bg-brand-blue/20 p-8 rounded-xl shadow-lg text-center space-y-4 mt-12">
@@ -175,6 +190,18 @@ const CoachingPage: React.FC = () => {
               <Link to="/projects-resources">
                 Explore Projects & Resources
               </Link>
+            </Button>
+          </div>
+
+          {/* CTA 2: At the bottom of the page */}
+          <div className="text-center mt-12">
+            <p className="text-2xl font-semibold text-brand-dark dark:text-brand-light mb-6">
+              Ready to take the next step in your artistic journey?
+            </p>
+            <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+              <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
+                Book Your Discovery Session
+              </a>
             </Button>
           </div>
         </section>
