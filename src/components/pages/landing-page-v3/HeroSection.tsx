@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import DynamicImage from "@/components/DynamicImage";
@@ -13,13 +15,13 @@ const HeroSection: React.FC = () => {
     <section id="home" className="grid md:grid-cols-2 gap-16 items-center max-w-7xl mx-auto py-12">
       <div className="text-center md:text-left space-y-8">
         <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-brand-primary">
-          Unlock Your Embodied Presence & Performance Freedom.
+          Discover Embodied Presence and Your Unique Expression.
         </h1>
         <p className="text-2xl md:text-3xl font-bold text-brand-dark dark:text-brand-light">
           Daniele Buatti – Integrating Kinesiology, Voice, and Presence for Authentic Performance.
         </p>
         <p className="text-lg md:text-xl text-brand-dark/80 dark:text-brand-light/80 max-w-3xl md:max-w-none mx-auto">
-          Tired of performance anxiety, strain, or burnout? My unique coaching blends world-class musical and performance training with deep body awareness and a powerful somatic approach, empowering you to achieve more without the usual strain, stress, or burnout. Communicate with freedom, confidence, and ease.
+          Are you looking to release tension, connect more deeply with your body, and discover your most authentic voice? Through a unique blend of kinesiology, vocal coaching, and somatic awareness, I help singers, speakers, and creatives find ease, freedom, and authenticity in their expression. This work goes beyond technique — it’s about learning to listen to your body, dissolve habitual tension, and access the grounded presence that allows your natural voice to emerge. When body and voice are aligned, performance becomes effortless, expressive, and deeply resonant.
         </p>
         <Dialog>
           <DialogTrigger asChild>
