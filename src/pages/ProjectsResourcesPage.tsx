@@ -7,10 +7,10 @@ import SectionHeading from '@/components/SectionHeading';
 import { Separator } from '@/components/ui/separator';
 import AdditionalProgramsSection from '@/components/pages/landing-page-v3/AdditionalProgramsSection';
 import BackToTopButton from '@/components/BackToTopButton';
-import { Card, CardContent } from '@/components/ui/card'; // Import Card and CardContent
-import DynamicImage from '@/components/DynamicImage'; // Import DynamicImage
-import { Button } from '@/components/ui/button'; // Import Button
-import { Link } from 'react-router-dom'; // Import Link
+import { Card, CardContent } from '@/components/ui/card';
+import DynamicImage from '@/components/DynamicImage';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 const ProjectsResourcesPage: React.FC = () => {
   return (
@@ -26,7 +26,7 @@ const ProjectsResourcesPage: React.FC = () => {
         </div>
 
         <section className="py-12 space-y-12">
-          {/* Music Director & Pianist Section - Integrated as a card */}
+          {/* Music Director & Pianist Section - Integrated as a card (now simplified as it's also in AdditionalProgramsSection) */}
           <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 md:p-8 flex flex-col lg:flex-row items-center gap-8 max-w-6xl mx-auto">
             <div className="lg:w-1/3 flex-shrink-0 flex justify-center">
               <DynamicImage
@@ -55,7 +55,7 @@ const ProjectsResourcesPage: React.FC = () => {
             </div>
           </Card>
 
-          {/* Other Programs Section (already contains FeaturedProgramCards for other projects) */}
+          {/* Other Programs Section (now includes subheadings and grouped cards) */}
           <AdditionalProgramsSection />
         </section>
       </main>

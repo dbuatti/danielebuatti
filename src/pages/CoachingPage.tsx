@@ -1,11 +1,10 @@
 "use client";
 
 import React from 'react';
-import { Card } from '@/components/ui/card'; // Only import Card, as sub-components are not directly used
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-// Removed unused Link import:
-// import { Link } from 'react-router-dom';
-import { Mic, Leaf, Megaphone } from 'lucide-react';
+import { Link } from 'react-router-dom'; // Re-added Link for the new call-out
+import { Mic, Leaf, Megaphone, Users } from 'lucide-react'; // Added Users icon
 import DynamicImage from '@/components/DynamicImage';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -66,7 +65,7 @@ const CoachingPage: React.FC = () => {
               <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-2 pl-4">
                 <li>Vocal Coaching (contemporary, classical, musical theatre)</li>
                 <li>Piano & Keyboard Performance</li>
-                <li>Music Direction & Conducting</li>
+                {/* Removed Music Direction & Conducting from here */}
                 <li>Score Preparation & Technology</li>
                 <li>Audition Cut Playthrough</li>
               </ul>
@@ -102,6 +101,19 @@ const CoachingPage: React.FC = () => {
                 <li>On-Camera & Streaming Presence</li>
               </ul>
             </Card>
+
+            {/* NEW: Workshops & Group Coaching Card */}
+            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+              <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
+                <Users className="h-8 w-8" /> Workshops & Group Coaching
+              </h3>
+              <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
+                Join specialized group sessions for public speaking and on-camera presence, or explore the "Body Voice Sound Workshop" for movement, improvisation, and sound exploration. These collaborative environments offer unique opportunities for growth and connection.
+              </p>
+              <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
+                Check the <Link to="/projects-resources" className="text-brand-primary hover:underline font-semibold">Projects & Resources page</Link> for upcoming workshop dates and details.
+              </p>
+            </Card>
           </div>
 
           {/* Call to Action to Book (Centralized) */}
@@ -113,6 +125,18 @@ const CoachingPage: React.FC = () => {
               <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
                 Book a Session Now
               </a>
+            </Button>
+          </div>
+
+          {/* NEW: Call-out to Projects & Resources */}
+          <div className="bg-brand-blue/10 dark:bg-brand-blue/20 p-8 rounded-xl shadow-lg text-center space-y-4 mt-12">
+            <p className="text-xl font-semibold text-brand-dark dark:text-brand-light">
+              Looking for AMEB accompaniment, live piano services, or to hire a Music Director?
+            </p>
+            <Button asChild size="lg" className="bg-brand-blue hover:bg-brand-blue/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+              <Link to="/projects-resources">
+                Explore Projects & Resources
+              </Link>
             </Button>
           </div>
         </section>

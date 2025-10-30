@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CalendarDays, Users, Monitor } from "lucide-react";
+import { CalendarDays, Monitor } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -32,19 +32,8 @@ const SessionsAvailabilitySection: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Smaller Cards: Workshops & Remote/Zoom */}
-        <div className="grid md:grid-cols-2 gap-8 text-left">
-          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
-            <CardHeader className="p-0 pb-4">
-              <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">
-                <Users className="h-6 w-6" />
-                Workshops & Group Classes
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0">
-              Join the "Body Voice Sound Workshop" for movement, improvisation, and sound exploration, or specialised group sessions for public speaking and on-camera presence.
-            </CardContent>
-          </Card>
+        {/* Smaller Cards: Remote/Zoom (Workshops & Group Classes moved to CoachingPage) */}
+        <div className="grid md:grid-cols-1 gap-8 text-left max-w-md mx-auto"> {/* Adjusted grid for single column */}
           <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
             <CardHeader className="p-0 pb-4">
               <CardTitle className="flex items-center gap-3 text-xl text-brand-primary">

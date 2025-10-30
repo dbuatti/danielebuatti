@@ -18,12 +18,11 @@ const EducationExpertiseSection: React.FC = () => {
               <CardTitle className="text-2xl text-brand-primary">Performance & Musicianship</CardTitle>
             </CardHeader>
             <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3 flex-grow">
-              <ul className="space-y-2 text-left mx-auto max-w-xs"> {/* Removed list-disc list-inside */}
+              <ul className="space-y-2 text-left mx-auto max-w-xs">
                 <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Vocal Coaching (contemporary, classical, musical theatre)</span></li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Piano & Keyboard Performance</span></li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Music Direction & Conducting</span></li>
+                {/* Removed Music Direction & Conducting and AMEB Accompanying to focus on core coaching skills */}
                 <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Score Preparation & Technology</span></li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>AMEB Accompanying</span></li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Audition Cut Playthrough</span></li>
               </ul>
             </CardContent>
@@ -43,7 +42,7 @@ const EducationExpertiseSection: React.FC = () => {
               <CardTitle className="text-2xl text-brand-primary">Embodiment & Somatic Work</CardTitle>
             </CardHeader>
             <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3 flex-grow">
-              <ul className="space-y-2 text-left mx-auto max-w-xs"> {/* Removed list-disc list-inside */}
+              <ul className="space-y-2 text-left mx-auto max-w-xs">
                 <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Kinesiology</span></li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Holistic Voice & Somatic Techniques (Breath-Body-Mind, Yoga, Mindfulness)</span></li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Tension Release for vocal freedom</span></li>
@@ -66,7 +65,7 @@ const EducationExpertiseSection: React.FC = () => {
               <CardTitle className="text-2xl text-brand-primary">Presence & Communication</CardTitle>
             </CardHeader>
             <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3 flex-grow">
-              <ul className="space-y-2 text-left mx-auto max-w-xs"> {/* Removed list-disc list-inside */}
+              <ul className="space-y-2 text-left mx-auto max-w-xs">
                 <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Public Speaking & Presentation</span></li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>Acting & Film Performance</span></li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="h-5 w-5 text-brand-primary flex-shrink-0 mt-0.5" /><span>On-Camera & Streaming Presence</span></li>
