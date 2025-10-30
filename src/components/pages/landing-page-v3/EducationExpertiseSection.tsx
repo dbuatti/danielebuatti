@@ -64,7 +64,7 @@ const EducationExpertiseSection: React.FC = () => {
           <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 text-center space-y-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 h-full flex flex-col justify-between">
             <CardHeader className="p-0 pb-4">
               <Megaphone className="h-12 w-12 text-brand-primary mx-auto mb-4" />
-              <CardTitle className="text-2xl text-brand-primary">Dynamic Presence & Communication</CardTitle>
+              <CardTitle className="text-2xl text-brand-primary">Presence and Communication</CardTitle>
             </CardHeader>
             <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3 flex-grow">
               <ul className="space-y-2 text-left mx-auto max-w-xs">
