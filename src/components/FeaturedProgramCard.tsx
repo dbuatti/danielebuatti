@@ -54,6 +54,7 @@ const FeaturedProgramCard: React.FC<FeaturedProgramCardProps> = ({
         "flex items-center justify-center text-center",
         "shadow-xl transition-all duration-300 ease-in-out transform hover:scale-[1.01]",
         hasSolidBackgroundWithLogo ? backgroundColorClass : "", // Apply solid background if present
+        hasBackgroundImage ? "bg-brand-dark-alt" : "", // Fallback background for image cards
         className
       )}
       style={hasBackgroundImage ? { backgroundImage: `url(${backgroundImageSrc})`, backgroundSize: 'cover', backgroundPosition: backgroundPosition } : {}}
