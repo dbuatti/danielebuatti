@@ -34,7 +34,7 @@ const AdditionalProgramsSection: React.FC = () => {
           className="max-w-6xl"
           buttonBgClass="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
           overlayColorClass="bg-black/20" 
-          backgroundPosition="center 70%" // Further adjusted to show more of the face
+          backgroundPosition="center bottom" // Changed to 'center bottom'
         />
 
         {/* FeaturedProgramCard for AMEB Accompanying Services */}
