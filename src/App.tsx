@@ -8,13 +8,12 @@ import VoicePianoBookingPage from './pages/VoicePianoBookingPage';
 import EmbodimentSomaticBookingPage from './pages/EmbodimentSomaticBookingPage';
 import AmebAccompanyingPage from './pages/AmebAccompanyingPage';
 import ServicesPage from './pages/ServicesPage';
-// Removed QuoteProposalPage and ErinKennedyQuotePage imports
 import QuoteConfirmationPage from './pages/QuoteConfirmationPage';
 import ProgramsPage from './pages/ProgramsPage';
 import PresenceCommunicationBookingPage from './pages/PresenceCommunicationBookingPage';
 import ArchivePage from './pages/ArchivePage';
 import MusicDirectorPianistPage from './pages/MusicDirectorPianistPage';
-import DynamicQuotePage from './pages/DynamicQuotePage'; // New import for dynamic quote page
+import DynamicQuotePage from './pages/DynamicQuotePage';
 import { Toaster } from 'sonner';
 import ScrollToTop from './components/ScrollToTop';
 import { SessionContextProvider } from './components/SessionContextProvider';
@@ -40,13 +39,12 @@ function App() {
           <Route path="/book-embodiment-somatic" element={<EmbodimentSomaticBookingPage />} />
           <Route path="/book-presence-communication" element={<PresenceCommunicationBookingPage />} />
           <Route path="/ameb-accompanying" element={<AmebAccompanyingPage />} />
-          {/* Removed old hardcoded quote routes */}
           <Route path="/live-piano-services/quote-confirmation" element={<QuoteConfirmationPage />} />
           <Route path="/archive" element={<ArchivePage />} />
           <Route path="/music-director-pianist" element={<MusicDirectorPianistPage />} />
           
-          {/* New dynamic quote page route */}
-          <Route path="/quotes/:id" element={<DynamicQuotePage />} />
+          {/* New dynamic quote page route using slug */}
+          <Route path="/quotes/:slug" element={<DynamicQuotePage />} />
 
           <Route path="/login" element={<Login />} />
 

@@ -5,9 +5,12 @@ import { useParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Loader2, CheckCircle2, XCircle, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Loader2, CheckCircle2, XCircle, ExternalLink, Save } from 'lucide-react';
 import { format } from 'date-fns';
-import { showError } from '@/utils/toast';
+import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { createSlug } from '@/lib/utils'; // Import createSlug
 
 interface Quote {
   id: string;
@@ -21,12 +24,15 @@ interface Quote {
   total_amount: number;
   details: any; // JSONB column
   accepted_at: string;
+  slug?: string | null; // Add slug to the interface
 }
 
 const AdminQuoteDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [quote, setQuote] = useState<Quote | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [editableSlug, setEditableSlug] = useState<string>('');
+  const [isSavingSlug, setIsSavingSlug] = useState(false);
 
   useEffect(() => {
     const fetchQuote = async () => {
@@ -45,12 +51,40 @@ const AdminQuoteDetailsPage: React.FC = () => {
         setQuote(null);
       } else {
         setQuote(data as Quote);
+        setEditableSlug(data.slug || createSlug(data.event_title || data.client_name || data.id)); // Initialize with existing slug or generate from title/name/id
       }
       setIsLoading(false);
     };
 
     fetchQuote();
   }, [id]);
+
+  const handleSaveSlug = async () => {
+    if (!quote || !editableSlug) return;
+
+    setIsSavingSlug(true);
+    const toastId = showLoading('Saving slug...');
+
+    try {
+      const { error } = await supabase
+        .from('invoices')
+        .update({ slug: editableSlug })
+        .eq('id', quote.id);
+
+      if (error) {
+        throw error;
+      }
+
+      setQuote(prev => prev ? { ...prev, slug: editableSlug } : null);
+      showSuccess('Slug saved successfully!', { id: toastId });
+    } catch (error) {
+      console.error('Error saving slug:', error);
+      showError('Failed to save slug. It might already be in use.', { id: toastId });
+    } finally {
+      setIsSavingSlug(false);
+      dismissToast(toastId);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -116,10 +150,10 @@ const AdminQuoteDetailsPage: React.FC = () => {
     );
   };
 
-  // The public link will now always be dynamic
-  const publicQuoteLink = `/quotes/${quote.id}`;
+  // The public link will now use the slug if available, otherwise fallback to ID
+  const currentSlug = quote.slug || quote.id;
+  const publicQuoteLink = `/quotes/${currentSlug}`;
   const publicQuoteLinkText = `View Public ${quote.invoice_type} Page`;
-
 
   return (
     <div className="space-y-8">
@@ -155,6 +189,28 @@ const AdminQuoteDetailsPage: React.FC = () => {
           <div className="mt-6 p-4 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-md border border-brand-secondary/30">
             <h3 className="text-xl font-semibold text-brand-primary mb-3">Additional Details</h3>
             {renderAdditionalDetails(quote.details, quote.invoice_type)}
+          </div>
+
+          <div className="mt-6 p-4 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-md border border-brand-secondary/30 space-y-4">
+            <h3 className="text-xl font-semibold text-brand-primary mb-3">Public Quote Link</h3>
+            <div className="flex flex-col sm:flex-row items-end gap-2">
+              <div className="flex-grow">
+                <Label htmlFor="quote-slug" className="text-brand-dark dark:text-brand-light">Custom URL Slug</Label>
+                <Input
+                  id="quote-slug"
+                  value={editableSlug}
+                  onChange={(e) => setEditableSlug(createSlug(e.target.value))} // Auto-slugify input
+                  placeholder="e.g., christmas-carols-2025"
+                  className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                />
+              </div>
+              <Button onClick={handleSaveSlug} disabled={isSavingSlug} className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+                <Save className="h-4 w-4 mr-2" /> {isSavingSlug ? 'Saving...' : 'Save Slug'}
+              </Button>
+            </div>
+            <p className="text-sm text-brand-dark/70 dark:text-brand-light/70">
+              The public link will be: <a href={publicQuoteLink} target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline">{window.location.origin}{publicQuoteLink}</a>
+            </p>
           </div>
 
           {publicQuoteLink && (

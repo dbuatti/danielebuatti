@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import DynamicImage from "@/components/DynamicImage";
-import { ArrowLeft, Phone, Mail, Loader2 } from 'lucide-react'; // Added Loader2 here
+import { ArrowLeft, Phone, Mail, Loader2 } from 'lucide-react';
 import Footer from '@/components/Footer';
 import { useTheme } from "next-themes";
 import { toast } from 'sonner';
@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from '@/lib/utils';
-import { Checkbox } from '@/components/ui/checkbox'; // Moved Checkbox to its correct import path
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface Quote {
   id: string;
@@ -38,6 +38,7 @@ interface Quote {
   total_amount: number;
   details: any; // JSONB column
   accepted_at: string;
+  slug?: string | null; // Include slug
 }
 
 // Zod schema for Live Piano Services Quote acceptance
@@ -56,7 +57,7 @@ const erinKennedyFormSchema = z.object({
 });
 
 const DynamicQuotePage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>(); // Changed from 'id' to 'slug'
   const [quote, setQuote] = useState<Quote | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -84,8 +85,8 @@ const DynamicQuotePage: React.FC = () => {
 
   useEffect(() => {
     const fetchQuote = async () => {
-      if (!id) {
-        setError("Quote ID is missing.");
+      if (!slug) { // Use slug here
+        setError("Quote slug is missing.");
         setIsLoading(false);
         return;
       }
@@ -95,7 +96,7 @@ const DynamicQuotePage: React.FC = () => {
       const { data, error } = await supabase
         .from('invoices')
         .select('*')
-        .eq('id', id)
+        .eq('slug', slug) // Fetch by slug
         .single();
 
       if (error) {
@@ -124,7 +125,7 @@ const DynamicQuotePage: React.FC = () => {
     };
 
     fetchQuote();
-  }, [id]); // Depend on ID to refetch if URL changes
+  }, [slug]); // Depend on slug to refetch if URL changes
 
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
