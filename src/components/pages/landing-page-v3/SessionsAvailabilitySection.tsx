@@ -24,7 +24,7 @@ const SessionsAvailabilitySection: React.FC = () => {
             </p>
             <div className="pt-4">
               <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-                <Link to="/services"> {/* Link to the new ServicesPage */}
+                <Link to="/coaching"> {/* Link to the new CoachingPage */}
                   Learn More & Book 1:1 Sessions
                 </Link>
               </Button>

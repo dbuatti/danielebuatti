@@ -1,16 +1,18 @@
 "use client";
 
 import React from 'react';
+import { Card } from '@/components/ui/card'; // Only import Card, as sub-components are not directly used
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
+// Removed unused Link import:
+// import { Link } from 'react-router-dom';
+import { Mic, Leaf, Megaphone } from 'lucide-react';
 import DynamicImage from '@/components/DynamicImage';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionHeading from '@/components/SectionHeading';
-import { Mic, Leaf, Megaphone } from 'lucide-react';
-import { Link } from 'react-router-dom'; // Ensure Link is imported
+import { Separator } from '@/components/ui/separator';
 
-const ServicesPage: React.FC = () => {
+const CoachingPage: React.FC = () => {
   const pageTitle = "My Coaching Services";
   const subtitle = "Holistic Coaching for Your Voice, Body, and Performance";
 
@@ -38,13 +40,23 @@ const ServicesPage: React.FC = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/50 to-transparent"></div>
           </section>
 
-          {/* My Key Expertise Section */}
+          {/* Overview Section */}
+          <section className="bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-8 rounded-xl shadow-inner space-y-6">
+            <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
+              Unlock your full vocal and musical potential with personalized 1:1 coaching. Whether you're a seasoned performer or just starting your journey, my holistic approach integrates technical mastery with body awareness and mindset strategies to help you achieve authentic, confident expression.
+            </p>
+            <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
+              This work is deeply connected to overall well-being. By integrating body-voice practices and healing modalities, we can release physical tension, calm the nervous system, and clear mental blocks that might be hindering your vocal performance, confidence, and overall expressive freedom.
+            </p>
+          </section>
+
+          {/* Coaching Pillars Section */}
           <div className="space-y-8">
             <h2 className="text-4xl font-bold text-brand-primary text-center">My Key Expertise</h2>
             <Separator className="max-w-xs mx-auto bg-brand-secondary" />
 
             {/* Performance & Musicianship Category */}
-            <div className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
               <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
                 <Mic className="h-8 w-8" /> Performance & Musicianship
               </h3>
@@ -56,17 +68,12 @@ const ServicesPage: React.FC = () => {
                 <li>Piano & Keyboard Performance</li>
                 <li>Music Direction & Conducting</li>
                 <li>Score Preparation & Technology</li>
-                <li>
-                  <Link to="/services/ameb-accompanying" className="text-brand-primary hover:underline">AMEB Accompanying</Link>
-                </li>
-                <li>
-                  <strong>Audition Cut Playthrough:</strong> A focused 15-minute online drop-in session to run your 16–32 bar audition cut with an experienced audition pianist. Receive live playthrough and practical feedback, perfect for auditions and self-tapes. Please upload your clear PDF sheet music when booking.
-                </li>
+                <li>Audition Cut Playthrough</li>
               </ul>
-            </div>
+            </Card>
 
             {/* Embodiment & Somatic Work Category */}
-            <div className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
               <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
                 <Leaf className="h-8 w-8" /> Embodiment & Somatic Work
               </h3>
@@ -79,10 +86,10 @@ const ServicesPage: React.FC = () => {
                 <li>Tension Release for vocal freedom</li>
                 <li>Mind-Body Connection for natural resonance</li>
               </ul>
-            </div>
+            </Card>
 
             {/* Presence & Communication Category */}
-            <div className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
               <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
                 <Megaphone className="h-8 w-8" /> Presence & Communication
               </h3>
@@ -94,7 +101,7 @@ const ServicesPage: React.FC = () => {
                 <li>Acting & Film Performance</li>
                 <li>On-Camera & Streaming Presence</li>
               </ul>
-            </div>
+            </Card>
           </div>
 
           {/* Call to Action to Book (Centralized) */}
@@ -115,4 +122,4 @@ const ServicesPage: React.FC = () => {
   );
 };
 
-export default ServicesPage;
+export default CoachingPage;

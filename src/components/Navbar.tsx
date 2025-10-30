@@ -11,13 +11,14 @@ import { useActiveSection } from "@/hooks/use-active-section";
 import { cn } from "@/lib/utils";
 import DynamicImage from "@/components/DynamicImage";
 import { useTheme } from "next-themes";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+// Removed unused DropdownMenu imports:
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuTrigger,
+//   DropdownMenuSeparator,
+// } from "@/components/ui/dropdown-menu";
 
 
 const Navbar = () => {
@@ -45,35 +46,9 @@ const Navbar = () => {
         : "text-brand-dark dark:text-brand-light"
     );
 
-    if (link.type === "dropdown" && link.subLinks) {
-      return (
-        <DropdownMenu key={link.name}>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className={cn(commonClasses, "h-auto px-0 py-0")}>
-              {link.name}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50">
-            {link.subLinks.map((subLink, index) => (
-              <React.Fragment key={subLink.name}>
-                <DropdownMenuItem asChild>
-                  {subLink.href.startsWith('/') ? (
-                    <Link to={subLink.href} className="block px-2 py-1.5 text-sm text-brand-dark dark:text-brand-light hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50" onClick={() => setIsSheetOpen(false)}>
-                      {subLink.name}
-                    </Link>
-                  ) : (
-                    <a href={subLink.href} className="block px-2 py-1.5 text-sm text-brand-dark dark:text-brand-light hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50" onClick={() => setIsSheetOpen(false)}>
-                      {subLink.name}
-                    </a>
-                  )}
-                </DropdownMenuItem>
-                {index < link.subLinks.length - 1 && <DropdownMenuSeparator className="bg-brand-secondary/30" />}
-              </React.Fragment>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    } else if (link.href) {
+    // With the new structure, there are no dropdowns in navLinks directly.
+    // All links are now direct.
+    if (link.href) {
       if (link.href.startsWith('/')) {
         return (
           <Link key={link.name} to={link.href} className={commonClasses} onClick={() => isMobile && setIsSheetOpen(false)}>
@@ -114,7 +89,7 @@ const Navbar = () => {
           {navLinks.map((link) => renderNavLink(link))}
           <Button asChild size="sm" className="h-9 px-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
             <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
-              Book a session
+              Book Now
             </a>
           </Button>
           <ThemeToggle />
@@ -136,35 +111,11 @@ const Navbar = () => {
             <SheetOverlay className="bg-black/60 dark:bg-black/90" />
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-brand-light dark:bg-brand-dark">
               <nav className="flex flex-col gap-4 pt-6">
-                {navLinks.map((link) => {
-                  if (link.type === "dropdown" && link.subLinks) {
-                    return (
-                      <div key={link.name} className="space-y-2">
-                        <h3 className="text-lg font-bold text-brand-primary">{link.name}</h3>
-                        <ul className="ml-4 space-y-1">
-                          {link.subLinks.map((subLink) => (
-                            <li key={subLink.name}>
-                              {subLink.href.startsWith('/') ? (
-                                <Link to={subLink.href} className="text-brand-dark dark:text-brand-light hover:text-brand-primary text-base" onClick={() => setIsSheetOpen(false)}>
-                                  {subLink.name}
-                                </Link>
-                              ) : (
-                                <a href={subLink.href} className="text-brand-dark dark:text-brand-light hover:text-brand-primary text-base" onClick={() => setIsSheetOpen(false)}>
-                                  {subLink.name}
-                                </a>
-                              )}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    );
-                  }
-                  return renderNavLink(link, true);
-                })}
+                {navLinks.map((link) => renderNavLink(link, true))} {/* Render direct links for mobile */}
 
                 <Button asChild size="lg" className="h-12 px-6 py-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
                   <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer" onClick={() => setIsSheetOpen(false)}>
-                    Book a session
+                    Book Now
                   </a>
                 </Button>
               </nav>

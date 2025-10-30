@@ -32,19 +32,13 @@ export function useActiveSection() {
       );
     }
 
-    // Flatten all anchor links from navLinks and subLinks
+    // Flatten all anchor links from navLinks
     const allAnchorHrefs: string[] = [];
     navLinks.forEach(link => {
       if (typeof link.href === 'string' && link.href.startsWith('#')) {
         allAnchorHrefs.push(link.href);
       }
-      if (link.type === 'dropdown' && link.subLinks) {
-        link.subLinks.forEach(subLink => {
-          if (typeof subLink.href === 'string' && subLink.href.startsWith('#')) {
-            allAnchorHrefs.push(subLink.href);
-          }
-        });
-      }
+      // Removed dropdown-specific logic as navLinks no longer have 'type' or 'subLinks'
     });
 
     const sections = allAnchorHrefs

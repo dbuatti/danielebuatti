@@ -7,9 +7,9 @@ import VoicePianoServicesPage from './pages/VoicePianoServicesPage';
 import VoicePianoBookingPage from './pages/VoicePianoBookingPage';
 import EmbodimentSomaticBookingPage from './pages/EmbodimentSomaticBookingPage';
 import AmebAccompanyingPage from './pages/AmebAccompanyingPage';
-import ServicesPage from './pages/ServicesPage';
+import CoachingPage from './pages/CoachingPage'; // Renamed from ServicesPage
 import QuoteConfirmationPage from './pages/QuoteConfirmationPage';
-import ProgramsPage from './pages/ProgramsPage';
+import ProjectsResourcesPage from './pages/ProjectsResourcesPage'; // Renamed from ProgramsPage
 import PresenceCommunicationBookingPage from './pages/PresenceCommunicationBookingPage';
 import ArchivePage from './pages/ArchivePage';
 import MusicDirectorPianistPage from './pages/MusicDirectorPianistPage';
@@ -23,7 +23,7 @@ import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminQuotesPage from './pages/admin/AdminQuotesPage';
 import AdminQuoteDetailsPage from './pages/admin/AdminQuoteDetailsPage';
 import AdminAmebBookingsPage from './pages/admin/AdminAmebBookingsPage';
-import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage'; // Import new Email Templates page
+import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage';
 
 function App() {
   return (
@@ -33,8 +33,8 @@ function App() {
       <SessionContextProvider>
         <Routes>
           <Route path="/" element={<LandingPageV3 />} />
-          <Route path="/services" element={<ServicesPage />} />
-          <Route path="/programs" element={<ProgramsPage />} />
+          <Route path="/coaching" element={<CoachingPage />} /> {/* New route for Coaching */}
+          <Route path="/projects-resources" element={<ProjectsResourcesPage />} /> {/* New route for Projects & Resources */}
           <Route path="/live-piano-services" element={<LivePianoServicesPage />} />
           <Route path="/voice-piano-services" element={<VoicePianoServicesPage />} />
           <Route path="/book-voice-piano" element={<VoicePianoBookingPage />} />
@@ -45,7 +45,6 @@ function App() {
           <Route path="/archive" element={<ArchivePage />} />
           <Route path="/music-director-pianist" element={<MusicDirectorPianistPage />} />
           
-          {/* New dynamic quote page route using slug */}
           <Route path="/quotes/:slug" element={<DynamicQuotePage />} />
 
           <Route path="/login" element={<Login />} />
@@ -56,7 +55,7 @@ function App() {
             <Route path="quotes" element={<AdminQuotesPage />} />
             <Route path="quotes/:id" element={<AdminQuoteDetailsPage />} />
             <Route path="ameb-bookings" element={<AdminAmebBookingsPage />} />
-            <Route path="email-templates" element={<AdminEmailTemplatesPage />} /> {/* New route */}
+            <Route path="email-templates" element={<AdminEmailTemplatesPage />} />
           </Route>
         </Routes>
       </SessionContextProvider>

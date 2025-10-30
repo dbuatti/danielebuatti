@@ -1,15 +1,8 @@
 export const navLinks = [
   { name: "Home", href: "/" },
-  {
-    name: "Services",
-    type: "dropdown",
-    subLinks: [
-      { name: "All Coaching Services", href: "/services" },
-      { name: "AMEB Accompanying", href: "/services/ameb-accompanying" },
-      { name: "Live Piano Services", href: "/live-piano-services" },
-      { name: "All Programs & Projects", href: "/programs" },
-      { name: "Music Director & Pianist", href: "/music-director-pianist" },
-    ]
-  },
+  { name: "Coaching", href: "/coaching" }, // New direct link for coaching services
+  { name: "Projects & Resources", href: "/projects-resources" }, // Renamed from 'Programs'
   { name: "Contact", href: "/#contact" },
 ];
+
+// Note: The 'Book a session' CTA is handled directly in Navbar.tsx and will be updated there.
