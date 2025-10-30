@@ -14,8 +14,8 @@ const AboutPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
       <Navbar />
-      <main className="container mx-auto px-4 pt-12 pb-12">
-        <div className="text-center space-y-4 mb-10">
+      <main className="container mx-auto px-4 pt-6 pb-6">
+        <div className="text-center space-y-4 mb-6">
           <SectionHeading>About Daniele Buatti</SectionHeading>
           <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 max-w-3xl mx-auto">
             Discover Daniele's journey, philosophy, and the integrated approach that defines his coaching.
@@ -24,7 +24,7 @@ const AboutPage: React.FC = () => {
         </div>
 
         {/* Introduction with Integrated Image */}
-        <section className="max-w-4xl mx-auto py-8 flex flex-col md:flex-row items-center gap-8">
+        <section className="max-w-4xl mx-auto py-4 flex flex-col md:flex-row items-center gap-8">
           <div className="md:w-1/3 flex justify-center">
             <DynamicImage
               src="/daniele simple.jpeg"
@@ -43,10 +43,10 @@ const AboutPage: React.FC = () => {
             </p>
           </div>
         </section>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6 mb-12" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-4 mb-6" />
 
         {/* 1. Daniele's Story: Experience & Credibility */}
-        <section id="daniele-story" className="max-w-4xl mx-auto space-y-6 py-12">
+        <section id="daniele-story" className="max-w-4xl mx-auto space-y-6 py-6">
           <SectionHeading>Daniele Buatti: Musician, Coach, and Embodiment Practitioner</SectionHeading>
           <div className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed space-y-4">
             <p>
@@ -60,10 +60,10 @@ const AboutPage: React.FC = () => {
             </p>
           </div>
         </section>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6" />
 
         {/* 2. My Embodied Holistic Approach (Narrative text only) */}
-        <section id="embodied-approach-narrative" className="max-w-4xl mx-auto space-y-10 py-12">
+        <section id="embodied-approach-narrative" className="max-w-4xl mx-auto space-y-10 py-6">
           <SectionHeading>My Embodied Holistic Approach</SectionHeading>
           <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
             All my teachings are informed by Buddhist and yogic philosophies, fostering a heart-centred, process-oriented journey focused on truth and transformation, not just the destination.
@@ -85,10 +85,10 @@ const AboutPage: React.FC = () => {
             </Button>
           </div>
         </section>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6" />
 
         {/* 3. The Guiding Principles: THOUGHT • INTENTION • BREATH • EXPRESSION */}
-        <section id="guiding-principles" className="max-w-4xl mx-auto space-y-10 py-12">
+        <section id="guiding-principles" className="max-w-4xl mx-auto space-y-10 py-6">
           <SectionHeading>My Core Principles: THOUGHT • INTENTION • BREATH • EXPRESSION</SectionHeading>
           <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
             My coaching is built upon a simple yet powerful framework that integrates the mind, body, and voice to unlock true expressive freedom. This process ensures your performance is authentic, grounded, and sustainable.
@@ -108,11 +108,13 @@ const AboutPage: React.FC = () => {
             </p>
           </div>
         </section>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6" />
 
-        {/* 4. Daniele's Moments (Image Gallery) */}
-        <ImageCarouselSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
+        {/* 4. Daniele's Moments (Image Gallery) - Removed heading text */}
+        <div className="py-6">
+          <ImageCarouselSection />
+        </div>
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6" />
       </main>
       <Footer />
     </div>

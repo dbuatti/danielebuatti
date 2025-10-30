@@ -20,16 +20,16 @@ const CoachingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
       <Navbar />
-      <main className="container mx-auto px-4 pt-12 pb-12">
-        <div className="text-center space-y-4 mb-10">
+      <main className="container mx-auto px-4 pt-6 pb-6">
+        <div className="text-center space-y-4 mb-6">
           <SectionHeading>{pageTitle}</SectionHeading>
           {subtitle && <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70">{subtitle}</p>}
           <Separator className="max-w-xs mx-auto bg-brand-secondary" />
         </div>
 
-        <section className="max-w-4xl mx-auto space-y-10">
+        <section className="max-w-4xl mx-auto space-y-6">
           {/* Hero Image Section */}
-          <section className="relative mt-8 mb-8 rounded-xl overflow-hidden shadow-lg border-4 border-brand-secondary">
+          <section className="relative mt-4 mb-4 rounded-xl overflow-hidden shadow-lg border-4 border-brand-secondary">
             <DynamicImage
               src="/danielecalmatpiano.jpeg"
               alt="Daniele Buatti playing piano with eyes closed, deeply in the moment"
@@ -42,7 +42,7 @@ const CoachingPage: React.FC = () => {
           </section>
 
           {/* Consolidated Philosophy Section */}
-          <section id="embodied-approach" className="bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-8 rounded-xl shadow-inner space-y-6 text-center">
+          <section id="embodied-approach" className="bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-6 rounded-xl shadow-inner space-y-6 text-center">
             <h3 className="text-3xl font-bold text-brand-primary text-center">The Holistic Difference</h3>
             <ul className="list-disc list-inside text-xl text-brand-dark/80 dark:text-brand-light/80 leading-relaxed space-y-3 text-left">
               <li>Unlock your full vocal and musical potential with personalised 1:1 coaching, integrating technical mastery with body awareness and mindset strategies for authentic, confident expression.</li>
@@ -57,23 +57,27 @@ const CoachingPage: React.FC = () => {
               </Link>
             </Button>
           </section>
-          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
+          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6" />
 
           {/* Reintroduced: Why Work With Me? */}
-          <WhyWorkWithMeSection />
+          <div className="py-6">
+            <WhyWorkWithMeSection />
+          </div>
           <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
           {/* Reintroduced: Who I Work With */}
-          <WhoIWorkWithSection />
+          <div className="py-6">
+            <WhoIWorkWithSection />
+          </div>
           <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
 
           {/* Coaching Pillars Section */}
-          <div className="space-y-8">
+          <div className="space-y-6">
             <h2 className="text-4xl font-bold text-brand-primary text-center">My Key Expertise</h2>
             <Separator className="max-w-xs mx-auto bg-brand-secondary" />
 
             {/* Performance & Musicianship Category */}
-            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
               <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
                 <Mic className="h-8 w-8" /> Vocal & Instrumental Mastery
               </h3>
@@ -87,7 +91,7 @@ const CoachingPage: React.FC = () => {
             </Card>
 
             {/* Embodiment & Somatic Work Category - Enhanced description */}
-            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
               <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
                 <Leaf className="h-8 w-8" /> Embodiment & Somatic Healing
               </h3>
@@ -103,7 +107,7 @@ const CoachingPage: React.FC = () => {
             </Card>
 
             {/* Presence & Communication Category */}
-            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
               <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
                 <Megaphone className="h-8 w-8" /> Presence and Communication
               </h3>
@@ -119,7 +123,7 @@ const CoachingPage: React.FC = () => {
             </Card>
 
             {/* Workshops & Group Coaching Card */}
-            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-8 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+            <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 rounded-xl space-y-6 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
               <h3 className="flex items-center gap-3 text-3xl font-bold text-brand-primary">
                 <Users className="h-8 w-8" /> Workshops & Group Coaching
               </h3>
@@ -136,15 +140,15 @@ const CoachingPage: React.FC = () => {
             </Card>
           </div>
 
-          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
+          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6" />
 
           {/* NEW: Pricing & Packages Section (Moved up) */}
-          <section id="pricing" className="max-w-4xl mx-auto space-y-10 py-12">
+          <section id="pricing" className="max-w-4xl mx-auto space-y-6 py-6">
             <SectionHeading>Pricing & Packages</SectionHeading>
             <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
               Invest in your growth with flexible coaching options designed to fit your needs. All sessions are tailored to your individual goals and can be conducted remotely via Zoom or in-person at my studio in Toorak, Melbourne.
             </p>
-            <div className="grid md:grid-cols-2 gap-8"> {/* Changed to 2 columns */}
+            <div className="grid md:grid-cols-2 gap-6"> {/* Changed to 2 columns */}
               <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
                 <CardHeader className="p-0 pb-4">
                   <DollarSign className="h-12 w-12 text-brand-primary mx-auto mb-4 drop-shadow-sm" />
@@ -181,7 +185,7 @@ const CoachingPage: React.FC = () => {
                 </CardContent>
               </Card>
             </div>
-            <div className="text-center mt-8">
+            <div className="text-center mt-6">
               <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
                 <a href="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:1:1%20Coaching:%20Voice,%20Piano%20%26%20Performance" target="_blank" rel="noopener noreferrer">
                   View Detailed Availability & Book
@@ -189,10 +193,10 @@ const CoachingPage: React.FC = () => {
               </Button>
             </div>
           </section>
-          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-12" />
+          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6" />
 
           {/* NEW: Call-out to Projects & Resources */}
-          <div className="bg-brand-blue/10 dark:bg-brand-blue/20 p-8 rounded-xl shadow-lg text-center space-y-4 mt-12">
+          <div className="bg-brand-blue/10 dark:bg-brand-blue/20 p-6 rounded-xl shadow-lg text-center space-y-4 mt-6">
             <p className="text-xl font-semibold text-brand-dark dark:text-brand-light">
               Looking for AMEB accompaniment, live piano services, or to hire a Music Director?
             </p>
