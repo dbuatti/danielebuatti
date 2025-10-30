@@ -147,9 +147,9 @@ const AmebBookingForm: React.FC = () => {
                   />
                 </FormControl>
                 <FormMessage />
-              </FormItem>
-            )}
-          />
+            </FormItem>
+          )}
+        />
         </div>
         <FormField
           control={form.control}
