@@ -65,7 +65,7 @@ const AmebBookingForm: React.FC = () => {
         description: "Daniele will review your request and get back to you shortly.",
       });
       form.reset();
-      navigate('/ameb-accompanying'); // Changed to navigate back to AMEB Accompanying page
+      navigate('/live-piano-services/quote-confirmation'); // Reusing existing confirmation page
     } catch (error) {
       console.error("Error submitting AMEB booking form:", error);
       toast.error("Failed to send booking inquiry.", {
@@ -147,9 +147,9 @@ const AmebBookingForm: React.FC = () => {
                   />
                 </FormControl>
                 <FormMessage />
-            </FormItem>
-          )}
-        />
+              </FormItem>
+            )}
+          />
         </div>
         <FormField
           control={form.control}

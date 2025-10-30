@@ -1,66 +1,46 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, ArrowLeft, Mail, Phone, CalendarDays, DollarSign, CheckCircle2, Clock, User, Info, FileText } from 'lucide-react'; // Removed XCircle
+import { ArrowLeft, Loader2, CheckCircle2, XCircle, ExternalLink, Save } from 'lucide-react';
 import { format } from 'date-fns';
-import { showError, showSuccess } from '@/utils/toast';
-import { Badge } from '@/components/ui/badge';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { createSlug } from '@/lib/utils'; // Import createSlug
 
 interface Quote {
   id: string;
-  created_at: string;
   client_name: string;
   client_email: string;
-  client_phone?: string;
-  event_type: string;
-  event_date: string;
-  event_time: string;
-  event_location: string;
-  duration_hours: number;
-  additional_services?: string[];
-  special_requests?: string;
-  status: 'pending' | 'contacted' | 'quoted' | 'booked' | 'cancelled' | 'archived' | 'finalised';
-  quote_amount?: number;
-  invoice_id?: string;
-  notes?: string;
+  invoice_type: string;
+  event_title?: string;
+  event_date?: string;
+  event_location?: string;
+  prepared_by?: string;
+  total_amount: number;
+  details: any; // JSONB column
+  accepted_at: string;
+  slug?: string | null; // Add slug to the interface
 }
 
 const AdminQuoteDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const [quote, setQuote] = useState<Quote | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
-  const [newStatus, setNewStatus] = useState<Quote['status'] | undefined>(undefined);
+  const [editableSlug, setEditableSlug] = useState<string>('');
+  const [isSavingSlug, setIsSavingSlug] = useState(false);
 
   useEffect(() => {
     const fetchQuote = async () => {
       if (!id) return;
+
       setIsLoading(true);
       const { data, error } = await supabase
-        .from('quotes')
+        .from('invoices')
         .select('*')
         .eq('id', id)
         .single();
@@ -71,7 +51,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
         setQuote(null);
       } else {
         setQuote(data as Quote);
-        setNewStatus(data.status); // Initialize newStatus with current status
+        setEditableSlug(data.slug || createSlug(data.event_title || data.client_name || data.id)); // Initialize with existing slug or generate from title/name/id
       }
       setIsLoading(false);
     };
@@ -79,49 +59,36 @@ const AdminQuoteDetailsPage: React.FC = () => {
     fetchQuote();
   }, [id]);
 
-  const handleStatusUpdate = async () => {
-    if (!id || !newStatus || !quote || newStatus === quote.status) return;
+  const handleSaveSlug = async () => {
+    if (!quote || !editableSlug) return;
 
-    setIsUpdatingStatus(true);
-    const { error } = await supabase
-      .from('quotes')
-      .update({ status: newStatus })
-      .eq('id', id);
+    setIsSavingSlug(true);
+    const toastId = showLoading('Saving slug...');
 
-    if (error) {
-      console.error('Error updating quote status:', error);
-      showError('Failed to update quote status.');
-    } else {
-      showSuccess(`Quote status updated to ${newStatus}.`);
-      setQuote(prev => prev ? { ...prev, status: newStatus } : null);
-    }
-    setIsUpdatingStatus(false);
-  };
+    try {
+      const { error } = await supabase
+        .from('invoices')
+        .update({ slug: editableSlug })
+        .eq('id', quote.id);
 
-  const getStatusBadgeVariant = (status: Quote['status']): "default" | "destructive" | "outline" | "secondary" => { // Explicitly define return type
-    switch (status) {
-      case 'pending':
-        return 'default';
-      case 'contacted':
-        return 'secondary';
-      case 'quoted':
-        return 'outline';
-      case 'booked':
-        return 'outline'; // Mapped 'success' to 'outline'
-      case 'cancelled':
-        return 'destructive';
-      case 'archived':
-        return 'secondary'; // Mapped 'info' to 'secondary'
-      case 'finalised':
-        return 'outline'; // Mapped 'success' to 'outline'
-      default:
-        return 'default';
+      if (error) {
+        throw error;
+      }
+
+      setQuote(prev => prev ? { ...prev, slug: editableSlug } : null);
+      showSuccess('Slug saved successfully!', { id: toastId });
+    } catch (error) {
+      console.error('Error saving slug:', error);
+      showError('Failed to save slug. It might already be in use.', { id: toastId });
+    } finally {
+      setIsSavingSlug(false);
+      dismissToast(toastId);
     }
   };
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex items-center justify-center h-64">
         <Loader2 className="h-10 w-10 animate-spin text-brand-primary" />
         <span className="sr-only">Loading quote details...</span>
       </div>
@@ -130,126 +97,131 @@ const AdminQuoteDetailsPage: React.FC = () => {
 
   if (!quote) {
     return (
-      <div className="text-center p-8">
-        <p className="text-xl text-brand-dark dark:text-brand-light">Quote not found.</p>
-        <Button onClick={() => navigate('/admin/quotes')} className="mt-4">
-          <ArrowLeft className="h-4 w-4 mr-2" /> Back to Quotes
+      <div className="text-center text-brand-dark dark:text-brand-light">
+        <h2 className="text-3xl font-bold mb-4">Quote Not Found</h2>
+        <p className="text-lg mb-6">The quote you are looking for does not exist or an error occurred.</p>
+        <Button asChild>
+          <Link to="/admin/quotes">
+            <ArrowLeft className="h-4 w-4 mr-2" /> Back to Quotes
+          </Link>
         </Button>
       </div>
     );
   }
 
+  const renderAdditionalDetails = (details: any, invoiceType: string) => {
+    if (!details) return <p>No additional details provided.</p>;
+
+    if (invoiceType === "Live Piano Services Quote") {
+      const { selected_package_id, has_add_on, selected_add_ons } = details;
+      return (
+        <div className="space-y-2">
+          <p><strong>Selected Package:</strong> {selected_package_id}</p>
+          <p className="flex items-center gap-2">
+            <strong>Has Add-Ons:</strong> {has_add_on ? <CheckCircle2 className="h-5 w-5 text-green-500" /> : <XCircle className="h-5 w-5 text-red-500" />}
+          </p>
+          {has_add_on && selected_add_ons && (
+            <div className="ml-4 space-y-1">
+              <p className="flex items-center gap-2">
+                <strong>Extra Hour:</strong> {selected_add_ons.extraHour ? <CheckCircle2 className="h-5 w-5 text-green-500" /> : <XCircle className="h-5 w-5 text-red-500" />}
+              </p>
+              <p className="flex items-center gap-2">
+                <strong>Rehearsal:</strong> {selected_add_ons.rehearsal ? <CheckCircle2 className="h-5 w-5 text-green-500" /> : <XCircle className="h-5 w-5 text-red-500" />}
+              </p>
+            </div>
+          )}
+        </div>
+      );
+    } else if (invoiceType === "Erin Kennedy Quote") {
+      const { on_site_performance_cost, show_preparation_fee, rehearsal_bundle_cost_per_student } = details;
+      return (
+        <div className="space-y-2">
+          <p><strong>On-Site Performance Cost:</strong> A${on_site_performance_cost?.toFixed(2)}</p>
+          <p><strong>Show Preparation Fee:</strong> A${show_preparation_fee?.toFixed(2)}</p>
+          <p><strong>Rehearsal Bundle Cost (per student):</strong> A${rehearsal_bundle_cost_per_student?.toFixed(2)}</p>
+        </div>
+      );
+    }
+    // Fallback for any other invoice types or if structure is unexpected
+    return (
+      <pre className="whitespace-pre-wrap text-sm text-brand-dark/70 dark:text-brand-light/70">
+        {JSON.stringify(details, null, 2)}
+      </pre>
+    );
+  };
+
+  // The public link will now use the slug if available, otherwise fallback to ID
+  const currentSlug = quote.slug || quote.id;
+  const publicQuoteLink = `/quotes/${currentSlug}`;
+  const publicQuoteLinkText = `View Public ${quote.invoice_type} Page`;
+
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <Button variant="outline" onClick={() => navigate('/admin/quotes')}>
-          <ArrowLeft className="h-4 w-4 mr-2" /> Back to Quotes
-        </Button>
+      <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Quote Details</h2>
-        <Badge variant={getStatusBadgeVariant(quote.status)} className="text-lg px-4 py-2">
-          {quote.status.charAt(0).toUpperCase() + quote.status.slice(1)}
-        </Badge>
+        <Button asChild variant="outline" className="text-brand-dark dark:text-brand-light border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50">
+          <Link to="/admin/quotes">
+            <ArrowLeft className="h-4 w-4 mr-2" /> Back to Quotes
+          </Link>
+        </Button>
       </div>
 
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
         <CardHeader>
-          <CardTitle className="text-2xl text-brand-primary">Client & Event Information</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 text-brand-dark/80 dark:text-brand-light/80">
-          <div className="space-y-2">
-            <p className="flex items-center gap-2"><User className="h-5 w-5 text-brand-primary" /> <strong>Client Name:</strong> {quote.client_name}</p>
-            <p className="flex items-center gap-2"><Mail className="h-5 w-5 text-brand-primary" /> <strong>Email:</strong> <a href={`mailto:${quote.client_email}`} className="text-brand-primary hover:underline">{quote.client_email}</a></p>
-            {quote.client_phone && <p className="flex items-center gap-2"><Phone className="h-5 w-5 text-brand-primary" /> <strong>Phone:</strong> <a href={`tel:${quote.client_phone}`} className="text-brand-primary hover:underline">{quote.client_phone}</a></p>}
-            <p className="flex items-center gap-2"><Info className="h-5 w-5 text-brand-primary" /> <strong>Event Type:</strong> {quote.event_type}</p>
-          </div>
-          <div className="space-y-2">
-            <p className="flex items-center gap-2"><CalendarDays className="h-5 w-5 text-brand-primary" /> <strong>Event Date:</strong> {format(new Date(quote.event_date), 'PPP')}</p>
-            <p className="flex items-center gap-2"><Clock className="h-5 w-5 text-brand-primary" /> <strong>Event Time:</strong> {quote.event_time}</p>
-            <p className="flex items-center gap-2"><FileText className="h-5 w-5 text-brand-primary" /> <strong>Location:</strong> {quote.event_location}</p>
-            <p className="flex items-center gap-2"><Clock className="h-5 w-5 text-brand-primary" /> <strong>Duration:</strong> {quote.duration_hours} hours</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
-        <CardHeader>
-          <CardTitle className="text-2xl text-brand-primary">Additional Details</CardTitle>
+          <CardTitle className="text-2xl text-brand-primary">{quote.invoice_type} - {quote.client_name}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 text-brand-dark/80 dark:text-brand-light/80">
-          {quote.additional_services && quote.additional_services.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <h4 className="font-semibold text-brand-primary">Additional Services:</h4>
-              <ul className="list-disc list-inside ml-4">
-                {quote.additional_services.map((service, index) => (
-                  <li key={index}>{service}</li>
-                ))}
-              </ul>
+              <p><strong>Client Name:</strong> {quote.client_name}</p>
+              <p><strong>Client Email:</strong> {quote.client_email}</p>
+              {quote.event_title && <p><strong>Event Title:</strong> {quote.event_title}</p>}
+              {quote.event_date && <p><strong>Event Date:</strong> {quote.event_date}</p>}
+              {quote.event_location && <p><strong>Event Location:</strong> {quote.event_location}</p>}
+              {quote.prepared_by && <p><strong>Prepared By:</strong> {quote.prepared_by}</p>}
             </div>
-          )}
-          {quote.special_requests && (
             <div>
-              <h4 className="font-semibold text-brand-primary">Special Requests:</h4>
-              <p className="ml-4 italic">{quote.special_requests}</p>
+              <p><strong>Total Amount:</strong> A${quote.total_amount.toFixed(2)}</p>
+              <p><strong>Accepted On:</strong> {format(new Date(quote.accepted_at), 'PPP p')}</p>
             </div>
-          )}
-          {quote.notes && (
-            <div>
-              <h4 className="font-semibold text-brand-primary">Internal Notes:</h4>
-              <p className="ml-4 italic">{quote.notes}</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+          </div>
 
-      <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
-        <CardHeader>
-          <CardTitle className="text-2xl text-brand-primary">Quote & Status Management</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex items-center gap-4">
-            <DollarSign className="h-6 w-6 text-brand-primary" />
-            <p className="text-xl font-semibold text-brand-dark dark:text-brand-light">
-              Quote Amount: {quote.quote_amount ? `A$${quote.quote_amount.toFixed(2)}` : 'Not yet quoted'}
+          <div className="mt-6 p-4 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-md border border-brand-secondary/30">
+            <h3 className="text-xl font-semibold text-brand-primary mb-3">Additional Details</h3>
+            {renderAdditionalDetails(quote.details, quote.invoice_type)}
+          </div>
+
+          <div className="mt-6 p-4 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-md border border-brand-secondary/30 space-y-4">
+            <h3 className="text-xl font-semibold text-brand-primary mb-3">Public Quote Link</h3>
+            <div className="flex flex-col sm:flex-row items-end gap-2">
+              <div className="flex-grow">
+                <Label htmlFor="quote-slug" className="text-brand-dark dark:text-brand-light">Custom URL Slug</Label>
+                <Input
+                  id="quote-slug"
+                  value={editableSlug}
+                  onChange={(e) => setEditableSlug(createSlug(e.target.value))} // Auto-slugify input
+                  placeholder="e.g., christmas-carols-2025"
+                  className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                />
+              </div>
+              <Button onClick={handleSaveSlug} disabled={isSavingSlug} className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+                <Save className="h-4 w-4 mr-2" /> {isSavingSlug ? 'Saving...' : 'Save Slug'}
+              </Button>
+            </div>
+            <p className="text-sm text-brand-dark/70 dark:text-brand-light/70">
+              The public link will be: <a href={publicQuoteLink} target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline">{window.location.origin}{publicQuoteLink}</a>
             </p>
           </div>
 
-          <div className="flex items-center gap-4">
-            <h4 className="font-semibold text-brand-dark dark:text-brand-light">Update Status:</h4>
-            <Select onValueChange={(value: Quote['status']) => setNewStatus(value)} value={newStatus}>
-              <SelectTrigger className="w-[180px] bg-brand-background border-brand-border/50 text-brand-dark dark:text-brand-light">
-                <SelectValue placeholder="Select status" />
-              </SelectTrigger>
-              <SelectContent className="bg-brand-background text-brand-dark dark:text-brand-light">
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="contacted">Contacted</SelectItem>
-                <SelectItem value="quoted">Quoted</SelectItem>
-                <SelectItem value="booked">Booked</SelectItem>
-                <SelectItem value="cancelled">Cancelled</SelectItem>
-                <SelectItem value="archived">Archived</SelectItem>
-                <SelectItem value="finalised">Finalised</SelectItem>
-              </SelectContent>
-            </Select>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button disabled={isUpdatingStatus || newStatus === quote.status}>
-                  {isUpdatingStatus ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <CheckCircle2 className="h-4 w-4 mr-2" />}
-                  Update Status
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent className="bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light border-brand-secondary">
-                <AlertDialogHeader>
-                  <AlertDialogTitle className="text-brand-primary">Confirm Status Update</AlertDialogTitle>
-                  <AlertDialogDescription className="text-brand-dark/80 dark:text-brand-light/80">
-                    Are you sure you want to change the status of this quote to <strong className="text-brand-primary">{newStatus}</strong>?
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-brand-secondary/20 hover:bg-brand-secondary/30 text-brand-dark dark:text-brand-light border-none">Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleStatusUpdate} className="bg-brand-primary hover:bg-brand-primary/90 text-brand-darker">Confirm</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
+          {publicQuoteLink && (
+            <div className="mt-6 text-center">
+              <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-6 py-3 rounded-full shadow-md">
+                <Link to={publicQuoteLink} target="_blank" rel="noopener noreferrer">
+                  {publicQuoteLinkText} <ExternalLink className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

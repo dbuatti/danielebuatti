@@ -97,7 +97,7 @@ const ServicesPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Call to Action to Book (Centralised) */} {/* Changed 'Centralized' to 'Centralised' */}
+          {/* Call to Action to Book (Centralized) */}
           <div className="text-center mt-12">
             <p className="text-2xl font-semibold text-brand-dark dark:text-brand-light mb-6">
               Ready to unlock your full potential?
