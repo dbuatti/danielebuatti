@@ -1,6 +1,6 @@
 "use client";
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, ScrollRestoration } from 'react-router-dom';
 import LandingPageV3 from './pages/LandingPageV3';
 import LivePianoServicesPage from './pages/LivePianoServicesPage';
 import VoicePianoServicesPage from './pages/VoicePianoServicesPage';
@@ -15,7 +15,6 @@ import ArchivePage from './pages/ArchivePage';
 import MusicDirectorPianistPage from './pages/MusicDirectorPianistPage';
 import DynamicQuotePage from './pages/DynamicQuotePage';
 import { Toaster } from 'sonner';
-import ScrollToTop from './components/ScrollToTop';
 import { SessionContextProvider } from './components/SessionContextProvider';
 import Login from './pages/Login';
 import AdminLayout from './pages/admin/AdminLayout';
@@ -28,8 +27,8 @@ import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage';
 function App() {
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <ScrollRestoration /> {/* Added React Router's ScrollRestoration */}
       <Toaster />
-      <ScrollToTop />
       <SessionContextProvider>
         <Routes>
           <Route path="/" element={<LandingPageV3 />} />
