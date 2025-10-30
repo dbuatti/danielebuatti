@@ -13,10 +13,9 @@ import { Link } from "react-router-dom"; // Import Link
 
 // Import new modular sections
 import HeroSection from "@/components/pages/landing-page-v3/HeroSection";
-import UnifiedAboutSection from "@/components/pages/landing-page-v3/UnifiedAboutSection";
+import EmbodiedApproachOverviewSection from "@/components/pages/landing-page-v3/EmbodiedApproachOverviewSection"; // Updated import
 import EducationExpertiseSection from "@/components/pages/landing-page-v3/EducationExpertiseSection";
 import WhoIWorkWithSection from "@/components/pages/landing-page-v3/WhoIWorkWithSection";
-import EmbodiedApproachSection from "@/components/pages/landing-page-v3/EmbodiedApproachSection";
 import TestimonialsSection from "@/components/pages/landing-page-v3/TestimonialsSection";
 import SessionsAvailabilitySection from "@/components/pages/landing-page-v3/SessionsAvailabilitySection";
 import WhyWorkWithMeSection from "@/components/pages/landing-page-v3/WhyWorkWithMeSection";
@@ -38,9 +37,7 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <WhyWorkWithMeSection />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <UnifiedAboutSection />
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
-        <EmbodiedApproachSection />
+        <EmbodiedApproachOverviewSection /> {/* Updated component name */}
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
         <WhoIWorkWithSection id="who-i-work-with" />
         <Separator className="max-w-3xl mx-auto bg-brand-secondary" />
