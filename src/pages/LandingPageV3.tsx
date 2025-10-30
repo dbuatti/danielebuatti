@@ -65,7 +65,7 @@ const LandingPageV3: React.FC = () => {
         <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
         <ResonanceProgramCard className="my-8" />
         {/* Simplified Projects & Resources call-out */}
-        <div className="bg-brand-blue/10 dark:bg-brand-blue/20 p-6 rounded-xl shadow-lg text-center space-y-4 mt-8 max-w-6xl mx-auto">
+        <div className="bg-brand-blue/10 dark:bg-brand-blue/20 p-6 rounded-xl shadow-lg text-center space-y-4 my-8 max-w-6xl mx-auto">
           <p className="text-xl font-semibold text-brand-dark dark:text-brand-light">
             Explore all specialized services, digital products, and community initiatives.
           </p>

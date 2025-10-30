@@ -13,8 +13,8 @@ const HeroSection: React.FC = () => {
 
   return (
     <section id="home" className="grid md:grid-cols-2 gap-16 items-center max-w-7xl mx-auto py-12">
-      <div className="text-center md:text-left space-y-8">
-        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-brand-primary">
+      <div className="text-center md:text-left space-y-6">
+        <h1 className="text-5xl md:text-6xl font-display tracking-tight leading-tight text-brand-primary">
           Discover Embodied Presence and Your Unique Expression.
         </h1>
         <p className="text-2xl md:text-3xl font-bold text-brand-dark dark:text-brand-light">
@@ -31,7 +31,7 @@ const HeroSection: React.FC = () => {
         </p>
         <Dialog>
           <DialogTrigger asChild>
-            <Button size="lg" className="mt-8 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+            <Button size="lg" className="mt-4 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
               Book a Discovery Session
             </Button>
           </DialogTrigger>
@@ -49,7 +49,7 @@ const HeroSection: React.FC = () => {
           height={600}
         />
         {impactfulTestimonial && (
-          <div className="absolute -bottom-10 -left-10 bg-brand-light dark:bg-brand-dark-alt p-6 rounded-xl shadow-lg hidden md:block transform -rotate-3 text-brand-dark dark:text-brand-light">
+          <div className="absolute -bottom-10 -left-10 bg-brand-light dark:bg-brand-dark-alt p-6 rounded-xl shadow-lg hidden md:block transform -rotate-3 text-brand-dark dark:text-brand-light border border-brand-secondary/50">
             <p className="text-sm italic">"{impactfulTestimonial.quote}"</p>
             <p className="text-xs font-semibold mt-1">— {impactfulTestimonial.author}</p>
           </div>

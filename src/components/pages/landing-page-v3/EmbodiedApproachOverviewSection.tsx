@@ -8,7 +8,7 @@ import { Link } from "react-router-dom"; // Import Link
 
 const EmbodiedApproachOverviewSection: React.FC = () => {
   return (
-    <section id="about" className="max-w-7xl mx-auto py-12 space-y-10">
+    <section id="about" className="max-w-7xl mx-auto py-8 space-y-10">
       <SectionHeading>My Embodied Holistic Approach</SectionHeading>
 
       <div className="grid md:grid-cols-2 gap-16 items-center">
@@ -33,7 +33,7 @@ const EmbodiedApproachOverviewSection: React.FC = () => {
           </p>
           <div className="text-center md:text-left">
             <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-              <Link to="/coaching#embodied-approach">
+              <Link to="/coaching">
                 Explore My Full Approach
               </Link>
             </Button>

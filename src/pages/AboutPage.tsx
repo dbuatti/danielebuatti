@@ -44,10 +44,10 @@ const AboutPage: React.FC = () => {
             </p>
           </div>
         </section>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-4 mb-6" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-4 mb-8" />
 
         {/* 1. Daniele's Story: Experience & Credibility */}
-        <section id="daniele-story" className="max-w-4xl mx-auto space-y-6 py-6">
+        <section id="daniele-story" className="max-w-4xl mx-auto space-y-6 py-8">
           <SectionHeading>Daniele Buatti: Musician, Coach, and Embodiment Practitioner</SectionHeading>
           <div className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed space-y-4">
             <p>
@@ -61,10 +61,10 @@ const AboutPage: React.FC = () => {
             </p>
           </div>
         </section>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
 
         {/* 2. My Embodied Holistic Approach (Narrative text only) */}
-        <section id="embodied-approach-narrative" className="max-w-4xl mx-auto space-y-10 py-6">
+        <section id="embodied-approach-narrative" className="max-w-4xl mx-auto space-y-10 py-8">
           <SectionHeading>My Embodied Holistic Approach</SectionHeading>
           <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
             All my teachings are informed by Buddhist and yogic philosophies, fostering a heart-centred, process-oriented journey focused on truth and transformation, not just the destination.
@@ -86,10 +86,10 @@ const AboutPage: React.FC = () => {
             </Button>
           </div>
         </section>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
 
         {/* 3. The Guiding Principles: THOUGHT • INTENTION • BREATH • EXPRESSION */}
-        <section id="guiding-principles" className="max-w-4xl mx-auto space-y-10 py-6">
+        <section id="guiding-principles" className="max-w-4xl mx-auto space-y-10 py-8">
           <CorePrinciplesHeading />
           <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
             My coaching is built upon a simple yet powerful framework that integrates the mind, body, and voice to unlock true expressive freedom. This process ensures your performance is authentic, grounded, and sustainable.
@@ -109,13 +109,13 @@ const AboutPage: React.FC = () => {
             </p>
           </div>
         </section>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
 
         {/* 4. Daniele's Moments (Image Gallery) */}
-        <div className="py-6">
+        <div className="py-8">
           <ImageCarouselSection />
         </div>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6" />
+        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
       </main>
       <Footer />
     </div>

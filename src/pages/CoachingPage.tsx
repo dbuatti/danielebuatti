@@ -20,14 +20,14 @@ const CoachingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
       <Navbar />
-      <main className="container mx-auto px-4 pt-6 pb-6">
-        <div className="text-center space-y-4 mb-6">
+      <main className="container mx-auto px-4 pt-8 pb-8">
+        <div className="text-center space-y-4 mb-8">
           <SectionHeading>{pageTitle}</SectionHeading>
           {subtitle && <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70">{subtitle}</p>}
           <Separator className="max-w-xs mx-auto bg-brand-secondary" />
         </div>
 
-        <section className="max-w-4xl mx-auto space-y-6">
+        <section className="max-w-4xl mx-auto space-y-8">
           {/* Hero Image Section */}
           <section className="relative mt-4 mb-4 rounded-xl overflow-hidden shadow-lg border-4 border-brand-secondary">
             <DynamicImage
@@ -42,7 +42,7 @@ const CoachingPage: React.FC = () => {
           </section>
 
           {/* Consolidated Philosophy Section */}
-          <section id="embodied-approach" className="bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-6 rounded-xl shadow-inner space-y-6 text-center">
+          <section id="embodied-approach" className="bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-8 rounded-xl shadow-inner space-y-6 text-center">
             <h3 className="text-3xl font-bold text-brand-primary text-center">The Holistic Difference</h3>
             <ul className="list-disc list-inside text-xl text-brand-dark/80 dark:text-brand-light/80 leading-relaxed space-y-3 text-left">
               <li>Unlock your full vocal and musical potential with personalised 1:1 coaching, integrating technical mastery with body awareness and mindset strategies for authentic, confident expression.</li>
@@ -57,16 +57,16 @@ const CoachingPage: React.FC = () => {
               </Link>
             </Button>
           </section>
-          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-6 mb-8" />
+          <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
 
           {/* Reintroduced: Why Work With Me? */}
-          <div className="py-6">
+          <div className="py-8">
             <WhyWorkWithMeSection />
           </div>
           <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
 
           {/* Reintroduced: Who I Work With */}
-          <div className="py-6">
+          <div className="py-8">
             <WhoIWorkWithSection />
           </div>
           <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
@@ -160,10 +160,10 @@ const CoachingPage: React.FC = () => {
             </Card>
           </div>
 
-          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-8 mb-8" />
+          <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
 
           {/* NEW: Pricing & Packages Section (Moved up) */}
-          <section id="pricing" className="max-w-4xl mx-auto space-y-6 py-6">
+          <section id="pricing" className="max-w-4xl mx-auto space-y-6 py-8">
             <SectionHeading>Pricing & Packages</SectionHeading>
             <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
               Invest in your growth with flexible coaching options designed to fit your needs. All sessions are tailored to your individual goals and can be conducted remotely via Zoom or in-person at my studio in Toorak, Melbourne.
@@ -213,10 +213,10 @@ const CoachingPage: React.FC = () => {
               </Button>
             </div>
           </section>
-          <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-8 mb-8" />
+          <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
 
           {/* NEW: Call-out to Projects & Resources */}
-          <div className="bg-brand-blue/10 dark:bg-brand-blue/20 p-6 rounded-xl shadow-lg text-center space-y-4 mt-8">
+          <div className="bg-brand-blue/10 dark:bg-brand-blue/20 p-6 rounded-xl shadow-lg text-center space-y-4 my-8">
             <p className="text-xl font-semibold text-brand-dark dark:text-brand-light">
               Looking for AMEB accompaniment, live piano services, or to hire a Music Director?
             </p>
