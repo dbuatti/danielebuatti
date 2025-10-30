@@ -1,6 +1,6 @@
 "use client";
 
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import LandingPageV3 from './pages/LandingPageV3';
 import LivePianoServicesPage from './pages/LivePianoServicesPage';
 import VoicePianoServicesPage from './pages/VoicePianoServicesPage';
@@ -23,92 +23,51 @@ import AdminAmebBookingsPage from './pages/admin/AdminAmebBookingsPage';
 import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage';
 import AboutPage from './pages/AboutPage';
 import NotFound from './pages/NotFound';
-import ScrollToTop from './components/ScrollToTop'; // Import the new ScrollToTop component
+import RootLayout from './layouts/RootLayout'; // Import the new RootLayout
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <LandingPageV3 />,
-    errorElement: <NotFound />,
-  },
-  {
-    path: "/coaching",
-    element: <CoachingPage />,
-  },
-  {
-    path: "/projects-resources",
-    element: <ProjectsResourcesPage />,
-  },
-  {
-    path: "/live-piano-services",
-    element: <LivePianoServicesPage />,
-  },
-  {
-    path: "/voice-piano-services",
-    element: <VoicePianoServicesPage />,
-  },
-  {
-    path: "/book-voice-piano",
-    element: <VoicePianoBookingPage />,
-  },
-  {
-    path: "/book-embodiment-somatic",
-    element: <EmbodimentSomaticBookingPage />,
-  },
-  {
-    path: "/book-presence-communication",
-    element: <PresenceCommunicationBookingPage />,
-  },
-  {
-    path: "/ameb-accompanying",
-    element: <AmebAccompanyingPage />,
-  },
-  {
-    path: "/live-piano-services/quote-confirmation",
-    element: <QuoteConfirmationPage />,
-  },
-  {
-    path: "/archive",
-    element: <ArchivePage />,
-  },
-  {
-    path: "/music-director-pianist",
-    element: <MusicDirectorPianistPage />,
-  },
-  {
-    path: "/quotes/:slug",
-    element: <DynamicQuotePage />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/about",
-    element: <AboutPage />,
-  },
-  {
-    path: "/admin",
-    element: <AdminLayout />,
+    element: <RootLayout />, // Use RootLayout as the top-level element for all main app routes
+    errorElement: <NotFound />, // This NotFound will catch errors from RootLayout and its children
     children: [
-      { index: true, element: <AdminDashboardPage /> },
-      { path: "quotes", element: <AdminQuotesPage /> },
-      { path: "quotes/:id", element: <AdminQuoteDetailsPage /> },
-      { path: "ameb-bookings", element: <AdminAmebBookingsPage /> },
-      { path: "email-templates", element: <AdminEmailTemplatesPage /> },
+      { index: true, element: <LandingPageV3 /> },
+      { path: "coaching", element: <CoachingPage /> },
+      { path: "projects-resources", element: <ProjectsResourcesPage /> },
+      { path: "live-piano-services", element: <LivePianoServicesPage /> },
+      { path: "voice-piano-services", element: <VoicePianoServicesPage /> },
+      { path: "book-voice-piano", element: <VoicePianoBookingPage /> },
+      { path: "book-embodiment-somatic", element: <EmbodimentSomaticBookingPage /> },
+      { path: "book-presence-communication", element: <PresenceCommunicationBookingPage /> },
+      { path: "ameb-accompanying", element: <AmebAccompanyingPage /> },
+      { path: "live-piano-services/quote-confirmation", element: <QuoteConfirmationPage /> },
+      { path: "archive", element: <ArchivePage /> },
+      { path: "music-director-pianist", element: <MusicDirectorPianistPage /> },
+      { path: "quotes/:slug", element: <DynamicQuotePage /> },
+      { path: "about", element: <AboutPage /> },
+      {
+        path: "admin",
+        element: <AdminLayout />,
+        children: [
+          { index: true, element: <AdminDashboardPage /> },
+          { path: "quotes", element: <AdminQuotesPage /> },
+          { path: "quotes/:id", element: <AdminQuoteDetailsPage /> },
+          { path: "ameb-bookings", element: <AdminAmebBookingsPage /> },
+          { path: "email-templates", element: <AdminEmailTemplatesPage /> },
+        ],
+      },
+      { path: "*", element: <NotFound /> }, // Catch-all route for paths under RootLayout
     ],
   },
   {
-    path: "*",
-    element: <NotFound />,
+    path: "/login", // /login is a standalone route, outside the RootLayout
+    element: <Login />,
   },
 ]);
 
 function App() {
   return (
-    <ScrollToTop> {/* Wrap RouterProvider with ScrollToTop */}
-      <RouterProvider router={router} />
-    </ScrollToTop>
+    <RouterProvider router={router} />
   );
 }
 
