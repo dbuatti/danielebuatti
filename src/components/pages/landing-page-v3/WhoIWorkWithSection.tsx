@@ -3,9 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mic, Lightbulb, Camera, HeartHandshake } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 
-const WhoIWorkWithSection: React.FC = () => {
+interface WhoIWorkWithSectionProps {
+  id?: string; // Added id prop
+}
+
+const WhoIWorkWithSection: React.FC<WhoIWorkWithSectionProps> = ({ id }) => {
   return (
-    <section className="max-w-7xl mx-auto text-center space-y-10 py-12">
+    <section id={id} className="max-w-7xl mx-auto text-center space-y-10 py-12">
       <SectionHeading>Who I Work With</SectionHeading>
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
         <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">

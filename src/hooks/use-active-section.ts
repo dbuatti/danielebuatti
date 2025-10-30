@@ -32,9 +32,23 @@ export function useActiveSection() {
       );
     }
 
-    const sections = navLinks
-      .filter((link) => link.href.startsWith("#"))
-      .map((link) => document.getElementById(link.href.substring(1)))
+    // Flatten all anchor links from navLinks and subLinks
+    const allAnchorHrefs: string[] = [];
+    navLinks.forEach(link => {
+      if (typeof link.href === 'string' && link.href.startsWith('#')) {
+        allAnchorHrefs.push(link.href);
+      }
+      if (link.type === 'dropdown' && link.subLinks) {
+        link.subLinks.forEach(subLink => {
+          if (typeof subLink.href === 'string' && subLink.href.startsWith('#')) {
+            allAnchorHrefs.push(subLink.href);
+          }
+        });
+      }
+    });
+
+    const sections = allAnchorHrefs
+      .map((href) => document.getElementById(href.substring(1)))
       .filter(Boolean) as HTMLElement[];
 
     sections.forEach((section) => {
