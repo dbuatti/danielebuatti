@@ -1,13 +1,12 @@
 "use client";
 
 import React from 'react';
-import { Outlet } from 'react-router-dom';
-import ScrollToTop from '@/components/ScrollToTop';
+import { Outlet, ScrollRestoration } from 'react-router-dom';
 
 const RootLayout: React.FC = () => {
   return (
     <>
-      <ScrollToTop />
+      <ScrollRestoration />
       <Outlet />
     </>
   );

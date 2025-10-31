@@ -24,12 +24,11 @@ import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage';
 import AboutPage from './pages/AboutPage';
 import NotFound from './pages/NotFound';
 import RootLayout from './layouts/RootLayout';
-import ScrollToTop from './components/ScrollToTop'; // Import ScrollToTop
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootLayout />, // ScrollToTop is inside RootLayout
+    element: <RootLayout />, // ScrollRestoration is inside RootLayout
     errorElement: <NotFound />,
     children: [
       { index: true, element: <LandingPageV3 /> },
@@ -62,12 +61,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: (
-      <>
-        <ScrollToTop />
-        <Login />
-      </>
-    ),
+    element: <Login />,
   },
 ]);
 
