@@ -12,7 +12,7 @@ const RootLayout: React.FC = () => {
   // For new navigations (PUSH/REPLACE), we want to scroll to the top (0, 0).
   // By returning a unique key for PUSH/REPLACE, we tell ScrollRestoration to save a new position (0, 0).
   // By returning the same key for POP, we tell ScrollRestoration to restore the saved position.
-  const getKey = (prevLocation: any, currentLocation: any) => {
+  const getKey = (_: any, currentLocation: any) => {
     if (navigationType === 'POP') {
       // When navigating back/forward, use the location key to restore position
       return currentLocation.key;
