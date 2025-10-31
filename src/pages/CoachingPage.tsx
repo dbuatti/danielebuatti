@@ -24,7 +24,7 @@ const CoachingPage: React.FC = () => {
         <div className="text-center space-y-4 mb-8">
           <SectionHeading>{pageTitle}</SectionHeading>
           {subtitle && <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70">{subtitle}</p>}
-          <Separator className="max-w-xs mx-auto bg-brand-secondary" />
+          {/* Removed Separator here */}
         </div>
 
         <section className="max-w-4xl mx-auto space-y-8">
@@ -57,19 +57,19 @@ const CoachingPage: React.FC = () => {
               </Link>
             </Button>
           </section>
-          <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
+          {/* Removed Separator here */}
 
           {/* Reintroduced: Why Work With Me? */}
           <div className="py-8">
             <WhyWorkWithMeSection />
           </div>
-          <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
+          {/* Removed Separator here */}
 
           {/* Reintroduced: Who I Work With */}
           <div className="py-8">
             <WhoIWorkWithSection />
           </div>
-          <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
+          {/* Removed Separator here */}
 
           {/* Coaching Pillars Section */}
           <div className="space-y-8">
@@ -160,7 +160,7 @@ const CoachingPage: React.FC = () => {
             </Card>
           </div>
 
-          <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
+          {/* Removed Separator here */}
 
           {/* NEW: Pricing & Packages Section (Moved up) */}
           <section id="pricing" className="max-w-4xl mx-auto space-y-6 py-8">
@@ -213,7 +213,7 @@ const CoachingPage: React.FC = () => {
               </Button>
             </div>
           </section>
-          <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
+          {/* Removed Separator here */}
 
           {/* NEW: Call-out to Projects & Resources */}
           <div className="bg-brand-blue/10 dark:bg-brand-blue/20 p-6 rounded-xl shadow-lg text-center space-y-4 my-8">

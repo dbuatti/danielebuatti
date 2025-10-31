@@ -4,7 +4,6 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SectionHeading from "@/components/SectionHeading";
-import { Separator } from "@/components/ui/separator";
 import ImageCarouselSection from "@/components/pages/landing-page-v3/ImageCarouselSection";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -21,7 +20,7 @@ const AboutPage: React.FC = () => {
           <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 max-w-3xl mx-auto">
             Discover Daniele's journey, philosophy, and the integrated approach that defines his coaching.
           </p>
-          <Separator className="max-w-xs mx-auto bg-brand-secondary" />
+          {/* Removed Separator here */}
         </div>
 
         {/* Introduction with Integrated Image */}
@@ -44,7 +43,7 @@ const AboutPage: React.FC = () => {
             </p>
           </div>
         </section>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary mt-4 mb-8" />
+        {/* Removed Separator here */}
 
         {/* 1. Daniele's Story: Experience & Credibility */}
         <section id="daniele-story" className="max-w-4xl mx-auto space-y-6 py-8">
@@ -61,7 +60,7 @@ const AboutPage: React.FC = () => {
             </p>
           </div>
         </section>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
+        {/* Removed Separator here */}
 
         {/* 2. My Embodied Holistic Approach (Narrative text only) */}
         <section id="embodied-approach-narrative" className="max-w-4xl mx-auto space-y-10 py-8">
@@ -80,13 +79,13 @@ const AboutPage: React.FC = () => {
           </p>
           <div className="text-center">
             <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-              <Link to="/coaching#embodied-approach">
+              <Link to="/coaching">
                 Explore My Full Approach
               </Link>
             </Button>
           </div>
         </section>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
+        {/* Removed Separator here */}
 
         {/* 3. The Guiding Principles: THOUGHT • INTENTION • BREATH • EXPRESSION */}
         <section id="guiding-principles" className="max-w-4xl mx-auto space-y-10 py-8">
@@ -109,13 +108,13 @@ const AboutPage: React.FC = () => {
             </p>
           </div>
         </section>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
+        {/* Removed Separator here */}
 
         {/* 4. Daniele's Moments (Image Gallery) */}
         <div className="py-8">
           <ImageCarouselSection />
         </div>
-        <Separator className="max-w-3xl mx-auto bg-brand-secondary my-8" />
+        {/* Removed Separator here */}
       </main>
       <Footer />
     </div>

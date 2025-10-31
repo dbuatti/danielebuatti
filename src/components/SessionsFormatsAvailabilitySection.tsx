@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Clock, Globe, Users } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
-import { Separator } from "@/components/ui/separator";
 
 const SessionsFormatsAvailabilitySection: React.FC = () => {
   return (
@@ -79,8 +78,6 @@ const SessionsFormatsAvailabilitySection: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-
-      <Separator className="max-w-xs mx-auto bg-brand-secondary mt-10" />
     </section>
   );
 };

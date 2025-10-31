@@ -4,7 +4,6 @@ import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionHeading from '@/components/SectionHeading';
-import { Separator } from '@/components/ui/separator';
 import AdditionalProgramsSection from '@/components/pages/landing-page-v3/AdditionalProgramsSection';
 import BackToTopButton from '@/components/BackToTopButton';
 // Removed unused imports: Card, CardContent, DynamicImage, Button, Link
@@ -14,15 +13,15 @@ const ProjectsResourcesPage: React.FC = () => {
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
       <Navbar />
       <main className="container mx-auto px-4 pt-12 pb-12">
-        <div className="text-center space-y-4 mb-6"> {/* Reduced mb-10 to mb-6 */}
+        <div className="text-center space-y-4 mb-6">
           <SectionHeading>My Projects & Resources</SectionHeading>
           <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 max-w-3xl mx-auto">
             Explore my diverse range of musical and educational ventures, from specialized services and products to community initiatives.
           </p>
-          <Separator className="max-w-xs mx-auto bg-brand-secondary" />
+          {/* Removed redundant Separator here */}
         </div>
 
-        <section> {/* Removed py-12 space-y-12 from this wrapper section */}
+        <section>
           <AdditionalProgramsSection />
         </section>
       </main>
