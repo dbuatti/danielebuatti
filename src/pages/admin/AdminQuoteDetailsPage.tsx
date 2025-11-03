@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom'; // Import Link
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, ArrowLeft, Mail, CheckCircle, XCircle } from 'lucide-react';
+import { Loader2, ArrowLeft, Mail, CheckCircle, XCircle, Eye } from 'lucide-react'; // Import Eye icon
 import { showError, showSuccess } from '@/utils/toast';
 import EmailComposerModal from '@/components/admin/EmailComposerModal';
 import { format } from 'date-fns'; // Import format from date-fns
@@ -19,7 +19,7 @@ interface Quote {
   event_location?: string;
   prepared_by?: string;
   total_amount: number;
-  details: any; // JSONB column for additional specific details
+  details: any; // JSONB column
   accepted_at: string | null;
   rejected_at: string | null;
   slug?: string | null;
@@ -206,6 +206,13 @@ const AdminQuoteDetailsPage: React.FC = () => {
                   Reject Quote
                 </Button>
               </>
+            )}
+            {quote.slug && (
+              <Button asChild className="bg-brand-blue hover:bg-brand-blue/90 text-brand-light">
+                <Link to={`/quotes/${quote.slug}`} target="_blank" rel="noopener noreferrer">
+                  <Eye className="mr-2 h-4 w-4" /> View Public Quote
+                </Link>
+              </Button>
             )}
             <Button
               onClick={() => setIsEmailModalOpen(true)}
