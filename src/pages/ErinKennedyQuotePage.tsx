@@ -54,7 +54,7 @@ const ErinKennedyQuotePage: React.FC = () => {
   };
 
   // UPDATED: Fixed performance cost as per Daniele's offer
-  const onSitePerformanceCost = 350; 
+  const onSitePerformanceCost = 300; // UPDATED: 3 hours * $100/hr
   const totalBaseInvoice = onSitePerformanceCost + quoteDetails.showPreparationFee;
   const requiredDeposit = totalBaseInvoice * (quoteDetails.depositPercentage / 100);
 

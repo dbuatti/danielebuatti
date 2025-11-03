@@ -44,7 +44,7 @@ serve(async (req: Request) => { // Added type annotation for 'req'
       eventDate,
       eventLocation,
       preparedBy,
-      onSitePerformanceCost, // This will now be the fixed $350
+      onSitePerformanceCost, // This will now be the fixed $300
       showPreparationFee,
       totalBaseInvoice, // This will be onSitePerformanceCost + showPreparationFee
       // Removed rehearsalBundleCostPerStudent from here as it's no longer part of the invoice
@@ -149,6 +149,10 @@ serve(async (req: Request) => { // Added type annotation for 'req'
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Event Date:</td>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${insertedRecord.event_date}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Event Time:</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">3:00 PM – 6:00 PM</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Event Location:</td>
