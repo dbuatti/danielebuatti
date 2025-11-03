@@ -3,7 +3,7 @@
 import React from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import *s z from 'zod';
 import { Button } from '@/components/ui/button';
 import {
   Form,
