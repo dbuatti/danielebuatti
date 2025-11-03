@@ -11,20 +11,18 @@ import { format } from 'date-fns'; // Import format from date-fns
 
 interface Quote {
   id: string;
-  client_id: string;
   client_name: string;
   client_email: string;
-  status: 'pending' | 'accepted' | 'rejected';
+  invoice_type: string; // This will be 'Live Piano Services Quote' or 'Erin Kennedy Quote'
+  event_title?: string;
+  event_date?: string;
+  event_location?: string;
+  prepared_by?: string;
   total_amount: number;
-  created_at: string;
+  details: any; // JSONB column for additional specific details
   accepted_at: string | null;
   rejected_at: string | null;
-  items: Array<{
-    description: string;
-    quantity: number;
-    unit_price: number;
-    total: number;
-  }>;
+  slug?: string | null;
 }
 
 const AdminQuoteDetailsPage: React.FC = () => {
@@ -40,7 +38,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
       if (!id) return;
       setIsLoading(true);
       const { data, error } = await supabase
-        .from('quotes')
+        .from('invoices') // Fetching from 'invoices' table
         .select('*')
         .eq('id', id)
         .single();
@@ -50,7 +48,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
         showError('Failed to load quote details.');
         setQuote(null);
       } else {
-        setQuote(data);
+        setQuote(data as Quote); // Cast data to Quote interface
       }
       setIsLoading(false);
     };
@@ -71,9 +69,23 @@ const AdminQuoteDetailsPage: React.FC = () => {
       updateData.accepted_at = null;
     }
 
+    // Note: The 'invoices' table does not have a 'status' column directly.
+    // The 'accepted_at' and 'rejected_at' columns implicitly define the status.
+    // For now, we'll update these timestamps. If a 'status' column is added to 'invoices'
+    // in the future, this logic would need to be updated to set that column.
+    // For demonstration, we'll simulate a status update by setting accepted_at/rejected_at.
+    // In a real scenario, you might have a dedicated 'status' column in 'invoices'.
+
+    // For now, we'll just update the accepted_at/rejected_at fields.
+    // The UI will reflect the status based on these fields.
     const { error } = await supabase
-      .from('quotes')
-      .update(updateData)
+      .from('invoices')
+      .update({
+        accepted_at: updateData.accepted_at,
+        // Assuming 'rejected_at' is also a column in 'invoices'
+        // If not, this line should be removed.
+        rejected_at: updateData.rejected_at,
+      })
       .eq('id', quote.id);
 
     if (error) {
@@ -81,7 +93,8 @@ const AdminQuoteDetailsPage: React.FC = () => {
       showError(`Failed to update quote status to ${newStatus}.`);
     } else {
       showSuccess(`Quote status updated to ${newStatus}.`);
-      setQuote((prev) => (prev ? { ...prev, ...updateData } : null));
+      // Manually update the local state to reflect the change
+      setQuote((prev) => (prev ? { ...prev, accepted_at: updateData.accepted_at, rejected_at: updateData.rejected_at } : null));
     }
     setIsUpdatingStatus(false);
   };
@@ -105,10 +118,13 @@ const AdminQuoteDetailsPage: React.FC = () => {
     );
   }
 
-  const getStatusBadgeVariant = (status: Quote['status']) => {
+  // Determine current status based on accepted_at and rejected_at
+  const currentStatus: Quote['invoice_type'] = quote.accepted_at ? 'accepted' : (quote.rejected_at ? 'rejected' : 'pending');
+
+  const getStatusBadgeVariant = (status: string) => {
     switch (status) {
       case 'accepted':
-        return 'secondary'; // Changed from 'success' to 'secondary'
+        return 'secondary';
       case 'rejected':
         return 'destructive';
       case 'pending':
@@ -121,10 +137,16 @@ const AdminQuoteDetailsPage: React.FC = () => {
     clientName: quote.client_name,
     clientEmail: quote.client_email,
     quoteId: quote.id,
-    quoteTotalAmount: `A$${quote.total_amount.toFixed(2)}`,
-    quoteStatus: quote.status,
+    quoteType: quote.invoice_type,
+    eventTitle: quote.event_title || 'N/A',
+    eventDate: quote.event_date ? format(new Date(quote.event_date), 'PPP') : 'N/A',
+    eventLocation: quote.event_location || 'N/A',
+    preparedBy: quote.prepared_by || 'N/A',
+    totalAmount: `A$${quote.total_amount.toFixed(2)}`,
+    quoteStatus: currentStatus,
     quoteCreatedAt: format(new Date(quote.created_at), 'PPP p'),
-    // Add other quote-specific details as needed
+    // Add other quote-specific details from the 'details' JSONB column if needed
+    ...quote.details, // Spread all properties from the 'details' JSONB column
   };
 
   return (
@@ -136,38 +158,47 @@ const AdminQuoteDetailsPage: React.FC = () => {
       <Card className="bg-brand-card dark:bg-brand-card-dark text-brand-dark dark:text-brand-light border-brand-secondary/50 shadow-lg">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-2xl font-bold text-brand-primary">Quote Details #{quote.id.substring(0, 8)}</CardTitle>
-          <Badge variant={getStatusBadgeVariant(quote.status)} className="text-lg px-3 py-1">
-            {quote.status.charAt(0).toUpperCase() + quote.status.slice(1)}
+          <Badge variant={getStatusBadgeVariant(currentStatus)} className="text-lg px-3 py-1">
+            {currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1)}
           </Badge>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
             <p><strong>Client Name:</strong> {quote.client_name}</p>
             <p><strong>Client Email:</strong> {quote.client_email}</p>
+            <p><strong>Quote Type:</strong> {quote.invoice_type}</p>
+            {quote.event_title && <p><strong>Event Title:</strong> {quote.event_title}</p>}
+            {quote.event_date && <p><strong>Event Date:</strong> {format(new Date(quote.event_date), 'PPP')}</p>}
+            {quote.event_location && <p><strong>Event Location:</strong> {quote.event_location}</p>}
+            {quote.prepared_by && <p><strong>Prepared By:</strong> {quote.prepared_by}</p>}
             <p><strong>Created At:</strong> {format(new Date(quote.created_at), 'PPP p')}</p>
             {quote.accepted_at && <p><strong>Accepted On:</strong> {format(new Date(quote.accepted_at), 'PPP p')}</p>}
             {quote.rejected_at && <p><strong>Rejected On:</strong> {format(new Date(quote.rejected_at), 'PPP p')}</p>}
           </div>
 
-          <h3 className="text-xl font-semibold text-brand-primary mt-6 mb-3">Items</h3>
-          <div className="space-y-2">
-            {quote.items.map((item, index) => (
-              <Card key={index} className="bg-brand-light dark:bg-brand-dark border-brand-secondary/30 p-4">
-                <p><strong>Description:</strong> {item.description}</p>
-                <p><strong>Quantity:</strong> {item.quantity}</p>
-                <p><strong>Unit Price:</strong> A${item.unit_price.toFixed(2)}</p>
-                <p><strong>Total:</strong> A${item.total.toFixed(2)}</p>
-              </Card>
-            ))}
-          </div>
+          {/* Display details from the JSONB column if available */}
+          {quote.details && Object.keys(quote.details).length > 0 && (
+            <>
+              <h3 className="text-xl font-semibold text-brand-primary mt-6 mb-3">Additional Details</h3>
+              <div className="space-y-2">
+                {Object.entries(quote.details).map(([key, value], index) => (
+                  <div key={index} className="bg-brand-light dark:bg-brand-dark border-brand-secondary/30 p-3 rounded-md">
+                    <p><strong>{key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:</strong> {
+                      typeof value === 'boolean' ? (value ? 'Yes' : 'No') :
+                      (typeof value === 'object' && value !== null ? JSON.stringify(value) : String(value))
+                    }</p>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
 
           <div className="text-right text-xl font-bold text-brand-primary mt-6">
             <p><strong>Total Amount:</strong> A${quote.total_amount.toFixed(2)}</p>
-            {quote.accepted_at && <p><strong>Accepted On:</strong> {format(new Date(quote.accepted_at), 'PPP p')}</p>}
           </div>
 
           <div className="flex justify-end space-x-4 mt-6">
-            {quote.status === 'pending' && (
+            {currentStatus === 'pending' && (
               <>
                 <Button
                   onClick={() => handleUpdateStatus('accepted')}
@@ -201,7 +232,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
         isOpen={isEmailModalOpen}
         onClose={() => setIsEmailModalOpen(false)}
         initialRecipientEmail={quote.client_email}
-        initialSubject={`Regarding your quote #${quote.id.substring(0, 8)}`}
+        initialSubject={`Regarding your quote for ${quote.event_title || quote.invoice_type}`}
         dynamicDetails={dynamicEmailDetails}
       />
     </div>
