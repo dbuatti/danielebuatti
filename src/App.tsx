@@ -24,7 +24,8 @@ import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage';
 import AboutPage from './pages/AboutPage';
 import NotFound from './pages/NotFound';
 import RootLayout from './layouts/RootLayout';
-import ScrollToTop from './components/ScrollToTop'; // Import ScrollToTop
+import ScrollToTop from './components/ScrollToTop';
+import { SessionContextProvider } from "./components/SessionContextProvider.tsx"; // Import SessionContextProvider here
 
 const router = createBrowserRouter([
   {
@@ -32,7 +33,9 @@ const router = createBrowserRouter([
     element: (
       <>
         <ScrollToTop />
-        <RootLayout />
+        <SessionContextProvider> {/* Wrap RootLayout with SessionContextProvider */}
+          <RootLayout />
+        </SessionContextProvider>
       </>
     ),
     errorElement: <NotFound />,
@@ -51,17 +54,6 @@ const router = createBrowserRouter([
       { path: "music-director-pianist", element: <MusicDirectorPianistPage /> },
       { path: "quotes/:slug", element: <DynamicQuotePage /> },
       { path: "about", element: <AboutPage /> },
-      {
-        path: "admin",
-        element: <AdminLayout />,
-        children: [
-          { index: true, element: <AdminDashboardPage /> },
-          { path: "quotes", element: <AdminQuotesPage /> },
-          { path: "quotes/:id", element: <AdminQuoteDetailsPage /> },
-          { path: "ameb-bookings", element: <AdminAmebBookingsPage /> },
-          { path: "email-templates", element: <AdminEmailTemplatesPage /> },
-        ],
-      },
       { path: "*", element: <NotFound /> },
     ],
   },
@@ -70,9 +62,29 @@ const router = createBrowserRouter([
     element: (
       <>
         <ScrollToTop />
-        <Login />
+        <SessionContextProvider> {/* Login page also needs SessionContextProvider */}
+          <Login />
+        </SessionContextProvider>
       </>
     ),
+  },
+  {
+    path: "/admin",
+    element: (
+      <>
+        <ScrollToTop />
+        <SessionContextProvider> {/* AdminLayout also needs SessionContextProvider */}
+          <AdminLayout />
+        </SessionContextProvider>
+      </>
+    ),
+    children: [
+      { index: true, element: <AdminDashboardPage /> },
+      { path: "quotes", element: <AdminQuotesPage /> },
+      { path: "quotes/:id", element: <AdminQuoteDetailsPage /> },
+      { path: "ameb-bookings", element: <AdminAmebBookingsPage /> },
+      { path: "email-templates", element: <AdminEmailTemplatesPage /> },
+    ],
   },
 ]);
 
