@@ -31,15 +31,14 @@ serve(async (req: Request) => { // Added type annotation for 'req'
       eventDate,
       eventLocation,
       preparedBy,
-      onSitePerformanceCost,
+      onSitePerformanceCost, // This will now be the fixed $350
       showPreparationFee,
-      totalBaseInvoice,
-      rehearsalBundleCostPerStudent,
+      totalBaseInvoice, // This will be onSitePerformanceCost + showPreparationFee
+      // Removed rehearsalBundleCostPerStudent from here as it's no longer part of the invoice
     } = await req.json();
 
     if (!clientName || !clientEmail || !eventTitle || !eventDate || !eventLocation || !preparedBy ||
-        onSitePerformanceCost === undefined || showPreparationFee === undefined || totalBaseInvoice === undefined ||
-        rehearsalBundleCostPerStudent === undefined) {
+        onSitePerformanceCost === undefined || showPreparationFee === undefined || totalBaseInvoice === undefined) { // Adjusted validation
       return new Response(JSON.stringify({ error: 'Missing required fields for quote acceptance' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -62,7 +61,7 @@ serve(async (req: Request) => { // Added type annotation for 'req'
           details: { // Store specific details in the JSONB column
             on_site_performance_cost: onSitePerformanceCost,
             show_preparation_fee: showPreparationFee,
-            rehearsal_bundle_cost_per_student: rehearsalBundleCostPerStudent,
+            // Removed rehearsal_bundle_cost_per_student from details
           },
         },
       ])
@@ -136,12 +135,16 @@ serve(async (req: Request) => { // Added type annotation for 'req'
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${insertedRecord.total_amount}.00</td>
             </tr>
             <tr>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Rehearsal Bundle Cost (per student):</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${insertedRecord.details.rehearsal_bundle_cost_per_student}.00</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Rehearsal Support:</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">Students will book 1:1 rehearsals directly with Daniele.</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Accepted On:</td>
               <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;">${new Date(insertedRecord.accepted_at).toLocaleString()}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Bank Details:</td>
+              <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;">BSB: 923100, ACC: 301110875</td>
             </tr>
           </table>
           <p style="font-size: 14px; color: #666666; text-align: center; margin-top: 30px;">

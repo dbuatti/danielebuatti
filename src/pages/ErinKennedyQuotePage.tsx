@@ -38,18 +38,23 @@ const ErinKennedyQuotePage: React.FC = () => {
   const quoteDetails = {
     client: "Erin Kennedy",
     eventTitle: "2025 Vocal Showcase",
-    dateOfEvent: "Sunday 23 November 2025", // Changed from Saturday to Sunday
-    time: "2:30 PM – 6:00 PM",
+    dateOfEvent: "Sunday 23 November 2025",
+    time: "3:00 PM – 6:00 PM", // UPDATED: New performance time
     location: "MC Showroom",
     preparedBy: "Daniele Buatti",
-    hourlyRate: 100,
-    performanceHours: 3.5,
+    hourlyRate: 100, // Still relevant for context, but not direct calculation for performance cost
+    performanceHours: 3, // UPDATED: 3 hours
     showPreparationFee: 100,
-    rehearsalBundleCost: 30, // Per student for 15 min
+    rehearsalRates: { // NEW: Specific rehearsal rates
+      '15min': 30,
+      '30min': 50,
+      '45min': 75,
+    },
     depositPercentage: 50,
   };
 
-  const onSitePerformanceCost = quoteDetails.performanceHours * quoteDetails.hourlyRate;
+  // UPDATED: Fixed performance cost as per Daniele's offer
+  const onSitePerformanceCost = 350; 
   const totalBaseInvoice = onSitePerformanceCost + quoteDetails.showPreparationFee;
   const requiredDeposit = totalBaseInvoice * (quoteDetails.depositPercentage / 100);
 
@@ -77,10 +82,10 @@ const ErinKennedyQuotePage: React.FC = () => {
           eventDate: quoteDetails.dateOfEvent,
           eventLocation: quoteDetails.location,
           preparedBy: quoteDetails.preparedBy,
-          onSitePerformanceCost: onSitePerformanceCost,
+          onSitePerformanceCost: onSitePerformanceCost, // Pass the fixed cost
           showPreparationFee: quoteDetails.showPreparationFee,
           totalBaseInvoice: totalBaseInvoice,
-          rehearsalBundleCostPerStudent: quoteDetails.rehearsalBundleCost,
+          // Removed rehearsalBundleCostPerStudent as it's now 1:1 direct booking
         },
       });
 
@@ -167,7 +172,7 @@ const ErinKennedyQuotePage: React.FC = () => {
                   <td className="p-3 border-b border-brand-secondary text-brand-dark/80 dark:text-brand-light/80">
                     {quoteDetails.performanceHours} hours of dedicated on-site presence, including arrival, setup, soundcheck, and performance ({quoteDetails.time}).
                     <br />
-                    <span className="text-sm text-brand-dark/70 dark:text-brand-light/70">Rate: A${quoteDetails.hourlyRate}/hr</span>
+                    <span className="text-sm text-brand-dark/70 dark:text-brand-light/70">Rate: A$100/hr (effective rate for this package)</span> {/* Clarified rate */}
                   </td>
                   <td className="p-3 border-b border-brand-secondary text-right text-brand-dark dark:text-brand-light">A${onSitePerformanceCost}.00</td>
                 </tr>
@@ -188,31 +193,26 @@ const ErinKennedyQuotePage: React.FC = () => {
           </div>
         </section>
 
-        {/* Optional Rehearsal Bundle */}
+        {/* Optional Rehearsal Support for Students */}
         <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-lg border border-brand-secondary/30 space-y-6">
           <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center">Optional Rehearsal Support for Students</h3>
           <p className="text-xl text-brand-dark/90 dark:text-brand-light/90 text-center max-w-3xl mx-auto">
-            To help students feel fully prepared and confident for their performance, Daniele offers dedicated rehearsal opportunities.
+            To help students feel fully prepared and confident for their performance, Daniele offers dedicated 1:1 rehearsal opportunities at his studio in Toorak.
           </p>
           <div className="text-center">
             <p className="text-3xl font-semibold text-brand-primary">
-              Base Investment per student: <span className="text-brand-dark dark:text-brand-light text-4xl">A${quoteDetails.rehearsalBundleCost} for a 15-minute rehearsal</span>
+              Individual Rehearsal Rates:
             </p>
-            <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
-              Each 15-minute session is designed for a focused run-through of a student's piece, with time for essential touch-ups and feedback.
-            </p>
-            <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
-              Students can request longer rehearsal times:
-              <ul className="list-disc list-inside text-left max-w-xs mx-auto mt-2">
-                <li>30 minutes for A$50</li>
-                <li>45 minutes for A$75</li>
-              </ul>
-            </p>
+            <ul className="list-disc list-inside text-left max-w-xs mx-auto mt-4 text-lg text-brand-dark dark:text-brand-light">
+              <li>15-minute rehearsal: A${quoteDetails.rehearsalRates['15min']}</li>
+              <li>30-minute rehearsal: A${quoteDetails.rehearsalRates['30min']}</li>
+              <li>45-minute rehearsal: A${quoteDetails.rehearsalRates['45min']}</li>
+            </ul>
             <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-4">
-              To ensure thorough preparation, Daniele kindly requests PDF sheet music for all songs and a complete song list at least two weeks prior to the event (or earlier, if possible).
+              Each session is designed for a focused run-through of a student's piece, with time for essential touch-ups and feedback. Students can book these sessions directly with Daniele.
             </p>
             <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
-              To facilitate efficient scheduling, please inform Daniele of the total number of students participating in the concert as soon as possible. Daniele will then work to schedule rehearsals in convenient, grouped time blocks.
+              To ensure thorough preparation, Daniele kindly requests PDF sheet music for all songs and a complete song list at least two weeks prior to the event (or earlier, if possible).
             </p>
           </div>
         </section>
@@ -223,7 +223,8 @@ const ErinKennedyQuotePage: React.FC = () => {
           <ul className="list-disc list-inside text-lg text-brand-dark/90 dark:text-brand-light/90 space-y-2">
             <li>Your final invoice for the base services to Erin Kennedy will be A${totalBaseInvoice}.00.</li>
             <li><strong className="text-brand-primary">A non-refundable {quoteDetails.depositPercentage}% deposit (A${requiredDeposit}.00) is required immediately</strong> to formally secure the November 23rd date.</li>
-            <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by 2:30 PM.</li>
+            <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by 3:00 PM.</li> {/* UPDATED: Time */}
+            <li><strong className="text-brand-primary">Bank Details for Payment:</strong> BSB: 923100, ACC: 301110875</li> {/* NEW: Bank details */}
           </ul>
         </section>
 
