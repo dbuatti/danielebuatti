@@ -21,6 +21,7 @@ import AdminQuotesPage from './pages/admin/AdminQuotesPage';
 import AdminQuoteDetailsPage from './pages/admin/AdminQuoteDetailsPage';
 import AdminAmebBookingsPage from './pages/admin/AdminAmebBookingsPage';
 import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage';
+import AdminQuoteBuilderPage from './pages/admin/AdminQuoteBuilderPage'; // Import new page
 import AboutPage from './pages/AboutPage';
 import NotFound from './pages/NotFound';
 import RootLayout from './layouts/RootLayout';
@@ -84,6 +85,7 @@ const router = createBrowserRouter([
       { path: "quotes/:id", element: <AdminQuoteDetailsPage /> },
       { path: "ameb-bookings", element: <AdminAmebBookingsPage /> },
       { path: "email-templates", element: <AdminEmailTemplatesPage /> },
+      { path: "create-quote", element: <AdminQuoteBuilderPage /> }, // New route for quote builder
     ],
   },
 ]);

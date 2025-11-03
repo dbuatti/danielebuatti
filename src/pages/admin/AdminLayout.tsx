@@ -4,7 +4,7 @@ import React from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
 import { useSession } from '@/components/SessionContextProvider';
 import { Button } from '@/components/ui/button';
-import { LogOut, LayoutDashboard, FileText, Home, Music, MailOpen } from 'lucide-react'; // Added Music icon and MailOpen
+import { LogOut, LayoutDashboard, FileText, Home, Music, MailOpen, PlusCircle } from 'lucide-react'; // Added PlusCircle for Create Quote
 import { supabase } from '@/integrations/supabase/client';
 import { useTheme } from 'next-themes';
 import DynamicImage from '@/components/DynamicImage';
@@ -65,10 +65,17 @@ const AdminLayout: React.FC = () => {
           </Link>
           <Link to="/admin/quotes" className={cn(
             "flex items-center gap-3 p-3 rounded-md text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark/50 transition-colors",
-            location.pathname.startsWith('/admin/quotes') ? 'bg-brand-secondary/30 dark:bg-brand-dark/60 font-semibold text-brand-primary' : ''
+            location.pathname.startsWith('/admin/quotes') && location.pathname !== '/admin/create-quote' ? 'bg-brand-secondary/30 dark:bg-brand-dark/60 font-semibold text-brand-primary' : ''
           )}>
             <FileText className="h-5 w-5" />
             Quotes
+          </Link>
+          <Link to="/admin/create-quote" className={cn(
+            "flex items-center gap-3 p-3 rounded-md text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark/50 transition-colors",
+            location.pathname === '/admin/create-quote' ? 'bg-brand-secondary/30 dark:bg-brand-dark/60 font-semibold text-brand-primary' : ''
+          )}>
+            <PlusCircle className="h-5 w-5" />
+            Create Quote
           </Link>
           <Link to="/admin/ameb-bookings" className={cn(
             "flex items-center gap-3 p-3 rounded-md text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark/50 transition-colors",
@@ -105,7 +112,8 @@ const AdminLayout: React.FC = () => {
         <header className="bg-brand-light dark:bg-brand-dark border-b border-brand-secondary/50 p-4 shadow-sm flex items-center justify-between">
           <h1 className="text-2xl font-bold text-brand-dark dark:text-brand-light">
             {location.pathname === '/admin' ? 'Admin Dashboard' :
-             location.pathname.startsWith('/admin/quotes') ? 'Quotes' :
+             location.pathname.startsWith('/admin/quotes') && location.pathname !== '/admin/create-quote' ? 'Quotes' :
+             location.pathname === '/admin/create-quote' ? 'Create New Quote' :
              location.pathname.startsWith('/admin/ameb-bookings') ? 'AMEB Bookings' :
              location.pathname.startsWith('/admin/email-templates') ? 'Email Templates' : 'Admin'}
           </h1>

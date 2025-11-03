@@ -19,7 +19,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from '@/lib/utils';
@@ -36,24 +35,16 @@ interface Quote {
   prepared_by?: string;
   total_amount: number;
   details: any; // JSONB column
-  accepted_at: string;
-  rejected_at: string;
+  accepted_at: string | null;
+  rejected_at: string | null;
   slug?: string | null; // Include slug
 }
 
-// Zod schema for Live Piano Services Quote acceptance
-const livePianoFormSchema = z.object({
+// Zod schema for generic quote acceptance
+const genericQuoteAcceptanceSchema = z.object({
   clientName: z.string().min(2, { message: "Your full name is required." }),
   clientEmail: z.string().email({ message: "A valid email address is required." }),
-  wantsExtraHour: z.boolean().default(false),
-  wantsRehearsal: z.boolean().default(false),
-});
-
-// Zod schema for Erin Kennedy Quote acceptance
-const erinKennedyFormSchema = z.object({
-  clientName: z.string().min(2, { message: "Your full name is required." }),
-  clientEmail: z.string().email({ message: "A valid email address is required." }),
-  acceptQuote: z.boolean().refine(val => val === true, { message: "You must accept the quote to proceed." }),
+  acceptTerms: z.boolean().refine(val => val === true, { message: "You must accept the terms to proceed." }),
 });
 
 const DynamicQuotePage: React.FC = () => {
@@ -64,23 +55,13 @@ const DynamicQuotePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const { theme } = useTheme();
 
-  // Form hooks for conditional rendering
-  const livePianoForm = useForm<z.infer<typeof livePianoFormSchema>>({
-    resolver: zodResolver(livePianoFormSchema),
+  // Form hook for generic acceptance
+  const form = useForm<z.infer<typeof genericQuoteAcceptanceSchema>>({
+    resolver: zodResolver(genericQuoteAcceptanceSchema),
     defaultValues: {
       clientName: '',
       clientEmail: '',
-      wantsExtraHour: false,
-      wantsRehearsal: false,
-    },
-  });
-
-  const erinKennedyForm = useForm<z.infer<typeof erinKennedyFormSchema>>({
-    resolver: zodResolver(erinKennedyFormSchema),
-    defaultValues: {
-      clientName: '',
-      clientEmail: '',
-      acceptQuote: false, // Always start as false for acceptance
+      acceptTerms: false,
     },
   });
 
@@ -107,26 +88,17 @@ const DynamicQuotePage: React.FC = () => {
       } else {
         setQuote(data as Quote);
         // Set default form values if quote data is available
-        if (data.invoice_type === "Live Piano Services Quote") {
-          livePianoForm.reset({
-            clientName: data.client_name || '',
-            clientEmail: data.client_email || '',
-            wantsExtraHour: data.details?.selected_add_ons?.extraHour || false,
-            wantsRehearsal: data.details?.selected_add_ons?.rehearsal || false,
-          });
-        } else if (data.invoice_type === "Erin Kennedy Quote") {
-          erinKennedyForm.reset({
-            clientName: data.client_name || '',
-            clientEmail: data.client_email || '',
-            acceptQuote: false, // Always start as false for acceptance
-          });
-        }
+        form.reset({
+          clientName: data.client_name || '',
+          clientEmail: data.client_email || '',
+          acceptTerms: false, // Always start as false for acceptance
+        });
       }
       setIsLoading(false);
     };
 
     fetchQuote();
-  }, [slug, livePianoForm, erinKennedyForm]); // Depend on slug and form instances to refetch/reset if URL changes
+  }, [slug, form]);
 
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
@@ -164,113 +136,138 @@ const DynamicQuotePage: React.FC = () => {
     );
   }
 
-  // --- Live Piano Services Quote Specifics ---
-  const livePianoProposalDetails = {
-    client: quote.client_name,
-    dateOfEvent: quote.event_date || "N/A",
-    time: "6:00–9:00pm", // Hardcoded for this specific quote type
-    location: quote.event_location || "N/A",
-    preparedBy: quote.prepared_by || "Daniele Buatti",
-  };
-  const baseEngagementFee = 1200;
-  const livePianoAddOns = {
-    rehearsal: {
-      name: "Pre-event rehearsal",
-      cost: 700,
-      description: "A 2-hour rehearsal session one week prior to the event, including travel.",
-    },
-    extraHour: {
-      name: "Extended Performance Hour",
-      cost: 350,
-      description: "Extend the live performance by one hour (until 10:00pm).",
-    },
-  };
-  const wantsExtraHour = livePianoForm.watch("wantsExtraHour");
-  const wantsRehearsal = livePianoForm.watch("wantsRehearsal");
-  const livePianoTotalAmount = baseEngagementFee + (wantsExtraHour ? livePianoAddOns.extraHour.cost : 0) + (wantsRehearsal ? livePianoAddOns.rehearsal.cost : 0);
+  // Determine if the quote has already been accepted or rejected
+  const isAccepted = !!quote.accepted_at;
+  const isRejected = !!quote.rejected_at;
+  const isActionTaken = isAccepted || isRejected;
 
-  async function onSubmitLivePiano(values: z.infer<typeof livePianoFormSchema>) {
+  // Handle form submission for generic quote acceptance
+  async function onSubmitGeneric(values: z.infer<typeof genericQuoteAcceptanceSchema>) {
     const loadingToastId = toast.loading("Submitting your acceptance...");
     try {
-      const { error } = await supabase.functions.invoke('submit-quote-acceptance', {
-        body: {
-          clientName: values.clientName,
-          clientEmail: values.clientEmail,
-          wantsExtraHour: values.wantsExtraHour,
-          wantsRehearsal: values.wantsRehearsal,
-          totalAmount: livePianoTotalAmount,
-          proposalDetails: livePianoProposalDetails,
-        },
-      });
-      if (error) throw error;
+      // Update the quote in Supabase to mark as accepted
+      const { error: updateError } = await supabase
+        .from('invoices')
+        .update({
+          accepted_at: new Date().toISOString(),
+          client_name: values.clientName, // Update client name if changed
+          client_email: values.clientEmail, // Update client email if changed
+        })
+        .eq('id', quote!.id);
+
+      if (updateError) throw updateError;
+
+      // Send email notification to admin (similar to existing Edge Functions)
+      const EMAIL_SERVICE_API_KEY = import.meta.env.VITE_EMAIL_SERVICE_API_KEY;
+      const CONTACT_FORM_RECIPIENT_EMAIL = import.meta.env.VITE_CONTACT_FORM_RECIPIENT_EMAIL;
+      const EMAIL_SERVICE_ENDPOINT = import.meta.env.VITE_EMAIL_SERVICE_ENDPOINT;
+
+      if (EMAIL_SERVICE_API_KEY && CONTACT_FORM_RECIPIENT_EMAIL && EMAIL_SERVICE_ENDPOINT) {
+        const adminQuoteLink = `${window.location.origin}/admin/quotes/${quote!.id}`;
+        const publicQuoteLink = `${window.location.origin}/quotes/${quote!.slug}`;
+        const subject = `🎉 Quote Accepted: ${quote!.event_title || quote!.invoice_type} from ${values.clientName}`;
+        const emailHtml = `
+          <div style="font-family: 'Outfit', sans-serif; color: #1b1b1b; background-color: #F8F8F8; padding: 20px; border-radius: 8px;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+              <h2 style="color: #fdb813; text-align: center; margin-bottom: 20px;">Quote Accepted!</h2>
+              <p style="font-size: 16px; line-height: 1.6;">A client has accepted your quote proposal:</p>
+              <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Client Name:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${values.clientName}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Client Email:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;"><a href="mailto:${values.clientEmail}" style="color: #fdb813; text-decoration: none;">${values.clientEmail}</a></td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Quote Title:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${quote!.event_title || quote!.invoice_type}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Total Amount:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${quote!.total_amount.toFixed(2)}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Event Date:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${quote!.event_date || 'N/A'}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Event Location:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${quote!.event_location || 'N/A'}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Prepared By:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${quote!.prepared_by || 'N/A'}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Accepted On:</td>
+                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;">${new Date().toLocaleString()}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Admin Link:</td>
+                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;"><a href="${adminQuoteLink}" style="color: #fdb813; text-decoration: none;">View in Admin Panel</a></td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Public Link:</td>
+                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;"><a href="${publicQuoteLink}" style="color: #fdb813; text-decoration: none;">View Public Quote</a></td>
+                </tr>
+              </table>
+              <p style="font-size: 14px; color: #666666; text-align: center; margin-top: 30px;">
+                This notification was sent from your website.
+              </p>
+            </div>
+          </div>
+        `;
+
+        await fetch(EMAIL_SERVICE_ENDPOINT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${EMAIL_SERVICE_API_KEY}`,
+          },
+          body: JSON.stringify({
+            from: 'info@danielebuatti.com',
+            to: CONTACT_FORM_RECIPIENT_EMAIL,
+            subject: subject,
+            html: emailHtml,
+          }),
+        });
+      }
+
       toast.success("Quote accepted successfully!", { id: loadingToastId });
-      livePianoForm.reset();
+      form.reset();
       navigate('/live-piano-services/quote-confirmation'); // Redirect to confirmation page
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting quote acceptance:", error);
-      toast.error("Failed to submit quote acceptance.", { id: loadingToastId });
+      toast.error(`Failed to submit quote acceptance: ${error.message}`, { id: loadingToastId });
     }
   }
 
-  // --- Erin Kennedy Quote Specifics ---
-  const erinKennedyQuoteDetails = {
-    client: quote.client_name,
-    eventTitle: quote.event_title || "2025 Vocal Showcase",
-    dateOfEvent: quote.event_date || "Sunday 23 November 2025",
-    time: "3:00 PM – 6:00 PM",
-    location: quote.event_location || "MC Showroom",
-    preparedBy: quote.prepared_by || "Daniele Buatti",
-    hourlyRate: 100,
-    performanceHours: 3,
-    showPreparationFee: 100,
-    rehearsalBundleCost: 30, // Per student for 15 min
-    depositPercentage: 50,
-  };
-  const erinKennedyOnSitePerformanceCost = erinKennedyQuoteDetails.performanceHours * erinKennedyQuoteDetails.hourlyRate;
-  const erinKennedyTotalBaseInvoice = erinKennedyOnSitePerformanceCost + erinKennedyQuoteDetails.showPreparationFee;
-  const erinKennedyRequiredDeposit = erinKennedyTotalBaseInvoice * (erinKennedyQuoteDetails.depositPercentage / 100);
+  const isLivePianoQuote = quote.invoice_type === "Christmas Carols – Live Piano Quote";
+  const isErinKennedyQuote = quote.invoice_type === "Erin Kennedy Quote";
 
-  async function onSubmitErinKennedy(values: z.infer<typeof erinKennedyFormSchema>) {
-    const loadingToastId = toast.loading("Submitting your quote acceptance...");
-    try {
-      const { error } = await supabase.functions.invoke('submit-erin-kennedy-quote', {
-        body: {
-          clientName: values.clientName,
-          clientEmail: values.clientEmail,
-          eventTitle: erinKennedyQuoteDetails.eventTitle,
-          eventDate: erinKennedyQuoteDetails.dateOfEvent,
-          eventLocation: erinKennedyQuoteDetails.location,
-          preparedBy: erinKennedyQuoteDetails.preparedBy,
-          onSitePerformanceCost: erinKennedyOnSitePerformanceCost,
-          showPreparationFee: erinKennedyQuoteDetails.showPreparationFee,
-          totalBaseInvoice: erinKennedyTotalBaseInvoice,
-          rehearsalBundleCostPerStudent: erinKennedyQuoteDetails.rehearsalBundleCost,
-        },
-      });
-      if (error) throw error;
-      toast.success("Quote accepted successfully!", { id: loadingToastId });
-      erinKennedyForm.reset();
-      navigate('/live-piano-services/quote-confirmation'); // Redirect to confirmation page
-    } catch (error) {
-      console.error("Error submitting quote acceptance:", error);
-      toast.error("Failed to submit quote acceptance.", { id: loadingToastId });
-    }
-  }
+  // Extract details from JSONB column
+  const baseService = quote.details?.baseService;
+  const addOns = quote.details?.addOns || [];
+  const depositPercentage = quote.details?.depositPercentage || 0;
+  const requiredDeposit = quote.details?.requiredDeposit || 0;
+  const bankDetails = quote.details?.bankDetails;
+  const eventTime = quote.details?.eventTime; // Corrected: only access from details
 
-  // --- Render Logic based on invoice_type ---
   return (
     <div className={cn(
       "min-h-screen flex flex-col",
-      quote.invoice_type === "Live Piano Services Quote" ? "live-piano-theme bg-livePiano-background text-livePiano-light font-montserrat" : "bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light"
+      isLivePianoQuote ? "live-piano-theme bg-livePiano-background text-livePiano-light font-montserrat" : "bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light"
     )}>
       <header className={cn(
         "py-4 px-6 md:px-12 shadow-lg relative z-10 border-b",
-        quote.invoice_type === "Live Piano Services Quote" ? "bg-livePiano-darker border-livePiano-border/50" : "bg-brand-light dark:bg-brand-dark border-brand-secondary/50"
+        isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/50" : "bg-brand-light dark:bg-brand-dark border-brand-secondary/50"
       )}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Button asChild variant="ghost" className={cn(
             "transition-colors duration-200 px-0 py-0 h-auto",
-            quote.invoice_type === "Live Piano Services Quote" ? "text-livePiano-light hover:text-livePiano-primary" : "text-brand-dark dark:text-brand-light hover:text-brand-primary"
+            isLivePianoQuote ? "text-livePiano-light hover:text-livePiano-primary" : "text-brand-dark dark:text-brand-light hover:text-brand-primary"
           )}>
             <Link to="/">
               <span className="flex items-center text-base md:text-lg font-semibold">
@@ -280,7 +277,7 @@ const DynamicQuotePage: React.FC = () => {
           </Button>
           <div className="flex items-center gap-2">
             <DynamicImage
-              src={quote.invoice_type === "Live Piano Services Quote" ? "/gold-36.png" : brandSymbolSrc}
+              src={isLivePianoQuote ? "/gold-36.png" : brandSymbolSrc}
               alt="Daniele Buatti Brand Symbol"
               className="h-16 md:h-20"
               width={80}
@@ -298,309 +295,213 @@ const DynamicQuotePage: React.FC = () => {
       </header>
 
       <main className="flex-grow max-w-7xl mx-auto px-4 py-16 space-y-12">
-        {quote.invoice_type === "Live Piano Services Quote" && (
-          <>
-            <section className="relative mt-8 mb-8 rounded-xl overflow-hidden shadow-lg border-4 border-livePiano-primary">
-              <DynamicImage
-                src="/live-performance.jpeg"
-                alt="Daniele Buatti performing live"
-                className="w-full h-96 md:h-[450px] object-cover object-center"
-                width={800}
-                height={533}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-livePiano-darker/50 to-transparent"></div>
-            </section>
+        <section className="text-center space-y-6">
+          <h2 className={cn(
+            "text-5xl md:text-6xl font-extrabold mb-6 leading-none",
+            isLivePianoQuote ? "font-libre-baskerville text-livePiano-primary text-shadow-lg" : "text-brand-primary"
+          )}>
+            {quote.event_title || quote.invoice_type} – Live Piano Quote
+          </h2>
+          <div className={cn(
+            "text-xl max-w-3xl mx-auto space-y-3 font-medium",
+            isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
+          )}>
+            <p>Prepared for: <strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>{quote.client_name}</strong></p>
+            <p>Date of Event: {quote.event_date || 'N/A'}</p>
+            {eventTime && <p>Time: {eventTime}</p>}
+            <p>Location: {quote.event_location || 'N/A'}</p>
+            <p>Prepared by: {quote.prepared_by || 'N/A'}</p>
+          </div>
+          <Separator className={cn(
+            "max-w-lg mx-auto h-1 mt-10",
+            isLivePianoQuote ? "bg-livePiano-primary" : "bg-brand-primary"
+          )} />
+        </section>
 
-            <section className="text-center space-y-6">
-              <h2 className="text-5xl md:text-6xl font-libre-baskerville font-extrabold text-livePiano-primary mb-6 leading-none text-shadow-lg">
-                Christmas Carols – Live Piano Quote
-              </h2>
-              <div className="text-xl text-livePiano-light/90 max-w-3xl mx-auto space-y-3 font-medium">
-                <p>Prepared for: <strong className="text-livePiano-primary">{livePianoProposalDetails.client}</strong></p>
-                <p>Date of Event: {livePianoProposalDetails.dateOfEvent}</p>
-                <p>Time: {livePianoProposalDetails.time}</p>
-                <p>Location: {livePianoProposalDetails.location}</p>
-                <p>Prepared by: {livePianoProposalDetails.preparedBy}</p>
-              </div>
-              <Separator className="max-w-lg mx-auto bg-livePiano-primary h-1 mt-10" />
-            </section>
-
-            <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-6">
-              <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Live Piano Engagement Fee</h3>
-              <p className="text-xl text-livePiano-light/90 text-center max-w-3xl mx-auto">
-                Your A${baseEngagementFee} fee secures a premium, seamless musical experience for your event. This includes all preparation and time on-site from 6:00pm to 9:00pm.
-              </p>
-              <div className="text-livePiano-light/80 space-y-4 max-w-3xl mx-auto">
-                <h4 className="text-2xl font-semibold text-livePiano-primary text-center text-shadow-sm mb-4">Service Components</h4>
-                <ul className="list-disc list-inside space-y-2 [&>li]:marker:text-livePiano-primary [&>li]:marker:text-xl">
-                  <li><strong>3-Hour Live Performance:</strong> Two 45-minute carol sets and beautiful background music between sets (if desired).</li>
-                  <li><strong>Collaboration on song selection</strong></li>
-                  <li><strong>Flexible Timing:</strong> Performance timing is flexible to dynamically respond to the needs of guests (the "on-call buffer").</li>
-                  <li><strong>All-Inclusive Logistics:</strong> Covers all sheet music preparation, travel, and setup required for the evening.</li>
-                </ul>
-              </div>
-              <p className="text-3xl font-semibold text-livePiano-primary text-center text-shadow-sm mt-8">
-                All-Inclusive Engagement Fee: <strong>A${baseEngagementFee}</strong>
-              </p>
-            </section>
-
-            <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-8">
-              <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Optional Add-Ons</h3>
-              <p className="text-xl text-livePiano-light/90 text-center max-w-3xl mx-auto">
-                These premium options are available to enhance the musical quality and duration of your evening.
-              </p>
-              <Form {...livePianoForm}>
-                <form onSubmit={livePianoForm.handleSubmit(onSubmitLivePiano)} className="space-y-8 max-w-2xl mx-auto">
-                  <FormField
-                    control={livePianoForm.control}
-                    name="wantsRehearsal"
-                    render={({ field }) => (
-                      <FormItem className={cn(
-                        "flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-all duration-200 cursor-pointer",
-                        field.value ? "border-livePiano-primary shadow-lg bg-livePiano-background/30" : "hover:border-livePiano-primary hover:shadow-md"
-                      )}>
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
-                          <div className="flex items-start space-x-3 mb-4 sm:mb-0">
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                                id="add-on-rehearsal"
-                                className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
-                              />
-                            </FormControl>
-                            <div className="space-y-1 leading-none">
-                              <FormLabel htmlFor="add-on-rehearsal" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                {livePianoAddOns.rehearsal.name}
-                              </FormLabel>
-                              <FormDescription className="text-livePiano-light/70 text-base">
-                                {livePianoAddOns.rehearsal.description}
-                              </FormDescription>
-                            </div>
-                          </div>
-                          <div className={cn(
-                            "text-3xl font-bold sm:ml-auto",
-                            field.value ? "text-livePiano-primary" : "text-livePiano-light/50"
-                          )}>
-                            A${livePianoAddOns.rehearsal.cost}
-                          </div>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={livePianoForm.control}
-                    name="wantsExtraHour"
-                    render={({ field }) => (
-                      <FormItem className={cn(
-                        "flex flex-col space-y-0 rounded-md border border-livePiano-border/50 p-4 transition-all duration-200 cursor-pointer",
-                        field.value ? "border-livePiano-primary shadow-lg bg-livePiano-background/30" : "hover:border-livePiano-primary hover:shadow-md"
-                      )}>
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
-                          <div className="flex items-start space-x-3 mb-4 sm:mb-0">
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                                id="add-on-extra-hour"
-                                className="h-6 w-6 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
-                              />
-                            </FormControl>
-                            <div className="space-y-1 leading-none">
-                              <FormLabel htmlFor="add-on-extra-hour" className="text-xl font-bold text-livePiano-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                {livePianoAddOns.extraHour.name}
-                              </FormLabel>
-                              <FormDescription className="text-livePiano-light/70 text-base">
-                                {livePianoAddOns.extraHour.description}
-                              </FormDescription>
-                            </div>
-                          </div>
-                          <div className={cn(
-                            "text-3xl font-bold sm:ml-auto",
-                            field.value ? "text-livePiano-primary" : "text-livePiano-light/50"
-                          )}>
-                            A${livePianoAddOns.extraHour.cost}
-                          </div>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="text-center mt-10 p-6 bg-livePiano-primary/10 rounded-lg border border-livePiano-primary/30 shadow-lg">
-                    <p className="text-2xl md:text-3xl font-bold text-livePiano-primary text-shadow-sm">
-                      Total Estimated Cost: <span className="text-livePiano-light text-4xl md:text-5xl">A${livePianoTotalAmount}</span>
-                    </p>
-                  </div>
-
-                  <FormField
-                    control={livePianoForm.control}
-                    name="clientName"
-                    render={({ field }) => (
-                      <FormItem className="space-y-2">
-                        <FormLabel className="text-livePiano-light text-lg text-shadow-sm">Your Full Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="e.g., Imme Kaschner"
-                            className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60 focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={livePianoForm.control}
-                    name="clientEmail"
-                    render={({ field }) => (
-                      <FormItem className="space-y-2">
-                        <FormLabel className="text-livePiano-light text-lg text-shadow-sm">Your Email Address</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="email"
-                            placeholder="e.g., your@email.com"
-                            className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60 focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <p className="text-xl text-livePiano-light/90 text-center font-semibold mt-8">
-                    I, <span className="text-livePiano-primary">{livePianoForm.watch("clientName") || "Your Name"}</span>, confirm my selection and booking for the event on {livePianoProposalDetails.dateOfEvent}.
-                  </p>
-
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="w-full bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-darker text-xl py-7 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
-                    disabled={livePianoForm.formState.isSubmitting || !livePianoForm.formState.isValid}
-                  >
-                    {livePianoForm.formState.isSubmitting ? "Submitting..." : "Submit Acceptance"}
-                  </Button>
-                </form>
-              </Form>
-            </section>
-
-            <section className="bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 space-y-6">
-              <h3 className="text-3xl font-bold text-livePiano-light mb-6 text-center text-shadow-sm">Booking Information</h3>
-              <ul className="list-disc list-inside text-lg text-livePiano-light/90 space-y-2">
-                <li>A 50% deposit is required to formally secure your booking.</li>
-                <li>The remaining balance is due 7 days prior to the event.</li>
+        {/* Base Service Section */}
+        {baseService && (
+          <section className={cn(
+            "p-8 rounded-xl shadow-2xl border space-y-6",
+            isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
+          )}>
+            <h3 className={cn(
+              "text-3xl font-bold mb-6 text-center text-shadow-sm",
+              isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
+            )}>
+              {baseService.description || "Base Engagement Fee"}
+            </h3>
+            <p className={cn(
+              "text-xl text-center max-w-3xl mx-auto",
+              isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
+            )}>
+              This fee secures a premium, seamless musical experience for your event.
+            </p>
+            <div className={cn(
+              "space-y-4 max-w-3xl mx-auto",
+              isLivePianoQuote ? "text-livePiano-light/80" : "text-brand-dark/80 dark:text-brand-light/80"
+            )}>
+              <h4 className={cn(
+                "text-2xl font-semibold text-center text-shadow-sm mb-4",
+                isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
+              )}>
+                Service Components
+              </h4>
+              <ul className={cn(
+                "list-disc list-inside space-y-2",
+                isLivePianoQuote ? "[&>li]:marker:text-livePiano-primary [&>li]:marker:text-xl" : ""
+              )}>
+                <li><strong>Performance:</strong> {baseService.description}</li>
+                <li><strong>All-Inclusive Logistics:</strong> Covers all sheet music preparation, travel, and setup required for the evening.</li>
+                {isLivePianoQuote && <li><strong>Flexible Timing:</strong> Performance timing is flexible to dynamically respond to the needs of guests (the "on-call buffer").</li>}
+                {isErinKennedyQuote && <li><strong>Production Coordination & Music Preparation:</strong> A flat fee covering essential behind-the-scenes work: coordinating with all students, collecting and formatting sheet music, and preparing for a seamless production.</li>}
               </ul>
-            </section>
-          </>
+            </div>
+            <p className={cn(
+              "text-3xl font-semibold text-center text-shadow-sm mt-8",
+              isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
+            )}>
+              All-Inclusive Engagement Fee: <strong className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>A${baseService.amount.toFixed(2)}</strong>
+            </p>
+          </section>
         )}
 
-        {quote.invoice_type === "Erin Kennedy Quote" && (
-          <>
-            <section className="text-center space-y-6">
-              <h2 className="text-5xl md:text-6xl font-extrabold text-brand-primary mb-6 leading-none">
-                {erinKennedyQuoteDetails.eventTitle} – Live Piano Quote
-              </h2>
-              <div className="text-xl text-brand-dark/90 dark:text-brand-light/90 max-w-3xl mx-auto space-y-3 font-medium">
-                <p>Prepared for: <strong className="text-brand-primary">{erinKennedyQuoteDetails.client}</strong></p>
-                <p>Date of Event: {erinKennedyQuoteDetails.dateOfEvent}</p>
-                <p>Time: {erinKennedyQuoteDetails.time}</p>
-                <p>Location: {erinKennedyQuoteDetails.location}</p>
-                <p>Prepared by: {erinKennedyQuoteDetails.preparedBy}</p>
-              </div>
-              <Separator className="max-w-lg mx-auto bg-brand-primary h-1 mt-10" />
-            </section>
+        {/* Optional Add-Ons Section */}
+        {addOns.length > 0 && (
+          <section className={cn(
+            "p-8 rounded-xl shadow-2xl border space-y-8",
+            isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
+          )}>
+            <h3 className={cn(
+              "text-3xl font-bold mb-6 text-center text-shadow-sm",
+              isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
+            )}>Optional Add-Ons</h3>
+            <p className={cn(
+              "text-xl text-center max-w-3xl mx-auto",
+              isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
+            )}>
+              These premium options are available to enhance the musical quality and duration of your evening.
+            </p>
+            <div className="space-y-4 max-w-2xl mx-auto">
+              {addOns.map((addOn: any, index: number) => (
+                <div key={index} className={cn(
+                  "flex flex-col sm:flex-row sm:items-center sm:justify-between w-full rounded-md border p-4",
+                  isLivePianoQuote ? "border-livePiano-border/50 bg-livePiano-background/30" : "border-brand-secondary/50 bg-brand-secondary/10 dark:bg-brand-dark/30"
+                )}>
+                  <div className="space-y-1 leading-none mb-4 sm:mb-0">
+                    <p className={cn(
+                      "text-xl font-bold leading-none",
+                      isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
+                    )}>
+                      {addOn.name}
+                    </p>
+                    {addOn.description && (
+                      <p className={cn(
+                        "text-base",
+                        isLivePianoQuote ? "text-livePiano-light/70" : "text-brand-dark/70 dark:text-brand-light/70"
+                      )}>
+                        {addOn.description}
+                      </p>
+                    )}
+                  </div>
+                  <div className={cn(
+                    "text-3xl font-bold sm:ml-auto",
+                    isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
+                  )}>
+                    A${addOn.cost.toFixed(2)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
-            <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-lg border border-brand-secondary/30 space-y-6">
-              <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center">Quote Breakdown</h3>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="bg-brand-primary/20 text-brand-dark dark:text-brand-light">
-                      <th className="p-3 border-b border-brand-secondary">Service Component</th>
-                      <th className="p-3 border-b border-brand-secondary">Details</th>
-                      <th className="p-3 border-b border-brand-secondary text-right">Investment</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="hover:bg-brand-secondary/10 transition-colors">
-                      <td className="p-3 border-b border-brand-secondary font-semibold text-brand-primary">Performance & On-Site Engagement</td>
-                      <td className="p-3 border-b border-brand-secondary text-brand-dark/80 dark:text-brand-light/80">
-                        {erinKennedyQuoteDetails.performanceHours} hours of dedicated on-site presence, including arrival, setup, soundcheck, and performance ({erinKennedyQuoteDetails.time}).
-                        <br />
-                        <span className="text-sm text-brand-dark/70 dark:text-brand-light/70">Rate: A$100/hr (effective rate for this package)</span>
-                      </td>
-                      <td className="p-3 border-b border-brand-secondary text-right text-brand-dark dark:text-brand-light">A${erinKennedyOnSitePerformanceCost}.00</td>
-                    </tr>
-                    <tr className="hover:bg-brand-secondary/10 transition-colors">
-                      <td className="p-3 border-b border-brand-secondary font-semibold text-brand-primary">Production Coordination & Music Preparation</td>
-                      <td className="p-3 border-b border-brand-secondary text-brand-dark/80 dark:text-brand-light/80">
-                        A flat fee covering essential behind-the-scenes work: coordinating with all students, collecting and formatting sheet music, and preparing for a seamless production.
-                      </td>
-                      <td className="p-3 border-b border-brand-secondary text-right text-brand-dark dark:text-brand-light">A${erinKennedyQuoteDetails.showPreparationFee}.00</td>
-                    </tr>
-                    <tr className="bg-brand-primary/10 text-brand-dark dark:text-brand-light font-bold">
-                      <td className="p-3 border-b border-brand-secondary">TOTAL BASE INVOICE</td>
-                      <td className="p-3 border-b border-brand-secondary">(To be paid by Erin Kennedy)</td>
-                      <td className="p-3 border-b border-brand-secondary text-right">A${erinKennedyTotalBaseInvoice}.00</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </section>
+        {/* Total Estimated Cost */}
+        <div className={cn(
+          "text-center mt-10 p-6 rounded-lg border shadow-lg",
+          isLivePianoQuote ? "bg-livePiano-primary/10 border-livePiano-primary/30" : "bg-brand-primary/10 border-brand-primary/30"
+        )}>
+          <p className={cn(
+            "text-2xl md:text-3xl font-bold text-shadow-sm",
+            isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
+          )}>
+            Total Estimated Cost: <span className={isLivePianoQuote ? "text-livePiano-light text-4xl md:text-5xl" : "text-brand-dark dark:text-brand-light text-4xl md:text-5xl"}>A${quote.total_amount.toFixed(2)}</span>
+          </p>
+        </div>
 
-            <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-lg border border-brand-secondary/30 space-y-6">
-              <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center">Optional Rehearsal Support for Students</h3>
-              <p className="text-xl text-brand-dark/90 dark:text-brand-light/90 text-center max-w-3xl mx-auto">
-                To help students feel fully prepared and confident for their performance, Daniele offers dedicated 1:1 rehearsal opportunities at his studio in Toorak.
-              </p>
-              <div className="text-center">
-                <p className="text-3xl font-semibold text-brand-primary">
-                  Individual Rehearsal Rates:
-                </p>
-                <ul className="list-disc list-inside text-left max-w-xs mx-auto mt-4 text-lg text-brand-dark dark:text-brand-light">
-                  <li>15-minute rehearsal: A${erinKennedyQuoteDetails.rehearsalBundleCost}</li>
-                  <li>30-minute rehearsal: A$50</li>
-                  <li>45-minute rehearsal: A$75</li>
-                </ul>
-                <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-4">
-                  Each session is designed for a focused run-through of a student's piece, with time for essential touch-ups and feedback. Students can book these sessions directly with Daniele.
-                </p>
-                <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
-                  To ensure thorough preparation, Daniele kindly requests PDF sheet music for all songs and a complete song list at least two weeks prior to the event (or earlier, if possible).
-                </p>
-                <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
-                  To facilitate efficient scheduling, please inform Daniele of the total number of students participating in the concert as soon as possible. Daniele will then work to schedule rehearsals in convenient, grouped time blocks.
-                </p>
-              </div>
-            </section>
+        {/* Booking Information / Important Details */}
+        <section className={cn(
+          "p-8 rounded-xl shadow-2xl border space-y-6",
+          isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
+        )}>
+          <h3 className={cn(
+            "text-3xl font-bold mb-6 text-center text-shadow-sm",
+            isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
+          )}>Important Booking Details</h3>
+          <ul className={cn(
+            "list-disc list-inside text-lg space-y-2",
+            isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
+          )}>
+            <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit (A${requiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {quote.event_date || 'event'} date.</li>
+            <li>The remaining balance is due 7 days prior to the event.</li>
+            {bankDetails && (
+              <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>Bank Details for Payment:</strong> BSB: {bankDetails.bsb}, ACC: {bankDetails.acc}</li>
+            )}
+            {isErinKennedyQuote && (
+              <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by {eventTime || 'event start time'}.</li>
+            )}
+            {isErinKennedyQuote && (
+              <li>To ensure thorough preparation, Daniele kindly requests PDF sheet music for all songs and a complete song list at least two weeks prior to the event (or earlier, if possible).</li>
+            )}
+            {isErinKennedyQuote && (
+              <li>To facilitate efficient scheduling, please inform Daniele of the total number of students participating in the concert as soon as possible. Daniele will then work to schedule rehearsals in convenient, grouped time blocks.</li>
+            )}
+          </ul>
+        </section>
 
-            <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-lg border border-brand-secondary/30 space-y-6">
-              <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center">Important Booking Details</h3>
-              <ul className="list-disc list-inside text-lg text-brand-dark/90 dark:text-brand-light/90 space-y-2">
-                <li>Your final invoice for the base services to Erin Kennedy will be A${erinKennedyTotalBaseInvoice}.00.</li>
-                <li><strong className="text-brand-primary">A non-refundable {erinKennedyQuoteDetails.depositPercentage}% deposit (A${erinKennedyRequiredDeposit}.00) is required immediately</strong> to formally secure the November 23rd date.</li>
-                <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by 3:00 PM.</li>
-              </ul>
-            </section>
-
-            <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-2xl border border-brand-primary/50 space-y-8">
-              <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center">Accept Your Quote</h3>
-              <p className="text-xl text-brand-dark/90 dark:text-brand-light/90 text-center max-w-3xl mx-auto">
+        {/* Client Acceptance Form */}
+        <section className={cn(
+          "p-8 rounded-xl shadow-2xl border space-y-8",
+          isLivePianoQuote ? "bg-livePiano-darker border-livePiano-primary/50" : "bg-brand-light dark:bg-brand-dark-alt border-brand-primary/50"
+        )}>
+          <h3 className={cn(
+            "text-3xl font-bold mb-6 text-center",
+            isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
+          )}>Accept Your Quote</h3>
+          {isActionTaken ? (
+            <div className="text-center space-y-4">
+              {isAccepted && (
+                <p className="text-2xl font-bold text-green-500">This quote has already been accepted!</p>
+              )}
+              {isRejected && (
+                <p className="text-2xl font-bold text-red-500">This quote has been rejected.</p>
+              )}
+              <Button asChild size="lg" className="mt-4 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+                <Link to="/">Return to Home</Link>
+              </Button>
+            </div>
+          ) : (
+            <>
+              <p className={cn(
+                "text-xl text-center max-w-3xl mx-auto",
+                isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
+              )}>
                 Please fill out your details below to formally accept this quote.
               </p>
 
-              <Form {...erinKennedyForm}>
-                <form onSubmit={erinKennedyForm.handleSubmit(onSubmitErinKennedy)} className="space-y-6 max-w-xl mx-auto">
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmitGeneric)} className="space-y-6 max-w-xl mx-auto">
                   <FormField
-                    control={erinKennedyForm.control}
+                    control={form.control}
                     name="clientName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-brand-dark dark:text-brand-light">Your Full Name</FormLabel>
+                        <FormLabel className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>Your Full Name</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Erin Kennedy"
-                            className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                            placeholder={quote.client_name || "Your Name"}
+                            className={cn(
+                              isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60 focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                            )}
                             {...field}
                           />
                         </FormControl>
@@ -609,16 +510,18 @@ const DynamicQuotePage: React.FC = () => {
                     )}
                   />
                   <FormField
-                    control={erinKennedyForm.control}
+                    control={form.control}
                     name="clientEmail"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-brand-dark dark:text-brand-light">Your Email Address</FormLabel>
+                        <FormLabel className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>Your Email Address</FormLabel>
                         <FormControl>
                           <Input
                             type="email"
-                            placeholder="erin@example.com"
-                            className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                            placeholder={quote.client_email || "your@email.com"}
+                            className={cn(
+                              isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60 focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                            )}
                             {...field}
                           />
                         </FormControl>
@@ -627,21 +530,30 @@ const DynamicQuotePage: React.FC = () => {
                     )}
                   />
                   <FormField
-                    control={erinKennedyForm.control}
-                    name="acceptQuote"
+                    control={form.control}
+                    name="acceptTerms"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-brand-secondary p-4">
+                      <FormItem className={cn(
+                        "flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4",
+                        isLivePianoQuote ? "border-livePiano-border/50" : "border-brand-secondary"
+                      )}>
                         <FormControl>
                           <Checkbox
                             checked={field.value}
                             onCheckedChange={field.onChange}
-                            id="accept-quote"
-                            className="h-5 w-5 border-brand-primary text-brand-dark data-[state=checked]:bg-brand-primary data-[state=checked]:text-brand-light"
+                            id="accept-terms"
+                            className={cn(
+                              "h-5 w-5",
+                              isLivePianoQuote ? "border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" : "border-brand-primary text-brand-dark data-[state=checked]:bg-brand-primary data-[state=checked]:text-brand-light"
+                            )}
                           />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel htmlFor="accept-quote" className="text-brand-dark dark:text-brand-light text-base font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            I, <span className="text-brand-primary font-semibold">{erinKennedyForm.watch("clientName") || "Erin Kennedy"}</span>, accept this quote for the {erinKennedyQuoteDetails.eventTitle} on {erinKennedyQuoteDetails.dateOfEvent}.
+                          <FormLabel htmlFor="accept-terms" className={cn(
+                            "text-base font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+                            isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
+                          )}>
+                            I, <span className={isLivePianoQuote ? "text-livePiano-primary font-semibold" : "text-brand-primary font-semibold"}>{form.watch("clientName") || quote.client_name || "Your Name"}</span>, accept this quote for the {quote.event_title || quote.invoice_type} on {quote.event_date || 'the specified date'}.
                           </FormLabel>
                           <FormMessage />
                         </div>
@@ -652,22 +564,25 @@ const DynamicQuotePage: React.FC = () => {
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-xl py-7 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
-                    disabled={erinKennedyForm.formState.isSubmitting || !erinKennedyForm.formState.isValid}
+                    className={cn(
+                      "w-full text-xl py-7 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105",
+                      isLivePianoQuote ? "bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-darker" : "bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
+                    )}
+                    disabled={form.formState.isSubmitting || !form.formState.isValid}
                   >
-                    {erinKennedyForm.formState.isSubmitting ? "Submitting..." : "Accept Quote & Proceed"}
+                    {form.formState.isSubmitting ? "Submitting..." : "Accept Quote & Proceed"}
                   </Button>
                 </form>
               </Form>
-            </section>
-          </>
-        )}
+            </>
+          )}
+        </section>
       </main>
 
       <footer
         className={cn(
           "relative py-16 text-center overflow-hidden",
-          quote.invoice_type === "Live Piano Services Quote" ? "" : "bg-brand-dark"
+          isLivePianoQuote ? "" : "bg-brand-dark"
         )}
         style={{ backgroundImage: `url(/bowtie.avif)`, backgroundSize: 'cover', backgroundPosition: 'center' }}
       >
@@ -675,7 +590,7 @@ const DynamicQuotePage: React.FC = () => {
         <div className="relative z-10 max-w-7xl mx-auto px-4">
           <p className={cn(
             "text-2xl font-semibold flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8",
-            quote.invoice_type === "Live Piano Services Quote" ? "text-livePiano-light" : "text-brand-light"
+            isLivePianoQuote ? "text-livePiano-light" : "text-brand-light"
           )}>
             <a
               href="https://wa.me/61424174067"
@@ -683,7 +598,7 @@ const DynamicQuotePage: React.FC = () => {
               rel="noopener noreferrer"
               className={cn(
                 "flex items-center gap-2 transition-colors",
-                quote.invoice_type === "Live Piano Services Quote" ? "hover:text-livePiano-primary" : "hover:text-brand-primary"
+                isLivePianoQuote ? "hover:text-livePiano-primary" : "hover:text-brand-primary"
               )}
             >
               <Phone size={24} /> 0424 174 067
@@ -692,7 +607,7 @@ const DynamicQuotePage: React.FC = () => {
               href="mailto:info@danielebuatti.com"
               className={cn(
                 "flex items-center gap-2 transition-colors",
-                quote.invoice_type === "Live Piano Services Quote" ? "hover:text-livePiano-primary" : "hover:text-brand-primary"
+                isLivePianoQuote ? "hover:text-livePiano-primary" : "hover:text-brand-primary"
               )}
             >
               <Mail size={24} /> info@danielebuatti.com
