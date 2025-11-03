@@ -15,7 +15,7 @@ interface Quote {
   client_email: string;
   invoice_type: string; // This will be 'Live Piano Services Quote' or 'Erin Kennedy Quote'
   event_title?: string;
-  event_date?: string;
+  event_date?: string | null; // Changed to allow null
   event_location?: string;
   prepared_by?: string;
   total_amount: number;
@@ -23,7 +23,7 @@ interface Quote {
   accepted_at: string | null;
   rejected_at: string | null;
   slug?: string | null;
-  created_at: string; // Added created_at to the interface
+  created_at: string | null; // Changed to allow null
 }
 
 const AdminQuoteDetailsPage: React.FC = () => {
@@ -128,12 +128,12 @@ const AdminQuoteDetailsPage: React.FC = () => {
     quoteId: quote.id,
     quoteType: quote.invoice_type,
     eventTitle: quote.event_title || 'N/A',
-    eventDate: quote.event_date ? format(new Date(quote.event_date), 'PPP') : 'N/A',
+    eventDate: (quote.event_date && quote.event_date !== '') ? format(new Date(quote.event_date), 'PPP') : 'N/A', // Added robust check
     eventLocation: quote.event_location || 'N/A',
     preparedBy: quote.prepared_by || 'N/A',
     totalAmount: `A$${quote.total_amount.toFixed(2)}`,
     quoteStatus: currentStatus,
-    quoteCreatedAt: format(new Date(quote.created_at), 'PPP p'),
+    quoteCreatedAt: (quote.created_at && quote.created_at !== '') ? format(new Date(quote.created_at), 'PPP p') : 'N/A', // Added robust check
     // Add other quote-specific details from the 'details' JSONB column if needed
     ...quote.details, // Spread all properties from the 'details' JSONB column
   };
@@ -157,12 +157,12 @@ const AdminQuoteDetailsPage: React.FC = () => {
             <p><strong>Client Email:</strong> {quote.client_email}</p>
             <p><strong>Quote Type:</strong> {quote.invoice_type}</p>
             {quote.event_title && <p><strong>Event Title:</strong> {quote.event_title}</p>}
-            {quote.event_date && <p><strong>Event Date:</strong> {format(new Date(quote.event_date), 'PPP')}</p>}
+            {(quote.event_date && quote.event_date !== '') && <p><strong>Event Date:</strong> {format(new Date(quote.event_date), 'PPP')}</p>} {/* Added robust check */}
             {quote.event_location && <p><strong>Event Location:</strong> {quote.event_location}</p>}
             {quote.prepared_by && <p><strong>Prepared By:</strong> {quote.prepared_by}</p>}
-            <p><strong>Created At:</strong> {format(new Date(quote.created_at), 'PPP p')}</p>
-            {quote.accepted_at && <p><strong>Accepted On:</strong> {format(new Date(quote.accepted_at), 'PPP p')}</p>}
-            {quote.rejected_at && <p><strong>Rejected On:</strong> {format(new Date(quote.rejected_at), 'PPP p')}</p>}
+            <p><strong>Created At:</strong> {(quote.created_at && quote.created_at !== '') ? format(new Date(quote.created_at), 'PPP p') : 'N/A'}</p> {/* Added robust check */}
+            {(quote.accepted_at && quote.accepted_at !== '') && <p><strong>Accepted On:</strong> {format(new Date(quote.accepted_at), 'PPP p')}</p>} {/* Added robust check */}
+            {(quote.rejected_at && quote.rejected_at !== '') && <p><strong>Rejected On:</strong> {format(new Date(quote.rejected_at), 'PPP p')}</p>} {/* Added robust check */}
           </div>
 
           {/* Display details from the JSONB column if available */}
