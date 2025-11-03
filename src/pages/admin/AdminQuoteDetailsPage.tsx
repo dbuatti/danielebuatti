@@ -23,6 +23,7 @@ interface Quote {
   accepted_at: string | null;
   rejected_at: string | null;
   slug?: string | null;
+  created_at: string; // Added created_at to the interface
 }
 
 const AdminQuoteDetailsPage: React.FC = () => {
@@ -60,32 +61,20 @@ const AdminQuoteDetailsPage: React.FC = () => {
     if (!quote) return;
 
     setIsUpdatingStatus(true);
-    const updateData: Partial<Quote> = { status: newStatus };
+    const updateData: { accepted_at: string | null; rejected_at: string | null } = {
+      accepted_at: null,
+      rejected_at: null,
+    };
+
     if (newStatus === 'accepted') {
       updateData.accepted_at = new Date().toISOString();
-      updateData.rejected_at = null;
     } else if (newStatus === 'rejected') {
       updateData.rejected_at = new Date().toISOString();
-      updateData.accepted_at = null;
     }
 
-    // Note: The 'invoices' table does not have a 'status' column directly.
-    // The 'accepted_at' and 'rejected_at' columns implicitly define the status.
-    // For now, we'll update these timestamps. If a 'status' column is added to 'invoices'
-    // in the future, this logic would need to be updated to set that column.
-    // For demonstration, we'll simulate a status update by setting accepted_at/rejected_at.
-    // In a real scenario, you might have a dedicated 'status' column in 'invoices'.
-
-    // For now, we'll just update the accepted_at/rejected_at fields.
-    // The UI will reflect the status based on these fields.
     const { error } = await supabase
       .from('invoices')
-      .update({
-        accepted_at: updateData.accepted_at,
-        // Assuming 'rejected_at' is also a column in 'invoices'
-        // If not, this line should be removed.
-        rejected_at: updateData.rejected_at,
-      })
+      .update(updateData) // Directly update accepted_at/rejected_at
       .eq('id', quote.id);
 
     if (error) {
@@ -94,7 +83,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
     } else {
       showSuccess(`Quote status updated to ${newStatus}.`);
       // Manually update the local state to reflect the change
-      setQuote((prev) => (prev ? { ...prev, accepted_at: updateData.accepted_at, rejected_at: updateData.rejected_at } : null));
+      setQuote((prev) => (prev ? { ...prev, ...updateData } : null));
     }
     setIsUpdatingStatus(false);
   };
@@ -119,7 +108,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
   }
 
   // Determine current status based on accepted_at and rejected_at
-  const currentStatus: Quote['invoice_type'] = quote.accepted_at ? 'accepted' : (quote.rejected_at ? 'rejected' : 'pending');
+  const currentStatus = quote.accepted_at ? 'accepted' : (quote.rejected_at ? 'rejected' : 'pending');
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
