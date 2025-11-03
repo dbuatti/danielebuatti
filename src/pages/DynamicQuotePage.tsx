@@ -31,12 +31,13 @@ interface Quote {
   client_email: string;
   invoice_type: string;
   event_title?: string;
-  event_date?: string;
+  event_date?: string | null;
   event_location?: string;
   prepared_by?: string;
   total_amount: number;
   details: any; // JSONB column
   accepted_at: string;
+  rejected_at: string;
   slug?: string | null; // Include slug
 }
 
@@ -216,11 +217,11 @@ const DynamicQuotePage: React.FC = () => {
     client: quote.client_name,
     eventTitle: quote.event_title || "2025 Vocal Showcase",
     dateOfEvent: quote.event_date || "Sunday 23 November 2025",
-    time: "2:30 PM – 6:00 PM",
+    time: "3:00 PM – 6:00 PM",
     location: quote.event_location || "MC Showroom",
     preparedBy: quote.prepared_by || "Daniele Buatti",
     hourlyRate: 100,
-    performanceHours: 3.5,
+    performanceHours: 3,
     showPreparationFee: 100,
     rehearsalBundleCost: 30, // Per student for 15 min
     depositPercentage: 50,
@@ -526,7 +527,7 @@ const DynamicQuotePage: React.FC = () => {
                       <td className="p-3 border-b border-brand-secondary text-brand-dark/80 dark:text-brand-light/80">
                         {erinKennedyQuoteDetails.performanceHours} hours of dedicated on-site presence, including arrival, setup, soundcheck, and performance ({erinKennedyQuoteDetails.time}).
                         <br />
-                        <span className="text-sm text-brand-dark/70 dark:text-brand-light/70">Rate: A${erinKennedyQuoteDetails.hourlyRate}/hr</span>
+                        <span className="text-sm text-brand-dark/70 dark:text-brand-light/70">Rate: A$100/hr (effective rate for this package)</span>
                       </td>
                       <td className="p-3 border-b border-brand-secondary text-right text-brand-dark dark:text-brand-light">A${erinKennedyOnSitePerformanceCost}.00</td>
                     </tr>
@@ -550,23 +551,21 @@ const DynamicQuotePage: React.FC = () => {
             <section className="bg-brand-light dark:bg-brand-dark-alt p-8 rounded-xl shadow-lg border border-brand-secondary/30 space-y-6">
               <h3 className="text-3xl font-bold text-brand-dark dark:text-brand-light mb-6 text-center">Optional Rehearsal Support for Students</h3>
               <p className="text-xl text-brand-dark/90 dark:text-brand-light/90 text-center max-w-3xl mx-auto">
-                To help students feel fully prepared and confident for their performance, Daniele offers dedicated rehearsal opportunities.
+                To help students feel fully prepared and confident for their performance, Daniele offers dedicated 1:1 rehearsal opportunities at his studio in Toorak.
               </p>
               <div className="text-center">
                 <p className="text-3xl font-semibold text-brand-primary">
-                  Base Investment per student: <span className="text-brand-dark dark:text-brand-light text-4xl">A${erinKennedyQuoteDetails.rehearsalBundleCost} for a 15-minute rehearsal</span>
+                  Individual Rehearsal Rates:
                 </p>
-                <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
-                  Each 15-minute session is designed for a focused run-through of a student's piece, with time for essential touch-ups and feedback.
-                </p>
-                <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
-                  Students can request longer rehearsal times:
-                  <ul className="list-disc list-inside text-left max-w-xs mx-auto mt-2">
-                    <li>30 minutes for A$50</li>
-                    <li>45 minutes for A$75</li>
-                  </ul>
-                </p>
+                <ul className="list-disc list-inside text-left max-w-xs mx-auto mt-4 text-lg text-brand-dark dark:text-brand-light">
+                  <li>15-minute rehearsal: A${erinKennedyQuoteDetails.rehearsalBundleCost}</li>
+                  <li>30-minute rehearsal: A$50</li>
+                  <li>45-minute rehearsal: A$75</li>
+                </ul>
                 <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-4">
+                  Each session is designed for a focused run-through of a student's piece, with time for essential touch-ups and feedback. Students can book these sessions directly with Daniele.
+                </p>
+                <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
                   To ensure thorough preparation, Daniele kindly requests PDF sheet music for all songs and a complete song list at least two weeks prior to the event (or earlier, if possible).
                 </p>
                 <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 mt-2">
@@ -580,7 +579,7 @@ const DynamicQuotePage: React.FC = () => {
               <ul className="list-disc list-inside text-lg text-brand-dark/90 dark:text-brand-light/90 space-y-2">
                 <li>Your final invoice for the base services to Erin Kennedy will be A${erinKennedyTotalBaseInvoice}.00.</li>
                 <li><strong className="text-brand-primary">A non-refundable {erinKennedyQuoteDetails.depositPercentage}% deposit (A${erinKennedyRequiredDeposit}.00) is required immediately</strong> to formally secure the November 23rd date.</li>
-                <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by 2:30 PM.</li>
+                <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by 3:00 PM.</li>
               </ul>
             </section>
 
@@ -668,7 +667,7 @@ const DynamicQuotePage: React.FC = () => {
       <footer
         className={cn(
           "relative py-16 text-center overflow-hidden",
-          quote.invoice_type === "Live Piano Services Quote" ? "" : "bg-brand-dark" // Default footer background
+          quote.invoice_type === "Live Piano Services Quote" ? "" : "bg-brand-dark"
         )}
         style={{ backgroundImage: `url(/bowtie.avif)`, backgroundSize: 'cover', backgroundPosition: 'center' }}
       >
