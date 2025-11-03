@@ -7,6 +7,19 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Helper function to create a URL-friendly slug
+function createSlug(text: string): string {
+  return text
+    .toString()
+    .normalize('NFD') // Normalize diacritics
+    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+    .toLowerCase() // Convert to lowercase
+    .trim() // Trim whitespace from both ends
+    .replace(/\s+/g, '-') // Replace spaces with -
+    .replace(/[^\w-]+/g, '') // Remove all non-word chars
+    .replace(/--+/g, '-'); // Replace multiple - with single -
+}
+
 serve(async (req: Request) => { // Added type annotation for 'req'
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -45,6 +58,27 @@ serve(async (req: Request) => { // Added type annotation for 'req'
       });
     }
 
+    const baseSlug = createSlug(`${eventTitle}-${clientName}-${eventDate}`);
+    let uniqueSlug = baseSlug;
+    let counter = 0;
+
+    // Ensure slug uniqueness by appending a counter if needed
+    while (true) {
+      const { data: existingSlugs, error: slugCheckError } = await supabaseClient
+        .from('invoices')
+        .select('slug')
+        .eq('slug', uniqueSlug);
+
+      if (slugCheckError) throw slugCheckError;
+
+      if (existingSlugs && existingSlugs.length === 0) {
+        break; // Slug is unique
+      }
+
+      counter++;
+      uniqueSlug = `${baseSlug}-${counter}`;
+    }
+
     // Insert data into the new 'invoices' table
     const { data, error: insertError } = await supabaseClient
       .from('invoices')
@@ -63,6 +97,7 @@ serve(async (req: Request) => { // Added type annotation for 'req'
             show_preparation_fee: showPreparationFee,
             // Removed rehearsal_bundle_cost_per_student from details
           },
+          slug: uniqueSlug, // Store the generated slug
         },
       ])
       .select(); // Select the inserted record to get its details
@@ -85,12 +120,13 @@ serve(async (req: Request) => { // Added type annotation for 'req'
     if (!EMAIL_SERVICE_API_KEY || !CONTACT_FORM_RECIPIENT_EMAIL || !EMAIL_SERVICE_ENDPOINT) {
       console.error('Missing email service environment variables for Erin Kennedy quote acceptance.');
       // We still return success for the client, but log the server error
-      return new Response(JSON.stringify({ message: 'Quote accepted, but email notification failed due to server config.' }), {
+      return new Response(JSON.stringify({ message: 'Quote accepted, but email notification failed due to server config.', slug: insertedRecord.slug }), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
+    const quoteLink = `https://danielebuatti.com/quotes/${insertedRecord.slug}`; // Construct the direct link
     const subject = `🎉 New Quote Acceptance: ${insertedRecord.event_title} from ${insertedRecord.client_name}`;
     const emailHtml = `
       <div style="font-family: 'Outfit', sans-serif; color: #1b1b1b; background-color: #F8F8F8; padding: 20px; border-radius: 8px;">
@@ -146,6 +182,10 @@ serve(async (req: Request) => { // Added type annotation for 'req'
               <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Bank Details:</td>
               <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;">BSB: 923100, ACC: 301110875</td>
             </tr>
+            <tr>
+              <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Direct Quote Link:</td>
+              <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;"><a href="${quoteLink}" style="color: #DB4CA3; text-decoration: none;">View Quote Page</a></td>
+            </tr>
           </table>
           <p style="font-size: 14px; color: #666666; text-align: center; margin-top: 30px;">
             This notification was sent from your website.
@@ -177,7 +217,7 @@ serve(async (req: Request) => { // Added type annotation for 'req'
 
     console.log(`Erin Kennedy quote acceptance processed and email notification sent successfully!`);
 
-    return new Response(JSON.stringify({ message: 'Quote accepted and email notification sent.' }), {
+    return new Response(JSON.stringify({ message: 'Quote accepted and email notification sent.', slug: insertedRecord.slug }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

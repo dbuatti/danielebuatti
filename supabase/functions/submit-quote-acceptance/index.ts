@@ -7,6 +7,19 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Helper function to create a URL-friendly slug
+function createSlug(text: string): string {
+  return text
+    .toString()
+    .normalize('NFD') // Normalize diacritics
+    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+    .toLowerCase() // Convert to lowercase
+    .trim() // Trim whitespace from both ends
+    .replace(/\s+/g, '-') // Replace spaces with -
+    .replace(/[^\w-]+/g, '') // Remove all non-word chars
+    .replace(/--+/g, '-'); // Replace multiple - with single -
+}
+
 serve(async (req: Request) => { // Added type annotation for 'req'
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -33,6 +46,28 @@ serve(async (req: Request) => { // Added type annotation for 'req'
       });
     }
 
+    const eventTitle = "Christmas Carols – Live Piano Quote"; // Specific title for this quote type
+    const baseSlug = createSlug(`${eventTitle}-${clientName}-${proposalDetails.dateOfEvent}`);
+    let uniqueSlug = baseSlug;
+    let counter = 0;
+
+    // Ensure slug uniqueness by appending a counter if needed
+    while (true) {
+      const { data: existingSlugs, error: slugCheckError } = await supabaseClient
+        .from('invoices')
+        .select('slug')
+        .eq('slug', uniqueSlug);
+
+      if (slugCheckError) throw slugCheckError;
+
+      if (existingSlugs && existingSlugs.length === 0) {
+        break; // Slug is unique
+      }
+
+      counter++;
+      uniqueSlug = `${baseSlug}-${counter}`;
+    }
+
     // Insert data into the new 'invoices' table
     const { data, error: insertError } = await supabaseClient
       .from('invoices')
@@ -40,8 +75,8 @@ serve(async (req: Request) => { // Added type annotation for 'req'
         {
           client_name: clientName,
           client_email: clientEmail,
-          invoice_type: "Live Piano Services Quote",
-          event_title: "Christmas Carols – Live Piano Quote", // Specific title for this quote type
+          invoice_type: eventTitle,
+          event_title: eventTitle,
           event_date: proposalDetails.dateOfEvent,
           event_location: proposalDetails.location,
           prepared_by: proposalDetails.preparedBy,
@@ -54,6 +89,7 @@ serve(async (req: Request) => { // Added type annotation for 'req'
               rehearsal: wantsRehearsal,
             },
           },
+          slug: uniqueSlug, // Store the generated slug
         },
       ])
       .select(); // Select the inserted record to get its details
@@ -76,12 +112,13 @@ serve(async (req: Request) => { // Added type annotation for 'req'
     if (!EMAIL_SERVICE_API_KEY || !CONTACT_FORM_RECIPIENT_EMAIL || !EMAIL_SERVICE_ENDPOINT) {
       console.error('Missing email service environment variables for quote acceptance.');
       // We still return success for the client, but log the server error
-      return new Response(JSON.stringify({ message: 'Quote accepted, but email notification failed due to server config.' }), {
+      return new Response(JSON.stringify({ message: 'Quote accepted, but email notification failed due to server config.', slug: insertedRecord.slug }), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
+    const quoteLink = `https://danielebuatti.com/quotes/${insertedRecord.slug}`; // Construct the direct link
     const subject = `🎉 New Quote Acceptance: ${insertedRecord.event_title} from ${insertedRecord.client_name}`;
     const emailHtml = `
       <div style="font-family: 'Outfit', sans-serif; color: #1b1b1b; background-color: #F8F8F8; padding: 20px; border-radius: 8px;">
@@ -129,6 +166,10 @@ serve(async (req: Request) => { // Added type annotation for 'req'
               <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Accepted On:</td>
               <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;">${new Date(insertedRecord.accepted_at).toLocaleString()}</td>
             </tr>
+            <tr>
+              <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Direct Quote Link:</td>
+              <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;"><a href="${quoteLink}" style="color: #fdb813; text-decoration: none;">View Quote Page</a></td>
+            </tr>
           </table>
           <p style="font-size: 14px; color: #666666; text-align: center; margin-top: 30px;">
             This notification was sent from your website.
@@ -145,7 +186,7 @@ serve(async (req: Request) => { // Added type annotation for 'req'
         'Authorization': `Bearer ${EMAIL_SERVICE_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'info@danielebuatti.com',
+        from: 'info@danielebuatti.com', // Ensure this is a verified sender in your email service
         to: CONTACT_FORM_RECIPIENT_EMAIL,
         subject: subject,
         html: emailHtml,
@@ -154,19 +195,19 @@ serve(async (req: Request) => { // Added type annotation for 'req'
 
     if (!emailResponse.ok) {
       const errorData = await emailResponse.json();
-      console.error('Email service error:', errorData);
-      throw new Error(`Failed to send email: ${emailResponse.statusText}`);
+      console.error('Email service error for quote acceptance:', errorData);
+      throw new Error(`Failed to send quote acceptance email: ${emailResponse.statusText}`);
     }
 
     console.log(`Quote acceptance processed and email notification sent successfully!`);
 
-    return new Response(JSON.stringify({ message: 'Quote accepted and email notification sent.' }), {
+    return new Response(JSON.stringify({ message: 'Quote accepted and email notification sent.', slug: insertedRecord.slug }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error: unknown) { // Explicitly type error as unknown
-    console.error('Edge Function error:', (error as Error).message); // Cast to Error
+    console.error('Edge Function error for quote acceptance:', (error as Error).message); // Cast to Error
     return new Response(JSON.stringify({ error: (error as Error).message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

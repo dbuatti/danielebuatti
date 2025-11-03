@@ -74,7 +74,7 @@ const ErinKennedyQuotePage: React.FC = () => {
     const loadingToastId = toast.loading("Submitting your quote acceptance...");
 
     try {
-      const { error } = await supabase.functions.invoke('submit-erin-kennedy-quote', {
+      const { data, error } = await supabase.functions.invoke('submit-erin-kennedy-quote', {
         body: {
           clientName: values.clientName,
           clientEmail: values.clientEmail,
@@ -98,7 +98,12 @@ const ErinKennedyQuotePage: React.FC = () => {
         description: "Thank you! Daniele will be in touch shortly to finalize details.",
       });
       form.reset();
-      navigate('/live-piano-services/quote-confirmation'); // Reusing existing confirmation page
+      // Redirect to the dynamic quote page using the returned slug
+      if (data && data.slug) {
+        navigate(`/quotes/${data.slug}`);
+      } else {
+        navigate('/live-piano-services/quote-confirmation'); // Fallback
+      }
     } catch (error) {
       console.error("Error submitting quote acceptance:", error);
       toast.error("Failed to submit quote acceptance.", {

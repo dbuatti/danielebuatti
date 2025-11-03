@@ -96,7 +96,7 @@ const QuoteProposalPage: React.FC = () => {
 
     try {
       // Invoke the new Supabase Edge Function
-      const { error } = await supabase.functions.invoke('submit-quote-acceptance', {
+      const { data, error } = await supabase.functions.invoke('submit-quote-acceptance', {
         body: {
           clientName: values.clientName,
           clientEmail: values.clientEmail,
@@ -116,7 +116,12 @@ const QuoteProposalPage: React.FC = () => {
         description: "Thank you! Daniele will be in touch shortly to finalise details.",
       });
       form.reset();
-      navigate('/live-piano-services/quote-confirmation');
+      // Redirect to the dynamic quote page using the returned slug
+      if (data && data.slug) {
+        navigate(`/quotes/${data.slug}`);
+      } else {
+        navigate('/live-piano-services/quote-confirmation'); // Fallback
+      }
     } catch (error) {
       console.error("Error submitting quote acceptance:", error);
       toast.error("Failed to submit quote acceptance.", {
