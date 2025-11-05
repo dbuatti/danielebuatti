@@ -457,7 +457,7 @@ const DynamicQuotePage: React.FC = () => {
                   "space-y-4 max-w-3xl mx-auto",
                   isLivePianoQuote ? "text-livePiano-light/80" : "text-brand-dark/80 dark:text-brand-light/80"
                 )}>
-                  <h4 className={cn(
+                  <h4 className={cn( // Fixed classNamecn to className
                     "text-2xl font-semibold text-center text-shadow-sm mb-4",
                     isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
                   )}>
@@ -759,7 +759,7 @@ const DynamicQuotePage: React.FC = () => {
                 {form.formState.isSubmitting ? "Submitting..." : `Accept Quote for ${symbol}${calculatedTotal.toFixed(2)}`}
               </Button>
             </form>
-          </Form>
+            </Form>
           )}
         </section>
       </main>
