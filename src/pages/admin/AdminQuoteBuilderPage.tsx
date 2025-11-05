@@ -28,7 +28,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
     try {
       // Calculate total amount and deposit based on form values
-      const totalAmount = values.baseServiceAmount + (values.addOns?.reduce((sum: number, addOn: { cost: number }) => sum + addOn.cost, 0) || 0);
+      const totalAmount = values.baseServiceAmount + (values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => sum + (addOn.cost * addOn.quantity), 0) || 0);
       const requiredDeposit = totalAmount * (values.depositPercentage / 100);
 
       // Generate a base slug
@@ -59,7 +59,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
           description: values.baseServiceDescription,
           amount: values.baseServiceAmount,
         },
-        addOns: values.addOns,
+        addOns: values.addOns, // Now includes quantity
         depositPercentage: values.depositPercentage,
         requiredDeposit: requiredDeposit,
         bankDetails: {
@@ -111,7 +111,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
   const getPreviewData = (values: QuoteFormValues): QuoteDisplayData | null => {
     if (!values.clientName || !values.eventTitle) return null;
 
-    const totalAmount = values.baseServiceAmount + (values.addOns?.reduce((sum: number, addOn: { cost: number }) => sum + addOn.cost, 0) || 0);
+    const totalAmount = values.baseServiceAmount + (values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => sum + (addOn.cost * addOn.quantity), 0) || 0);
     const requiredDeposit = totalAmount * (values.depositPercentage / 100);
 
     return {

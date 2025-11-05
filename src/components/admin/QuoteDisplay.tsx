@@ -16,6 +16,7 @@ interface AddOn {
   name: string;
   description?: string;
   cost: number;
+  quantity: number; // ADDED QUANTITY
 }
 
 // EXPORTED INTERFACE
@@ -223,8 +224,10 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
               <h3 className="text-3xl font-bold mb-6 text-center text-brand-dark dark:text-brand-light">Optional Add-Ons</h3>
               <div className="space-y-4 max-w-2xl mx-auto">
                 {addOns.map((addOn: AddOn, index: number) => {
-                  // Ensure cost is a number before calling toFixed
+                  // Ensure cost and quantity are numbers
                   const cost = typeof addOn.cost === 'number' ? addOn.cost : parseFloat(String(addOn.cost)) || 0;
+                  const quantity = typeof addOn.quantity === 'number' ? addOn.quantity : parseFloat(String(addOn.quantity)) || 1;
+                  const subtotal = cost * quantity;
                   
                   return (
                     <div key={index} className={cn(
@@ -246,12 +249,18 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
                             {addOn.description}
                           </p>
                         )}
+                        <p className={cn(
+                          "text-sm italic",
+                          isLivePianoTheme ? "text-livePiano-light/60" : "text-brand-dark/60 dark:text-brand-light/60"
+                        )}>
+                          {quantity} x {currencySymbol}{cost.toFixed(2)}
+                        </p>
                       </div>
                       <div className={cn(
                         "text-3xl font-bold sm:ml-auto",
                         isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
                       )}>
-                        {currencySymbol}{cost.toFixed(2)}
+                        {currencySymbol}{subtotal.toFixed(2)}
                       </div>
                     </div>
                   );
@@ -271,7 +280,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
           "text-2xl md:text-3xl font-bold",
           isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
         )}>
-          Total Estimated Cost: <span className={isLivePianoTheme ? "text-livePiano-light text-4xl md:text-5xl" : "text-brand-dark dark:text-brand-light text-4xl md:text-5xl"}>{currencySymbol}{safeTotalAmount.toFixed(2)}</span>
+          Total Estimated Cost: <span className={cn(isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light", "text-4xl md:text-5xl")}>{currencySymbol}{safeTotalAmount.toFixed(2)}</span>
         </p>
       </div>
 

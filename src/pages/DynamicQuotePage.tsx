@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import DynamicImage from "@/components/DynamicImage";
-import { ArrowLeft, Phone, Mail, Loader2 } from 'lucide-react';
+import { ArrowLeft, Phone, Mail, Loader2, Minus, Plus } from 'lucide-react'; // Added Minus, Plus
 import { useTheme } from "next-themes";
 import { toast } from 'sonner';
 import { useForm, useFieldArray } from "react-hook-form";
@@ -46,12 +46,11 @@ const genericQuoteAcceptanceSchema = z.object({
   clientName: z.string().min(2, { message: "Your full name is required." }),
   clientEmail: z.string().email({ message: "A valid email address is required." }),
   acceptTerms: z.boolean().refine(val => val === true, { message: "You must accept the terms to proceed." }),
-  // Added description to the schema to fix TS2339 errors
   selectedAddOns: z.array(z.object({
     name: z.string(),
     cost: z.number(),
-    isSelected: z.boolean(),
-    description: z.string().optional(), // FIX for TS2339
+    quantity: z.coerce.number().min(0).max(10, { message: "Max quantity is 10." }), // CHANGED: quantity instead of isSelected
+    description: z.string().optional(),
   })).optional(),
 });
 
@@ -74,8 +73,7 @@ const DynamicQuotePage: React.FC = () => {
     },
   });
 
-  // Removed unused variable 'update' from useFieldArray
-  const { fields: addOnFields } = useFieldArray({
+  const { fields: addOnFields, update: updateAddOnField } = useFieldArray({
     control: form.control,
     name: "selectedAddOns",
   });
@@ -103,11 +101,12 @@ const DynamicQuotePage: React.FC = () => {
       } else {
         setQuote(data as Quote);
         
+        // Initialize add-ons with quantity from the quote details, defaulting to 1 if present
         const initialAddOns = (data.details?.addOns || []).map((addOn: any) => ({
           name: addOn.name,
           cost: parseFloat(String(addOn.cost)) || 0,
-          isSelected: true, // Default all add-ons to selected
-          description: addOn.description, // Ensure description is included
+          quantity: parseFloat(String(addOn.quantity)) || 1, // Use admin's quantity as default
+          description: addOn.description,
         }));
 
         // Set default form values
@@ -137,9 +136,9 @@ const DynamicQuotePage: React.FC = () => {
     let total = baseAmount;
     
     watchedAddOns?.forEach(addOn => {
-      if (addOn.isSelected) {
-        total += parseFloat(String(addOn.cost)) || 0;
-      }
+      const quantity = parseFloat(String(addOn.quantity)) || 0;
+      const cost = parseFloat(String(addOn.cost)) || 0;
+      total += cost * quantity;
     });
     return total;
   }, [watchedAddOns, baseAmount, quote]);
@@ -176,14 +175,15 @@ const DynamicQuotePage: React.FC = () => {
   const isRejected = !!quote.rejected_at;
   const isActionTaken = isAccepted || isRejected;
 
-  const isLivePianoQuote = quote.invoice_type === "Christmas Carols – Live Piano Quote";
+  const isLivePianoQuote = quote.invoice_type.toLowerCase().includes("live piano");
   const isErinKennedyQuote = quote.invoice_type === "Erin Kennedy Quote";
 
   // Handle form submission for generic quote acceptance
   async function onSubmitGeneric(values: z.infer<typeof genericQuoteAcceptanceSchema>) {
     const loadingToastId = toast.loading("Submitting your acceptance...");
     
-    const finalSelectedAddOns = values.selectedAddOns?.filter(a => a.isSelected) || [];
+    // Filter out add-ons where quantity is 0
+    const finalSelectedAddOns = values.selectedAddOns?.filter(a => (parseFloat(String(a.quantity)) || 0) > 0) || [];
 
     try {
       // Update the quote in Supabase to mark as accepted
@@ -197,7 +197,7 @@ const DynamicQuotePage: React.FC = () => {
           details: {
             ...quote!.details,
             final_total_amount: calculatedTotal,
-            client_selected_add_ons: finalSelectedAddOns,
+            client_selected_add_ons: finalSelectedAddOns, // Store final selection with quantities
           }
         })
         .eq('id', quote!.id);
@@ -211,11 +211,10 @@ const DynamicQuotePage: React.FC = () => {
 
       if (EMAIL_SERVICE_API_KEY && CONTACT_FORM_RECIPIENT_EMAIL && EMAIL_SERVICE_ENDPOINT) {
         const adminQuoteLink = `${window.location.origin}/admin/quotes/${quote!.id}`;
-        // Removed unused variable publicQuoteLink
         const subject = `🎉 Quote Accepted: ${quote!.event_title || quote!.invoice_type} from ${values.clientName}`;
         
         const addOnList = finalSelectedAddOns.length > 0 
-          ? finalSelectedAddOns.map(a => `<li>${a.name} (${symbol}${a.cost.toFixed(2)})</li>`).join('')
+          ? finalSelectedAddOns.map(a => `<li>${a.name} (Qty: ${a.quantity}, Cost: ${symbol}${(a.cost * a.quantity).toFixed(2)})</li>`).join('')
           : '<li>None selected.</li>';
 
         const emailHtml = `
@@ -482,63 +481,114 @@ const DynamicQuotePage: React.FC = () => {
               </section>
             )}
 
-            {/* Optional Add-Ons Section (Generic) - Now interactive */}
+            {/* Optional Add-Ons Section (Generic) - Now interactive with quantity */}
             {addOnFields.length > 0 && (
               <section className={cn(
                 "p-8 rounded-xl shadow-2xl border space-y-8",
                 isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
               )}>
-                <h3 className="text-3xl font-bold mb-6 text-center text-shadow-sm text-brand-dark dark:text-brand-light">Optional Add-Ons (Select to Include)</h3>
+                <h3 className="text-3xl font-bold mb-6 text-center text-shadow-sm text-brand-dark dark:text-brand-light">Optional Add-Ons (Adjust Quantity)</h3>
                 <div className="space-y-4 max-w-2xl mx-auto">
                   {addOnFields.map((item, index) => {
                     const cost = parseFloat(String(item.cost)) || 0;
+                    const currentQuantity = parseFloat(String(form.watch(`selectedAddOns.${index}.quantity`))) || 0;
+                    const subtotal = cost * currentQuantity;
                     
+                    const handleQuantityChange = (delta: number) => {
+                      const newQuantity = Math.max(0, Math.min(10, currentQuantity + delta));
+                      updateAddOnField(index, { ...item, quantity: newQuantity });
+                    };
+
                     return (
-                      <FormField
-                        key={item.id}
-                        control={form.control}
-                        name={`selectedAddOns.${index}.isSelected`}
-                        render={({ field }) => (
-                          <FormItem className={cn(
-                            "flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 cursor-pointer transition-all",
-                            isLivePianoQuote ? "border-livePiano-border/50" : "border-brand-secondary/50",
-                            field.value ? (isLivePianoQuote ? "bg-livePiano-background/50" : "bg-brand-secondary/20 dark:bg-brand-dark/50") : (isLivePianoQuote ? "bg-livePiano-background/20" : "bg-brand-light dark:bg-brand-dark-alt")
+                      <div key={item.id} className={cn(
+                        "flex flex-col sm:flex-row sm:items-center sm:justify-between w-full rounded-md border p-4 transition-all",
+                        isLivePianoQuote ? "border-livePiano-border/50" : "border-brand-secondary/50",
+                        currentQuantity > 0 ? (isLivePianoQuote ? "bg-livePiano-background/50" : "bg-brand-secondary/20 dark:bg-brand-dark/50") : (isLivePianoQuote ? "bg-livePiano-background/20" : "bg-brand-light dark:bg-brand-dark-alt")
+                      )}>
+                        <div className="space-y-1 leading-none mb-4 sm:mb-0 sm:w-1/2">
+                          <p className={cn(
+                            "text-xl font-bold leading-none",
+                            isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
                           )}>
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                                className={cn(
-                                  "h-5 w-5 mt-1",
-                                  isLivePianoQuote ? "border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" : "border-brand-primary text-brand-dark data-[state=checked]:bg-brand-primary data-[state=checked]:text-brand-light"
-                                )}
-                              />
-                            </FormControl>
-                            <div className="space-y-1 leading-none flex-grow">
-                              <FormLabel className={cn(
-                                "text-xl font-bold leading-none cursor-pointer",
-                                isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
-                              )}>
-                                {item.name}
-                              </FormLabel>
-                              {item.description && (
-                                <p className={cn(
-                                  "text-base",
-                                  isLivePianoQuote ? "text-livePiano-light/70" : "text-brand-dark/70 dark:text-brand-light/70"
-                                )}>
-                                  {item.description}
-                                </p>
-                              )}
-                            </div>
-                            <div className={cn(
-                              "text-3xl font-bold sm:ml-auto flex-shrink-0",
-                              isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
+                            {item.name}
+                          </p>
+                          {item.description && (
+                            <p className={cn(
+                              "text-base",
+                              isLivePianoQuote ? "text-livePiano-light/70" : "text-brand-dark/70 dark:text-brand-light/70"
                             )}>
-                              {symbol}{cost.toFixed(2)}
-                            </div>
-                          </FormItem>
-                        )}
-                      />
+                              {item.description}
+                            </p>
+                          )}
+                          <p className={cn(
+                            "text-sm italic",
+                            isLivePianoQuote ? "text-livePiano-light/60" : "text-brand-dark/60 dark:text-brand-light/60"
+                          )}>
+                            Unit Cost: {symbol}{cost.toFixed(2)}
+                          </p>
+                        </div>
+                        
+                        <div className="flex items-center gap-4 sm:w-1/2 sm:justify-end">
+                          <div className="flex items-center space-x-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              onClick={() => handleQuantityChange(-1)}
+                              disabled={currentQuantity <= 0}
+                              className={cn(
+                                "h-8 w-8",
+                                isLivePianoQuote ? "bg-livePiano-background border-livePiano-primary text-livePiano-primary hover:bg-livePiano-primary/20" : "border-brand-primary text-brand-primary hover:bg-brand-primary/10"
+                              )}
+                            >
+                              <Minus className="h-4 w-4" />
+                            </Button>
+                            <FormField
+                              control={form.control}
+                              name={`selectedAddOns.${index}.quantity`}
+                              render={({ field }) => (
+                                <FormItem className="w-16">
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      min={0}
+                                      max={10}
+                                      {...field}
+                                      onChange={(e) => {
+                                        const value = parseInt(e.target.value);
+                                        field.onChange(isNaN(value) ? 0 : Math.max(0, Math.min(10, value)));
+                                      }}
+                                      className={cn(
+                                        "text-center h-8",
+                                        isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light focus-visible:ring-livePiano-primary" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light focus-visible:ring-brand-primary"
+                                      )}
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              onClick={() => handleQuantityChange(1)}
+                              disabled={currentQuantity >= 10}
+                              className={cn(
+                                "h-8 w-8",
+                                isLivePianoQuote ? "bg-livePiano-background border-livePiano-primary text-livePiano-primary hover:bg-livePiano-primary/20" : "border-brand-primary text-brand-primary hover:bg-brand-primary/10"
+                              )}
+                            >
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          </div>
+                          <div className={cn(
+                            "text-3xl font-bold flex-shrink-0 w-24 text-right",
+                            isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
+                          )}>
+                            {symbol}{subtotal.toFixed(2)}
+                          </div>
+                        </div>
+                      </div>
                     );
                   })}
                 </div>
