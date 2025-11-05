@@ -347,7 +347,7 @@ const DynamicQuotePage: React.FC = () => {
                   <TableCell className="text-right font-semibold text-brand-primary">A${showPreparationFee.toFixed(2)}</TableCell>
                 </TableRow>
                 <TableRow className="bg-brand-primary/10 dark:bg-brand-primary/20 font-bold">
-                  <TableCell colSpan={2} className="text-brand-primary text-lg">TOTAL BASE INVOICE <span className="font-normal text-sm text-brand-dark/70 dark:text-brand-light/70">(To be paid by Erin Kennedy)</span></TableCell>
+                  <TableCell colSpan={2} className="text-brand-primary text-lg">TOTAL BASE INVOICE <span className="font-semibold text-base text-brand-dark/70 dark:text-brand-light/70">(To be paid by Erin Kennedy)</span></TableCell>
                   <TableCell className="text-right text-brand-primary text-lg">A${totalBaseInvoice.toFixed(2)}</TableCell>
                 </TableRow>
               </TableBody>
@@ -503,7 +503,7 @@ const DynamicQuotePage: React.FC = () => {
             isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
           )}>Important Booking Details</h3>
           <ul className={cn(
-            "list-disc list-inside text-lg space-y-2",
+            "list-disc list-inside text-lg space-y-3", // Changed space-y-2 to space-y-3
             isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
           )}>
             {isErinKennedyQuote ? (
@@ -513,8 +513,8 @@ const DynamicQuotePage: React.FC = () => {
                 <li>The remaining balance is due 7 days prior to the event.</li>
                 <li><strong className="text-brand-primary">Bank Details for Payment:</strong> BSB: 923100, ACC: 301110875</li>
                 <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by 3:00 PM.</li>
-                <li>To ensure thorough preparation, Daniele kindly requests PDF sheet music for all songs and a complete song list at least two weeks prior to the event (or earlier, if possible).</li>
-                <li>To facilitate efficient scheduling, please inform Daniele of the total number of students participating in the concert as soon as possible. Daniele will then work to schedule rehearsals in convenient, grouped time blocks.</li>
+                <li>To ensure thorough preparation, Daniele kindly requests <strong>PDF sheet music</strong> for all songs and a <strong>complete song list</strong> at least two weeks prior to the event (or earlier, if possible).</li>
+                <li>To facilitate efficient scheduling, please inform Daniele of the <strong>total number of students</strong> participating in the concert as soon as possible. Daniele will then work to schedule rehearsals in convenient, grouped time blocks.</li>
               </>
             ) : (
               <>
