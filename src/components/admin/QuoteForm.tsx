@@ -368,7 +368,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
         <h4 className="text-lg font-medium text-brand-dark dark:text-brand-light mt-8">Optional Add-Ons</h4>
         <div className="space-y-4">
           {fields.map((item, index) => (
-            <div key={item.id} className="flex flex-col gap-4 p-4 border rounded-md bg-brand-secondary/10 dark:bg-brand-dark/30">
+            <div key={item.id} className="flex flex-col gap-4 p-4 border rounded-md bg-brand-secondary/10 dark:bg-brand-dark/30 shadow-none">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end"> {/* Added items-end for alignment */}
                 <FormField
                   control={form.control}
