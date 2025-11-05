@@ -488,52 +488,179 @@ const DynamicQuotePage: React.FC = () => {
                 </p>
               </section>
             )}
+
+            {/* Optional Add-Ons Section (Generic) */}
+            {addOns.length > 0 && (
+              <section className={cn(
+                "p-8 rounded-xl border space-y-8 overflow-hidden",
+                isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
+              )}>
+                <h3 className="text-3xl font-bold mb-6 text-center font-display text-brand-dark dark:text-brand-light">Optional Add-Ons</h3>
+                <div className="space-y-4 max-w-2xl mx-auto">
+                  {addOnFields.map((item: AddOnItem, index) => { // Explicitly type item
+                    const cost = parseFloat(String(item.cost)) || 0;
+                    const currentQuantity = parseFloat(String(form.watch(`selectedAddOns.${index}.quantity`))) || 0;
+                    const subtotal = cost * currentQuantity;
+                    
+                    const handleQuantityChange = (delta: number) => {
+                      const newQuantity = Math.max(0, Math.min(10, currentQuantity + delta));
+                      updateAddOnField(index, { ...item, quantity: newQuantity });
+                    };
+
+                    return (
+                      <div key={item.id} className={cn(
+                        "flex flex-col sm:flex-row sm:items-center sm:justify-between w-full rounded-md border p-4",
+                        isLivePianoQuote ? "border-livePiano-border/50" : "border-brand-secondary/50",
+                        currentQuantity > 0 ? (isLivePianoQuote ? "bg-livePiano-background/50" : "bg-brand-secondary/20 dark:bg-brand-dark/50") : (isLivePianoQuote ? "bg-livePiano-background/20" : "bg-brand-light dark:bg-brand-dark-alt")
+                      )}>
+                        <div className="space-y-1 leading-none mb-4 sm:mb-0 sm:flex-1">
+                          <p className={cn(
+                            "text-xl font-bold leading-none",
+                            isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
+                          )}>
+                            {item.name}
+                          </p>
+                          {item.description && (
+                            <p className={cn(
+                              "text-base",
+                              isLivePianoQuote ? "text-livePiano-light/70" : "text-brand-dark/70 dark:text-brand-light/70"
+                            )}>
+                              {item.description}
+                            </p>
+                          )}
+                          <p className={cn(
+                            "text-sm italic",
+                            isLivePianoQuote ? "text-livePiano-light/60" : "text-brand-dark/60 dark:text-brand-light/60"
+                          )}>
+                            Unit Cost: {formatCurrency(cost, symbol)}
+                          </p>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 sm:w-auto sm:flex-shrink-0 sm:justify-end"> {/* Reduced gap */}
+                          <div className="flex items-center space-x-1"> {/* Reduced space-x */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              onClick={() => handleQuantityChange(-1)}
+                              disabled={currentQuantity <= 0}
+                              className={cn(
+                                "h-7 w-7", // Smaller buttons
+                                isLivePianoQuote ? "bg-livePiano-background border-livePiano-primary text-livePiano-primary hover:bg-livePiano-primary/20" : "border-brand-primary text-brand-primary hover:bg-brand-primary/10"
+                              )}
+                            >
+                              <Minus className="h-4 w-4" />
+                            </Button>
+                            <FormField
+                              control={form.control}
+                              name={`selectedAddOns.${index}.quantity`}
+                              render={({ field }) => (
+                                <FormItem className="w-12"> {/* Smaller width */}
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      min={0}
+                                      max={10}
+                                      {...field}
+                                      onChange={(e) => {
+                                        const value = parseInt(e.target.value);
+                                        field.onChange(isNaN(value) ? 0 : Math.max(0, Math.min(10, value)));
+                                      }}
+                                      className={cn(
+                                        "text-center h-7 px-1", // Smaller height and padding
+                                        isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light focus-visible:ring-brand-primary"
+                                      )}
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              onClick={() => handleQuantityChange(1)}
+                              disabled={currentQuantity >= 10}
+                              className={cn(
+                                "h-7 w-7", // Smaller buttons
+                                isLivePianoQuote ? "bg-livePiano-background border-livePiano-primary text-livePiano-primary hover:bg-livePiano-primary/20" : "border-brand-primary text-brand-primary hover:bg-brand-primary/10"
+                              )}
+                            >
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          </div>
+                          <div className={cn(
+                            "text-2xl font-bold flex-shrink-0 min-w-[140px] text-right font-sans", // Adjusted width here
+                            isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
+                          )}>
+                            {formatCurrency(subtotal, symbol)}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
           </>
         )}
 
-        {/* Booking Information / Important Details - KEEP OUTSIDE FORM */}
-        <section className={cn(
-          "p-8 rounded-xl border space-y-6 overflow-hidden",
-          "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
+      {/* Total Estimated Cost */}
+      <div className={cn(
+        "text-center mt-10 p-6 rounded-lg border",
+        isLivePianoQuote ? "bg-livePiano-primary/10 border-livePiano-primary/30" : "bg-brand-primary/10 border-brand-primary/30"
+      )}>
+        <p className={cn(
+          "text-2xl md:text-3xl font-bold",
+          isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
         )}>
-          <h3 className={cn(
+          Final Total Cost: <span className={cn(isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light", "text-4xl md:text-5xl")}>{formatCurrency(calculatedTotal, symbol)}</span>
+        </p>
+      </div>
+
+      {/* Booking Information / Important Details */}
+      <section className={cn(
+        "p-8 rounded-xl border space-y-6 overflow-hidden",
+        "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
+      )}>
+        <h3 className={cn(
             "text-3xl font-bold mb-6 text-center font-display",
             isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
           )}>Important Booking Details</h3>
-          <ul className={cn(
-            "list-disc list-inside text-lg space-y-2 pl-4 font-sans",
-            isLivePianoQuote ? "text-livePiano-light/90 [&>li::marker]:text-livePiano-primary" : "text-brand-dark/90 dark:text-brand-light/90 [&>li::marker]:text-brand-primary"
-          )}>
-            {isErinKennedyQuote ? (
-              <>
-                <li><strong className="text-brand-primary">Your final invoice for the base services to Erin Kennedy will be {formatCurrency(400, 'A$')}.</strong></li>
-                <li><strong className="text-brand-primary">A non-refundable 50% deposit ({formatCurrency(200, 'A$')}) is required immediately</strong> to formally secure the {quote.event_date || 'event'} date.</li>
-                <li>The remaining balance is due 7 days prior to the event.</li>
-                <li><strong className="text-brand-primary">Bank Details for Payment:</strong> BSB: 923100, ACC: 301110875</li>
-                <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by 3:00 PM.</li>
-                <li>To ensure thorough preparation, Daniele kindly requests PDF sheet music for all songs and a complete song list at least two weeks prior to the event (or earlier, if possible).</li>
-                <li>To facilitate efficient scheduling, please inform Daniele of the total number of students participating in the concert as soon as possible. Daniele will then work to schedule rehearsals in convenient, grouped time blocks.</li>
-              </>
-            ) : (
-              <>
-                <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit ({formatCurrency(requiredDeposit, symbol)}) is required immediately</strong> to formally secure the {quote.event_date || 'event'} date.</li>
-                {paymentTerms && <li>{paymentTerms}</li>}
-                {!paymentTerms && <li>The remaining balance is due 7 days prior to the event.</li>}
-                
-                {bankDetails && (
-                  <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>Bank Details for Payment:</strong> BSB: {bankDetails.bsb}, ACC: {bankDetails.acc}</li>
-                )}
-              </>
-            )}
-          </ul>
-        </section>
-
-        {/* Client Acceptance Form - WRAP EVERYTHING DYNAMIC INSIDE HERE */}
-        <section className={cn(
-          "p-8 rounded-xl border space-y-8 overflow-hidden",
-          isLivePianoQuote ? "bg-livePiano-darker border-livePiano-primary/50" : "bg-brand-light dark:bg-brand-dark-alt border-brand-primary/50"
+        <ul className={cn(
+          "list-disc list-inside text-lg space-y-2 pl-4 font-sans",
+          isLivePianoQuote ? "text-livePiano-light/90 [&>li::marker]:text-livePiano-primary" : "text-brand-dark/90 dark:text-brand-light/90 [&>li::marker]:text-brand-primary"
         )}>
-          <h3 className={cn(
+          {isErinKennedyQuote ? (
+            <>
+              <li><strong className="text-brand-primary">Your final invoice for the base services to Erin Kennedy will be {formatCurrency(400, 'A$')}.</strong></li>
+              <li><strong className="text-brand-primary">A non-refundable 50% deposit ({formatCurrency(200, 'A$')}) is required immediately</strong> to formally secure the {quote.event_date || 'event'} date.</li>
+              <li>The remaining balance is due 7 days prior to the event.</li>
+              <li><strong className="text-brand-primary">Bank Details for Payment:</strong> BSB: 923100, ACC: 301110875</li>
+              <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by 3:00 PM.</li>
+              <li>To ensure thorough preparation, Daniele kindly requests PDF sheet music for all songs and a complete song list at least two weeks prior to the event (or earlier, if possible).</li>
+              <li>To facilitate efficient scheduling, please inform Daniele of the total number of students participating in the concert as soon as possible. Daniele will then work to schedule rehearsals in convenient, grouped time blocks.</li>
+            </>
+          ) : (
+            <>
+              <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit ({formatCurrency(requiredDeposit, symbol)}) is required immediately</strong> to formally secure the {quote.event_date || 'event'} date.</li>
+              {paymentTerms && <li>{paymentTerms}</li>}
+              {!paymentTerms && <li>The remaining balance is due 7 days prior to the event.</li>}
+              
+              {bankDetails && (
+                <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>Bank Details for Payment:</strong> BSB: {bankDetails.bsb}, ACC: {bankDetails.acc}</li>
+              )}
+            </>
+          )}
+        </ul>
+      </section>
+
+      {/* Client Acceptance Form - WRAP EVERYTHING DYNAMIC INSIDE HERE */}
+      <section className={cn(
+        "p-8 rounded-xl border space-y-8 overflow-hidden",
+        isLivePianoQuote ? "bg-livePiano-darker border-livePiano-primary/50" : "bg-brand-light dark:bg-brand-dark-alt border-brand-primary/50"
+      )}>
+        <h3 className={cn(
             "text-3xl font-bold mb-6 text-center font-display",
             isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
           )}>Accept Your Quote</h3>
@@ -570,7 +697,7 @@ const DynamicQuotePage: React.FC = () => {
 
                         return (
                           <div key={item.id} className={cn(
-                            "flex flex-col sm:flex-row sm:items-center sm:justify-between w-full rounded-md border p-4 transition-all",
+                            "flex flex-col sm:flex-row sm:items-center sm:justify-between w-full rounded-md border p-4",
                             isLivePianoQuote ? "border-livePiano-border/50" : "border-brand-secondary/50",
                             currentQuantity > 0 ? (isLivePianoQuote ? "bg-livePiano-background/50" : "bg-brand-secondary/20 dark:bg-brand-dark/50") : (isLivePianoQuote ? "bg-livePiano-background/20" : "bg-brand-light dark:bg-brand-dark-alt")
                           )}>
@@ -597,8 +724,8 @@ const DynamicQuotePage: React.FC = () => {
                               </p>
                             </div>
                             
-                            <div className="flex items-center gap-4 sm:w-auto sm:flex-shrink-0 sm:justify-end">
-                              <div className="flex items-center space-x-2">
+                            <div className="flex items-center gap-2 sm:w-auto sm:flex-shrink-0 sm:justify-end"> {/* Reduced gap */}
+                              <div className="flex items-center space-x-1"> {/* Reduced space-x */}
                                 <Button
                                   type="button"
                                   variant="outline"
@@ -606,7 +733,7 @@ const DynamicQuotePage: React.FC = () => {
                                   onClick={() => handleQuantityChange(-1)}
                                   disabled={currentQuantity <= 0}
                                   className={cn(
-                                    "h-8 w-8",
+                                    "h-7 w-7", // Smaller buttons
                                     isLivePianoQuote ? "bg-livePiano-background border-livePiano-primary text-livePiano-primary hover:bg-livePiano-primary/20" : "border-brand-primary text-brand-primary hover:bg-brand-primary/10"
                                   )}
                                 >
@@ -616,7 +743,7 @@ const DynamicQuotePage: React.FC = () => {
                                   control={form.control}
                                   name={`selectedAddOns.${index}.quantity`}
                                   render={({ field }) => (
-                                    <FormItem className="w-16">
+                                    <FormItem className="w-12"> {/* Smaller width */}
                                       <FormControl>
                                         <Input
                                           type="number"
@@ -628,7 +755,7 @@ const DynamicQuotePage: React.FC = () => {
                                             field.onChange(isNaN(value) ? 0 : Math.max(0, Math.min(10, value)));
                                           }}
                                           className={cn(
-                                            "text-center h-8",
+                                            "text-center h-7 px-1", // Smaller height and padding
                                             isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light focus-visible:ring-brand-primary"
                                           )}
                                         />
@@ -643,7 +770,7 @@ const DynamicQuotePage: React.FC = () => {
                                   onClick={() => handleQuantityChange(1)}
                                   disabled={currentQuantity >= 10}
                                   className={cn(
-                                    "h-8 w-8",
+                                    "h-7 w-7", // Smaller buttons
                                     isLivePianoQuote ? "bg-livePiano-background border-livePiano-primary text-livePiano-primary hover:bg-livePiano-primary/20" : "border-brand-primary text-brand-primary hover:bg-brand-primary/10"
                                   )}
                                 >
@@ -651,7 +778,7 @@ const DynamicQuotePage: React.FC = () => {
                                 </Button>
                               </div>
                               <div className={cn(
-                                "text-3xl font-bold flex-shrink-0 min-w-[120px] text-right", // Adjusted width here
+                                "text-2xl font-bold flex-shrink-0 min-w-[140px] text-right font-sans", // Adjusted width here
                                 isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
                               )}>
                                 {formatCurrency(subtotal, symbol)}
