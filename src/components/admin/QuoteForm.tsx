@@ -92,9 +92,14 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
   const emailContent = form.watch('emailContent'); // Watch new field
 
   const totalAmount = React.useMemo(() => {
-    let total = baseServiceAmount || 0;
+    // Ensure baseServiceAmount is treated as a number, defaulting to 0 if invalid
+    const base = typeof baseServiceAmount === 'number' ? baseServiceAmount : parseFloat(String(baseServiceAmount)) || 0;
+    
+    let total = base;
     addOns?.forEach((addOn: { cost: number }) => {
-      total += addOn.cost || 0;
+      // Ensure addOn.cost is treated as a number, defaulting to 0 if invalid
+      const cost = typeof addOn.cost === 'number' ? addOn.cost : parseFloat(String(addOn.cost)) || 0;
+      total += cost;
     });
     return total;
   }, [baseServiceAmount, addOns]);
