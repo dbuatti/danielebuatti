@@ -97,10 +97,14 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
   }, [totalAmount, depositPercentage]);
 
   const handleAutoGenerate = async () => {
+    console.log("Attempting AI Quote Generation...");
+    
     if (!emailContent || emailContent.trim().length < 50) {
-      toast.warning("Please paste the email conversation content into the field above before auto-generating.");
+      toast.warning("Please paste the full email conversation content (at least 50 characters) into the field above before auto-generating.");
       return;
     }
+    
+    console.log("Input content length:", emailContent.trim().length);
 
     const result = await generateQuote(emailContent);
 
