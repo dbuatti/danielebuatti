@@ -1,5 +1,7 @@
+"use client";
+
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom'; // Import Link
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -160,12 +162,12 @@ const AdminQuoteDetailsPage: React.FC = () => {
     quoteId: quote.id,
     quoteType: quote.invoice_type,
     eventTitle: quote.event_title || 'N/A',
-    eventDate: (quote.event_date && quote.event_date !== '') ? format(new Date(quote.event_date), 'PPP') : 'N/A', // Added robust check
+    eventDate: (quote.event_date && quote.event_date !== '') ? format(new Date(quote.event_date), 'EEEE d MMMM yyyy') : 'N/A', // Updated format
     eventLocation: quote.event_location || 'N/A',
     preparedBy: quote.prepared_by || 'N/A',
     totalAmount: `A$${quote.total_amount.toFixed(2)}`,
     quoteStatus: currentStatus,
-    quoteCreatedAt: (quote.created_at && quote.created_at !== '') ? format(new Date(quote.created_at), 'PPP p') : 'N/A', // Added robust check
+    quoteCreatedAt: (quote.created_at && quote.created_at !== '') ? format(new Date(quote.created_at), 'PPP p') : 'N/A',
     // Add other quote-specific details from the 'details' JSONB column if needed
     ...quote.details, // Spread all properties from the 'details' JSONB column
   };
@@ -189,12 +191,12 @@ const AdminQuoteDetailsPage: React.FC = () => {
             <p><strong>Client Email:</strong> {quote.client_email}</p>
             <p><strong>Quote Type:</strong> {quote.invoice_type}</p>
             {quote.event_title && <p><strong>Event Title:</strong> {quote.event_title}</p>}
-            {(quote.event_date && quote.event_date !== '') && <p><strong>Event Date:</strong> {format(new Date(quote.event_date), 'PPP')}</p>} {/* Added robust check */}
+            {(quote.event_date && quote.event_date !== '') && <p><strong>Event Date:</strong> {format(new Date(quote.event_date), 'EEEE d MMMM yyyy')}</p>} {/* Updated format */}
             {quote.event_location && <p><strong>Event Location:</strong> {quote.event_location}</p>}
             {quote.prepared_by && <p><strong>Prepared By:</strong> {quote.prepared_by}</p>}
-            <p><strong>Created At:</strong> {(quote.created_at && quote.created_at !== '') ? format(new Date(quote.created_at), 'PPP p') : 'N/A'}</p> {/* Added robust check */}
-            {(quote.accepted_at && quote.accepted_at !== '') && <p><strong>Accepted On:</strong> {format(new Date(quote.accepted_at), 'PPP p')}</p>} {/* Added robust check */}
-            {(quote.rejected_at && quote.rejected_at !== '') && <p><strong>Rejected On:</strong> {format(new Date(quote.rejected_at), 'PPP p')}</p>} {/* Added robust check */}
+            <p><strong>Created At:</strong> {(quote.created_at && quote.created_at !== '') ? format(new Date(quote.created_at), 'PPP p') : 'N/A'}</p>
+            {(quote.accepted_at && quote.accepted_at !== '') && <p><strong>Accepted On:</strong> {format(new Date(quote.accepted_at), 'PPP p')}</p>}
+            {(quote.rejected_at && quote.rejected_at !== '') && <p><strong>Rejected On:</strong> {format(new Date(quote.rejected_at), 'PPP p')}</p>}
           </div>
 
           {/* Display details from the JSONB column if available */}

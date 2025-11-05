@@ -24,6 +24,9 @@ serve(async (req: Request) => {
 
     const { client_name, client_email, selected_package_id, has_add_on, total_amount, event_date, event_location, quote_title, quote_prepared_by, created_at } = record;
 
+    // Format event_date for display
+    const formattedEventDate = event_date ? new Date(event_date).toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A';
+
     // Retrieve secrets for email service
     const EMAIL_SERVICE_API_KEY = Deno.env.get('EMAIL_SERVICE_API_KEY');
     const CONTACT_FORM_RECIPIENT_EMAIL = Deno.env.get('CONTACT_FORM_RECIPIENT_EMAIL'); // Your email
@@ -70,7 +73,7 @@ serve(async (req: Request) => {
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Event Date:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${event_date}</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${formattedEventDate}</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Event Location:</td>

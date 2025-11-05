@@ -104,6 +104,9 @@ serve(async (req: Request) => { // Added type annotation for 'req'
       throw new Error('No record returned after insertion.');
     }
 
+    // Format event_date for display
+    const formattedEventDate = insertedRecord.event_date ? new Date(insertedRecord.event_date).toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A';
+
     // Retrieve secrets for email service
     const EMAIL_SERVICE_API_KEY = Deno.env.get('EMAIL_SERVICE_API_KEY');
     const CONTACT_FORM_RECIPIENT_EMAIL = Deno.env.get('CONTACT_FORM_RECIPIENT_EMAIL');
@@ -152,7 +155,7 @@ serve(async (req: Request) => { // Added type annotation for 'req'
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Event Date:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${insertedRecord.event_date}</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${formattedEventDate}</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Event Location:</td>

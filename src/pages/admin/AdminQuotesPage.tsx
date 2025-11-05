@@ -117,7 +117,7 @@ const AdminQuotesPage: React.FC = () => {
                     <TableRow key={quote.id} className="hover:bg-brand-secondary/5 dark:hover:bg-brand-dark/30">
                       <TableCell className="font-medium text-brand-dark dark:text-brand-light">{quote.client_name}</TableCell>
                       <TableCell className="text-brand-dark/80 dark:text-brand-light/80">{quote.invoice_type}</TableCell>
-                      <TableCell className="text-brand-dark/80 dark:text-brand-light/80">{quote.event_date || 'N/A'}</TableCell>
+                      <TableCell className="text-brand-dark/80 dark:text-brand-light/80">{quote.event_date && format(new Date(quote.event_date), 'EEEE d MMMM yyyy') || 'N/A'}</TableCell>
                       <TableCell className="text-right font-semibold text-brand-primary">A${quote.total_amount.toFixed(2)}</TableCell>
                       <TableCell className="text-brand-dark/70 dark:text-brand-light/70">{format(new Date(quote.accepted_at), 'PPP p')}</TableCell>
                       <TableCell className="text-center flex gap-2 justify-center">

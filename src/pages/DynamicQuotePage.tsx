@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { cn, formatCurrency } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { format } from 'date-fns'; // Ensure format is imported
 
 interface Quote {
   id: string;
@@ -405,7 +406,7 @@ const DynamicQuotePage: React.FC = () => {
             isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
           )}>
             <p>Prepared for: <strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>{quote.client_name}</strong></p>
-            <p>Date of Event: {quote.event_date || 'N/A'}</p>
+            <p>Date of Event: {quote.event_date && format(new Date(quote.event_date), 'EEEE d MMMM yyyy') || 'N/A'}</p>
             {isErinKennedyQuote ? <p>Time: 3:00 PM – 6:00 PM</p> : eventTime && <p>Time: {eventTime}</p>}
             <p>Location: {quote.event_location || 'N/A'}</p>
             <p>Prepared by: {quote.prepared_by || 'N/A'}</p>
@@ -491,7 +492,7 @@ const DynamicQuotePage: React.FC = () => {
               </>
             ) : (
               <>
-                <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit ({symbol}{requiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {quote.event_date || 'event'} date.</li>
+                <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit ({symbol}{requiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {quote.event_date && format(new Date(quote.event_date), 'EEEE d MMMM yyyy') || 'event'} date.</li>
                 {paymentTerms && <li>{paymentTerms}</li>}
                 {!paymentTerms && <li>The remaining balance is due 7 days prior to the event.</li>}
                 
@@ -727,7 +728,7 @@ const DynamicQuotePage: React.FC = () => {
                           "text-base font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
                           isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
                         )}>
-                          I, <span className={isLivePianoQuote ? "text-livePiano-primary font-semibold" : "text-brand-primary font-semibold"}>{form.watch("clientName") || quote.client_name || "Your Name"}</span>, accept this quote for the {quote.event_title || quote.invoice_type} on {quote.event_date || 'the specified date'}.
+                          I, <span className={isLivePianoQuote ? "text-livePiano-primary font-semibold" : "text-brand-primary font-semibold"}>{form.watch("clientName") || quote.client_name || "Your Name"}</span>, accept this quote for the {quote.event_title || quote.invoice_type} on {quote.event_date && format(new Date(quote.event_date), 'EEEE d MMMM yyyy') || 'the specified date'}.
                         </FormLabel>
                         <FormMessage />
                       </div>
