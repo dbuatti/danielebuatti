@@ -540,7 +540,7 @@ const DynamicQuotePage: React.FC = () => {
               isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
             )}>Optional Add-Ons</h3>
             <div className="space-y-4 max-w-2xl mx-auto">
-              {quote.details.addOns.map((item: AddOnItem, index: number) => {
+              {addOnFields.map((item: AddOnItem, index: number) => {
                 const cost = parseFloat(String(item.cost)) || 0;
                 const currentQuantity = parseFloat(String(form.watch(`selectedAddOns.${index}.quantity`))) || 0;
                 const subtotal = cost * currentQuantity;
@@ -551,7 +551,7 @@ const DynamicQuotePage: React.FC = () => {
                 };
 
                 return (
-                  <div key={index} className={cn(
+                  <div key={item.id} className={cn(
                     "flex flex-col sm:flex-row sm:items-center sm:justify-between w-full rounded-md border p-4 transition-all",
                     isLivePianoQuote ? "border-livePiano-border/50" : "border-brand-secondary/50",
                     currentQuantity > 0 ? (isLivePianoQuote ? "bg-livePiano-background/50" : "bg-brand-secondary/20 dark:bg-brand-dark/50") : (isLivePianoQuote ? "bg-livePiano-background/20" : "bg-brand-light dark:bg-brand-dark-alt")
