@@ -8,26 +8,8 @@ import QuoteForm, { QuoteFormValues } from '@/components/admin/QuoteForm';
 import { supabase } from '@/integrations/supabase/client';
 import { createSlug } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import QuoteDisplay from '@/components/admin/QuoteDisplay';
+import QuoteDisplay, { Quote } from '@/components/admin/QuoteDisplay'; // Corrected import
 import { ScrollArea } from '@/components/ui/scroll-area';
-
-// Re-using the Quote type from QuoteDisplay for consistency
-interface QuoteDisplayData {
-  client_name?: string;
-  client_email?: string;
-  event_title?: string;
-  invoice_type?: string;
-  event_date?: string;
-  event_location?: string; // Added missing property
-  prepared_by?: string; // Added missing property
-  total_amount: number;
-  requiredDeposit: number;
-  depositPercentage: number;
-  paymentTerms?: string;
-  bankDetails?: { bsb: string; acc: string };
-  addOns?: { name: string; description?: string; cost: number; quantity: number }[];
-  currencySymbol?: string;
-}
 
 const AdminQuoteBuilderPage: React.FC = () => {
   const navigate = useNavigate();
@@ -125,36 +107,34 @@ const AdminQuoteBuilderPage: React.FC = () => {
     }
   };
 
-  // Transform form values into QuoteDisplayData structure for preview
-  const getPreviewData = (values: QuoteFormValues): QuoteDisplayData | null => {
-    if (!values.clientName || !values.eventTitle) return null;
-
+  // Transform form values into Quote interface structure for preview
+  const getPreviewData = (values: QuoteFormValues): Quote => {
     const totalAmount = values.baseServiceAmount + (values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => sum + (addOn.cost * addOn.quantity), 0) || 0);
     const requiredDeposit = totalAmount * (values.depositPercentage / 100);
 
     return {
       client_name: values.clientName,
+      client_email: values.clientEmail,
       event_title: values.eventTitle,
+      invoice_type: values.invoiceType,
       event_date: values.eventDate,
       event_location: values.eventLocation,
       prepared_by: values.preparedBy,
       total_amount: totalAmount,
-      details: {
-        baseService: {
-          description: values.baseServiceDescription,
-          amount: values.baseServiceAmount,
-        },
-        addOns: values.addOns || [],
-        depositPercentage: values.depositPercentage,
-        requiredDeposit: requiredDeposit,
-        bankDetails: {
-          bsb: values.bankBSB,
-          acc: values.bankACC,
-        },
-        eventTime: values.eventTime,
-        currencySymbol: values.currencySymbol,
-        paymentTerms: values.paymentTerms,
+      requiredDeposit: requiredDeposit,
+      depositPercentage: values.depositPercentage,
+      paymentTerms: values.paymentTerms,
+      bankDetails: {
+        bsb: values.bankBSB,
+        acc: values.bankACC,
       },
+      addOns: values.addOns || [],
+      currencySymbol: values.currencySymbol,
+      baseService: {
+        description: values.baseServiceDescription,
+        amount: values.baseServiceAmount,
+      },
+      eventTime: values.eventTime,
     };
   };
 
@@ -173,7 +153,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
           <QuoteForm 
             onSubmit={handleCreateQuote} 
             isSubmitting={isSubmitting} 
-            onPreview={handlePreviewQuote} // Pass the handler down
+            onPreview={handlePreviewQuote}
           />
         </CardContent>
       </Card>
@@ -187,9 +167,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
           <ScrollArea className="h-[calc(90vh-70px)]">
             {previewData ? (
               <QuoteDisplay 
-                quote={getPreviewData(previewData)!}
+                quote={getPreviewData(previewData)}
                 isLivePianoTheme={previewData.invoiceType.toLowerCase().includes('live piano')}
-                isErinKennedyQuote={false} // Default to false for now
+                isErinKennedyQuote={previewData.invoiceType === 'Erin Kennedy Quote'}
               />
             ) : (
               <div className="p-8 text-center">No preview data available.</div>

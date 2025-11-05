@@ -11,7 +11,7 @@ import { useTheme } from "next-themes";
 import { toast } from 'sonner';
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import * as z from "zod"; // Corrected import
 import {
   Form,
   FormControl,
@@ -21,7 +21,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
@@ -45,7 +45,7 @@ interface Quote {
 const genericQuoteAcceptanceSchema = z.object({
   clientName: z.string().min(2, { message: "Your full name is required." }),
   clientEmail: z.string().email({ message: "A valid email address is required." }),
-  acceptTerms: z.boolean().refine(val => val === true, { message: "You must accept the terms to proceed." }),
+  acceptTerms: z.boolean().refine((val: boolean) => val === true, { message: "You must accept the terms to proceed." }), // Explicitly typed 'val'
   selectedAddOns: z.array(z.object({
     name: z.string(),
     cost: z.number(),
@@ -53,6 +53,8 @@ const genericQuoteAcceptanceSchema = z.object({
     description: z.string().optional(),
   })).optional(),
 });
+
+type QuoteFormValues = z.infer<typeof genericQuoteAcceptanceSchema>; // Defined type
 
 const DynamicQuotePage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -63,7 +65,7 @@ const DynamicQuotePage: React.FC = () => {
   const { theme } = useTheme();
 
   // Form hook for generic acceptance
-  const form = useForm<z.infer<typeof genericQuoteAcceptanceSchema>>({
+  const form = useForm<QuoteFormValues>({ // Used defined type
     resolver: zodResolver(genericQuoteAcceptanceSchema),
     defaultValues: {
       clientName: '',
@@ -73,7 +75,7 @@ const DynamicQuotePage: React.FC = () => {
     },
   });
 
-  const { fields: addOnFields, update: updateAddOnField } = useFieldArray({
+  const { fields: addOnFields, update: updateAddOnField } = useFieldArray<QuoteFormValues, "selectedAddOns", "id">({ // Explicitly typed useFieldArray
     control: form.control,
     name: "selectedAddOns",
   });
@@ -121,7 +123,7 @@ const DynamicQuotePage: React.FC = () => {
     };
 
     fetchQuote();
-  }, [slug]); // Removed form from dependency array to prevent infinite loop, relying on manual reset above
+  }, [slug, form]); // Added form to dependency array for reset to work correctly
 
   // Watch selected add-ons and base service amount for dynamic total calculation
   const watchedAddOns = form.watch('selectedAddOns');
@@ -135,7 +137,7 @@ const DynamicQuotePage: React.FC = () => {
     
     let total = baseAmount;
     
-    watchedAddOns?.forEach(addOn => {
+    watchedAddOns?.forEach((addOn: { cost: number, quantity: number }) => { // Explicitly typed addOn
       const quantity = parseFloat(String(addOn.quantity)) || 0;
       const cost = parseFloat(String(addOn.cost)) || 0;
       total += cost * quantity;
@@ -178,8 +180,8 @@ const DynamicQuotePage: React.FC = () => {
   const isLivePianoQuote = quote.invoice_type.toLowerCase().includes("live piano");
   const isErinKennedyQuote = quote.invoice_type === "Erin Kennedy Quote";
 
-  // Handle form submission for generic quote acceptance
-  async function onSubmitGeneric(values: z.infer<typeof genericQuoteAcceptanceSchema>) {
+  // Handle form submission for generic acceptance
+  async function onSubmitGeneric(values: QuoteFormValues) { // Used defined type
     const loadingToastId = toast.loading("Submitting your acceptance...");
     
     // Filter out add-ons where quantity is 0
@@ -543,7 +545,7 @@ const DynamicQuotePage: React.FC = () => {
             </div>
           ) : (
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmitGeneric)} className="space-y-6 max-w-xl mx-auto">
+              <form onSubmit={form.handleSubmit(onSubmitGeneric)} className="space-y-6 max-w-2xl mx-auto">
                 
                 {/* MOVED: Optional Add-Ons Section (Generic) - Now interactive with quantity */}
                 {addOnFields.length > 0 && !isErinKennedyQuote && (
@@ -656,7 +658,7 @@ const DynamicQuotePage: React.FC = () => {
                   </div>
                 )}
 
-                {/* MOVED: Total Estimated Cost (Now Dynamic) */}
+                {/* Final Total Cost Display */}
                 <div className={cn(
                   "text-center mt-10 p-6 rounded-lg border",
                   isLivePianoQuote ? "bg-livePiano-primary/10 border-livePiano-primary/30" : "bg-brand-primary/10 border-brand-primary/30"
@@ -665,7 +667,13 @@ const DynamicQuotePage: React.FC = () => {
                     "text-2xl md:text-3xl font-bold",
                     isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
                   )}>
-                    Final Total Cost: <span className={cn(isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light", "text-4xl md:text-5xl")}>{symbol}{calculatedTotal.toFixed(2)}</span>
+                    Final Total Cost: <span className={cn(isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light", "text-4xl md:text-5xl")}>{formatCurrency(calculatedTotal, symbol)}</span>
+                  </p>
+                  <p className={cn(
+                    "text-xl text-center max-w-3xl mx-auto",
+                    isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
+                  )}>
+                    This includes your selected add-ons and the base quote amount.
                   </p>
                 </div>
               
