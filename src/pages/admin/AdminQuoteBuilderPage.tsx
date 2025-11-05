@@ -18,7 +18,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
     try {
       // Calculate total amount and deposit based on form values
-      const totalAmount = values.baseServiceAmount + (values.addOns?.reduce((sum, addOn) => sum + addOn.cost, 0) || 0);
+      const totalAmount = values.baseServiceAmount + (values.addOns?.reduce((sum: number, addOn: { cost: number }) => sum + addOn.cost, 0) || 0);
       const requiredDeposit = totalAmount * (values.depositPercentage / 100);
 
       // Generate a base slug

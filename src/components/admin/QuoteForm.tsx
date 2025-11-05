@@ -3,7 +3,7 @@
 import React from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import *s z from 'zod';
+import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -80,7 +80,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
 
   const totalAmount = React.useMemo(() => {
     let total = baseServiceAmount || 0;
-    addOns?.forEach(addOn => {
+    addOns?.forEach((addOn: { cost: number }) => {
       total += addOn.cost || 0;
     });
     return total;
@@ -281,49 +281,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
           >
             <PlusCircle className="mr-2 h-4 w-4" /> Add Add-on
           </Button>
-        </div>
-
-        <h3 className="text-xl font-semibold text-brand-primary mt-8">Payment Details</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="depositPercentage"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Deposit Percentage (%)</FormLabel>
-                <FormControl>
-                  <Input type="number" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="bankBSB"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Bank BSB</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="bankACC"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Bank Account Number</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </div>
 
         <div className="mt-8 p-6 bg-brand-primary/10 rounded-lg border border-brand-primary/30 shadow-lg text-center space-y-2">
