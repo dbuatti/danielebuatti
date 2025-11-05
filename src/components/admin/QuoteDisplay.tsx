@@ -347,7 +347,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
 
       {/* Acceptance Status (Only for preview/admin view) */}
       {(isAccepted || isRejected) && (
-        <div className="text-center space-y-4 p-6 rounded-xl bg-brand-secondary/20 dark:bg-brand-dark/50 font-sans">
+        <div className="text-center space-y-4 font-sans p-6 rounded-xl bg-brand-secondary/20 dark:bg-brand-dark/50">
           {isAccepted && (
             <p className="text-2xl font-bold text-green-500">This quote has been accepted.</p>
           )}
