@@ -430,7 +430,7 @@ const DynamicQuotePage: React.FC = () => {
           )} />
         </section>
 
-        {/* Conditional Quote Breakdown Rendering */}
+        {/* Conditional Quote Breakdown Rendering (Non-interactive parts) */}
         {isErinKennedyQuote ? (
           renderErinKennedyQuote()
         ) : (
@@ -480,137 +480,10 @@ const DynamicQuotePage: React.FC = () => {
                 </p>
               </section>
             )}
-
-            {/* Optional Add-Ons Section (Generic) - Now interactive with quantity */}
-            {addOnFields.length > 0 && (
-              <section className={cn(
-                "p-8 rounded-xl shadow-2xl border space-y-8",
-                isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
-              )}>
-                <h3 className="text-3xl font-bold mb-6 text-center text-shadow-sm text-brand-dark dark:text-brand-light">Optional Add-Ons (Adjust Quantity)</h3>
-                <div className="space-y-4 max-w-2xl mx-auto">
-                  {addOnFields.map((item, index) => {
-                    const cost = parseFloat(String(item.cost)) || 0;
-                    const currentQuantity = parseFloat(String(form.watch(`selectedAddOns.${index}.quantity`))) || 0;
-                    const subtotal = cost * currentQuantity;
-                    
-                    const handleQuantityChange = (delta: number) => {
-                      const newQuantity = Math.max(0, Math.min(10, currentQuantity + delta));
-                      updateAddOnField(index, { ...item, quantity: newQuantity });
-                    };
-
-                    return (
-                      <div key={item.id} className={cn(
-                        "flex flex-col sm:flex-row sm:items-center sm:justify-between w-full rounded-md border p-4 transition-all",
-                        isLivePianoQuote ? "border-livePiano-border/50" : "border-brand-secondary/50",
-                        currentQuantity > 0 ? (isLivePianoQuote ? "bg-livePiano-background/50" : "bg-brand-secondary/20 dark:bg-brand-dark/50") : (isLivePianoQuote ? "bg-livePiano-background/20" : "bg-brand-light dark:bg-brand-dark-alt")
-                      )}>
-                        <div className="space-y-1 leading-none mb-4 sm:mb-0 sm:w-1/2">
-                          <p className={cn(
-                            "text-xl font-bold leading-none",
-                            isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
-                          )}>
-                            {item.name}
-                          </p>
-                          {item.description && (
-                            <p className={cn(
-                              "text-base",
-                              isLivePianoQuote ? "text-livePiano-light/70" : "text-brand-dark/70 dark:text-brand-light/70"
-                            )}>
-                              {item.description}
-                            </p>
-                          )}
-                          <p className={cn(
-                            "text-sm italic",
-                            isLivePianoQuote ? "text-livePiano-light/60" : "text-brand-dark/60 dark:text-brand-light/60"
-                          )}>
-                            Unit Cost: {symbol}{cost.toFixed(2)}
-                          </p>
-                        </div>
-                        
-                        <div className="flex items-center gap-4 sm:w-1/2 sm:justify-end">
-                          <div className="flex items-center space-x-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="icon"
-                              onClick={() => handleQuantityChange(-1)}
-                              disabled={currentQuantity <= 0}
-                              className={cn(
-                                "h-8 w-8",
-                                isLivePianoQuote ? "bg-livePiano-background border-livePiano-primary text-livePiano-primary hover:bg-livePiano-primary/20" : "border-brand-primary text-brand-primary hover:bg-brand-primary/10"
-                              )}
-                            >
-                              <Minus className="h-4 w-4" />
-                            </Button>
-                            <FormField
-                              control={form.control}
-                              name={`selectedAddOns.${index}.quantity`}
-                              render={({ field }) => (
-                                <FormItem className="w-16">
-                                  <FormControl>
-                                    <Input
-                                      type="number"
-                                      min={0}
-                                      max={10}
-                                      {...field}
-                                      onChange={(e) => {
-                                        const value = parseInt(e.target.value);
-                                        field.onChange(isNaN(value) ? 0 : Math.max(0, Math.min(10, value)));
-                                      }}
-                                      className={cn(
-                                        "text-center h-8",
-                                        isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light focus-visible:ring-livePiano-primary" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light focus-visible:ring-brand-primary"
-                                      )}
-                                    />
-                                  </FormControl>
-                                </FormItem>
-                              )}
-                            />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="icon"
-                              onClick={() => handleQuantityChange(1)}
-                              disabled={currentQuantity >= 10}
-                              className={cn(
-                                "h-8 w-8",
-                                isLivePianoQuote ? "bg-livePiano-background border-livePiano-primary text-livePiano-primary hover:bg-livePiano-primary/20" : "border-brand-primary text-brand-primary hover:bg-brand-primary/10"
-                              )}
-                            >
-                              <Plus className="h-4 w-4" />
-                            </Button>
-                          </div>
-                          <div className={cn(
-                            "text-3xl font-bold flex-shrink-0 w-24 text-right",
-                            isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
-                          )}>
-                            {symbol}{subtotal.toFixed(2)}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </section>
-            )}
           </>
         )}
 
-        {/* Total Estimated Cost (Now Dynamic) */}
-        <div className={cn(
-          "text-center mt-10 p-6 rounded-lg border shadow-lg",
-          isLivePianoQuote ? "bg-livePiano-primary/10 border-livePiano-primary/30" : "bg-brand-primary/10 border-brand-primary/30"
-        )}>
-          <p className={cn(
-            "text-2xl md:text-3xl font-bold",
-            isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
-          )}>
-            Final Total Cost: <span className={cn(isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light", "text-4xl md:text-5xl")}>{symbol}{calculatedTotal.toFixed(2)}</span>
-          </p>
-        </div>
-
-        {/* Booking Information / Important Details */}
+        {/* Booking Information / Important Details - KEEP OUTSIDE FORM */}
         <section className={cn(
           "p-8 rounded-xl shadow-2xl border space-y-6",
           isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
@@ -647,7 +520,7 @@ const DynamicQuotePage: React.FC = () => {
           </ul>
         </section>
 
-        {/* Client Acceptance Form */}
+        {/* Client Acceptance Form - WRAP EVERYTHING DYNAMIC INSIDE HERE */}
         <section className={cn(
           "p-8 rounded-xl shadow-2xl border space-y-8",
           isLivePianoQuote ? "bg-livePiano-darker border-livePiano-primary/50" : "bg-brand-light dark:bg-brand-dark-alt border-brand-primary/50"
@@ -669,7 +542,133 @@ const DynamicQuotePage: React.FC = () => {
               </Button>
             </div>
           ) : (
-            <>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmitGeneric)} className="space-y-6 max-w-xl mx-auto">
+                
+                {/* MOVED: Optional Add-Ons Section (Generic) - Now interactive with quantity */}
+                {addOnFields.length > 0 && !isErinKennedyQuote && (
+                  <div className="space-y-8">
+                    <h4 className="text-2xl font-bold text-center text-shadow-sm text-brand-dark dark:text-brand-light">Adjust Optional Add-Ons</h4>
+                    <div className="space-y-4 max-w-2xl mx-auto">
+                      {addOnFields.map((item, index) => {
+                        const cost = parseFloat(String(item.cost)) || 0;
+                        const currentQuantity = parseFloat(String(form.watch(`selectedAddOns.${index}.quantity`))) || 0;
+                        const subtotal = cost * currentQuantity;
+                        
+                        const handleQuantityChange = (delta: number) => {
+                          const newQuantity = Math.max(0, Math.min(10, currentQuantity + delta));
+                          updateAddOnField(index, { ...item, quantity: newQuantity });
+                        };
+
+                        return (
+                          <div key={item.id} className={cn(
+                            "flex flex-col sm:flex-row sm:items-center sm:justify-between w-full rounded-md border p-4 transition-all",
+                            isLivePianoQuote ? "border-livePiano-border/50" : "border-brand-secondary/50",
+                            currentQuantity > 0 ? (isLivePianoQuote ? "bg-livePiano-background/50" : "bg-brand-secondary/20 dark:bg-brand-dark/50") : (isLivePianoQuote ? "bg-livePiano-background/20" : "bg-brand-light dark:bg-brand-dark-alt")
+                          )}>
+                            <div className="space-y-1 leading-none mb-4 sm:mb-0 sm:w-1/2">
+                              <p className={cn(
+                                "text-xl font-bold leading-none",
+                                isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
+                              )}>
+                                {item.name}
+                              </p>
+                              {item.description && (
+                                <p className={cn(
+                                  "text-base",
+                                  isLivePianoQuote ? "text-livePiano-light/70" : "text-brand-dark/70 dark:text-brand-light/70"
+                                )}>
+                                  {item.description}
+                                </p>
+                              )}
+                              <p className={cn(
+                                "text-sm italic",
+                                isLivePianoQuote ? "text-livePiano-light/60" : "text-brand-dark/60 dark:text-brand-light/60"
+                              )}>
+                                Unit Cost: {symbol}{cost.toFixed(2)}
+                              </p>
+                            </div>
+                            
+                            <div className="flex items-center gap-4 sm:w-1/2 sm:justify-end">
+                              <div className="flex items-center space-x-2">
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="icon"
+                                  onClick={() => handleQuantityChange(-1)}
+                                  disabled={currentQuantity <= 0}
+                                  className={cn(
+                                    "h-8 w-8",
+                                    isLivePianoQuote ? "bg-livePiano-background border-livePiano-primary text-livePiano-primary hover:bg-livePiano-primary/20" : "border-brand-primary text-brand-primary hover:bg-brand-primary/10"
+                                  )}
+                                >
+                                  <Minus className="h-4 w-4" />
+                                </Button>
+                                <FormField
+                                  control={form.control}
+                                  name={`selectedAddOns.${index}.quantity`}
+                                  render={({ field }) => (
+                                    <FormItem className="w-16">
+                                      <FormControl>
+                                        <Input
+                                          type="number"
+                                          min={0}
+                                          max={10}
+                                          {...field}
+                                          onChange={(e) => {
+                                            const value = parseInt(e.target.value);
+                                            field.onChange(isNaN(value) ? 0 : Math.max(0, Math.min(10, value)));
+                                          }}
+                                          className={cn(
+                                            "text-center h-8",
+                                            isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light focus-visible:ring-brand-primary"
+                                          )}
+                                        />
+                                      </FormControl>
+                                    </FormItem>
+                                  )}
+                                />
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="icon"
+                                  onClick={() => handleQuantityChange(1)}
+                                  disabled={currentQuantity >= 10}
+                                  className={cn(
+                                    "h-8 w-8",
+                                    isLivePianoQuote ? "bg-livePiano-background border-livePiano-primary text-livePiano-primary hover:bg-livePiano-primary/20" : "border-brand-primary text-brand-primary hover:bg-brand-primary/10"
+                                  )}
+                                >
+                                  <Plus className="h-4 w-4" />
+                                </Button>
+                              </div>
+                              <div className={cn(
+                                "text-3xl font-bold flex-shrink-0 w-24 text-right",
+                                isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
+                              )}>
+                                {symbol}{subtotal.toFixed(2)}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* MOVED: Total Estimated Cost (Now Dynamic) */}
+                <div className={cn(
+                  "text-center mt-10 p-6 rounded-lg border shadow-lg",
+                  isLivePianoQuote ? "bg-livePiano-primary/10 border-livePiano-primary/30" : "bg-brand-primary/10 border-brand-primary/30"
+                )}>
+                  <p className={cn(
+                    "text-2xl md:text-3xl font-bold",
+                    isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
+                  )}>
+                    Final Total Cost: <span className={cn(isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light", "text-4xl md:text-5xl")}>{symbol}{calculatedTotal.toFixed(2)}</span>
+                  </p>
+                </div>
+              
               <p className={cn(
                 "text-xl text-center max-w-3xl mx-auto",
                 isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
@@ -677,94 +676,90 @@ const DynamicQuotePage: React.FC = () => {
                 Please fill out your details below to formally accept this quote.
               </p>
 
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmitGeneric)} className="space-y-6 max-w-xl mx-auto">
-                  <FormField
-                    control={form.control}
-                    name="clientName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>Your Full Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={quote.client_name || "Your Name"}
-                            className={cn(
-                              isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60 focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
-                            )}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="clientEmail"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>Your Email Address</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="email"
-                            placeholder={quote.client_email || "your@email.com"}
-                            className={cn(
-                              isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60 focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
-                            )}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="acceptTerms"
-                    render={({ field }) => (
-                      <FormItem className={cn(
-                        "flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4",
-                        isLivePianoQuote ? "border-livePiano-border/50" : "border-brand-secondary"
+              <FormField
+                control={form.control}
+                name="clientName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>Your Full Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={quote.client_name || "Your Name"}
+                        className={cn(
+                          isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60 focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                        )}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="clientEmail"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>Your Email Address</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder={quote.client_email || "your@email.com"}
+                        className={cn(
+                          isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60 focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                        )}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="acceptTerms"
+                render={({ field }) => (
+                  <FormItem className={cn(
+                    "flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4",
+                    isLivePianoQuote ? "border-livePiano-border/50" : "border-brand-secondary"
+                  )}>
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        id="accept-terms"
+                        className={cn(
+                          "h-5 w-5 mt-1",
+                          isLivePianoQuote ? "border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" : "border-brand-primary text-brand-dark data-[state=checked]:bg-brand-primary data-[state=checked]:text-brand-light"
+                        )}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel htmlFor="accept-terms" className={cn(
+                        "text-base font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+                        isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
                       )}>
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                            id="accept-terms"
-                            className={cn(
-                              "h-5 w-5 mt-1",
-                              isLivePianoQuote ? "border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" : "border-brand-primary text-brand-dark data-[state=checked]:bg-brand-primary data-[state=checked]:text-brand-light"
-                            )}
-                          />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel htmlFor="accept-terms" className={cn(
-                            "text-base font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
-                            isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
-                          )}>
-                            I, <span className={isLivePianoQuote ? "text-livePiano-primary font-semibold" : "text-brand-primary font-semibold"}>{form.watch("clientName") || quote.client_name || "Your Name"}</span>, accept this quote for the {quote.event_title || quote.invoice_type} on {quote.event_date || 'the specified date'}.
-                          </FormLabel>
-                          <FormMessage />
-                        </div>
-                      </FormItem>
-                    )}
-                  />
+                        I, <span className={isLivePianoQuote ? "text-livePiano-primary font-semibold" : "text-brand-primary font-semibold"}>{form.watch("clientName") || quote.client_name || "Your Name"}</span>, accept this quote for the {quote.event_title || quote.invoice_type} on {quote.event_date || 'the specified date'}.
+                      </FormLabel>
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
 
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className={cn(
-                      "w-full text-xl py-7 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105",
-                      isLivePianoQuote ? "bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-darker" : "bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-                    )}
-                    disabled={form.formState.isSubmitting || !form.formState.isValid}
-                  >
-                    {form.formState.isSubmitting ? "Submitting..." : `Accept Quote for ${symbol}${calculatedTotal.toFixed(2)}`}
-                  </Button>
-                </form>
-              </Form>
-            </>
-          )}
+              <Button
+                type="submit"
+                size="lg"
+                className={cn(
+                  "w-full text-xl py-7 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105",
+                  isLivePianoQuote ? "bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-darker" : "bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
+                )}
+                disabled={form.formState.isSubmitting || !form.formState.isValid}
+              >
+                {form.formState.isSubmitting ? "Submitting..." : `Accept Quote for ${symbol}${calculatedTotal.toFixed(2)}`}
+              </Button>
+            </form>
+          </Form>
         </section>
       </main>
 
