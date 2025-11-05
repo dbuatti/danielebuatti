@@ -26,6 +26,30 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns'; // Ensure format is imported
 
+// Re-using AddOnItem from QuoteDisplay for consistency
+interface AddOnItem {
+  name: string;
+  description?: string;
+  cost: number;
+  quantity: number;
+}
+
+// Define a more specific interface for the 'details' JSONB column
+interface QuoteDetails {
+  baseService?: {
+    description: string;
+    amount: number;
+  };
+  currencySymbol?: string;
+  depositPercentage?: number;
+  bankDetails?: { bsb: string; acc: string };
+  eventTime?: string;
+  paymentTerms?: string;
+  addOns?: AddOnItem[]; // Now correctly typed
+  final_total_amount?: number;
+  client_selected_add_ons?: AddOnItem[];
+}
+
 interface Quote {
   id: string;
   client_name: string;
@@ -36,7 +60,7 @@ interface Quote {
   event_location?: string;
   prepared_by?: string;
   total_amount: number;
-  details: any; // JSONB column
+  details: QuoteDetails; // Changed from 'any' to 'QuoteDetails'
   accepted_at: string | null;
   rejected_at: string | null;
   slug?: string | null; // Include slug
@@ -103,7 +127,7 @@ const DynamicQuotePage: React.FC = () => {
       } else {
         setQuote(data as Quote);
         
-        const initialAddOns = (data.details?.addOns || []).map((addOn: any) => ({
+        const initialAddOns = (data.details?.addOns || []).map((addOn: AddOnItem) => ({ // Explicitly type addOn here
           name: addOn.name,
           cost: parseFloat(String(addOn.cost)) || 0,
           quantity: 0, // Explicitly set quantity to 0 on load
@@ -462,7 +486,7 @@ const DynamicQuotePage: React.FC = () => {
                   "text-3xl font-semibold text-center mt-8",
                   isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
                 )}>
-                  All-Inclusive Engagement Fee: <strong className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{currencySymbol}{baseAmount.toFixed(2)}</strong>
+                  All-Inclusive Engagement Fee: <strong className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{symbol}{baseAmount.toFixed(2)}</strong>
                 </p>
               </section>
             )}
@@ -493,7 +517,7 @@ const DynamicQuotePage: React.FC = () => {
               </>
             ) : (
               <>
-                <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit ({currencySymbol}{requiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {quote.event_date && format(new Date(quote.event_date), 'EEEE d MMMM yyyy') || 'event'} date.</li>
+                <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit ({symbol}{requiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {quote.event_date && format(new Date(quote.event_date), 'EEEE d MMMM yyyy') || 'event'} date.</li>
                 {paymentTerms && <li>{paymentTerms}</li>}
                 {!paymentTerms && <li>The remaining balance is due 7 days prior to the event.</li>}
                 
@@ -506,7 +530,7 @@ const DynamicQuotePage: React.FC = () => {
         </section>
 
         {/* Optional Add-Ons Section (for non-Erin Kennedy quotes) */}
-        {addOns && addOns.length > 0 && !isErinKennedyQuote && (
+        {quote?.details?.addOns && quote.details.addOns.length > 0 && !isErinKennedyQuote && (
           <section className={cn(
             "p-8 rounded-xl border space-y-8 overflow-hidden",
             isLivePianoQuote ? "bg-livePiano-darker border-livePiano-primary/50" : "bg-brand-light dark:bg-brand-dark-alt border-brand-primary/50"
@@ -516,10 +540,10 @@ const DynamicQuotePage: React.FC = () => {
               isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
             )}>Optional Add-Ons</h3>
             <div className="space-y-4 max-w-2xl mx-auto">
-              {addOns.map((item, index) => {
+              {quote.details.addOns.map((item: AddOnItem, index: number) => {
                 const subtotal = item.cost * item.quantity;
                 return (
-                  <div key={item.id} className={cn(
+                  <div key={index} className={cn(
                     "flex flex-col sm:flex-row sm:items-center sm:justify-between w-full rounded-md border p-4",
                     isLivePianoQuote ? "border-livePiano-border/50" : "border-brand-secondary/50",
                     item.quantity > 0 ? (isLivePianoQuote ? "bg-livePiano-background/50" : "bg-brand-secondary/20 dark:bg-brand-dark/50") : (isLivePianoQuote ? "bg-livePiano-background/20" : "bg-brand-light dark:bg-brand-dark-alt")
