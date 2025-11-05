@@ -382,4 +382,4 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isLivePianoTheme, is
   );
 };
 
-export default DynamicQuotePage;
+export default QuoteDisplay;
