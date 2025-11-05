@@ -227,7 +227,7 @@ const DynamicQuotePage: React.FC = () => {
 
         const emailHtml = `
           <div style="font-family: 'Outfit', sans-serif; color: #1b1b1b; background-color: #F8F8F8; padding: 20px; border-radius: 8px;">
-            <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px;">
               <h2 style="color: #fdb813; text-align: center; margin-bottom: 20px;">Quote Accepted!</h2>
               <p style="font-size: 16px; line-height: 1.6;">A client has accepted your quote proposal:</p>
               <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">

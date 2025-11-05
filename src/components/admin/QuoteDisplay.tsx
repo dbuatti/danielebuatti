@@ -281,7 +281,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
                           </p>
                         </div>
                         <div className={cn(
-                          "text-3xl font-bold sm:ml-auto flex-shrink-0 min-w-[120px] text-right font-sans", // Adjusted width here
+                          "text-3xl font-bold flex-shrink-0 min-w-[120px] text-right font-sans", // Adjusted width here
                           isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
                         )}>
                           {formatCurrency(subtotal, currencySymbol)}
