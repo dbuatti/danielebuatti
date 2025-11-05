@@ -214,35 +214,40 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
             )}>
               <h3 className="text-3xl font-bold mb-6 text-center text-brand-dark dark:text-brand-light">Optional Add-Ons</h3>
               <div className="space-y-4 max-w-2xl mx-auto">
-                {addOns.map((addOn: AddOn, index: number) => (
-                  <div key={index} className={cn(
-                    "flex flex-col sm:flex-row sm:items-center sm:justify-between w-full rounded-md border p-4",
-                    isLivePianoTheme ? "border-livePiano-border/50 bg-livePiano-background/30" : "border-brand-secondary/50 bg-brand-secondary/10 dark:bg-brand-dark/30"
-                  )}>
-                    <div className="space-y-1 leading-none mb-4 sm:mb-0">
-                      <p className={cn(
-                        "text-xl font-bold leading-none",
-                        isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
-                      )}>
-                        {addOn.name}
-                      </p>
-                      {addOn.description && (
-                        <p className={cn(
-                          "text-base",
-                          isLivePianoTheme ? "text-livePiano-light/70" : "text-brand-dark/70 dark:text-brand-light/70"
-                        )}>
-                          {addOn.description}
-                        </p>
-                      )}
-                    </div>
-                    <div className={cn(
-                      "text-3xl font-bold sm:ml-auto",
-                      isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
+                {addOns.map((addOn: AddOn, index: number) => {
+                  // Ensure cost is a number before calling toFixed
+                  const cost = typeof addOn.cost === 'number' ? addOn.cost : parseFloat(String(addOn.cost)) || 0;
+                  
+                  return (
+                    <div key={index} className={cn(
+                      "flex flex-col sm:flex-row sm:items-center sm:justify-between w-full rounded-md border p-4",
+                      isLivePianoTheme ? "border-livePiano-border/50 bg-livePiano-background/30" : "border-brand-secondary/50 bg-brand-secondary/10 dark:bg-brand-dark/30"
                     )}>
-                      {currencySymbol}{addOn.cost.toFixed(2)}
+                      <div className="space-y-1 leading-none mb-4 sm:mb-0">
+                        <p className={cn(
+                          "text-xl font-bold leading-none",
+                          isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
+                        )}>
+                          {addOn.name}
+                        </p>
+                        {addOn.description && (
+                          <p className={cn(
+                            "text-base",
+                            isLivePianoTheme ? "text-livePiano-light/70" : "text-brand-dark/70 dark:text-brand-light/70"
+                          )}>
+                            {addOn.description}
+                          </p>
+                        )}
+                      </div>
+                      <div className={cn(
+                        "text-3xl font-bold sm:ml-auto",
+                        isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
+                      )}>
+                        {currencySymbol}{cost.toFixed(2)}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </section>
           )}
