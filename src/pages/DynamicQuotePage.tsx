@@ -105,7 +105,7 @@ const DynamicQuotePage: React.FC = () => {
         const initialAddOns = (data.details?.addOns || []).map((addOn: any) => ({
           name: addOn.name,
           cost: parseFloat(String(addOn.cost)) || 0,
-          quantity: parseFloat(String(addOn.quantity)) || 1,
+          quantity: parseFloat(String(addOn.quantity)) || 0, // Default to 0 here
           description: addOn.description,
         }));
 

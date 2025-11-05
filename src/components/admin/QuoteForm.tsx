@@ -142,8 +142,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
       form.setValue('currencySymbol', result.currencySymbol || 'A$', { shouldValidate: true });
       form.setValue('paymentTerms', result.paymentTerms || 'The remaining balance is due 7 days prior to the event.', { shouldValidate: true });
       
-      // Ensure generated add-ons have a default quantity of 1
-      const generatedAddOnsWithQuantity = result.addOns.map(a => ({ ...a, quantity: 1 }));
+      // Ensure generated add-ons have a default quantity of 0 for optional items
+      const generatedAddOnsWithQuantity = result.addOns.map(a => ({ ...a, quantity: 0 })); // Default to 0 for AI-generated optional add-ons
       replace(generatedAddOnsWithQuantity); // Replace existing add-ons with generated ones
       
       toast.success("Quote details auto-populated successfully!");
