@@ -11,7 +11,7 @@ import { useTheme } from "next-themes";
 import { toast } from 'sonner';
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod"; // Corrected import
+import * as z from "zod";
 import {
   Form,
   FormControl,
@@ -45,7 +45,7 @@ interface Quote {
 const genericQuoteAcceptanceSchema = z.object({
   clientName: z.string().min(2, { message: "Your full name is required." }),
   clientEmail: z.string().email({ message: "A valid email address is required." }),
-  acceptTerms: z.boolean().refine((val: boolean) => val === true, { message: "You must accept the terms to proceed." }), // Explicitly typed 'val'
+  acceptTerms: z.boolean().refine((val: boolean) => val === true, { message: "You must accept the terms to proceed." }),
   selectedAddOns: z.array(z.object({
     name: z.string(),
     cost: z.number(),
@@ -54,7 +54,7 @@ const genericQuoteAcceptanceSchema = z.object({
   })).optional(),
 });
 
-type QuoteFormValues = z.infer<typeof genericQuoteAcceptanceSchema>; // Defined type
+type QuoteFormValues = z.infer<typeof genericQuoteAcceptanceSchema>;
 
 const DynamicQuotePage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -64,8 +64,7 @@ const DynamicQuotePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const { theme } = useTheme();
 
-  // Form hook for generic acceptance
-  const form = useForm<QuoteFormValues>({ // Used defined type
+  const form = useForm<QuoteFormValues>({
     resolver: zodResolver(genericQuoteAcceptanceSchema),
     defaultValues: {
       clientName: '',
@@ -75,7 +74,7 @@ const DynamicQuotePage: React.FC = () => {
     },
   });
 
-  const { fields: addOnFields, update: updateAddOnField } = useFieldArray<QuoteFormValues, "selectedAddOns", "id">({ // Explicitly typed useFieldArray
+  const { fields: addOnFields, update: updateAddOnField } = useFieldArray<QuoteFormValues, "selectedAddOns", "id">({
     control: form.control,
     name: "selectedAddOns",
   });
@@ -103,15 +102,13 @@ const DynamicQuotePage: React.FC = () => {
       } else {
         setQuote(data as Quote);
         
-        // Initialize add-ons with quantity from the quote details, defaulting to 1 if present
         const initialAddOns = (data.details?.addOns || []).map((addOn: any) => ({
           name: addOn.name,
           cost: parseFloat(String(addOn.cost)) || 0,
-          quantity: parseFloat(String(addOn.quantity)) || 1, // Use admin's quantity as default
+          quantity: parseFloat(String(addOn.quantity)) || 1,
           description: addOn.description,
         }));
 
-        // Set default form values
         form.reset({
           clientName: data.client_name || '',
           clientEmail: data.client_email || '',
@@ -123,9 +120,8 @@ const DynamicQuotePage: React.FC = () => {
     };
 
     fetchQuote();
-  }, [slug, form]); // Added form to dependency array for reset to work correctly
+  }, [slug, form]);
 
-  // Watch selected add-ons and base service amount for dynamic total calculation
   const watchedAddOns = form.watch('selectedAddOns');
   
   const { baseService, currencySymbol, depositPercentage, bankDetails, eventTime, paymentTerms } = quote?.details || {};
@@ -137,7 +133,7 @@ const DynamicQuotePage: React.FC = () => {
     
     let total = baseAmount;
     
-    watchedAddOns?.forEach((addOn: { cost: number, quantity: number }) => { // Explicitly typed addOn
+    watchedAddOns?.forEach(addOn => {
       const quantity = parseFloat(String(addOn.quantity)) || 0;
       const cost = parseFloat(String(addOn.cost)) || 0;
       total += cost * quantity;
@@ -146,7 +142,6 @@ const DynamicQuotePage: React.FC = () => {
   }, [watchedAddOns, baseAmount, quote]);
 
   const requiredDeposit = calculatedTotal * ((depositPercentage || 0) / 100);
-
 
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
@@ -172,7 +167,6 @@ const DynamicQuotePage: React.FC = () => {
     );
   }
 
-  // Determine if the quote has already been accepted or rejected
   const isAccepted = !!quote.accepted_at;
   const isRejected = !!quote.rejected_at;
   const isActionTaken = isAccepted || isRejected;
@@ -180,33 +174,29 @@ const DynamicQuotePage: React.FC = () => {
   const isLivePianoQuote = quote.invoice_type.toLowerCase().includes("live piano");
   const isErinKennedyQuote = quote.invoice_type === "Erin Kennedy Quote";
 
-  // Handle form submission for generic acceptance
-  async function onSubmitGeneric(values: QuoteFormValues) { // Used defined type
+  async function onSubmitGeneric(values: QuoteFormValues) {
     const loadingToastId = toast.loading("Submitting your acceptance...");
     
-    // Filter out add-ons where quantity is 0
     const finalSelectedAddOns = values.selectedAddOns?.filter(a => (parseFloat(String(a.quantity)) || 0) > 0) || [];
 
     try {
-      // Update the quote in Supabase to mark as accepted
       const { error: updateError } = await supabase
         .from('invoices')
         .update({
           accepted_at: new Date().toISOString(),
           client_name: values.clientName,
           client_email: values.clientEmail,
-          total_amount: calculatedTotal, // Use the dynamically calculated total
+          total_amount: calculatedTotal,
           details: {
             ...quote!.details,
             final_total_amount: calculatedTotal,
-            client_selected_add_ons: finalSelectedAddOns, // Store final selection with quantities
+            client_selected_add_ons: finalSelectedAddOns,
           }
         })
         .eq('id', quote!.id);
 
       if (updateError) throw updateError;
 
-      // Send email notification to admin (similar to existing Edge Functions)
       const EMAIL_SERVICE_API_KEY = import.meta.env.VITE_EMAIL_SERVICE_API_KEY;
       const CONTACT_FORM_RECIPIENT_EMAIL = import.meta.env.VITE_CONTACT_FORM_RECIPIENT_EMAIL;
       const EMAIL_SERVICE_ENDPOINT = import.meta.env.VITE_EMAIL_SERVICE_ENDPOINT;
@@ -282,16 +272,14 @@ const DynamicQuotePage: React.FC = () => {
 
       toast.success("Quote accepted successfully!", { id: loadingToastId });
       form.reset();
-      navigate('/live-piano-services/quote-confirmation'); // Redirect to confirmation page
+      navigate('/live-piano-services/quote-confirmation');
     } catch (error: any) {
       console.error("Error submitting quote acceptance:", error);
       toast.error(`Failed to submit quote acceptance: ${error.message}`, { id: loadingToastId });
     }
   }
 
-  // --- Custom Erin Kennedy Quote Breakdown Renderer ---
   const renderErinKennedyQuote = () => {
-    // Hardcoded values for Erin Kennedy Quote based on request
     const onSitePerformanceCost = 300.00;
     const showPreparationFee = 100.00;
     const totalBaseInvoice = 400.00;
@@ -341,7 +329,6 @@ const DynamicQuotePage: React.FC = () => {
           </div>
         </section>
 
-        {/* Optional Rehearsal Support Section */}
         <section className={cn(
           "p-8 rounded-xl border space-y-6 overflow-hidden",
           "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
@@ -365,8 +352,6 @@ const DynamicQuotePage: React.FC = () => {
       </>
     );
   };
-  // --- End Custom Erin Kennedy Quote Breakdown Renderer ---
-
 
   return (
     <div className={cn(
@@ -421,7 +406,6 @@ const DynamicQuotePage: React.FC = () => {
           )}>
             <p>Prepared for: <strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>{quote.client_name}</strong></p>
             <p>Date of Event: {quote.event_date || 'N/A'}</p>
-            {/* Use hardcoded time for Erin Kennedy quote, otherwise use dynamic time */}
             {isErinKennedyQuote ? <p>Time: 3:00 PM – 6:00 PM</p> : eventTime && <p>Time: {eventTime}</p>}
             <p>Location: {quote.event_location || 'N/A'}</p>
             <p>Prepared by: {quote.prepared_by || 'N/A'}</p>
@@ -432,12 +416,10 @@ const DynamicQuotePage: React.FC = () => {
           )} />
         </section>
 
-        {/* Conditional Quote Breakdown Rendering (Non-interactive parts) */}
         {isErinKennedyQuote ? (
           renderErinKennedyQuote()
         ) : (
           <>
-            {/* Base Service Section (Generic) */}
             {baseService && (
               <section className={cn(
                 "p-8 rounded-xl border space-y-6 overflow-hidden",
@@ -471,7 +453,7 @@ const DynamicQuotePage: React.FC = () => {
                   )}>
                     <li><strong>Performance:</strong> {baseService.description}</li>
                     <li><strong>All-Inclusive Logistics:</strong> Covers all sheet music preparation, travel, and setup required for the evening.</li>
-                    {isLivePianoQuote && <li><strong>Flexible Timing:</strong> Performance timing is flexible to dynamically respond to the needs of guests (the "on-call buffer").</li>}
+                    {quote.invoice_type?.toLowerCase().includes('live piano') && <li><strong>Flexible Timing:</strong> Performance timing is flexible to dynamically respond to the needs of guests (the "on-call buffer").</li>}
                   </ul>
                 </div>
                 <p className={cn(
@@ -485,7 +467,6 @@ const DynamicQuotePage: React.FC = () => {
           </>
         )}
 
-        {/* Booking Information / Important Details - KEEP OUTSIDE FORM */}
         <section className={cn(
           "p-8 rounded-xl border space-y-6 overflow-hidden",
           isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
@@ -522,7 +503,6 @@ const DynamicQuotePage: React.FC = () => {
           </ul>
         </section>
 
-        {/* Client Acceptance Form - WRAP EVERYTHING DYNAMIC INSIDE HERE */}
         <section className={cn(
           "p-8 rounded-xl border space-y-8 overflow-hidden",
           isLivePianoQuote ? "bg-livePiano-darker border-livePiano-primary/50" : "bg-brand-light dark:bg-brand-dark-alt border-brand-primary/50"
@@ -547,7 +527,6 @@ const DynamicQuotePage: React.FC = () => {
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmitGeneric)} className="space-y-6 max-w-2xl mx-auto">
                 
-                {/* MOVED: Optional Add-Ons Section (Generic) - Now interactive with quantity */}
                 {addOnFields.length > 0 && !isErinKennedyQuote && (
                   <div className="space-y-8">
                     <h4 className="text-2xl font-bold text-center text-brand-dark dark:text-brand-light">Adjust Optional Add-Ons</h4>
@@ -623,7 +602,7 @@ const DynamicQuotePage: React.FC = () => {
                                           }}
                                           className={cn(
                                             "text-center h-8",
-                                            isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light focus-visible:ring-brand-primary"
+                                            isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
                                           )}
                                         />
                                       </FormControl>
@@ -645,10 +624,10 @@ const DynamicQuotePage: React.FC = () => {
                                 </Button>
                               </div>
                               <div className={cn(
-                                "text-3xl font-bold flex-shrink-0 w-24 text-right",
+                                "text-3xl font-bold flex-shrink-0 min-w-[180px] text-right",
                                 isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
                               )}>
-                                {symbol}{subtotal.toFixed(2)}
+                                {formatCurrency(subtotal, symbol)}
                               </div>
                             </div>
                           </div>
@@ -658,7 +637,6 @@ const DynamicQuotePage: React.FC = () => {
                   </div>
                 )}
 
-                {/* Final Total Cost Display */}
                 <div className={cn(
                   "text-center mt-10 p-6 rounded-lg border",
                   isLivePianoQuote ? "bg-livePiano-primary/10 border-livePiano-primary/30" : "bg-brand-primary/10 border-brand-primary/30"
@@ -676,97 +654,99 @@ const DynamicQuotePage: React.FC = () => {
                     This includes your selected add-ons and the base quote amount.
                   </p>
                 </div>
-              
-              <p className={cn(
-                "text-xl text-center max-w-3xl mx-auto",
-                isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
-              )}>
-                Please fill out your details below to formally accept this quote.
-              </p>
 
-              <FormField
-                control={form.control}
-                name="clientName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>Your Full Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={quote.client_name || "Your Name"}
-                        className={cn(
-                          isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60 focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
-                        )}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="clientEmail"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>Your Email Address</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder={quote.client_email || "your@email.com"}
-                        className={cn(
-                          isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60 focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
-                        )}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="acceptTerms"
-                render={({ field }) => (
-                  <FormItem className={cn(
-                    "flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4",
-                    isLivePianoQuote ? "border-livePiano-border/50" : "border-brand-secondary"
-                  )}>
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        id="accept-terms"
-                        className={cn(
-                          "h-5 w-5 mt-1",
-                          isLivePianoQuote ? "border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" : "border-brand-primary text-brand-dark data-[state=checked]:bg-brand-primary data-[state=checked]:text-brand-light"
-                        )}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel htmlFor="accept-terms" className={cn(
-                        "text-base font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
-                        isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
-                      )}>
-                        I, <span className={isLivePianoQuote ? "text-livePiano-primary font-semibold" : "text-brand-primary font-semibold"}>{form.watch("clientName") || quote.client_name || "Your Name"}</span>, accept this quote for the {quote.event_title || quote.invoice_type} on {quote.event_date || 'the specified date'}.
-                      </FormLabel>
+                <p className={cn(
+                  "text-xl text-center max-w-3xl mx-auto",
+                  isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
+                )}>
+                  Please fill out your details below to formally accept this quote.
+                </p>
+
+                <FormField
+                  control={form.control}
+                  name="clientName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>Your Full Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={quote.client_name || "Your Name"}
+                          className={cn(
+                            isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60 focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                          )}
+                          {...field}
+                        />
+                      </FormControl>
                       <FormMessage />
-                    </div>
-                  </FormItem>
-                )}
-              />
+                    </FormItem>
+                  )}
+                />
 
-              <Button
-                type="submit"
-                size="lg"
-                className={cn(
-                  "w-full text-xl py-7 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105",
-                  isLivePianoQuote ? "bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-darker" : "bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-                )}
-                disabled={form.formState.isSubmitting || !form.formState.isValid}
-              >
-                {form.formState.isSubmitting ? "Submitting..." : `Accept Quote for ${symbol}${calculatedTotal.toFixed(2)}`}
-              </Button>
-            </form>
+                <FormField
+                  control={form.control}
+                  name="clientEmail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>Your Email Address</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder={quote.client_email || "your@email.com"}
+                          className={cn(
+                            isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60 focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                          )}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="acceptTerms"
+                  render={({ field }) => (
+                    <FormItem className={cn(
+                      "flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4",
+                      isLivePianoQuote ? "border-livePiano-border/50" : "border-brand-secondary"
+                    )}>
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          id="accept-terms"
+                          className={cn(
+                            "h-5 w-5 mt-1",
+                            isLivePianoQuote ? "border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" : "border-brand-primary text-brand-dark data-[state=checked]:bg-brand-primary data-[state=checked]:text-brand-light"
+                          )}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel htmlFor="accept-terms" className={cn(
+                          "text-base font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+                          isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
+                        )}>
+                          I, <span className={isLivePianoQuote ? "text-livePiano-primary font-semibold" : "text-brand-primary font-semibold"}>{form.watch("clientName") || quote.client_name || "Your Name"}</span>, accept this quote for the {quote.event_title || quote.invoice_type} on {quote.event_date || 'the specified date'}.
+                        </FormLabel>
+                        <FormMessage />
+                      </div>
+                    </FormItem>
+                  )}
+                />
+
+                <Button
+                  type="submit"
+                  size="lg"
+                  className={cn(
+                    "w-full text-xl py-7 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105",
+                    isLivePianoQuote ? "bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-darker" : "bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
+                  )}
+                  disabled={form.formState.isSubmitting || !form.formState.isValid}
+                >
+                  {form.formState.isSubmitting ? "Submitting..." : `Accept Quote for ${symbol}${calculatedTotal.toFixed(2)}`}
+                </Button>
+              </form>
             </Form>
           )}
         </section>
