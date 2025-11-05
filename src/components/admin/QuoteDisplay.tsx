@@ -91,7 +91,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
     return (
       <>
         <section className={cn(
-          "p-8 rounded-xl border space-y-6 overflow-hidden", // Removed shadow-2xl
+          "p-8 rounded-xl border space-y-6 overflow-hidden",
           "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
         )}>
           <h3 className="text-3xl font-bold mb-6 text-center text-brand-primary">
@@ -132,7 +132,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
           </div>
         </section>
         <section className={cn(
-          "p-8 rounded-xl border space-y-6 overflow-hidden", // Removed shadow-2xl
+          "p-8 rounded-xl border space-y-6 overflow-hidden",
           "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
         )}>
           <h3 className="text-3xl font-bold text-brand-primary text-center">Optional Rehearsal Support for Students</h3>
@@ -191,11 +191,11 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
           {/* Base Service Section (Generic) */}
           {baseService && (
             <section className={cn(
-              "p-8 rounded-xl border space-y-6 overflow-hidden", // Removed shadow-2xl
+              "p-8 rounded-xl border space-y-6 overflow-hidden",
               isLivePianoTheme ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
             )}>
               <h3 className={cn(
-                "text-3xl font-bold mb-6 text-center", // Removed text-shadow-sm
+                "text-3xl font-bold mb-6 text-center",
                 isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
               )}>
                 {baseService.description || "Base Engagement Fee"}
@@ -207,7 +207,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
                 This fee secures a premium, seamless musical experience for your event.
               </p>
               <p className={cn(
-                "text-3xl font-semibold text-center mt-8", // Removed text-shadow-sm
+                "text-3xl font-semibold text-center mt-8",
                 isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
               )}>
                 All-Inclusive Engagement Fee: <strong className={isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{currencySymbol}{safeBaseServiceAmount.toFixed(2)}</strong>
@@ -218,7 +218,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
           {/* Optional Add-Ons Section (Generic) */}
           {addOns.length > 0 && (
             <section className={cn(
-              "p-8 rounded-xl border space-y-8 overflow-hidden", // Removed shadow-2xl
+              "p-8 rounded-xl border space-y-8 overflow-hidden",
               isLivePianoTheme ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
             )}>
               <h3 className="text-3xl font-bold mb-6 text-center text-brand-dark dark:text-brand-light">Optional Add-Ons</h3>
@@ -273,7 +273,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
 
       {/* Total Estimated Cost */}
       <div className={cn(
-        "text-center mt-10 p-6 rounded-lg border", // Removed shadow-lg
+        "text-center mt-10 p-6 rounded-lg border",
         isLivePianoTheme ? "bg-livePiano-primary/10 border-livePiano-primary/30" : "bg-brand-primary/10 border-brand-primary/30"
       )}>
         <p className={cn(
@@ -286,7 +286,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
 
       {/* Booking Information / Important Details */}
       <section className={cn(
-        "p-8 rounded-xl border space-y-6 overflow-hidden", // Removed shadow-2xl
+        "p-8 rounded-xl border space-y-6 overflow-hidden",
         isLivePianoTheme ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
       )}>
         <h3 className={cn(

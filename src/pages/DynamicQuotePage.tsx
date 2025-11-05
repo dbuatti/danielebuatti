@@ -298,7 +298,7 @@ const DynamicQuotePage: React.FC = () => {
     return (
       <>
         <section className={cn(
-          "p-8 rounded-xl border space-y-6 overflow-hidden", // Removed shadow-2xl
+          "p-8 rounded-xl border space-y-6 overflow-hidden",
           "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
         )}>
           <h3 className="text-3xl font-bold mb-6 text-center text-brand-primary">
@@ -341,7 +341,7 @@ const DynamicQuotePage: React.FC = () => {
 
         {/* Optional Rehearsal Support Section */}
         <section className={cn(
-          "p-8 rounded-xl border space-y-6 overflow-hidden", // Removed shadow-2xl
+          "p-8 rounded-xl border space-y-6 overflow-hidden",
           "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
         )}>
           <h3 className="text-3xl font-bold text-brand-primary text-center">Optional Rehearsal Support for Students</h3>
@@ -372,7 +372,7 @@ const DynamicQuotePage: React.FC = () => {
       isLivePianoQuote ? "live-piano-theme bg-livePiano-background text-livePiano-light font-montserrat" : "bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light"
     )}>
       <header className={cn(
-        "py-4 px-6 md:px-12 relative z-10 border-b", // Removed shadow-lg
+        "py-4 px-6 md:px-12 relative z-10 border-b",
         isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/50" : "bg-brand-light dark:bg-brand-dark border-brand-secondary/50"
       )}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -408,7 +408,7 @@ const DynamicQuotePage: React.FC = () => {
       <main className="flex-grow max-w-7xl mx-auto px-4 py-16 space-y-12">
         <section className="text-center space-y-6">
           <h2 className={cn(
-            "text-5xl md:text-6xl font-extrabold mb-6 leading-none", // Removed text-shadow-lg
+            "text-5xl md:text-6xl font-extrabold mb-6 leading-none",
             isLivePianoQuote ? "font-libre-baskerville text-livePiano-primary" : "text-brand-primary"
           )}>
             {quote.event_title || quote.invoice_type}
@@ -438,11 +438,11 @@ const DynamicQuotePage: React.FC = () => {
             {/* Base Service Section (Generic) */}
             {baseService && (
               <section className={cn(
-                "p-8 rounded-xl border space-y-6 overflow-hidden", // Removed shadow-2xl
+                "p-8 rounded-xl border space-y-6 overflow-hidden",
                 isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
               )}>
                 <h3 className={cn(
-                  "text-3xl font-bold mb-6 text-center", // Removed text-shadow-sm
+                  "text-3xl font-bold mb-6 text-center",
                   isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
                 )}>
                   {baseService.description || "Base Engagement Fee"}
@@ -458,7 +458,7 @@ const DynamicQuotePage: React.FC = () => {
                   isLivePianoQuote ? "text-livePiano-light/80" : "text-brand-dark/80 dark:text-brand-light/80"
                 )}>
                   <h4 className={cn(
-                    "text-2xl font-semibold text-center mb-4", // Removed text-shadow-sm
+                    "text-2xl font-semibold text-center mb-4",
                     isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
                   )}>
                     Service Components
@@ -473,7 +473,7 @@ const DynamicQuotePage: React.FC = () => {
                   </ul>
                 </div>
                 <p className={cn(
-                  "text-3xl font-semibold text-center mt-8", // Removed text-shadow-sm
+                  "text-3xl font-semibold text-center mt-8",
                   isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
                 )}>
                   All-Inclusive Engagement Fee: <strong className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{symbol}{baseAmount.toFixed(2)}</strong>
@@ -485,7 +485,7 @@ const DynamicQuotePage: React.FC = () => {
 
         {/* Booking Information / Important Details - KEEP OUTSIDE FORM */}
         <section className={cn(
-          "p-8 rounded-xl border space-y-6 overflow-hidden", // Removed shadow-2xl
+          "p-8 rounded-xl border space-y-6 overflow-hidden",
           isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
         )}>
           <h3 className={cn(
@@ -522,7 +522,7 @@ const DynamicQuotePage: React.FC = () => {
 
         {/* Client Acceptance Form - WRAP EVERYTHING DYNAMIC INSIDE HERE */}
         <section className={cn(
-          "p-8 rounded-xl border space-y-8 overflow-hidden", // Removed shadow-2xl
+          "p-8 rounded-xl border space-y-8 overflow-hidden",
           isLivePianoQuote ? "bg-livePiano-darker border-livePiano-primary/50" : "bg-brand-light dark:bg-brand-dark-alt border-brand-primary/50"
         )}>
           <h3 className={cn(
@@ -537,7 +537,7 @@ const DynamicQuotePage: React.FC = () => {
               {isRejected && (
                 <p className="text-2xl font-bold text-red-500">This quote has been rejected.</p>
               )}
-              <Button asChild size="lg" className="mt-4 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105"> {/* Removed shadow-lg */}
+              <Button asChild size="lg" className="mt-4 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105">
                 <Link to="/">Return to Home</Link>
               </Button>
             </div>
@@ -548,7 +548,7 @@ const DynamicQuotePage: React.FC = () => {
                 {/* MOVED: Optional Add-Ons Section (Generic) - Now interactive with quantity */}
                 {addOnFields.length > 0 && !isErinKennedyQuote && (
                   <div className="space-y-8">
-                    <h4 className="text-2xl font-bold text-center text-brand-dark dark:text-brand-light">Adjust Optional Add-Ons</h4> {/* Removed text-shadow-sm */}
+                    <h4 className="text-2xl font-bold text-center text-brand-dark dark:text-brand-light">Adjust Optional Add-Ons</h4>
                     <div className="space-y-4 max-w-2xl mx-auto">
                       {addOnFields.map((item, index) => {
                         const cost = parseFloat(String(item.cost)) || 0;
@@ -566,7 +566,7 @@ const DynamicQuotePage: React.FC = () => {
                             isLivePianoQuote ? "border-livePiano-border/50" : "border-brand-secondary/50",
                             currentQuantity > 0 ? (isLivePianoQuote ? "bg-livePiano-background/50" : "bg-brand-secondary/20 dark:bg-brand-dark/50") : (isLivePianoQuote ? "bg-livePiano-background/20" : "bg-brand-light dark:bg-brand-dark-alt")
                           )}>
-                            <div className="space-y-1 leading-none mb-4 sm:mb-0 sm:w-1/2">
+                            <div className="space-y-1 leading-none mb-4 sm:mb-0 sm:flex-1"> {/* Changed sm:w-1/2 to sm:flex-1 */}
                               <p className={cn(
                                 "text-xl font-bold leading-none",
                                 isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
@@ -589,7 +589,7 @@ const DynamicQuotePage: React.FC = () => {
                               </p>
                             </div>
                             
-                            <div className="flex items-center gap-4 sm:w-1/2 sm:justify-end">
+                            <div className="flex items-center gap-4 sm:w-auto sm:flex-shrink-0 sm:justify-end"> {/* Changed sm:w-1/2 to sm:w-auto sm:flex-shrink-0 */}
                               <div className="flex items-center space-x-2">
                                 <Button
                                   type="button"
@@ -658,7 +658,7 @@ const DynamicQuotePage: React.FC = () => {
 
                 {/* MOVED: Total Estimated Cost (Now Dynamic) */}
                 <div className={cn(
-                  "text-center mt-10 p-6 rounded-lg border", // Removed shadow-lg
+                  "text-center mt-10 p-6 rounded-lg border",
                   isLivePianoQuote ? "bg-livePiano-primary/10 border-livePiano-primary/30" : "bg-brand-primary/10 border-brand-primary/30"
                 )}>
                   <p className={cn(
@@ -751,7 +751,7 @@ const DynamicQuotePage: React.FC = () => {
                 type="submit"
                 size="lg"
                 className={cn(
-                  "w-full text-xl py-7 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105", // Removed shadow-lg
+                  "w-full text-xl py-7 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105",
                   isLivePianoQuote ? "bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-darker" : "bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
                 )}
                 disabled={form.formState.isSubmitting || !form.formState.isValid}

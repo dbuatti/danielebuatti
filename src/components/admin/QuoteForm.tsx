@@ -178,7 +178,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         
         {/* AI Input Section */}
-        <Card className="bg-brand-secondary/10 dark:bg-brand-dark/30 p-6 border-brand-secondary/50"> {/* Removed shadow-lg */}
+        <Card className="bg-brand-secondary/10 dark:bg-brand-dark/30 p-6 border-brand-secondary/50">
           <CardHeader className="p-0 pb-4">
             <CardTitle className="text-xl text-brand-primary flex items-center gap-2">
               <Wand2 className="h-5 w-5" /> AI Quote Extractor
@@ -207,7 +207,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
               type="button"
               onClick={handleAutoGenerate}
               disabled={isGenerating || isSubmitting || !watchedFormValues.emailContent || watchedFormValues.emailContent.trim().length < 50}
-              className="w-full bg-brand-blue hover:bg-brand-blue/90 text-brand-light" // Removed shadow-md
+              className="w-full bg-brand-blue hover:bg-brand-blue/90 text-brand-light"
               size="lg"
             >
               {isGenerating ? (
@@ -529,7 +529,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
           )}
         />
 
-        <div className="mt-8 p-6 bg-brand-primary/10 rounded-lg border border-brand-primary/30 text-center space-y-2"> {/* Removed shadow-lg */}
+        <div className="mt-8 p-6 bg-brand-primary/10 rounded-lg border border-brand-primary/30 text-center space-y-2">
           <p className="text-2xl font-bold text-brand-primary">Total Quote Amount: <span className="text-brand-dark dark:text-brand-light">{watchedFormValues.currencySymbol}{totalAmount.toFixed(2)}</span></p>
           <p className="text-xl text-brand-dark/80 dark:text-brand-light/80">Required Deposit ({depositPercentage}%): <span className="font-semibold">{watchedFormValues.currencySymbol}{requiredDeposit.toFixed(2)}</span></p>
         </div>
@@ -538,14 +538,14 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
           <Button
             type="button"
             onClick={handlePreviewClick}
-            className="flex-1 bg-brand-secondary hover:bg-brand-secondary/90 text-brand-dark dark:text-brand-light text-lg px-8 py-6 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105" // Removed shadow-lg
+            className="flex-1 bg-brand-secondary hover:bg-brand-secondary/90 text-brand-dark dark:text-brand-light text-lg px-8 py-6 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105"
             disabled={isSubmitting || isGenerating}
           >
             <Eye className="mr-2 h-4 w-4" /> Preview Quote
           </Button>
           <Button
             type="submit"
-            className="flex-1 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105" // Removed shadow-lg
+            className="flex-1 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105"
             disabled={isSubmitting || isGenerating}
           >
             {isSubmitting ? (
