@@ -178,39 +178,39 @@ const DynamicQuotePage: React.FC = () => {
                   <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${values.clientName}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Client Email:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Client Email:</td>
                   <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;"><a href="mailto:${values.clientEmail}" style="color: #fdb813; text-decoration: none;">${values.clientEmail}</a></td>
                 </tr>
                 <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Quote Title:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Quote Title:</td>
                   <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${quote!.event_title || quote!.invoice_type}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Total Amount:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Total Amount:</td>
                   <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${quote!.total_amount.toFixed(2)}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Event Date:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Event Date:</td>
                   <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${quote!.event_date || 'N/A'}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Event Location:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Event Location:</td>
                   <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${quote!.event_location || 'N/A'}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Prepared By:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Prepared By:</td>
                   <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${quote!.prepared_by || 'N/A'}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Accepted On:</td>
+                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Accepted On:</td>
                   <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;">${new Date().toLocaleString()}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Admin Link:</td>
+                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Admin Link:</td>
                   <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;"><a href="${adminQuoteLink}" style="color: #fdb813; text-decoration: none;">View in Admin Panel</a></td>
                 </tr>
                 <tr>
-                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Public Link:</td>
+                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Public Link:</td>
                   <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;"><a href="${publicQuoteLink}" style="color: #fdb813; text-decoration: none;">View Public Quote</a></td>
                 </tr>
               </table>
@@ -258,9 +258,11 @@ const DynamicQuotePage: React.FC = () => {
 
   // --- Custom Erin Kennedy Quote Breakdown Renderer ---
   const renderErinKennedyQuote = () => {
-    const onSitePerformanceCost = quote.details?.on_site_performance_cost || 0;
-    const showPreparationFee = quote.details?.show_preparation_fee || 0;
-    const totalBaseInvoice = quote.total_amount; // Should be 400.00
+    // Hardcoded values for Erin Kennedy Quote based on request
+    const onSitePerformanceCost = 300.00;
+    const showPreparationFee = 100.00;
+    const totalBaseInvoice = 400.00;
+    const eventTimeEK = "3:00 PM – 6:00 PM"; // Hardcoded time for display
 
     return (
       <>
@@ -284,7 +286,7 @@ const DynamicQuotePage: React.FC = () => {
                 <TableRow className="hover:bg-brand-secondary/5 dark:hover:bg-brand-dark/30">
                   <TableCell className="font-semibold text-brand-dark dark:text-brand-light">Performance & On-Site Engagement</TableCell>
                   <TableCell className="text-brand-dark/80 dark:text-brand-light/80">
-                    3 hours of dedicated on-site presence, including arrival, setup, soundcheck, and performance ({eventTime || 'N/A'}).
+                    3 hours of dedicated on-site presence, including arrival, setup, soundcheck, and performance ({eventTimeEK}).
                     <br />
                     Rate: A$100/hr (effective rate for this package)
                   </TableCell>
@@ -386,7 +388,8 @@ const DynamicQuotePage: React.FC = () => {
           )}>
             <p>Prepared for: <strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>{quote.client_name}</strong></p>
             <p>Date of Event: {quote.event_date || 'N/A'}</p>
-            {eventTime && <p>Time: {eventTime}</p>}
+            {/* Use hardcoded time for Erin Kennedy quote, otherwise use dynamic time */}
+            {isErinKennedyQuote ? <p>Time: 3:00 PM – 6:00 PM</p> : eventTime && <p>Time: {eventTime}</p>}
             <p>Location: {quote.event_location || 'N/A'}</p>
             <p>Prepared by: {quote.prepared_by || 'N/A'}</p>
           </div>
@@ -527,16 +530,23 @@ const DynamicQuotePage: React.FC = () => {
             "list-disc list-inside text-lg space-y-2",
             isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
           )}>
-            <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit (A${requiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {quote.event_date || 'event'} date.</li>
-            <li>The remaining balance is due 7 days prior to the event.</li>
-            {bankDetails && (
-              <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>Bank Details for Payment:</strong> BSB: {bankDetails.bsb}, ACC: {bankDetails.acc}</li>
-            )}
-            {isErinKennedyQuote && (
+            {isErinKennedyQuote ? (
               <>
-                <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by {eventTime || 'event start time'}.</li>
+                <li><strong className="text-brand-primary">Your final invoice for the base services to Erin Kennedy will be A$400.00.</strong></li>
+                <li><strong className="text-brand-primary">A non-refundable 50% deposit (A$200.00) is required immediately</strong> to formally secure the {quote.event_date || 'event'} date.</li>
+                <li>The remaining balance is due 7 days prior to the event.</li>
+                <li><strong className="text-brand-primary">Bank Details for Payment:</strong> BSB: 923100, ACC: 301110875</li>
+                <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by 3:00 PM.</li>
                 <li>To ensure thorough preparation, Daniele kindly requests PDF sheet music for all songs and a complete song list at least two weeks prior to the event (or earlier, if possible).</li>
                 <li>To facilitate efficient scheduling, please inform Daniele of the total number of students participating in the concert as soon as possible. Daniele will then work to schedule rehearsals in convenient, grouped time blocks.</li>
+              </>
+            ) : (
+              <>
+                <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit (A${requiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {quote.event_date || 'event'} date.</li>
+                <li>The remaining balance is due 7 days prior to the event.</li>
+                {bankDetails && (
+                  <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>Bank Details for Payment:</strong> BSB: {bankDetails.bsb}, ACC: {bankDetails.acc}</li>
+                )}
               </>
             )}
           </ul>
