@@ -90,12 +90,7 @@ const router = createBrowserRouter([
       { path: "create-quote", element: <AdminQuoteBuilderPage /> },
     ],
   },
-], {
-  future: {
-    v7_startTransition: true,
-    v7_relativeSplatPath: true,
-  }
-});
+] /* Removed future configuration block */);
 
 function App() {
   return (
