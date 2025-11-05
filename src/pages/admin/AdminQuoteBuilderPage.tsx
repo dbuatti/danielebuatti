@@ -8,8 +8,26 @@ import QuoteForm, { QuoteFormValues } from '@/components/admin/QuoteForm';
 import { supabase } from '@/integrations/supabase/client';
 import { createSlug } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import QuoteDisplay, { QuoteDisplayData } from '@/components/admin/QuoteDisplay';
+import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
+
+// Re-using the Quote type from QuoteDisplay for consistency
+interface QuoteDisplayData {
+  client_name?: string;
+  client_email?: string;
+  event_title?: string;
+  invoice_type?: string;
+  event_date?: string;
+  event_location?: string; // Added missing property
+  prepared_by?: string; // Added missing property
+  total_amount: number;
+  requiredDeposit: number;
+  depositPercentage: number;
+  paymentTerms?: string;
+  bankDetails?: { bsb: string; acc: string };
+  addOns?: { name: string; description?: string; cost: number; quantity: number }[];
+  currencySymbol?: string;
+}
 
 const AdminQuoteBuilderPage: React.FC = () => {
   const navigate = useNavigate();
@@ -169,8 +187,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
           <ScrollArea className="h-[calc(90vh-70px)]">
             {previewData ? (
               <QuoteDisplay 
-                data={getPreviewData(previewData)!} 
-                isLivePianoTheme={previewData.invoiceType.toLowerCase().includes('live piano')} // Simple heuristic for theme
+                quote={getPreviewData(previewData)!}
+                isLivePianoTheme={previewData.invoiceType.toLowerCase().includes('live piano')}
+                isErinKennedyQuote={false} // Default to false for now
               />
             ) : (
               <div className="p-8 text-center">No preview data available.</div>
