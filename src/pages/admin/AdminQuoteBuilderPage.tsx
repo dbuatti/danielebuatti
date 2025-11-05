@@ -56,7 +56,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
           bsb: values.bankBSB,
           acc: values.bankACC,
         },
-        eventTime: values.eventTime, // Include eventTime in details
+        eventTime: values.eventTime,
+        currencySymbol: values.currencySymbol, // NEW
+        paymentTerms: values.paymentTerms,     // NEW
       };
 
       // Invoke the Edge Function to create the quote

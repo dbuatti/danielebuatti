@@ -4,10 +4,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, ArrowLeft, Mail, CheckCircle, XCircle, Eye } from 'lucide-react'; // Import Eye icon
+import { Loader2, ArrowLeft, Mail, CheckCircle, XCircle, Eye, Trash2 } from 'lucide-react'; // Import Trash2 icon
 import { showError, showSuccess } from '@/utils/toast';
 import EmailComposerModal from '@/components/admin/EmailComposerModal';
-import { format } from 'date-fns'; // Import format from date-fns
+import { format } from 'date-fns';
+import { toast } from 'sonner'; // Import toast
 
 interface Quote {
   id: string;
@@ -86,6 +87,37 @@ const AdminQuoteDetailsPage: React.FC = () => {
       setQuote((prev) => (prev ? { ...prev, ...updateData } : null));
     }
     setIsUpdatingStatus(false);
+  };
+
+  const handleDeleteQuote = async () => {
+    if (!quote) return;
+
+    toast.promise(
+      async () => {
+        const { error } = await supabase
+          .from('invoices')
+          .delete()
+          .eq('id', quote.id);
+
+        if (error) throw error;
+        
+        navigate('/admin/quotes'); // Redirect after successful deletion
+        return 'Quote deleted successfully!';
+      },
+      {
+        loading: 'Deleting quote...',
+        success: (message) => message,
+        error: (err) => {
+          console.error('Error deleting quote:', err);
+          return 'Failed to delete quote.';
+        },
+        action: {
+          label: 'Confirm Delete',
+          onClick: () => { /* The promise handles the actual deletion */ },
+        },
+        description: 'Are you sure you want to delete this quote? This action cannot be undone.',
+      }
+    );
   };
 
   if (isLoading) {
@@ -219,6 +251,13 @@ const AdminQuoteDetailsPage: React.FC = () => {
               className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
             >
               <Mail className="mr-2 h-4 w-4" /> Compose Email
+            </Button>
+            <Button
+              onClick={handleDeleteQuote}
+              variant="destructive"
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              <Trash2 className="mr-2 h-4 w-4" /> Delete Quote
             </Button>
           </div>
         </CardContent>

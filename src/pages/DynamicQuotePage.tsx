@@ -142,6 +142,16 @@ const DynamicQuotePage: React.FC = () => {
   const isRejected = !!quote.rejected_at;
   const isActionTaken = isAccepted || isRejected;
 
+  // Extract details from JSONB column
+  const baseService = quote.details?.baseService;
+  const addOns = quote.details?.addOns || [];
+  const depositPercentage = quote.details?.depositPercentage || 0;
+  const requiredDeposit = quote.details?.requiredDeposit || 0;
+  const bankDetails = quote.details?.bankDetails;
+  const eventTime = quote.details?.eventTime;
+  const currencySymbol = quote.details?.currencySymbol || 'A$'; // NEW: Default to A$
+  const paymentTerms = quote.details?.paymentTerms; // NEW
+
   // Handle form submission for generic quote acceptance
   async function onSubmitGeneric(values: z.infer<typeof genericQuoteAcceptanceSchema>) {
     const loadingToastId = toast.loading("Submitting your acceptance...");
@@ -187,7 +197,7 @@ const DynamicQuotePage: React.FC = () => {
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Total Amount:</td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${quote!.total_amount.toFixed(2)}</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${currencySymbol}${quote!.total_amount.toFixed(2)}</td>
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Event Date:</td>
@@ -247,14 +257,6 @@ const DynamicQuotePage: React.FC = () => {
 
   const isLivePianoQuote = quote.invoice_type === "Christmas Carols – Live Piano Quote";
   const isErinKennedyQuote = quote.invoice_type === "Erin Kennedy Quote";
-
-  // Extract details from JSONB column
-  const baseService = quote.details?.baseService;
-  const addOns = quote.details?.addOns || [];
-  const depositPercentage = quote.details?.depositPercentage || 0;
-  const requiredDeposit = quote.details?.requiredDeposit || 0;
-  const bankDetails = quote.details?.bankDetails;
-  const eventTime = quote.details?.eventTime; // Corrected: only access from details
 
   // --- Custom Erin Kennedy Quote Breakdown Renderer ---
   const renderErinKennedyQuote = () => {
@@ -445,7 +447,7 @@ const DynamicQuotePage: React.FC = () => {
                   "text-3xl font-semibold text-center text-shadow-sm mt-8",
                   isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
                 )}>
-                  All-Inclusive Engagement Fee: <strong className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>A${baseService.amount.toFixed(2)}</strong>
+                  All-Inclusive Engagement Fee: <strong className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{currencySymbol}{baseService.amount.toFixed(2)}</strong>
                 </p>
               </section>
             )}
@@ -456,10 +458,7 @@ const DynamicQuotePage: React.FC = () => {
                 "p-8 rounded-xl shadow-2xl border space-y-8",
                 isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
               )}>
-                <h3 className={cn(
-                  "text-3xl font-bold mb-6 text-center text-shadow-sm",
-                  isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
-                )}>Optional Add-Ons</h3>
+                <h3 className="text-3xl font-bold mb-6 text-center text-shadow-sm text-brand-dark dark:text-brand-light">Optional Add-Ons</h3>
                 <p className={cn(
                   "text-xl text-center max-w-3xl mx-auto",
                   isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
@@ -492,7 +491,7 @@ const DynamicQuotePage: React.FC = () => {
                         "text-3xl font-bold sm:ml-auto",
                         isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
                       )}>
-                        A${addOn.cost.toFixed(2)}
+                        {currencySymbol}{addOn.cost.toFixed(2)}
                       </div>
                     </div>
                   ))}
@@ -512,7 +511,7 @@ const DynamicQuotePage: React.FC = () => {
               "text-2xl md:text-3xl font-bold text-shadow-sm",
               isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
             )}>
-              Total Estimated Cost: <span className={isLivePianoQuote ? "text-livePiano-light text-4xl md:text-5xl" : "text-brand-dark dark:text-brand-light text-4xl md:text-5xl"}>A${quote.total_amount.toFixed(2)}</span>
+              Total Estimated Cost: <span className={isLivePianoQuote ? "text-livePiano-light text-4xl md:text-5xl" : "text-brand-dark dark:text-brand-light text-4xl md:text-5xl"}>{currencySymbol}{quote.total_amount.toFixed(2)}</span>
             </p>
           </div>
         )}
@@ -542,8 +541,10 @@ const DynamicQuotePage: React.FC = () => {
               </>
             ) : (
               <>
-                <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit (A${requiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {quote.event_date || 'event'} date.</li>
-                <li>The remaining balance is due 7 days prior to the event.</li>
+                <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit ({currencySymbol}{requiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {quote.event_date || 'event'} date.</li>
+                {paymentTerms && <li>{paymentTerms}</li>}
+                {!paymentTerms && <li>The remaining balance is due 7 days prior to the event.</li>}
+                
                 {bankDetails && (
                   <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>Bank Details for Payment:</strong> BSB: {bankDetails.bsb}, ACC: {bankDetails.acc}</li>
                 )}

@@ -19,7 +19,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Loader2, PlusCircle, Trash2, Wand2 } from 'lucide-react';
 import { useGeminiQuoteGenerator } from '@/hooks/use-gemini-quote-generator';
 import { toast } from 'sonner';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'; // <-- Added import
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 // Zod schema for the quote form
 const quoteFormSchema = z.object({
@@ -41,6 +41,9 @@ const quoteFormSchema = z.object({
   depositPercentage: z.coerce.number().min(0).max(100).default(50),
   bankBSB: z.string().min(1, { message: "Bank BSB is required." }).default("923100"),
   bankACC: z.string().min(1, { message: "Bank Account Number is required." }).default("301110875"),
+  // NEW FIELDS
+  currencySymbol: z.string().min(1, { message: "Currency symbol is required." }).default("A$"),
+  paymentTerms: z.string().optional(),
 });
 
 export type QuoteFormValues = z.infer<typeof quoteFormSchema>;
@@ -71,6 +74,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
       depositPercentage: 50,
       bankBSB: '923100',
       bankACC: '301110875',
+      currencySymbol: 'A$', // Default
+      paymentTerms: 'The remaining balance is due 7 days prior to the event.', // Default terms
     },
   });
 
@@ -291,7 +296,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
             name="baseServiceAmount"
             render={({ field }) => (
               <FormItem className="md:col-span-1">
-                <FormLabel>Amount (A$)</FormLabel>
+                <FormLabel>Amount ({form.watch('currencySymbol')})</FormLabel>
                 <FormControl>
                   <Input type="number" step="0.01" {...field} />
                 </FormControl>
@@ -336,7 +341,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
                 name={`addOns.${index}.cost`}
                 render={({ field }) => (
                   <FormItem className="w-32">
-                    <FormLabel>Cost (A$)</FormLabel>
+                    <FormLabel>Cost ({form.watch('currencySymbol')})</FormLabel>
                     <FormControl>
                       <Input type="number" step="0.01" {...field} />
                     </FormControl>
@@ -367,6 +372,19 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
 
         <h3 className="text-xl font-semibold text-brand-primary mt-8">Payment Details</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="currencySymbol"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Currency Symbol</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., A$" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="depositPercentage"
@@ -409,10 +427,28 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
           />
         </div>
         </div>
+        <FormField
+          control={form.control}
+          name="paymentTerms"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Payment Terms / Important Notes</FormLabel>
+              <FormControl>
+                <Textarea 
+                  placeholder="e.g., The remaining balance is due 7 days prior to the event." 
+                  rows={4} 
+                  className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                  {...field} 
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <div className="mt-8 p-6 bg-brand-primary/10 rounded-lg border border-brand-primary/30 shadow-lg text-center space-y-2">
-          <p className="text-2xl font-bold text-brand-primary">Total Quote Amount: <span className="text-brand-dark dark:text-brand-light">A${totalAmount.toFixed(2)}</span></p>
-          <p className="text-xl text-brand-dark/80 dark:text-brand-light/80">Required Deposit ({depositPercentage}%): <span className="font-semibold">A${requiredDeposit.toFixed(2)}</span></p>
+          <p className="text-2xl font-bold text-brand-primary">Total Quote Amount: <span className="text-brand-dark dark:text-brand-light">{form.watch('currencySymbol')}{totalAmount.toFixed(2)}</span></p>
+          <p className="text-xl text-brand-dark/80 dark:text-brand-light/80">Required Deposit ({depositPercentage}%): <span className="font-semibold">{form.watch('currencySymbol')}{requiredDeposit.toFixed(2)}</span></p>
         </div>
 
         <Button

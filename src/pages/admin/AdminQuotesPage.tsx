@@ -6,8 +6,10 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns';
-import { Loader2, ExternalLink } from 'lucide-react';
+import { Loader2, ExternalLink, Trash2 } from 'lucide-react';
 import { showError } from '@/utils/toast';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 interface Quote {
   id: string;
@@ -43,6 +45,36 @@ const AdminQuotesPage: React.FC = () => {
 
     fetchQuotes();
   }, []);
+
+  const handleDeleteQuote = async (quoteId: string) => {
+    toast.promise(
+      async () => {
+        const { error } = await supabase
+          .from('invoices')
+          .delete()
+          .eq('id', quoteId);
+
+        if (error) throw error;
+        
+        // Optimistically update the UI
+        setQuotes(prevQuotes => prevQuotes.filter(quote => quote.id !== quoteId));
+        return 'Quote deleted successfully!';
+      },
+      {
+        loading: 'Deleting quote...',
+        success: (message) => message,
+        error: (err) => {
+          console.error('Error deleting quote:', err);
+          return 'Failed to delete quote.';
+        },
+        action: {
+          label: 'Confirm Delete',
+          onClick: () => { /* The promise handles the actual deletion */ },
+        },
+        description: 'Are you sure you want to delete this quote? This action cannot be undone.',
+      }
+    );
+  };
 
   if (isLoading) {
     return (
@@ -88,10 +120,18 @@ const AdminQuotesPage: React.FC = () => {
                       <TableCell className="text-brand-dark/80 dark:text-brand-light/80">{quote.event_date || 'N/A'}</TableCell>
                       <TableCell className="text-right font-semibold text-brand-primary">A${quote.total_amount.toFixed(2)}</TableCell>
                       <TableCell className="text-brand-dark/70 dark:text-brand-light/70">{format(new Date(quote.accepted_at), 'PPP p')}</TableCell>
-                      <TableCell className="text-center">
+                      <TableCell className="text-center flex gap-2 justify-center">
                         <Link to={`/admin/quotes/${quote.id}`} className="text-brand-primary hover:underline flex items-center justify-center">
                           View Details <ExternalLink className="ml-1 h-4 w-4" />
                         </Link>
+                        <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDeleteQuote(quote.id)}
+                            className="bg-red-600 hover:bg-red-700 text-white"
+                        >
+                            <Trash2 className="h-4 w-4" />
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
