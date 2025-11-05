@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import DynamicImage from "@/components/DynamicImage";
 import { ArrowLeft, Phone, Mail, Loader2 } from 'lucide-react';
 import { useTheme } from "next-themes";
 import { toast } from 'sonner';
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
@@ -23,7 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'; // Import Table components
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface Quote {
   id: string;
@@ -46,6 +46,13 @@ const genericQuoteAcceptanceSchema = z.object({
   clientName: z.string().min(2, { message: "Your full name is required." }),
   clientEmail: z.string().email({ message: "A valid email address is required." }),
   acceptTerms: z.boolean().refine(val => val === true, { message: "You must accept the terms to proceed." }),
+  // Added description to the schema to fix TS2339 errors
+  selectedAddOns: z.array(z.object({
+    name: z.string(),
+    cost: z.number(),
+    isSelected: z.boolean(),
+    description: z.string().optional(), // FIX for TS2339
+  })).optional(),
 });
 
 const DynamicQuotePage: React.FC = () => {
@@ -63,7 +70,14 @@ const DynamicQuotePage: React.FC = () => {
       clientName: '',
       clientEmail: '',
       acceptTerms: false,
+      selectedAddOns: [],
     },
+  });
+
+  // Removed unused variable 'update' from useFieldArray
+  const { fields: addOnFields } = useFieldArray({
+    control: form.control,
+    name: "selectedAddOns",
   });
 
   useEffect(() => {
@@ -88,18 +102,50 @@ const DynamicQuotePage: React.FC = () => {
         setQuote(null);
       } else {
         setQuote(data as Quote);
-        // Set default form values if quote data is available
+        
+        const initialAddOns = (data.details?.addOns || []).map((addOn: any) => ({
+          name: addOn.name,
+          cost: parseFloat(String(addOn.cost)) || 0,
+          isSelected: true, // Default all add-ons to selected
+          description: addOn.description, // Ensure description is included
+        }));
+
+        // Set default form values
         form.reset({
           clientName: data.client_name || '',
           clientEmail: data.client_email || '',
-          acceptTerms: false, // Always start as false for acceptance
+          acceptTerms: false,
+          selectedAddOns: initialAddOns,
         });
       }
       setIsLoading(false);
     };
 
     fetchQuote();
-  }, [slug, form]);
+  }, [slug]); // Removed form from dependency array to prevent infinite loop, relying on manual reset above
+
+  // Watch selected add-ons and base service amount for dynamic total calculation
+  const watchedAddOns = form.watch('selectedAddOns');
+  
+  const { baseService, currencySymbol, depositPercentage, bankDetails, eventTime, paymentTerms } = quote?.details || {};
+  const baseAmount = parseFloat(String(baseService?.amount)) || 0;
+  const symbol = currencySymbol || 'A$';
+
+  const calculatedTotal = useMemo(() => {
+    if (!quote) return 0;
+    
+    let total = baseAmount;
+    
+    watchedAddOns?.forEach(addOn => {
+      if (addOn.isSelected) {
+        total += parseFloat(String(addOn.cost)) || 0;
+      }
+    });
+    return total;
+  }, [watchedAddOns, baseAmount, quote]);
+
+  const requiredDeposit = calculatedTotal * ((depositPercentage || 0) / 100);
+
 
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
@@ -113,23 +159,11 @@ const DynamicQuotePage: React.FC = () => {
     );
   }
 
-  if (error) {
+  if (error || !quote) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light p-4">
         <h2 className="text-3xl font-bold mb-4">Error</h2>
-        <p className="text-lg text-red-500 mb-6">{error}</p>
-        <Button asChild>
-          <Link to="/">Back to Home</Link>
-        </Button>
-      </div>
-    );
-  }
-
-  if (!quote) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light p-4">
-        <h2 className="text-3xl font-bold mb-4">Quote Not Found</h2>
-        <p className="text-lg mb-6">The quote you are looking for does not exist.</p>
+        <p className="text-lg text-red-500 mb-6">{error || "Quote not found."}</p>
         <Button asChild>
           <Link to="/">Back to Home</Link>
         </Button>
@@ -142,27 +176,29 @@ const DynamicQuotePage: React.FC = () => {
   const isRejected = !!quote.rejected_at;
   const isActionTaken = isAccepted || isRejected;
 
-  // Extract details from JSONB column
-  const baseService = quote.details?.baseService;
-  const addOns = quote.details?.addOns || [];
-  const depositPercentage = quote.details?.depositPercentage || 0;
-  const requiredDeposit = quote.details?.requiredDeposit || 0;
-  const bankDetails = quote.details?.bankDetails;
-  const eventTime = quote.details?.eventTime;
-  const currencySymbol = quote.details?.currencySymbol || 'A$'; // NEW: Default to A$
-  const paymentTerms = quote.details?.paymentTerms; // NEW
+  const isLivePianoQuote = quote.invoice_type === "Christmas Carols – Live Piano Quote";
+  const isErinKennedyQuote = quote.invoice_type === "Erin Kennedy Quote";
 
   // Handle form submission for generic quote acceptance
   async function onSubmitGeneric(values: z.infer<typeof genericQuoteAcceptanceSchema>) {
     const loadingToastId = toast.loading("Submitting your acceptance...");
+    
+    const finalSelectedAddOns = values.selectedAddOns?.filter(a => a.isSelected) || [];
+
     try {
       // Update the quote in Supabase to mark as accepted
       const { error: updateError } = await supabase
         .from('invoices')
         .update({
           accepted_at: new Date().toISOString(),
-          client_name: values.clientName, // Update client name if changed
-          client_email: values.clientEmail, // Update client email if changed
+          client_name: values.clientName,
+          client_email: values.clientEmail,
+          total_amount: calculatedTotal, // Use the dynamically calculated total
+          details: {
+            ...quote!.details,
+            final_total_amount: calculatedTotal,
+            client_selected_add_ons: finalSelectedAddOns,
+          }
         })
         .eq('id', quote!.id);
 
@@ -175,8 +211,13 @@ const DynamicQuotePage: React.FC = () => {
 
       if (EMAIL_SERVICE_API_KEY && CONTACT_FORM_RECIPIENT_EMAIL && EMAIL_SERVICE_ENDPOINT) {
         const adminQuoteLink = `${window.location.origin}/admin/quotes/${quote!.id}`;
-        const publicQuoteLink = `${window.location.origin}/quotes/${quote!.slug}`;
+        // Removed unused variable publicQuoteLink
         const subject = `🎉 Quote Accepted: ${quote!.event_title || quote!.invoice_type} from ${values.clientName}`;
+        
+        const addOnList = finalSelectedAddOns.length > 0 
+          ? finalSelectedAddOns.map(a => `<li>${a.name} (${symbol}${a.cost.toFixed(2)})</li>`).join('')
+          : '<li>None selected.</li>';
+
         const emailHtml = `
           <div style="font-family: 'Outfit', sans-serif; color: #1b1b1b; background-color: #F8F8F8; padding: 20px; border-radius: 8px;">
             <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
@@ -196,20 +237,16 @@ const DynamicQuotePage: React.FC = () => {
                   <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${quote!.event_title || quote!.invoice_type}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Total Amount:</td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${currencySymbol}${quote!.total_amount.toFixed(2)}</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Base Amount:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${symbol}${baseAmount.toFixed(2)}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Event Date:</td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${quote!.event_date || 'N/A'}</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Selected Add-Ons:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;"><ul>${addOnList}</ul></td>
                 </tr>
                 <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Event Location:</td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${quote!.event_location || 'N/A'}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Prepared By:</td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${quote!.prepared_by || 'N/A'}</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">FINAL TOTAL:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${symbol}${calculatedTotal.toFixed(2)}</td>
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Accepted On:</td>
@@ -218,10 +255,6 @@ const DynamicQuotePage: React.FC = () => {
                 <tr>
                   <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Admin Link:</td>
                   <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;"><a href="${adminQuoteLink}" style="color: #fdb813; text-decoration: none;">View in Admin Panel</a></td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Public Link:</td>
-                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;"><a href="${publicQuoteLink}" style="color: #fdb813; text-decoration: none;">View Public Quote</a></td>
                 </tr>
               </table>
               <p style="font-size: 14px; color: #666666; text-align: center; margin-top: 30px;">
@@ -255,16 +288,13 @@ const DynamicQuotePage: React.FC = () => {
     }
   }
 
-  const isLivePianoQuote = quote.invoice_type === "Christmas Carols – Live Piano Quote";
-  const isErinKennedyQuote = quote.invoice_type === "Erin Kennedy Quote";
-
   // --- Custom Erin Kennedy Quote Breakdown Renderer ---
   const renderErinKennedyQuote = () => {
     // Hardcoded values for Erin Kennedy Quote based on request
     const onSitePerformanceCost = 300.00;
     const showPreparationFee = 100.00;
     const totalBaseInvoice = 400.00;
-    const eventTimeEK = "3:00 PM – 6:00 PM"; // Hardcoded time for display
+    const eventTimeEK = "3:00 PM – 6:00 PM";
 
     return (
       <>
@@ -447,74 +477,88 @@ const DynamicQuotePage: React.FC = () => {
                   "text-3xl font-semibold text-center text-shadow-sm mt-8",
                   isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
                 )}>
-                  All-Inclusive Engagement Fee: <strong className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{currencySymbol}{baseService.amount.toFixed(2)}</strong>
+                  All-Inclusive Engagement Fee: <strong className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{symbol}{baseAmount.toFixed(2)}</strong>
                 </p>
               </section>
             )}
 
-            {/* Optional Add-Ons Section (Generic) */}
-            {addOns.length > 0 && (
+            {/* Optional Add-Ons Section (Generic) - Now interactive */}
+            {addOnFields.length > 0 && (
               <section className={cn(
                 "p-8 rounded-xl shadow-2xl border space-y-8",
                 isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
               )}>
-                <h3 className="text-3xl font-bold mb-6 text-center text-shadow-sm text-brand-dark dark:text-brand-light">Optional Add-Ons</h3>
-                <p className={cn(
-                  "text-xl text-center max-w-3xl mx-auto",
-                  isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
-                )}>
-                  These premium options are available to enhance the musical quality and duration of your evening.
-                </p>
+                <h3 className="text-3xl font-bold mb-6 text-center text-shadow-sm text-brand-dark dark:text-brand-light">Optional Add-Ons (Select to Include)</h3>
                 <div className="space-y-4 max-w-2xl mx-auto">
-                  {addOns.map((addOn: any, index: number) => (
-                    <div key={index} className={cn(
-                      "flex flex-col sm:flex-row sm:items-center sm:justify-between w-full rounded-md border p-4",
-                      isLivePianoQuote ? "border-livePiano-border/50 bg-livePiano-background/30" : "border-brand-secondary/50 bg-brand-secondary/10 dark:bg-brand-dark/30"
-                    )}>
-                      <div className="space-y-1 leading-none mb-4 sm:mb-0">
-                        <p className={cn(
-                          "text-xl font-bold leading-none",
-                          isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
-                        )}>
-                          {addOn.name}
-                        </p>
-                        {addOn.description && (
-                          <p className={cn(
-                            "text-base",
-                            isLivePianoQuote ? "text-livePiano-light/70" : "text-brand-dark/70 dark:text-brand-light/70"
+                  {addOnFields.map((item, index) => {
+                    const cost = parseFloat(String(item.cost)) || 0;
+                    
+                    return (
+                      <FormField
+                        key={item.id}
+                        control={form.control}
+                        name={`selectedAddOns.${index}.isSelected`}
+                        render={({ field }) => (
+                          <FormItem className={cn(
+                            "flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 cursor-pointer transition-all",
+                            isLivePianoQuote ? "border-livePiano-border/50" : "border-brand-secondary/50",
+                            field.value ? (isLivePianoQuote ? "bg-livePiano-background/50" : "bg-brand-secondary/20 dark:bg-brand-dark/50") : (isLivePianoQuote ? "bg-livePiano-background/20" : "bg-brand-light dark:bg-brand-dark-alt")
                           )}>
-                            {addOn.description}
-                          </p>
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                                className={cn(
+                                  "h-5 w-5 mt-1",
+                                  isLivePianoQuote ? "border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" : "border-brand-primary text-brand-dark data-[state=checked]:bg-brand-primary data-[state=checked]:text-brand-light"
+                                )}
+                              />
+                            </FormControl>
+                            <div className="space-y-1 leading-none flex-grow">
+                              <FormLabel className={cn(
+                                "text-xl font-bold leading-none cursor-pointer",
+                                isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
+                              )}>
+                                {item.name}
+                              </FormLabel>
+                              {item.description && (
+                                <p className={cn(
+                                  "text-base",
+                                  isLivePianoQuote ? "text-livePiano-light/70" : "text-brand-dark/70 dark:text-brand-light/70"
+                                )}>
+                                  {item.description}
+                                </p>
+                              )}
+                            </div>
+                            <div className={cn(
+                              "text-3xl font-bold sm:ml-auto flex-shrink-0",
+                              isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
+                            )}>
+                              {symbol}{cost.toFixed(2)}
+                            </div>
+                          </FormItem>
                         )}
-                      </div>
-                      <div className={cn(
-                        "text-3xl font-bold sm:ml-auto",
-                        isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
-                      )}>
-                        {currencySymbol}{addOn.cost.toFixed(2)}
-                      </div>
-                    </div>
-                  ))}
+                      />
+                    );
+                  })}
                 </div>
               </section>
             )}
           </>
         )}
 
-        {/* Total Estimated Cost (Only show for generic quotes, Erin Kennedy quote uses table total) */}
-        {!isErinKennedyQuote && (
-          <div className={cn(
-            "text-center mt-10 p-6 rounded-lg border shadow-lg",
-            isLivePianoQuote ? "bg-livePiano-primary/10 border-livePiano-primary/30" : "bg-brand-primary/10 border-brand-primary/30"
+        {/* Total Estimated Cost (Now Dynamic) */}
+        <div className={cn(
+          "text-center mt-10 p-6 rounded-lg border shadow-lg",
+          isLivePianoQuote ? "bg-livePiano-primary/10 border-livePiano-primary/30" : "bg-brand-primary/10 border-brand-primary/30"
+        )}>
+          <p className={cn(
+            "text-2xl md:text-3xl font-bold",
+            isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
           )}>
-            <p className={cn(
-              "text-2xl md:text-3xl font-bold text-shadow-sm",
-              isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
-            )}>
-              Total Estimated Cost: <span className={isLivePianoQuote ? "text-livePiano-light text-4xl md:text-5xl" : "text-brand-dark dark:text-brand-light text-4xl md:text-5xl"}>{currencySymbol}{quote.total_amount.toFixed(2)}</span>
-            </p>
-          </div>
-        )}
+            Final Total Cost: <span className={cn(isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light", "text-4xl md:text-5xl")}>{symbol}{calculatedTotal.toFixed(2)}</span>
+          </p>
+        </div>
 
         {/* Booking Information / Important Details */}
         <section className={cn(
@@ -522,7 +566,7 @@ const DynamicQuotePage: React.FC = () => {
           isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
         )}>
           <h3 className={cn(
-            "text-3xl font-bold mb-6 text-center text-shadow-sm",
+            "text-3xl font-bold mb-6 text-center",
             isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
           )}>Important Booking Details</h3>
           <ul className={cn(
@@ -541,7 +585,7 @@ const DynamicQuotePage: React.FC = () => {
               </>
             ) : (
               <>
-                <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit ({currencySymbol}{requiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {quote.event_date || 'event'} date.</li>
+                <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit ({symbol}{requiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {quote.event_date || 'event'} date.</li>
                 {paymentTerms && <li>{paymentTerms}</li>}
                 {!paymentTerms && <li>The remaining balance is due 7 days prior to the event.</li>}
                 
@@ -638,7 +682,7 @@ const DynamicQuotePage: React.FC = () => {
                             onCheckedChange={field.onChange}
                             id="accept-terms"
                             className={cn(
-                              "h-5 w-5",
+                              "h-5 w-5 mt-1",
                               isLivePianoQuote ? "border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" : "border-brand-primary text-brand-dark data-[state=checked]:bg-brand-primary data-[state=checked]:text-brand-light"
                             )}
                           />
@@ -665,7 +709,7 @@ const DynamicQuotePage: React.FC = () => {
                     )}
                     disabled={form.formState.isSubmitting || !form.formState.isValid}
                   >
-                    {form.formState.isSubmitting ? "Submitting..." : "Accept Quote & Proceed"}
+                    {form.formState.isSubmitting ? "Submitting..." : `Accept Quote for ${symbol}${calculatedTotal.toFixed(2)}`}
                   </Button>
                 </form>
               </Form>
