@@ -298,13 +298,13 @@ const DynamicQuotePage: React.FC = () => {
     return (
       <>
         <section className={cn(
-          "p-8 rounded-xl shadow-2xl border space-y-6",
+          "p-8 rounded-xl shadow-2xl border space-y-6 overflow-hidden", // Added overflow-hidden
           "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
         )}>
           <h3 className="text-3xl font-bold mb-6 text-center text-brand-primary">
             Quote Breakdown
           </h3>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto"> {/* Added overflow-x-auto */}
             <Table className="w-full text-left border-collapse">
               <TableHeader>
                 <TableRow className="bg-brand-secondary/10 dark:bg-brand-dark/50">
@@ -341,7 +341,7 @@ const DynamicQuotePage: React.FC = () => {
 
         {/* Optional Rehearsal Support Section */}
         <section className={cn(
-          "p-8 rounded-xl shadow-2xl border space-y-6",
+          "p-8 rounded-xl shadow-2xl border space-y-6 overflow-hidden", // Added overflow-hidden
           "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
         )}>
           <h3 className="text-3xl font-bold text-brand-primary text-center">Optional Rehearsal Support for Students</h3>
@@ -438,7 +438,7 @@ const DynamicQuotePage: React.FC = () => {
             {/* Base Service Section (Generic) */}
             {baseService && (
               <section className={cn(
-                "p-8 rounded-xl shadow-2xl border space-y-6",
+                "p-8 rounded-xl shadow-2xl border space-y-6 overflow-hidden", // Added overflow-hidden
                 isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
               )}>
                 <h3 className={cn(
@@ -485,7 +485,7 @@ const DynamicQuotePage: React.FC = () => {
 
         {/* Booking Information / Important Details - KEEP OUTSIDE FORM */}
         <section className={cn(
-          "p-8 rounded-xl shadow-2xl border space-y-6",
+          "p-8 rounded-xl shadow-2xl border space-y-6 overflow-hidden", // Added overflow-hidden
           isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
         )}>
           <h3 className={cn(
@@ -522,7 +522,7 @@ const DynamicQuotePage: React.FC = () => {
 
         {/* Client Acceptance Form - WRAP EVERYTHING DYNAMIC INSIDE HERE */}
         <section className={cn(
-          "p-8 rounded-xl shadow-2xl border space-y-8",
+          "p-8 rounded-xl shadow-2xl border space-y-8 overflow-hidden", // Added overflow-hidden
           isLivePianoQuote ? "bg-livePiano-darker border-livePiano-primary/50" : "bg-brand-light dark:bg-brand-dark-alt border-brand-primary/50"
         )}>
           <h3 className={cn(
