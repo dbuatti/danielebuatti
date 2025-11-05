@@ -299,8 +299,8 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
           isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
         )}>Important Booking Details</h3>
         <ul className={cn(
-          "list-disc list-inside text-lg space-y-2 pl-4", // Added pl-4 for consistent list indent
-          isLivePianoTheme ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
+          "list-disc list-inside text-lg space-y-2 pl-4",
+          isLivePianoTheme ? "text-livePiano-light/90 [&>li::marker]:text-livePiano-primary" : "text-brand-dark/90 dark:text-brand-light/90 [&>li::marker]:text-brand-primary"
         )}>
           {isErinKennedyQuote ? (
             <>

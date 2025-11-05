@@ -297,11 +297,11 @@ const DynamicQuotePage: React.FC = () => {
 
   // --- Custom Erin Kennedy Quote Breakdown Renderer ---
   const renderErinKennedyQuote = () => {
-    // Hardcoded values for Erin Kennedy Quote based on request
-    const onSitePerformanceCost = 300.00;
-    const showPreparationFee = 100.00;
-    const totalBaseInvoice = 400.00;
-    const eventTimeEK = "3:00 PM – 6:00 PM";
+    // Use data from the prop if available, otherwise fallback to hardcoded for consistency in preview
+    const onSitePerformanceCost = quote?.details?.on_site_performance_cost || 300.00;
+    const showPreparationFee = quote?.details?.show_preparation_fee || 100.00;
+    const totalBaseInvoice = quote?.total_amount || 400.00; // Use total_amount from data
+    const eventTimeEK = quote?.details?.eventTime || "3:00 PM – 6:00 PM";
 
     return (
       <>
@@ -502,7 +502,7 @@ const DynamicQuotePage: React.FC = () => {
           )}>Important Booking Details</h3>
           <ul className={cn(
             "list-disc list-inside text-lg space-y-2 pl-4",
-            isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
+            isLivePianoQuote ? "text-livePiano-light/90 [&>li::marker]:text-livePiano-primary" : "text-brand-dark/90 dark:text-brand-light/90 [&>li::marker]:text-brand-primary"
           )}>
             {isErinKennedyQuote ? (
               <>
