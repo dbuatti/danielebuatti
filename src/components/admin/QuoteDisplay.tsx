@@ -13,7 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Minus, Plus, Phone, Mail } from 'lucide-react';
 
 // Define AddOnItem type
-interface AddOnItem {
+export interface AddOnItem { // Exported for potential external use
   name: string;
   description?: string;
   cost: number;
@@ -21,14 +21,12 @@ interface AddOnItem {
 }
 
 // Define Quote type (simplified based on usage)
-interface Quote {
+export interface Quote { // <--- EXPORTED THIS INTERFACE
   client_name?: string;
   client_email?: string;
   event_title?: string;
   invoice_type?: string;
   event_date?: string;
-  event_location?: string; // Added missing property
-  prepared_by?: string; // Added missing property
   total_amount: number;
   requiredDeposit: number;
   depositPercentage: number;

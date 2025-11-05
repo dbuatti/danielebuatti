@@ -1,18 +1,27 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+  return twMerge(clsx(inputs))
 }
 
+export function formatCurrency(amount: number | string, currencySymbol: string = '$'): string {
+  const numericAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+  if (isNaN(numericAmount)) {
+    return `${currencySymbol}0.00`;
+  }
+  return `${currencySymbol}${numericAmount.toFixed(2)}`;
+}
+
+// Added createSlug function
 export function createSlug(text: string): string {
   return text
     .toString()
-    .normalize('NFD') // Normalize diacritics
-    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-    .toLowerCase() // Convert to lowercase
-    .trim() // Trim whitespace from both ends
-    .replace(/\s+/g, '-') // Replace spaces with -
-    .replace(/[^\w-]+/g, '') // Remove all non-word chars
-    .replace(/--+/g, '-'); // Replace multiple - with single -
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-');
 }
