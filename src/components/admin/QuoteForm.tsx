@@ -86,12 +86,14 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
     name: "addOns",
   });
 
-  const baseServiceAmount = form.watch('baseServiceAmount');
-  const addOns = form.watch('addOns');
-  const depositPercentage = form.watch('depositPercentage');
-  const emailContent = form.watch('emailContent'); // Watch new field
-
+  // Watch the entire form state to ensure instant updates on any field change (including blur)
+  const watchedFormValues = form.watch();
+  
   const totalAmount = React.useMemo(() => {
+    // Use watchedFormValues to access the latest state
+    const baseServiceAmount = watchedFormValues.baseServiceAmount;
+    const addOns = watchedFormValues.addOns;
+    
     // Ensure baseServiceAmount is treated as a number, defaulting to 0 if invalid
     const base = typeof baseServiceAmount === 'number' ? baseServiceAmount : parseFloat(String(baseServiceAmount)) || 0;
     
@@ -102,7 +104,9 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
       total += cost;
     });
     return total;
-  }, [baseServiceAmount, addOns]);
+  }, [watchedFormValues]); // Depend on the entire watched object
+
+  const depositPercentage = watchedFormValues.depositPercentage;
 
   const requiredDeposit = React.useMemo(() => {
     return totalAmount * (depositPercentage / 100);
@@ -111,6 +115,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
   const handleAutoGenerate = async () => {
     console.log("Attempting AI Quote Generation...");
     
+    const emailContent = watchedFormValues.emailContent;
+
     if (!emailContent || emailContent.trim().length < 50) {
       toast.warning("Please paste the full email conversation content (at least 50 characters) into the field above before auto-generating.");
       return;
@@ -182,7 +188,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
             <Button
               type="button"
               onClick={handleAutoGenerate}
-              disabled={isGenerating || isSubmitting || !emailContent || emailContent.trim().length < 50}
+              disabled={isGenerating || isSubmitting || !watchedFormValues.emailContent || watchedFormValues.emailContent.trim().length < 50}
               className="w-full bg-brand-blue hover:bg-brand-blue/90 text-brand-light"
               size="lg"
             >
@@ -330,7 +336,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
             name="baseServiceAmount"
             render={({ field }) => (
               <FormItem className="md:col-span-1">
-                <FormLabel>Amount ({form.watch('currencySymbol')})</FormLabel>
+                <FormLabel>Amount ({watchedFormValues.currencySymbol})</FormLabel>
                 <FormControl>
                   <Input type="number" step="0.01" {...field} />
                 </FormControl>
@@ -375,7 +381,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
                 name={`addOns.${index}.cost`}
                 render={({ field }) => (
                   <FormItem className="w-32">
-                    <FormLabel>Cost ({form.watch('currencySymbol')})</FormLabel>
+                    <FormLabel>Cost ({watchedFormValues.currencySymbol})</FormLabel>
                     <FormControl>
                       <Input type="number" step="0.01" {...field} />
                     </FormControl>
@@ -481,8 +487,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
         />
 
         <div className="mt-8 p-6 bg-brand-primary/10 rounded-lg border border-brand-primary/30 shadow-lg text-center space-y-2">
-          <p className="text-2xl font-bold text-brand-primary">Total Quote Amount: <span className="text-brand-dark dark:text-brand-light">{form.watch('currencySymbol')}{totalAmount.toFixed(2)}</span></p>
-          <p className="text-xl text-brand-dark/80 dark:text-brand-light/80">Required Deposit ({depositPercentage}%): <span className="font-semibold">{form.watch('currencySymbol')}{requiredDeposit.toFixed(2)}</span></p>
+          <p className="text-2xl font-bold text-brand-primary">Total Quote Amount: <span className="text-brand-dark dark:text-brand-light">{watchedFormValues.currencySymbol}{totalAmount.toFixed(2)}</span></p>
+          <p className="text-xl text-brand-dark/80 dark:text-brand-light/80">Required Deposit ({depositPercentage}%): <span className="font-semibold">{watchedFormValues.currencySymbol}{requiredDeposit.toFixed(2)}</span></p>
         </div>
 
         <div className="flex gap-4">
