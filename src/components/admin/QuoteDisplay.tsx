@@ -72,6 +72,9 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
   // Ensure total_amount is a number before using toFixed
   const safeTotalAmount = typeof total_amount === 'number' ? total_amount : parseFloat(String(total_amount)) || 0;
   const safeRequiredDeposit = typeof requiredDeposit === 'number' ? requiredDeposit : parseFloat(String(requiredDeposit)) || 0;
+  
+  // NEW: Safely access baseService amount
+  const safeBaseServiceAmount = typeof baseService?.amount === 'number' ? baseService.amount : parseFloat(String(baseService?.amount)) || 0;
 
 
   // Determine if it's the hardcoded Erin Kennedy quote (for specific layout)
@@ -206,7 +209,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
                 "text-3xl font-semibold text-center mt-8",
                 isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
               )}>
-                All-Inclusive Engagement Fee: <strong className={isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{currencySymbol}{baseService.amount.toFixed(2)}</strong>
+                All-Inclusive Engagement Fee: <strong className={isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{currencySymbol}{safeBaseServiceAmount.toFixed(2)}</strong>
               </p>
             </section>
           )}
