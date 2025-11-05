@@ -69,6 +69,11 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
     paymentTerms,
   } = details;
 
+  // Ensure total_amount is a number before using toFixed
+  const safeTotalAmount = typeof total_amount === 'number' ? total_amount : parseFloat(String(total_amount)) || 0;
+  const safeRequiredDeposit = typeof requiredDeposit === 'number' ? requiredDeposit : parseFloat(String(requiredDeposit)) || 0;
+
+
   // Determine if it's the hardcoded Erin Kennedy quote (for specific layout)
   const isErinKennedyQuote = data.event_title === "Erin Kennedy Quote"; // Assuming event_title is used for this specific case
 
@@ -263,7 +268,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
           "text-2xl md:text-3xl font-bold",
           isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
         )}>
-          Total Estimated Cost: <span className={isLivePianoTheme ? "text-livePiano-light text-4xl md:text-5xl" : "text-brand-dark dark:text-brand-light text-4xl md:text-5xl"}>{currencySymbol}{total_amount.toFixed(2)}</span>
+          Total Estimated Cost: <span className={isLivePianoTheme ? "text-livePiano-light text-4xl md:text-5xl" : "text-brand-dark dark:text-brand-light text-4xl md:text-5xl"}>{currencySymbol}{safeTotalAmount.toFixed(2)}</span>
         </p>
       </div>
 
@@ -292,7 +297,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
             </>
           ) : (
             <>
-              <li><strong className={isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit ({currencySymbol}{requiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {event_date || 'event'} date.</li>
+              <li><strong className={isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit ({currencySymbol}{safeRequiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {event_date || 'event'} date.</li>
               {paymentTerms && <li>{paymentTerms}</li>}
               {!paymentTerms && <li>The remaining balance is due 7 days prior to the event.</li>}
               
