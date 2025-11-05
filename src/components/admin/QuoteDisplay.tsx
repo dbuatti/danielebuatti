@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { cn, formatCurrency } from '@/lib/utils';
-// Removed Link import as it's not used in this display-only component
 import { Phone, Mail } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
@@ -117,7 +116,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isLivePianoTheme, is
                   <TableCell className="text-right font-semibold text-brand-primary">A${showPreparationFee.toFixed(2)}</TableCell>
                 </TableRow>
                 <TableRow className="bg-brand-primary/10 dark:bg-brand-primary/20 font-bold">
-                  <TableCell colSpan={2} className="text-brand-primary text-lg">TOTAL BASE INVOICE <span className="font-normal text-sm text-brand-dark/70 dark:text-brand-light/70">(To be paid by Erin Kennedy)</span></TableCell>
+                  <TableCell colSpan={2} className="text-brand-primary text-lg">TOTAL BASE INVOICE <span className="font-semibold text-base text-brand-dark/70 dark:text-brand-light/70">(To be paid by Erin Kennedy)</span></TableCell>
                   <TableCell className="text-right text-brand-primary text-lg">A${totalBaseInvoice.toFixed(2)}</TableCell>
                 </TableRow>
               </TableBody>
@@ -169,14 +168,14 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isLivePianoTheme, is
             isLivePianoTheme ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
           )}>
             <p>Prepared for: <strong className={isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"}>{client_name}</strong></p>
-            <p>Client Email: <strong className={isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"}>{client_email}</strong></p> {/* Added client_email here */}
+            <p>Client Email: <strong className={isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"}>{client_email}</strong></p>
             <p>Date of Event: {event_date && format(new Date(event_date), 'EEEE d MMMM yyyy') || 'N/A'}</p>
             {isErinKennedyQuote ? <p>Time: 3:00 PM – 6:00 PM</p> : eventTime && <p>Time: {eventTime}</p>}
             <p>Location: {event_location || 'N/A'}</p>
             <p>Prepared by: {prepared_by || 'N/A'}</p>
           </div>
           <Separator className={cn(
-            "max-w-lg mx-auto h-1 mt-10",
+            "max-w-lg mx-auto h-1 mt-10", // Increased height to h-1
             isLivePianoTheme ? "bg-livePiano-primary" : "bg-brand-primary"
           )} />
         </section>
@@ -222,7 +221,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isLivePianoTheme, is
                   </ul>
                 </div>
                 <p className={cn(
-                  "text-3xl font-semibold text-center mt-8",
+                  "text-4xl font-bold text-center mt-8", // Changed to text-4xl font-bold
                   isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
                 )}>
                   All-Inclusive Engagement Fee: <strong className={isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{currencySymbol}{baseAmount.toFixed(2)}</strong>
@@ -241,22 +240,22 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isLivePianoTheme, is
             isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
           )}>Important Booking Details</h3>
           <ul className={cn(
-            "list-disc list-inside text-lg space-y-2",
+            "list-disc list-inside text-lg space-y-3", // Changed space-y-2 to space-y-3
             isLivePianoTheme ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
           )}>
             {isErinKennedyQuote ? (
               <>
                 <li><strong className="text-brand-primary">Your final invoice for the base services to Erin Kennedy will be A$400.00.</strong></li>
-                <li><strong className="text-brand-primary">A non-refundable 50% deposit (A$200.00) is required immediately</strong> to formally secure the {event_date || 'event'} date.</li>
+                <li><strong className="text-brand-primary">A non-refundable 50% deposit (A$200.00) is required immediately</strong> to formally secure the {quote.event_date || 'event'} date.</li>
                 <li>The remaining balance is due 7 days prior to the event.</li>
                 <li><strong className="text-brand-primary">Bank Details for Payment:</strong> BSB: 923100, ACC: 301110875</li>
                 <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by 3:00 PM.</li>
-                <li>To ensure thorough preparation, Daniele kindly requests PDF sheet music for all songs and a complete song list at least two weeks prior to the event (or earlier, if possible).</li>
-                <li>To facilitate efficient scheduling, please inform Daniele of the total number of students participating in the concert as soon as possible. Daniele will then work to schedule rehearsals in convenient, grouped time blocks.</li>
+                <li>To ensure thorough preparation, Daniele kindly requests <strong>PDF sheet music</strong> for all songs and a <strong>complete song list</strong> at least two weeks prior to the event (or earlier, if possible).</li>
+                <li>To facilitate efficient scheduling, please inform Daniele of the <strong>total number of students</strong> participating in the concert as soon as possible. Daniele will then work to schedule rehearsals in convenient, grouped time blocks.</li>
               </>
             ) : (
               <>
-                <li><strong className={isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit ({currencySymbol}{safeRequiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {event_date && format(new Date(event_date), 'EEEE d MMMM yyyy') || 'event'} date.</li>
+                <li><strong className={isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit ({symbol}{safeRequiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {quote.event_date && format(new Date(event_date), 'EEEE d MMMM yyyy') || 'event'} date.</li>
                 {paymentTerms && <li>{paymentTerms}</li>}
                 {!paymentTerms && <li>The remaining balance is due 7 days prior to the event.</li>}
                 
