@@ -11,7 +11,7 @@ import { useTheme } from "next-themes";
 import { toast } from 'sonner';
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * => z from "zod";
+import * as z from "zod";
 import {
   Form,
   FormControl,
@@ -21,7 +21,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils'; // Import formatCurrency
 import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
@@ -41,23 +41,30 @@ interface Quote {
   slug?: string | null; // Include slug
 }
 
+// Define the Zod schema for an individual add-on item
+const addOnSchema = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+  cost: z.number(),
+  quantity: z.coerce.number().min(0).max(10, { message: "Max quantity is 10." }),
+  description: z.string().optional(),
+});
+
+// Infer the TypeScript type from the addOnSchema for explicit typing
+type AddOnItem = z.infer<typeof addOnSchema>;
+
 // Zod schema for generic quote acceptance
 const genericQuoteAcceptanceSchema = z.object({
   clientName: z.string().min(2, { message: "Your full name is required." }),
   clientEmail: z.string().email({ message: "A valid email address is required." }),
   acceptTerms: z.boolean().refine(val => val === true, { message: "You must accept the terms to proceed." }),
-  selectedAddOns: z.array(z.object({
-    name: z.string(),
-    cost: z.number(),
-    quantity: z.coerce.number().min(0).max(10, { message: "Max quantity is 10." }),
-    description: z.string().optional(),
-  })).optional(),
+  selectedAddOns: z.array(addOnSchema).optional(),
 });
 
 const DynamicQuotePage: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const { slug } = useParams<{ slug: string }>(); // Use 'slug' from route params
   const navigate = useNavigate();
-  const [quote, setQuote] = useState<Quote | null>(null);
+  const [quote, setQuote] = useState<Quote | null>(null); // Use 'quote' state for fetched data
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { theme } = useTheme();
@@ -103,6 +110,7 @@ const DynamicQuotePage: React.FC = () => {
         
         // Initialize add-ons with quantity from the quote details, defaulting to 1 if present
         const initialAddOns = (data.details?.addOns || []).map((addOn: any) => ({
+          id: addOn.id || addOn.name, // Ensure ID for useFieldArray
           name: addOn.name,
           cost: parseFloat(String(addOn.cost)) || 0,
           quantity: parseFloat(String(addOn.quantity)) || 1, // Use admin's quantity as default
@@ -121,7 +129,7 @@ const DynamicQuotePage: React.FC = () => {
     };
 
     fetchQuote();
-  }, [slug]); // Removed form from dependency array to prevent infinite loop, relying on manual reset above
+  }, [slug, form]); // Added form to dependency array, but reset is handled carefully
 
   // Watch selected add-ons and base service amount for dynamic total calculation
   const watchedAddOns = form.watch('selectedAddOns');
@@ -135,7 +143,7 @@ const DynamicQuotePage: React.FC = () => {
     
     let total = baseAmount;
     
-    watchedAddOns?.forEach(addOn => {
+    watchedAddOns?.forEach((addOn: AddOnItem) => { // Explicitly type addOn
       const quantity = parseFloat(String(addOn.quantity)) || 0;
       const cost = parseFloat(String(addOn.cost)) || 0;
       total += cost * quantity;
@@ -183,7 +191,7 @@ const DynamicQuotePage: React.FC = () => {
     const loadingToastId = toast.loading("Submitting your acceptance...");
     
     // Filter out add-ons where quantity is 0
-    const finalSelectedAddOns = values.selectedAddOns?.filter(a => (parseFloat(String(a.quantity)) || 0) > 0) || [];
+    const finalSelectedAddOns = values.selectedAddOns?.filter((a: AddOnItem) => (parseFloat(String(a.quantity)) || 0) > 0) || [];
 
     try {
       // Update the quote in Supabase to mark as accepted
@@ -214,7 +222,7 @@ const DynamicQuotePage: React.FC = () => {
         const subject = `🎉 Quote Accepted: ${quote!.event_title || quote!.invoice_type} from ${values.clientName}`;
         
         const addOnList = finalSelectedAddOns.length > 0 
-          ? finalSelectedAddOns.map(a => `<li>${a.name} (Qty: ${a.quantity}, Cost: ${symbol}${(a.cost * a.quantity).toFixed(2)})</li>`).join('')
+          ? finalSelectedAddOns.map((a: AddOnItem) => `<li>${a.name} (Qty: ${a.quantity}, Cost: ${symbol}${formatCurrency(a.cost * a.quantity, '')})</li>`).join('')
           : '<li>None selected.</li>';
 
         const emailHtml = `
@@ -237,7 +245,7 @@ const DynamicQuotePage: React.FC = () => {
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Base Amount:</td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${symbol}${baseAmount.toFixed(2)}</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${formatCurrency(baseAmount, symbol)}</td>
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Selected Add-Ons:</td>
@@ -245,7 +253,7 @@ const DynamicQuotePage: React.FC = () => {
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">FINAL TOTAL:</td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${symbol}${calculatedTotal.toFixed(2)}</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${formatCurrency(calculatedTotal, symbol)}</td>
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Accepted On:</td>
@@ -321,18 +329,18 @@ const DynamicQuotePage: React.FC = () => {
                     <br />
                     Rate: A$100/hr (effective rate for this package)
                   </TableCell>
-                  <TableCell className="text-right font-semibold text-brand-primary">A${onSitePerformanceCost.toFixed(2)}</TableCell>
+                  <TableCell className="text-right font-semibold text-brand-primary">{formatCurrency(onSitePerformanceCost, 'A$')}</TableCell>
                 </TableRow>
                 <TableRow className="hover:bg-brand-secondary/5 dark:hover:bg-brand-dark/30">
                   <TableCell className="font-semibold text-brand-dark dark:text-brand-light">Production Coordination & Music Preparation</TableCell>
                   <TableCell className="text-brand-dark/80 dark:text-brand-light/80">
                     A flat fee covering essential behind-the-scenes work: coordinating with all students, collecting and formatting sheet music, and preparing for a seamless production.
                   </TableCell>
-                  <TableCell className="text-right font-semibold text-brand-primary">A${showPreparationFee.toFixed(2)}</TableCell>
+                  <TableCell className="text-right font-semibold text-brand-primary">{formatCurrency(showPreparationFee, 'A$')}</TableCell>
                 </TableRow>
                 <TableRow className="bg-brand-primary/10 dark:bg-brand-primary/20 font-bold">
                   <TableCell colSpan={2} className="text-brand-primary text-lg">TOTAL BASE INVOICE <span className="font-normal text-sm text-brand-dark/70 dark:text-brand-light/70">(To be paid by Erin Kennedy)</span></TableCell>
-                  <TableCell className="text-right text-brand-primary text-lg">A${totalBaseInvoice.toFixed(2)}</TableCell>
+                  <TableCell className="text-right text-brand-primary text-lg">{formatCurrency(totalBaseInvoice, 'A$')}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -351,9 +359,9 @@ const DynamicQuotePage: React.FC = () => {
           <div className="max-w-md mx-auto space-y-4">
             <h4 className="text-xl font-semibold text-brand-primary">Individual Rehearsal Rates:</h4>
             <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-1 pl-4">
-              <li>15-minute rehearsal: A$30</li>
-              <li>30-minute rehearsal: A$50</li>
-              <li>45-minute rehearsal: A$75</li>
+              <li>15-minute rehearsal: {formatCurrency(30, 'A$')}</li>
+              <li>30-minute rehearsal: {formatCurrency(50, 'A$')}</li>
+              <li>45-minute rehearsal: {formatCurrency(75, 'A$')}</li>
             </ul>
             <p className="text-base text-brand-dark/70 dark:text-brand-light/70 italic">
               Each session is designed for a focused run-through of a student's piece, with time for essential touch-ups and feedback. Students can book these sessions directly with Daniele.
@@ -476,7 +484,7 @@ const DynamicQuotePage: React.FC = () => {
                   "text-3xl font-semibold text-center mt-8",
                   isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
                 )}>
-                  All-Inclusive Engagement Fee: <strong className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{symbol}{baseAmount.toFixed(2)}</strong>
+                  All-Inclusive Engagement Fee: <strong className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{formatCurrency(baseAmount, symbol)}</strong>
                 </p>
               </section>
             )}
@@ -498,8 +506,8 @@ const DynamicQuotePage: React.FC = () => {
           )}>
             {isErinKennedyQuote ? (
               <>
-                <li><strong className="text-brand-primary">Your final invoice for the base services to Erin Kennedy will be A$400.00.</strong></li>
-                <li><strong className="text-brand-primary">A non-refundable 50% deposit (A$200.00) is required immediately</strong> to formally secure the {quote.event_date || 'event'} date.</li>
+                <li><strong className="text-brand-primary">Your final invoice for the base services to Erin Kennedy will be {formatCurrency(400, 'A$')}.</strong></li>
+                <li><strong className="text-brand-primary">A non-refundable 50% deposit ({formatCurrency(200, 'A$')}) is required immediately</strong> to formally secure the {quote.event_date || 'event'} date.</li>
                 <li>The remaining balance is due 7 days prior to the event.</li>
                 <li><strong className="text-brand-primary">Bank Details for Payment:</strong> BSB: 923100, ACC: 301110875</li>
                 <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by 3:00 PM.</li>
@@ -508,7 +516,7 @@ const DynamicQuotePage: React.FC = () => {
               </>
             ) : (
               <>
-                <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit ({symbol}{requiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {quote.event_date || 'event'} date.</li>
+                <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit ({formatCurrency(requiredDeposit, symbol)}) is required immediately</strong> to formally secure the {quote.event_date || 'event'} date.</li>
                 {paymentTerms && <li>{paymentTerms}</li>}
                 {!paymentTerms && <li>The remaining balance is due 7 days prior to the event.</li>}
                 
@@ -550,7 +558,7 @@ const DynamicQuotePage: React.FC = () => {
                   <div className="space-y-8">
                     <h4 className="text-2xl font-bold text-center text-brand-dark dark:text-brand-light">Adjust Optional Add-Ons</h4>
                     <div className="space-y-4 max-w-2xl mx-auto">
-                      {addOnFields.map((item, index) => {
+                      {addOnFields.map((item: AddOnItem, index) => { // Explicitly type item
                         const cost = parseFloat(String(item.cost)) || 0;
                         const currentQuantity = parseFloat(String(form.watch(`selectedAddOns.${index}.quantity`))) || 0;
                         const subtotal = cost * currentQuantity;
@@ -585,7 +593,7 @@ const DynamicQuotePage: React.FC = () => {
                                 "text-sm italic",
                                 isLivePianoQuote ? "text-livePiano-light/60" : "text-brand-dark/60 dark:text-brand-light/60"
                               )}>
-                                Unit Cost: {symbol}{cost.toFixed(2)}
+                                Unit Cost: {formatCurrency(cost, symbol)}
                               </p>
                             </div>
                             
@@ -646,7 +654,7 @@ const DynamicQuotePage: React.FC = () => {
                                 "text-3xl font-bold flex-shrink-0 w-24 text-right",
                                 isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
                               )}>
-                                {symbol}{subtotal.toFixed(2)}
+                                {formatCurrency(subtotal, symbol)}
                               </div>
                             </div>
                           </div>
@@ -665,7 +673,7 @@ const DynamicQuotePage: React.FC = () => {
                     "text-2xl md:text-3xl font-bold",
                     isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
                   )}>
-                    Final Total Cost: <span className={cn(isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light", "text-4xl md:text-5xl")}>{symbol}{calculatedTotal.toFixed(2)}</span>
+                    Final Total Cost: <span className={cn(isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light", "text-4xl md:text-5xl")}>{formatCurrency(calculatedTotal, symbol)}</span>
                   </p>
                 </div>
               
@@ -756,7 +764,7 @@ const DynamicQuotePage: React.FC = () => {
                 )}
                 disabled={form.formState.isSubmitting || !form.formState.isValid}
               >
-                {form.formState.isSubmitting ? "Submitting..." : `Accept Quote for ${symbol}${calculatedTotal.toFixed(2)}`}
+                {form.formState.isSubmitting ? "Submitting..." : `Accept Quote for ${formatCurrency(calculatedTotal, symbol)}`}
               </Button>
             </form>
             </Form>

@@ -20,6 +20,7 @@ import { Loader2, PlusCircle, Trash2, Wand2, Eye, Copy } from 'lucide-react';
 import { useGeminiQuoteGenerator } from '@/hooks/use-gemini-quote-generator';
 import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { formatCurrency } from '@/lib/utils'; // Import formatCurrency
 
 // Zod schema for the quote form
 const quoteFormSchema = z.object({
@@ -178,7 +179,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         
         {/* AI Input Section */}
-        <Card className="bg-brand-secondary/10 dark:bg-brand-dark/30 p-6 border-brand-secondary/50">
+        <Card className="bg-brand-secondary/10 dark:bg-brand-dark/30 p-6 border-brand-secondary/50 shadow-none"> {/* Removed shadow */}
           <CardHeader className="p-0 pb-4">
             <CardTitle className="text-xl text-brand-primary flex items-center gap-2">
               <Wand2 className="h-5 w-5" /> AI Quote Extractor
@@ -368,7 +369,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
         <div className="space-y-4">
           {fields.map((item, index) => (
             <div key={item.id} className="flex flex-col gap-4 p-4 border rounded-md bg-brand-secondary/10 dark:bg-brand-dark/30">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end"> {/* Added items-end for alignment */}
                 <FormField
                   control={form.control}
                   name={`addOns.${index}.name`}
@@ -530,8 +531,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
         />
 
         <div className="mt-8 p-6 bg-brand-primary/10 rounded-lg border border-brand-primary/30 text-center space-y-2">
-          <p className="text-2xl font-bold text-brand-primary">Total Quote Amount: <span className="text-brand-dark dark:text-brand-light">{watchedFormValues.currencySymbol}{totalAmount.toFixed(2)}</span></p>
-          <p className="text-xl text-brand-dark/80 dark:text-brand-light/80">Required Deposit ({depositPercentage}%): <span className="font-semibold">{watchedFormValues.currencySymbol}{requiredDeposit.toFixed(2)}</span></p>
+          <p className="text-2xl font-bold text-brand-primary">Total Quote Amount: <span className="text-brand-dark dark:text-brand-light">{formatCurrency(totalAmount, watchedFormValues.currencySymbol)}</span></p>
+          <p className="text-xl text-brand-dark/80 dark:text-brand-light/80">Required Deposit ({depositPercentage}%): <span className="font-semibold">{formatCurrency(requiredDeposit, watchedFormValues.currencySymbol)}</span></p>
         </div>
 
         <div className="flex gap-4">
