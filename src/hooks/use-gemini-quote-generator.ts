@@ -9,6 +9,12 @@ const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 interface GeneratedQuote {
+  clientName: string;
+  clientEmail: string;
+  eventTitle: string;
+  eventDate: string; // YYYY-MM-DD format
+  eventTime: string;
+  eventLocation: string;
   baseServiceDescription: string;
   baseServiceAmount: number;
   addOns: { name: string; description: string; cost: number }[];
@@ -17,7 +23,7 @@ interface GeneratedQuote {
 export function useGeminiQuoteGenerator() {
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const generateQuote = useCallback(async (eventTitle: string, clientName: string): Promise<GeneratedQuote | null> => {
+  const generateQuote = useCallback(async (emailContent: string): Promise<GeneratedQuote | null> => {
     if (!ai) {
       showError("Gemini API Key is missing. Please set VITE_GEMINI_API_KEY in your .env file.");
       return null;
@@ -26,17 +32,26 @@ export function useGeminiQuoteGenerator() {
     setIsGenerating(true);
 
     const prompt = `
-      You are an expert music director and embodied coach creating a quote for a client.
-      Generate a base service description, a base service amount (in AUD, as a number), and up to two optional add-ons for a quote based on the following event details.
+      You are an expert quote generator. Analyze the following email conversation to extract key quote details.
       
-      Event Title: "${eventTitle}"
-      Client Name: "${clientName}"
+      1. Extract the Client Name, Client Email, Event Title, Event Date (in YYYY-MM-DD format), Event Time, and Event Location. If a specific fee is mentioned for the base service (e.g., $1000), use that as the baseServiceAmount.
+      2. Based on the conversation, generate a detailed baseServiceDescription.
+      3. Suggest up to two relevant optional add-ons (name, description, cost in AUD) that enhance the service, especially if the conversation mentions potential extra work (like extra songs or rehearsals). Add-on costs should be between A$50 and A$200.
       
-      The base service should typically be between A$300 and A$800. Add-ons should be between A$50 and A$200.
+      Email Conversation:
+      ---
+      ${emailContent}
+      ---
       
-      Return the response strictly as a single JSON object matching the following TypeScript interface:
+      Return the response strictly as a single JSON object matching the following TypeScript interface. If a field cannot be extracted, use a placeholder like 'TBD' for strings or 0 for numbers, but try your best to infer from context.
       
       interface GeneratedQuote {
+        clientName: string;
+        clientEmail: string;
+        eventTitle: string;
+        eventDate: string; // YYYY-MM-DD format
+        eventTime: string;
+        eventLocation: string;
         baseServiceDescription: string;
         baseServiceAmount: number;
         addOns: { 

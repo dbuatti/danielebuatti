@@ -19,9 +19,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Loader2, PlusCircle, Trash2, Wand2 } from 'lucide-react';
 import { useGeminiQuoteGenerator } from '@/hooks/use-gemini-quote-generator';
 import { toast } from 'sonner';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'; // <-- Added import
 
 // Zod schema for the quote form
 const quoteFormSchema = z.object({
+  emailContent: z.string().optional(), // New field for AI input
   clientName: z.string().min(1, { message: "Client name is required." }),
   clientEmail: z.string().email({ message: "A valid client email is required." }),
   eventTitle: z.string().min(1, { message: "Event title is required." }),
@@ -55,6 +57,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(quoteFormSchema),
     defaultValues: initialData || {
+      emailContent: '', // Default value for new field
       clientName: '',
       clientEmail: '',
       eventTitle: '',
@@ -79,8 +82,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
   const baseServiceAmount = form.watch('baseServiceAmount');
   const addOns = form.watch('addOns');
   const depositPercentage = form.watch('depositPercentage');
-  const eventTitle = form.watch('eventTitle');
-  const clientName = form.watch('clientName');
+  const emailContent = form.watch('emailContent'); // Watch new field
 
   const totalAmount = React.useMemo(() => {
     let total = baseServiceAmount || 0;
@@ -95,14 +97,21 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
   }, [totalAmount, depositPercentage]);
 
   const handleAutoGenerate = async () => {
-    if (!eventTitle || !clientName) {
-      toast.warning("Please enter the Event Title and Client Name before auto-generating.");
+    if (!emailContent || emailContent.trim().length < 50) {
+      toast.warning("Please paste the email conversation content into the field above before auto-generating.");
       return;
     }
 
-    const result = await generateQuote(eventTitle, clientName);
+    const result = await generateQuote(emailContent);
 
     if (result) {
+      // Map AI results to form fields
+      form.setValue('clientName', result.clientName, { shouldValidate: true });
+      form.setValue('clientEmail', result.clientEmail, { shouldValidate: true });
+      form.setValue('eventTitle', result.eventTitle, { shouldValidate: true });
+      form.setValue('eventDate', result.eventDate, { shouldValidate: true });
+      form.setValue('eventTime', result.eventTime, { shouldValidate: true });
+      form.setValue('eventLocation', result.eventLocation, { shouldValidate: true });
       form.setValue('baseServiceDescription', result.baseServiceDescription, { shouldValidate: true });
       form.setValue('baseServiceAmount', result.baseServiceAmount, { shouldValidate: true });
       replace(result.addOns); // Replace existing add-ons with generated ones
@@ -113,6 +122,53 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        
+        {/* AI Input Section */}
+        <Card className="bg-brand-secondary/10 dark:bg-brand-dark/30 p-6 border-brand-secondary/50">
+          <CardHeader className="p-0 pb-4">
+            <CardTitle className="text-xl text-brand-primary flex items-center gap-2">
+              <Wand2 className="h-5 w-5" /> AI Quote Extractor
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0 space-y-4">
+            <FormField
+              control={form.control}
+              name="emailContent"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Paste Email Conversation Here</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Paste the full email thread (Client/Event/Fee details) here to auto-populate the form." 
+                      rows={8} 
+                      className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              type="button"
+              onClick={handleAutoGenerate}
+              disabled={isGenerating || isSubmitting || !emailContent || emailContent.trim().length < 50}
+              className="w-full bg-brand-blue hover:bg-brand-blue/90 text-brand-light"
+              size="lg"
+            >
+              {isGenerating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Extracting & Generating...
+                </>
+              ) : (
+                <>
+                  <Wand2 className="mr-2 h-4 w-4" /> Auto-Generate Quote from Email
+                </>
+              )}
+            </Button>
+          </CardContent>
+        </Card>
+        
         <h3 className="text-xl font-semibold text-brand-primary">Client & Event Details</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
@@ -122,7 +178,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
               <FormItem>
                 <FormLabel>Client Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="e.g., Erin Kennedy" {...field} />
+                  <Input placeholder="e.g., Mama Alto" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -135,7 +191,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
               <FormItem>
                 <FormLabel>Client Email</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="e.g., erin@example.com" {...field} />
+                  <Input type="email" placeholder="e.g., mama.alto@gmail.com" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -148,7 +204,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
               <FormItem>
                 <FormLabel>Event Title</FormLabel>
                 <FormControl>
-                  <Input placeholder="e.g., 2025 Vocal Showcase" {...field} />
+                  <Input placeholder="e.g., Mama Alto Holiday Special" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -175,7 +231,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
               <FormItem>
                 <FormLabel>Event Time (Optional)</FormLabel>
                 <FormControl>
-                  <Input placeholder="e.g., 3:00 PM – 6:00 PM" {...field} />
+                  <Input placeholder="e.g., 3:30 PM arrival for 7 PM show" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -188,7 +244,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
               <FormItem>
                 <FormLabel>Event Location</FormLabel>
                 <FormControl>
-                  <Input placeholder="e.g., MC Showroom" {...field} />
+                  <Input placeholder="e.g., Chapel off Chapel" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -209,23 +265,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
           />
         </div>
 
-        <h3 className="text-xl font-semibold text-brand-primary mt-8 flex items-center justify-between">
-          Quote Line Items
-          <Button
-            type="button"
-            onClick={handleAutoGenerate}
-            disabled={isGenerating || isSubmitting || !eventTitle || !clientName}
-            className="bg-brand-blue hover:bg-brand-blue/90 text-brand-light"
-            size="sm"
-          >
-            {isGenerating ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Wand2 className="mr-2 h-4 w-4" />
-            )}
-            Auto-Generate Quote
-          </Button>
-        </h3>
+        <h3 className="text-xl font-semibold text-brand-primary mt-8">Quote Line Items</h3>
         
         <h4 className="text-lg font-medium text-brand-dark dark:text-brand-light">Base Service</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -319,6 +359,51 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
           >
             <PlusCircle className="mr-2 h-4 w-4" /> Add Add-on
           </Button>
+        </div>
+
+        <h3 className="text-xl font-semibold text-brand-primary mt-8">Payment Details</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="depositPercentage"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Deposit Percentage (%)</FormLabel>
+                <FormControl>
+                  <Input type="number" step="1" min="0" max="100" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="bankBSB"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bank BSB</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="bankACC"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bank Account Number</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+            )}
+          />
+        </div>
         </div>
 
         <div className="mt-8 p-6 bg-brand-primary/10 rounded-lg border border-brand-primary/30 shadow-lg text-center space-y-2">
