@@ -24,10 +24,11 @@ import { Input } from "@/components/ui/input";
 import { cn, formatCurrency } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { format } from 'date-fns'; // Ensure format is imported
+import { format } = from 'date-fns'; // Ensure format is imported
 
 // Re-using AddOnItem from QuoteDisplay for consistency
 interface AddOnItem {
+  id: string; // Added for useFieldArray
   name: string;
   description?: string;
   cost: number;
@@ -72,6 +73,7 @@ const genericQuoteAcceptanceSchema = z.object({
   clientEmail: z.string().email({ message: "A valid email address is required." }),
   acceptTerms: z.boolean().refine((val: boolean) => val === true, { message: "You must accept the terms to proceed." }),
   selectedAddOns: z.array(z.object({
+    id: z.string(), // Added for useFieldArray
     name: z.string(),
     cost: z.number(),
     quantity: z.coerce.number().min(0).max(10, { message: "Max quantity is 10." }),
@@ -128,10 +130,9 @@ const DynamicQuotePage: React.FC = () => {
         setQuote(data as Quote);
         
         const initialAddOns = (data.details?.addOns || []).map((addOn: AddOnItem) => ({ // Explicitly type addOn here
-          name: addOn.name,
-          cost: parseFloat(String(addOn.cost)) || 0,
+          ...addOn, // Keep existing properties
+          id: addOn.id || Math.random().toString(36).substring(2, 11), // Ensure ID exists for useFieldArray
           quantity: 0, // Explicitly set quantity to 0 on load
-          description: addOn.description,
         }));
 
         form.reset({
