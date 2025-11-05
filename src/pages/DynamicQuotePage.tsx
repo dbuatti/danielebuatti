@@ -24,7 +24,7 @@ import { Input } from "@/components/ui/input";
 import { cn, formatCurrency } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { format } = from 'date-fns'; // Ensure format is imported
+import { format } from 'date-fns'; // Ensure format is imported
 
 // Re-using AddOnItem from QuoteDisplay for consistency
 interface AddOnItem {
@@ -665,6 +665,123 @@ const DynamicQuotePage: React.FC = () => {
             This includes your selected add-ons and the base quote amount.
           </p>
         </div>
+
+        {/* Quote Acceptance Form / Status Message */}
+        {!isErinKennedyQuote && (
+          <>
+            {!isActionTaken ? (
+              <section className={cn(
+                "p-8 rounded-xl border space-y-6",
+                isLivePianoQuote ? "bg-livePiano-darker border-livePiano-primary/50" : "bg-brand-light dark:bg-brand-dark-alt border-brand-primary/50"
+              )}>
+                <h3 className={cn(
+                  "text-3xl font-bold mb-6 text-center",
+                  isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
+                )}>
+                  Accept Your Quote
+                </h3>
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmitGeneric)} className="space-y-8">
+                    <FormField
+                      control={form.control}
+                      name="clientName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className={cn(isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light")}>Your Full Name</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="John Doe"
+                              {...field}
+                              className={cn(
+                                isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                              )}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="clientEmail"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className={cn(isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light")}>Your Email</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="email"
+                              placeholder="john.doe@example.com"
+                              {...field}
+                              className={cn(
+                                isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                              )}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="acceptTerms"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                              className={cn(
+                                isLivePianoQuote ? "border-livePiano-primary data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker" : "border-brand-primary data-[state=checked]:bg-brand-primary data-[state=checked]:text-brand-light"
+                              )}
+                            />
+                          </FormControl>
+                          <div className="space-y-1 leading-none">
+                            <FormLabel className={cn(isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light")}>
+                              I agree to the terms and conditions of this quote.
+                            </FormLabel>
+                            <FormMessage />
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+                    <Button
+                      type="submit"
+                      className={cn(
+                        "w-full py-3 text-lg font-semibold",
+                        isLivePianoQuote ? "bg-livePiano-primary text-livePiano-darker hover:bg-livePiano-primary/90" : "bg-brand-primary text-brand-light hover:bg-brand-primary/90"
+                      )}
+                    >
+                      Accept Quote
+                    </Button>
+                  </form>
+                </Form>
+              </section>
+            ) : (
+              <section className={cn(
+                "p-8 rounded-xl border space-y-6 text-center",
+                isLivePianoQuote ? "bg-livePiano-darker border-livePiano-primary/50" : "bg-brand-light dark:bg-brand-dark-alt border-brand-primary/50"
+              )}>
+                <h3 className={cn(
+                  "text-3xl font-bold",
+                  isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
+                )}>
+                  {isAccepted ? "Quote Accepted!" : "Quote Rejected."}
+                </h3>
+                <p className={cn(
+                  "text-xl",
+                  isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
+                )}>
+                  This quote has already been {isAccepted ? "accepted" : "rejected"}.
+                </p>
+                <Button asChild className={cn(
+                  isLivePianoQuote ? "bg-livePiano-primary text-livePiano-darker hover:bg-livePiano-primary/90" : "bg-brand-primary text-brand-light hover:bg-brand-primary/90"
+                )}>
+                  <Link to="/">Return to Home</Link>
+                </Button>
+              </section>
+            )}
+          </>
+        )}
       </main>
 
       <footer
