@@ -26,6 +26,7 @@ const quoteFormSchema = z.object({
   emailContent: z.string().optional(), // New field for AI input
   clientName: z.string().min(1, { message: "Client name is required." }),
   clientEmail: z.string().email({ message: "A valid client email is required." }),
+  invoiceType: z.string().min(1, { message: "Invoice type is required for categorization." }), // NEW FIELD
   eventTitle: z.string().min(1, { message: "Event title is required." }),
   eventDate: z.string().min(1, { message: "Event date is required (YYYY-MM-DD)." }),
   eventTime: z.string().optional(), // e.g., "6:00 PM - 9:00 PM"
@@ -41,7 +42,6 @@ const quoteFormSchema = z.object({
   depositPercentage: z.coerce.number().min(0).max(100).default(50),
   bankBSB: z.string().min(1, { message: "Bank BSB is required." }).default("923100"),
   bankACC: z.string().min(1, { message: "Bank Account Number is required." }).default("301110875"),
-  // NEW FIELDS
   currencySymbol: z.string().min(1, { message: "Currency symbol is required." }).default("A$"),
   paymentTerms: z.string().optional(),
 });
@@ -60,9 +60,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(quoteFormSchema),
     defaultValues: initialData || {
-      emailContent: '', // Default value for new field
+      emailContent: '',
       clientName: '',
       clientEmail: '',
+      invoiceType: '', // Default value for new field
       eventTitle: '',
       eventDate: '',
       eventTime: '',
@@ -74,8 +75,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
       depositPercentage: 50,
       bankBSB: '923100',
       bankACC: '301110875',
-      currencySymbol: 'A$', // Default
-      paymentTerms: 'The remaining balance is due 7 days prior to the event.', // Default terms
+      currencySymbol: 'A$',
+      paymentTerms: 'The remaining balance is due 7 days prior to the event.',
     },
   });
 
@@ -118,11 +119,14 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
       form.setValue('clientName', result.clientName, { shouldValidate: true });
       form.setValue('clientEmail', result.clientEmail, { shouldValidate: true });
       form.setValue('eventTitle', result.eventTitle, { shouldValidate: true });
+      form.setValue('invoiceType', result.eventTitle, { shouldValidate: true }); // Use event title as default invoice type
       form.setValue('eventDate', result.eventDate, { shouldValidate: true });
       form.setValue('eventTime', result.eventTime, { shouldValidate: true });
       form.setValue('eventLocation', result.eventLocation, { shouldValidate: true });
       form.setValue('baseServiceDescription', result.baseServiceDescription, { shouldValidate: true });
       form.setValue('baseServiceAmount', result.baseServiceAmount, { shouldValidate: true });
+      form.setValue('currencySymbol', result.currencySymbol || 'A$', { shouldValidate: true });
+      form.setValue('paymentTerms', result.paymentTerms || 'The remaining balance is due 7 days prior to the event.', { shouldValidate: true });
       replace(result.addOns); // Replace existing add-ons with generated ones
       toast.success("Quote details auto-populated successfully!");
     }
@@ -208,10 +212,23 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
           />
           <FormField
             control={form.control}
+            name="invoiceType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Invoice Type (For Admin Categorization)</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., Live Piano Quote" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="eventTitle"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Event Title</FormLabel>
+                <FormLabel>Event Title (Public Facing)</FormLabel>
                 <FormControl>
                   <Input placeholder="e.g., Mama Alto Holiday Special" {...field} />
                 </FormControl>

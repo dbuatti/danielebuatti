@@ -22,6 +22,8 @@ interface GeneratedQuote {
     description: string;
     cost: number
   }[];
+  currencySymbol: string; // NEW
+  paymentTerms: string; // NEW
 }
 
 export function useGeminiQuoteGenerator() {
@@ -39,8 +41,9 @@ export function useGeminiQuoteGenerator() {
       You are an expert quote generator. Analyze the following email conversation to extract key quote details.
       
       1. Extract the Client Name, Client Email, Event Title, Event Date (in YYYY-MM-DD format), Event Time, and Event Location. If a specific fee is mentioned for the base service (e.g., $1000), use that as the baseServiceAmount.
-      2. Based on the conversation, generate a detailed baseServiceDescription.
+      2. Generate a detailed baseServiceDescription.
       3. Suggest up to two relevant optional add-ons (name, description, cost in AUD) that enhance the service, especially if the conversation mentions potential extra work (like extra songs or rehearsals). Add-on costs should be between A$50 and A$200.
+      4. Determine the currency symbol (e.g., A$, $, £) and extract any specific payment terms or notes mentioned (e.g., "50% deposit required"). If no currency is specified, default to 'A$'. If no terms are specified, default to 'The remaining balance is due 7 days prior to the event.'
       
       Email Conversation:
       ---
@@ -63,6 +66,8 @@ export function useGeminiQuoteGenerator() {
           description: string; 
           cost: number 
         }[];
+        currencySymbol: string;
+        paymentTerms: string;
       }
       
       Ensure the JSON is valid and contains only the object. Do not include any markdown formatting (like \`\`\`json) or explanatory text.

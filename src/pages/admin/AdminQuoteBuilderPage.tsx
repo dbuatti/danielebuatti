@@ -57,8 +57,8 @@ const AdminQuoteBuilderPage: React.FC = () => {
           acc: values.bankACC,
         },
         eventTime: values.eventTime,
-        currencySymbol: values.currencySymbol, // NEW
-        paymentTerms: values.paymentTerms,     // NEW
+        currencySymbol: values.currencySymbol,
+        paymentTerms: values.paymentTerms,
       };
 
       // Invoke the Edge Function to create the quote
@@ -66,7 +66,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         body: {
           clientName: values.clientName,
           clientEmail: values.clientEmail,
-          invoiceType: values.eventTitle, // Using eventTitle as invoice_type for now
+          invoiceType: values.invoiceType, // Use the new invoiceType field
           eventTitle: values.eventTitle,
           eventDate: values.eventDate,
           eventLocation: values.eventLocation,
