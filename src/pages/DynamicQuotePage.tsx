@@ -651,7 +651,7 @@ const DynamicQuotePage: React.FC = () => {
                                 </Button>
                               </div>
                               <div className={cn(
-                                "text-3xl font-bold flex-shrink-0 w-24 text-right",
+                                "text-3xl font-bold flex-shrink-0 min-w-[120px] text-right", // Adjusted width here
                                 isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
                               )}>
                                 {formatCurrency(subtotal, symbol)}

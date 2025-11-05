@@ -215,85 +215,85 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
                 "space-y-4 max-w-3xl mx-auto font-sans",
                 isLivePianoTheme ? "text-livePiano-light/80" : "text-brand-dark/80 dark:text-brand-light/80"
               )}>
-                <h4 className={cn(
-                  "text-2xl font-semibold text-center mb-4 font-display",
+                  <h4 className={cn(
+                    "text-2xl font-semibold text-center mb-4 font-display",
+                    isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
+                  )}>
+                    Service Components
+                  </h4>
+                  <ul className={cn(
+                    "list-disc list-inside space-y-2 pl-4",
+                    isLivePianoTheme ? "[&>li]:marker:text-livePiano-primary [&>li]:marker:text-xl" : ""
+                  )}>
+                    <li><strong>Performance:</strong> {baseService.description}</li>
+                    <li><strong>All-Inclusive Logistics:</strong> Covers all sheet music preparation, travel, and setup required for the evening.</li>
+                    {isLivePianoTheme && <li><strong>Flexible Timing:</strong> Performance timing is flexible to dynamically respond to the needs of guests (the "on-call buffer").</li>}
+                  </ul>
+                </div>
+                <p className={cn(
+                  "text-3xl font-semibold text-center mt-8 font-sans",
                   isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
                 )}>
-                  Service Components
-                </h4>
-                <ul className={cn(
-                  "list-disc list-inside space-y-2 pl-4",
-                  isLivePianoTheme ? "[&>li]:marker:text-livePiano-primary [&>li]:marker:text-xl" : ""
-                )}>
-                  <li><strong>Performance:</strong> {baseService.description}</li>
-                  <li><strong>All-Inclusive Logistics:</strong> Covers all sheet music preparation, travel, and setup required for the evening.</li>
-                  {isLivePianoTheme && <li><strong>Flexible Timing:</strong> Performance timing is flexible to dynamically respond to the needs of guests (the "on-call buffer").</li>}
-                </ul>
-              </div>
-              <p className={cn(
-                "text-3xl font-semibold text-center mt-8 font-sans",
-                isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
-              )}>
-                All-Inclusive Engagement Fee: <strong className={isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{formatCurrency(safeBaseServiceAmount, currencySymbol)}</strong>
-              </p>
-            </section>
-          )}
+                  All-Inclusive Engagement Fee: <strong className={isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{formatCurrency(safeBaseServiceAmount, currencySymbol)}</strong>
+                </p>
+              </section>
+            )}
 
-          {/* Optional Add-Ons Section (Generic) */}
-          {addOns.length > 0 && (
-            <section className={cn(
-              "p-8 rounded-xl border space-y-8 overflow-hidden",
-              isLivePianoTheme ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
-            )}>
-              <h3 className="text-3xl font-bold mb-6 text-center font-display text-brand-dark dark:text-brand-light">Optional Add-Ons</h3>
-              <div className="space-y-4 max-w-2xl mx-auto">
-                {addOns.map((addOn: AddOn, index: number) => {
-                  // Ensure cost and quantity are numbers
-                  const cost = typeof addOn.cost === 'number' ? addOn.cost : parseFloat(String(addOn.cost)) || 0;
-                  const quantity = typeof addOn.quantity === 'number' ? addOn.quantity : parseFloat(String(addOn.quantity)) || 1;
-                  const subtotal = cost * quantity;
-                  
-                  return (
-                    <div key={index} className={cn(
-                      "flex flex-col sm:flex-row sm:items-center sm:justify-between w-full rounded-md border p-4",
-                      isLivePianoTheme ? "border-livePiano-border/50 bg-livePiano-background/30" : "border-brand-secondary/50 bg-brand-secondary/10 dark:bg-brand-dark/30"
-                    )}>
-                      <div className="space-y-1 leading-none mb-4 sm:mb-0 sm:flex-1">
-                        <p className={cn(
-                          "text-xl font-bold leading-none font-sans",
-                          isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
-                        )}>
-                          {addOn.name}
-                        </p>
-                        {addOn.description && (
-                          <p className={cn(
-                            "text-base font-sans",
-                            isLivePianoTheme ? "text-livePiano-light/70" : "text-brand-dark/70 dark:text-brand-light/70"
-                          )}>
-                            {addOn.description}
-                          </p>
-                        )}
-                        <p className={cn(
-                          "text-sm italic font-sans",
-                          isLivePianoTheme ? "text-livePiano-light/60" : "text-brand-dark/60 dark:text-brand-light/60"
-                        )}>
-                          {quantity} x {formatCurrency(cost, currencySymbol)}
-                        </p>
-                      </div>
-                      <div className={cn(
-                        "text-3xl font-bold sm:ml-auto font-sans",
-                        isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
+            {/* Optional Add-Ons Section (Generic) */}
+            {addOns.length > 0 && (
+              <section className={cn(
+                "p-8 rounded-xl border space-y-8 overflow-hidden",
+                isLivePianoTheme ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
+              )}>
+                <h3 className="text-3xl font-bold mb-6 text-center font-display text-brand-dark dark:text-brand-light">Optional Add-Ons</h3>
+                <div className="space-y-4 max-w-2xl mx-auto">
+                  {addOns.map((addOn: AddOn, index: number) => {
+                    // Ensure cost and quantity are numbers
+                    const cost = typeof addOn.cost === 'number' ? addOn.cost : parseFloat(String(addOn.cost)) || 0;
+                    const quantity = typeof addOn.quantity === 'number' ? addOn.quantity : parseFloat(String(addOn.quantity)) || 1;
+                    const subtotal = cost * quantity;
+                    
+                    return (
+                      <div key={index} className={cn(
+                        "flex flex-col sm:flex-row sm:items-center sm:justify-between w-full rounded-md border p-4",
+                        isLivePianoTheme ? "border-livePiano-border/50 bg-livePiano-background/30" : "border-brand-secondary/50 bg-brand-secondary/10 dark:bg-brand-dark/30"
                       )}>
-                        {formatCurrency(subtotal, currencySymbol)}
+                        <div className="space-y-1 leading-none mb-4 sm:mb-0 sm:flex-1">
+                          <p className={cn(
+                            "text-xl font-bold leading-none font-sans",
+                            isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
+                          )}>
+                            {addOn.name}
+                          </p>
+                          {addOn.description && (
+                            <p className={cn(
+                              "text-base font-sans",
+                              isLivePianoTheme ? "text-livePiano-light/70" : "text-brand-dark/70 dark:text-brand-light/70"
+                            )}>
+                              {addOn.description}
+                            </p>
+                          )}
+                          <p className={cn(
+                            "text-sm italic font-sans",
+                            isLivePianoTheme ? "text-livePiano-light/60" : "text-brand-dark/60 dark:text-brand-light/60"
+                          )}>
+                            {quantity} x {formatCurrency(cost, currencySymbol)}
+                          </p>
+                        </div>
+                        <div className={cn(
+                          "text-3xl font-bold sm:ml-auto flex-shrink-0 min-w-[120px] text-right font-sans", // Adjusted width here
+                          isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
+                        )}>
+                          {formatCurrency(subtotal, currencySymbol)}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-          )}
-        </>
-      )}
+                    );
+                  })}
+                </div>
+              </section>
+            )}
+          </>
+        )}
 
       {/* Total Estimated Cost */}
       <div className={cn(
