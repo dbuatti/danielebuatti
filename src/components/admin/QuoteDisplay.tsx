@@ -1,8 +1,8 @@
 "use client";
 
-import React from 'react';
+import React, { useMemo } from 'react'; // Import useMemo
 import { Separator } from "@/components/ui/separator";
-import { cn, formatCurrency } from '@/lib/utils'; // Import formatCurrency
+import { cn, formatCurrency } from '@/lib/utils';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns';
 
@@ -57,7 +57,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
     event_date,
     event_location,
     prepared_by,
-    total_amount,
+    total_amount, // Keep total_amount from data for Erin Kennedy quote logic
     details,
     isAccepted,
     isRejected,
@@ -75,12 +75,24 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
     paymentTerms,
   } = details;
 
-  // Ensure total_amount is a number before using toFixed
-  const safeTotalAmount = typeof total_amount === 'number' ? total_amount : parseFloat(String(total_amount)) || 0;
+  // Ensure requiredDeposit is a number before using toFixed
   const safeRequiredDeposit = typeof requiredDeposit === 'number' ? requiredDeposit : parseFloat(String(requiredDeposit)) || 0;
   
   // Safely access baseService amount
   const safeBaseServiceAmount = typeof baseService?.amount === 'number' ? baseService.amount : parseFloat(String(baseService?.amount)) || 0;
+
+  // Define symbol and calculatedTotal for this component
+  const symbol = currencySymbol || 'A$';
+
+  const calculatedTotal = useMemo(() => {
+    let total = safeBaseServiceAmount;
+    addOns?.forEach((addOn: AddOn) => {
+      const quantity = typeof addOn.quantity === 'number' ? addOn.quantity : parseFloat(String(addOn.quantity)) || 0;
+      const cost = typeof addOn.cost === 'number' ? addOn.cost : parseFloat(String(addOn.cost)) || 0;
+      total += cost * quantity;
+    });
+    return total;
+  }, [addOns, safeBaseServiceAmount]);
 
   // Determine if it's the hardcoded Erin Kennedy quote (for specific layout)
   const isErinKennedyQuote = invoice_type === "Erin Kennedy Quote";
@@ -112,7 +124,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow className="hover:bg-brand-secondary/5 dark:hover:bg-brand-dark/30">
+                <TableRow className="border-b border-brand-secondary/20">
                   <TableCell className="font-semibold text-brand-dark dark:text-brand-light">Performance & On-Site Engagement</TableCell>
                   <TableCell className="text-brand-dark/80 dark:text-brand-light/80">
                     3 hours of dedicated on-site presence, including arrival, setup, soundcheck, and performance ({eventTimeEK}).
@@ -121,7 +133,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
                   </TableCell>
                   <TableCell className="text-right font-semibold text-brand-primary">{formatCurrency(onSitePerformanceCost, 'A$')}</TableCell>
                 </TableRow>
-                <TableRow className="hover:bg-brand-secondary/5 dark:hover:bg-brand-dark/30">
+                <TableRow className="border-b border-brand-secondary/20">
                   <TableCell className="font-semibold text-brand-dark dark:text-brand-light">Production Coordination & Music Preparation</TableCell>
                   <TableCell className="text-brand-dark/80 dark:text-brand-light/80">
                     A flat fee covering essential behind-the-scenes work: coordinating with all students, collecting and formatting sheet music, and preparing for a seamless production.
@@ -281,7 +293,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
                           </p>
                         </div>
                         <div className={cn(
-                          "text-3xl font-bold flex-shrink-0 min-w-[120px] text-right font-sans", // Adjusted width here
+                          "text-3xl font-bold sm:ml-auto flex-shrink-0 min-w-[120px] text-right font-sans", // Adjusted width here
                           isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
                         )}>
                           {formatCurrency(subtotal, currencySymbol)}
@@ -304,7 +316,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
           "text-2xl md:text-3xl font-bold font-sans",
           isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
         )}>
-          Total Estimated Cost: <span className={cn(isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light", "text-4xl md:text-5xl")}>{formatCurrency(safeTotalAmount, currencySymbol)}</span>
+          Total Estimated Cost: <span className={cn(isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light", "text-4xl md:text-5xl")}>{formatCurrency(calculatedTotal, symbol)}</span>
         </p>
       </div>
 
@@ -323,8 +335,8 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
         )}>
           {isErinKennedyQuote ? (
             <>
-              <li><strong className="text-brand-primary">Your final invoice for the base services to Erin Kennedy will be {formatCurrency(data.total_amount, 'A$')}.</strong></li>
-              <li><strong className="text-brand-primary">A non-refundable 50% deposit ({formatCurrency(data.details?.requiredDeposit || 0, 'A$')}) is required immediately</strong> to formally secure the {event_date || 'event'} date.</li>
+              <li><strong className="text-brand-primary">Your final invoice for the base services to Erin Kennedy will be {formatCurrency(total_amount, 'A$')}.</strong></li>
+              <li><strong className="text-brand-primary">A non-refundable 50% deposit ({formatCurrency(safeRequiredDeposit, 'A$')}) is required immediately</strong> to formally secure the {event_date || 'event'} date.</li>
               <li>The remaining balance is due 7 days prior to the event.</li>
               <li><strong className="text-brand-primary">Bank Details for Payment:</strong> BSB: {bankDetails.bsb}, ACC: {bankDetails.acc}</li>
               <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by {eventTime || '3:00 PM'}.</li>

@@ -322,7 +322,7 @@ const DynamicQuotePage: React.FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow className="hover:bg-brand-secondary/5 dark:hover:bg-brand-dark/30">
+                <TableRow className="border-b border-brand-secondary/20">
                   <TableCell className="font-semibold text-brand-dark dark:text-brand-light">Performance & On-Site Engagement</TableCell>
                   <TableCell className="text-brand-dark/80 dark:text-brand-light/80">
                     3 hours of dedicated on-site presence, including arrival, setup, soundcheck, and performance ({eventTimeEK}).
@@ -331,7 +331,7 @@ const DynamicQuotePage: React.FC = () => {
                   </TableCell>
                   <TableCell className="text-right font-semibold text-brand-primary">{formatCurrency(onSitePerformanceCost, 'A$')}</TableCell>
                 </TableRow>
-                <TableRow className="hover:bg-brand-secondary/5 dark:hover:bg-brand-dark/30">
+                <TableRow className="border-b border-brand-secondary/20">
                   <TableCell className="font-semibold text-brand-dark dark:text-brand-light">Production Coordination & Music Preparation</TableCell>
                   <TableCell className="text-brand-dark/80 dark:text-brand-light/80">
                     A flat fee covering essential behind-the-scenes work: coordinating with all students, collecting and formatting sheet music, and preparing for a seamless production.
