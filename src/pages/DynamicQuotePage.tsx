@@ -566,7 +566,7 @@ const DynamicQuotePage: React.FC = () => {
                             isLivePianoQuote ? "border-livePiano-border/50" : "border-brand-secondary/50",
                             currentQuantity > 0 ? (isLivePianoQuote ? "bg-livePiano-background/50" : "bg-brand-secondary/20 dark:bg-brand-dark/50") : (isLivePianoQuote ? "bg-livePiano-background/20" : "bg-brand-light dark:bg-brand-dark-alt")
                           )}>
-                            <div className="space-y-1 leading-none mb-4 sm:mb-0 sm:flex-1"> {/* Changed sm:w-1/2 to sm:flex-1 */}
+                            <div className="space-y-1 leading-none mb-4 sm:mb-0 sm:flex-1">
                               <p className={cn(
                                 "text-xl font-bold leading-none",
                                 isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
@@ -589,7 +589,7 @@ const DynamicQuotePage: React.FC = () => {
                               </p>
                             </div>
                             
-                            <div className="flex items-center gap-4 sm:w-auto sm:flex-shrink-0 sm:justify-end"> {/* Changed sm:w-1/2 to sm:w-auto sm:flex-shrink-0 */}
+                            <div className="flex items-center gap-4 sm:w-auto sm:flex-shrink-0 sm:justify-end">
                               <div className="flex items-center space-x-2">
                                 <Button
                                   type="button"
