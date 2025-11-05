@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import EmailComposerModal from '@/components/admin/EmailComposerModal'; // Import the new modal
+import { Link } from 'react-router-dom'; // Import Link
 
 interface AmebBooking {
   id: string;
@@ -149,7 +150,11 @@ const AdminAmebBookingsPage: React.FC = () => {
                 <TableBody>
                   {bookings.map((booking) => (
                     <TableRow key={booking.id} className="hover:bg-brand-secondary/5 dark:hover:bg-brand-dark/30">
-                      <TableCell className="font-medium text-brand-dark dark:text-brand-light">{booking.student_parent_name}</TableCell>
+                      <TableCell className="font-medium text-brand-dark dark:text-brand-light">
+                        <Link to={`/admin/ameb-bookings/${booking.id}`} className="hover:underline text-brand-primary">
+                          {booking.student_parent_name}
+                        </Link>
+                      </TableCell>
                       <TableCell>
                         <a href={`mailto:${booking.contact_email}`} className="text-brand-primary hover:underline flex items-center gap-1">
                           <Mail className="h-4 w-4" /> {booking.contact_email}
