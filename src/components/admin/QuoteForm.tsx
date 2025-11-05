@@ -16,9 +16,9 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, PlusCircle, Trash2 } from 'lucide-react';
-// Removed unused 'cn' import
-// import { cn } from '@/lib/utils'; 
+import { Loader2, PlusCircle, Trash2, Wand2 } from 'lucide-react';
+import { useGeminiQuoteGenerator } from '@/hooks/use-gemini-quote-generator';
+import { toast } from 'sonner';
 
 // Zod schema for the quote form
 const quoteFormSchema = z.object({
@@ -50,6 +50,8 @@ interface QuoteFormProps {
 }
 
 const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitting }) => {
+  const { generateQuote, isGenerating } = useGeminiQuoteGenerator();
+  
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(quoteFormSchema),
     defaultValues: initialData || {
@@ -69,7 +71,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control: form.control,
     name: "addOns",
   });
@@ -77,6 +79,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
   const baseServiceAmount = form.watch('baseServiceAmount');
   const addOns = form.watch('addOns');
   const depositPercentage = form.watch('depositPercentage');
+  const eventTitle = form.watch('eventTitle');
+  const clientName = form.watch('clientName');
 
   const totalAmount = React.useMemo(() => {
     let total = baseServiceAmount || 0;
@@ -89,6 +93,22 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
   const requiredDeposit = React.useMemo(() => {
     return totalAmount * (depositPercentage / 100);
   }, [totalAmount, depositPercentage]);
+
+  const handleAutoGenerate = async () => {
+    if (!eventTitle || !clientName) {
+      toast.warning("Please enter the Event Title and Client Name before auto-generating.");
+      return;
+    }
+
+    const result = await generateQuote(eventTitle, clientName);
+
+    if (result) {
+      form.setValue('baseServiceDescription', result.baseServiceDescription, { shouldValidate: true });
+      form.setValue('baseServiceAmount', result.baseServiceAmount, { shouldValidate: true });
+      replace(result.addOns); // Replace existing add-ons with generated ones
+      toast.success("Quote details auto-populated successfully!");
+    }
+  };
 
   return (
     <Form {...form}>
@@ -189,7 +209,25 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
           />
         </div>
 
-        <h3 className="text-xl font-semibold text-brand-primary mt-8">Base Service</h3>
+        <h3 className="text-xl font-semibold text-brand-primary mt-8 flex items-center justify-between">
+          Quote Line Items
+          <Button
+            type="button"
+            onClick={handleAutoGenerate}
+            disabled={isGenerating || isSubmitting || !eventTitle || !clientName}
+            className="bg-brand-blue hover:bg-brand-blue/90 text-brand-light"
+            size="sm"
+          >
+            {isGenerating ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Wand2 className="mr-2 h-4 w-4" />
+            )}
+            Auto-Generate Quote
+          </Button>
+        </h3>
+        
+        <h4 className="text-lg font-medium text-brand-dark dark:text-brand-light">Base Service</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -219,7 +257,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
           />
         </div>
 
-        <h3 className="text-xl font-semibold text-brand-primary mt-8">Optional Add-Ons</h3>
+        <h4 className="text-lg font-medium text-brand-dark dark:text-brand-light mt-8">Optional Add-Ons</h4>
         <div className="space-y-4">
           {fields.map((item, index) => (
             <div key={item.id} className="flex flex-col md:flex-row gap-4 p-4 border rounded-md bg-brand-secondary/10 dark:bg-brand-dark/30">
@@ -291,7 +329,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
         <Button
           type="submit"
           className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
-          disabled={isSubmitting}
+          disabled={isSubmitting || isGenerating}
         >
           {isSubmitting ? (
             <>
