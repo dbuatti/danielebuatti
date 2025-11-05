@@ -1,6 +1,7 @@
+"use client";
+
 import { useState, useCallback } from 'react';
 import { GoogleGenAI } from '@google/genai';
-import { QuoteFormValues } from '@/components/admin/QuoteForm';
 import { showError } from '@/utils/toast';
 
 // Initialize Gemini client
@@ -56,6 +57,10 @@ export function useGeminiQuoteGenerator() {
           responseMimeType: "application/json",
         },
       });
+
+      if (!response.text) {
+        throw new Error("AI response failed to return content.");
+      }
 
       const jsonText = response.text.trim();
       const result: GeneratedQuote = JSON.parse(jsonText);
