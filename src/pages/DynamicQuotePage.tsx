@@ -23,6 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'; // Import Table components
 
 interface Quote {
   id: string;
@@ -255,6 +256,83 @@ const DynamicQuotePage: React.FC = () => {
   const bankDetails = quote.details?.bankDetails;
   const eventTime = quote.details?.eventTime; // Corrected: only access from details
 
+  // --- Custom Erin Kennedy Quote Breakdown Renderer ---
+  const renderErinKennedyQuote = () => {
+    const onSitePerformanceCost = quote.details?.on_site_performance_cost || 0;
+    const showPreparationFee = quote.details?.show_preparation_fee || 0;
+    const totalBaseInvoice = quote.total_amount; // Should be 400.00
+
+    return (
+      <>
+        <section className={cn(
+          "p-8 rounded-xl shadow-2xl border space-y-6",
+          "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
+        )}>
+          <h3 className="text-3xl font-bold mb-6 text-center text-brand-primary">
+            Quote Breakdown
+          </h3>
+          <div className="overflow-x-auto">
+            <Table className="w-full text-left border-collapse">
+              <TableHeader>
+                <TableRow className="bg-brand-secondary/10 dark:bg-brand-dark/50">
+                  <TableHead className="text-brand-primary w-[30%]">Service Component</TableHead>
+                  <TableHead className="text-brand-primary w-[50%]">Details</TableHead>
+                  <TableHead className="text-brand-primary w-[20%] text-right">Investment</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow className="hover:bg-brand-secondary/5 dark:hover:bg-brand-dark/30">
+                  <TableCell className="font-semibold text-brand-dark dark:text-brand-light">Performance & On-Site Engagement</TableCell>
+                  <TableCell className="text-brand-dark/80 dark:text-brand-light/80">
+                    3 hours of dedicated on-site presence, including arrival, setup, soundcheck, and performance ({eventTime || 'N/A'}).
+                    <br />
+                    Rate: A$100/hr (effective rate for this package)
+                  </TableCell>
+                  <TableCell className="text-right font-semibold text-brand-primary">A${onSitePerformanceCost.toFixed(2)}</TableCell>
+                </TableRow>
+                <TableRow className="hover:bg-brand-secondary/5 dark:hover:bg-brand-dark/30">
+                  <TableCell className="font-semibold text-brand-dark dark:text-brand-light">Production Coordination & Music Preparation</TableCell>
+                  <TableCell className="text-brand-dark/80 dark:text-brand-light/80">
+                    A flat fee covering essential behind-the-scenes work: coordinating with all students, collecting and formatting sheet music, and preparing for a seamless production.
+                  </TableCell>
+                  <TableCell className="text-right font-semibold text-brand-primary">A${showPreparationFee.toFixed(2)}</TableCell>
+                </TableRow>
+                <TableRow className="bg-brand-primary/10 dark:bg-brand-primary/20 font-bold">
+                  <TableCell colSpan={2} className="text-brand-primary text-lg">TOTAL BASE INVOICE <span className="font-normal text-sm text-brand-dark/70 dark:text-brand-light/70">(To be paid by Erin Kennedy)</span></TableCell>
+                  <TableCell className="text-right text-brand-primary text-lg">A${totalBaseInvoice.toFixed(2)}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+        </section>
+
+        {/* Optional Rehearsal Support Section */}
+        <section className={cn(
+          "p-8 rounded-xl shadow-2xl border space-y-6",
+          "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
+        )}>
+          <h3 className="text-3xl font-bold text-brand-primary text-center">Optional Rehearsal Support for Students</h3>
+          <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
+            To help students feel fully prepared and confident for their performance, Daniele offers dedicated 1:1 rehearsal opportunities at his studio in Toorak.
+          </p>
+          <div className="max-w-md mx-auto space-y-4">
+            <h4 className="text-xl font-semibold text-brand-primary">Individual Rehearsal Rates:</h4>
+            <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-1 pl-4">
+              <li>15-minute rehearsal: A$30</li>
+              <li>30-minute rehearsal: A$50</li>
+              <li>45-minute rehearsal: A$75</li>
+            </ul>
+            <p className="text-base text-brand-dark/70 dark:text-brand-light/70 italic">
+              Each session is designed for a focused run-through of a student's piece, with time for essential touch-ups and feedback. Students can book these sessions directly with Daniele.
+            </p>
+          </div>
+        </section>
+      </>
+    );
+  };
+  // --- End Custom Erin Kennedy Quote Breakdown Renderer ---
+
+
   return (
     <div className={cn(
       "min-h-screen flex flex-col",
@@ -300,7 +378,7 @@ const DynamicQuotePage: React.FC = () => {
             "text-5xl md:text-6xl font-extrabold mb-6 leading-none",
             isLivePianoQuote ? "font-libre-baskerville text-livePiano-primary text-shadow-lg" : "text-brand-primary"
           )}>
-            {quote.event_title || quote.invoice_type} – Live Piano Quote
+            {quote.event_title || quote.invoice_type}
           </h2>
           <div className={cn(
             "text-xl max-w-3xl mx-auto space-y-3 font-medium",
@@ -318,115 +396,123 @@ const DynamicQuotePage: React.FC = () => {
           )} />
         </section>
 
-        {/* Base Service Section */}
-        {baseService && (
-          <section className={cn(
-            "p-8 rounded-xl shadow-2xl border space-y-6",
-            isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
-          )}>
-            <h3 className={cn(
-              "text-3xl font-bold mb-6 text-center text-shadow-sm",
-              isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
-            )}>
-              {baseService.description || "Base Engagement Fee"}
-            </h3>
-            <p className={cn(
-              "text-xl text-center max-w-3xl mx-auto",
-              isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
-            )}>
-              This fee secures a premium, seamless musical experience for your event.
-            </p>
-            <div className={cn(
-              "space-y-4 max-w-3xl mx-auto",
-              isLivePianoQuote ? "text-livePiano-light/80" : "text-brand-dark/80 dark:text-brand-light/80"
-            )}>
-              <h4 className={cn(
-                "text-2xl font-semibold text-center text-shadow-sm mb-4",
-                isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
+        {/* Conditional Quote Breakdown Rendering */}
+        {isErinKennedyQuote ? (
+          renderErinKennedyQuote()
+        ) : (
+          <>
+            {/* Base Service Section (Generic) */}
+            {baseService && (
+              <section className={cn(
+                "p-8 rounded-xl shadow-2xl border space-y-6",
+                isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
               )}>
-                Service Components
-              </h4>
-              <ul className={cn(
-                "list-disc list-inside space-y-2",
-                isLivePianoQuote ? "[&>li]:marker:text-livePiano-primary [&>li]:marker:text-xl" : ""
-              )}>
-                <li><strong>Performance:</strong> {baseService.description}</li>
-                <li><strong>All-Inclusive Logistics:</strong> Covers all sheet music preparation, travel, and setup required for the evening.</li>
-                {isLivePianoQuote && <li><strong>Flexible Timing:</strong> Performance timing is flexible to dynamically respond to the needs of guests (the "on-call buffer").</li>}
-                {isErinKennedyQuote && <li><strong>Production Coordination & Music Preparation:</strong> A flat fee covering essential behind-the-scenes work: coordinating with all students, collecting and formatting sheet music, and preparing for a seamless production.</li>}
-              </ul>
-            </div>
-            <p className={cn(
-              "text-3xl font-semibold text-center text-shadow-sm mt-8",
-              isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
-            )}>
-              All-Inclusive Engagement Fee: <strong className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>A${baseService.amount.toFixed(2)}</strong>
-            </p>
-          </section>
-        )}
-
-        {/* Optional Add-Ons Section */}
-        {addOns.length > 0 && (
-          <section className={cn(
-            "p-8 rounded-xl shadow-2xl border space-y-8",
-            isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
-          )}>
-            <h3 className={cn(
-              "text-3xl font-bold mb-6 text-center text-shadow-sm",
-              isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
-            )}>Optional Add-Ons</h3>
-            <p className={cn(
-              "text-xl text-center max-w-3xl mx-auto",
-              isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
-            )}>
-              These premium options are available to enhance the musical quality and duration of your evening.
-            </p>
-            <div className="space-y-4 max-w-2xl mx-auto">
-              {addOns.map((addOn: any, index: number) => (
-                <div key={index} className={cn(
-                  "flex flex-col sm:flex-row sm:items-center sm:justify-between w-full rounded-md border p-4",
-                  isLivePianoQuote ? "border-livePiano-border/50 bg-livePiano-background/30" : "border-brand-secondary/50 bg-brand-secondary/10 dark:bg-brand-dark/30"
+                <h3 className={cn(
+                  "text-3xl font-bold mb-6 text-center text-shadow-sm",
+                  isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
                 )}>
-                  <div className="space-y-1 leading-none mb-4 sm:mb-0">
-                    <p className={cn(
-                      "text-xl font-bold leading-none",
-                      isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
-                    )}>
-                      {addOn.name}
-                    </p>
-                    {addOn.description && (
-                      <p className={cn(
-                        "text-base",
-                        isLivePianoQuote ? "text-livePiano-light/70" : "text-brand-dark/70 dark:text-brand-light/70"
-                      )}>
-                        {addOn.description}
-                      </p>
-                    )}
-                  </div>
-                  <div className={cn(
-                    "text-3xl font-bold sm:ml-auto",
+                  {baseService.description || "Base Engagement Fee"}
+                </h3>
+                <p className={cn(
+                  "text-xl text-center max-w-3xl mx-auto",
+                  isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
+                )}>
+                  This fee secures a premium, seamless musical experience for your event.
+                </p>
+                <div className={cn(
+                  "space-y-4 max-w-3xl mx-auto",
+                  isLivePianoQuote ? "text-livePiano-light/80" : "text-brand-dark/80 dark:text-brand-light/80"
+                )}>
+                  <h4 className={cn(
+                    "text-2xl font-semibold text-center text-shadow-sm mb-4",
                     isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
                   )}>
-                    A${addOn.cost.toFixed(2)}
-                  </div>
+                    Service Components
+                  </h4>
+                  <ul className={cn(
+                    "list-disc list-inside space-y-2",
+                    isLivePianoQuote ? "[&>li]:marker:text-livePiano-primary [&>li]:marker:text-xl" : ""
+                  )}>
+                    <li><strong>Performance:</strong> {baseService.description}</li>
+                    <li><strong>All-Inclusive Logistics:</strong> Covers all sheet music preparation, travel, and setup required for the evening.</li>
+                    {isLivePianoQuote && <li><strong>Flexible Timing:</strong> Performance timing is flexible to dynamically respond to the needs of guests (the "on-call buffer").</li>}
+                  </ul>
                 </div>
-              ))}
-            </div>
-          </section>
+                <p className={cn(
+                  "text-3xl font-semibold text-center text-shadow-sm mt-8",
+                  isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
+                )}>
+                  All-Inclusive Engagement Fee: <strong className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>A${baseService.amount.toFixed(2)}</strong>
+                </p>
+              </section>
+            )}
+
+            {/* Optional Add-Ons Section (Generic) */}
+            {addOns.length > 0 && (
+              <section className={cn(
+                "p-8 rounded-xl shadow-2xl border space-y-8",
+                isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
+              )}>
+                <h3 className={cn(
+                  "text-3xl font-bold mb-6 text-center text-shadow-sm",
+                  isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
+                )}>Optional Add-Ons</h3>
+                <p className={cn(
+                  "text-xl text-center max-w-3xl mx-auto",
+                  isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
+                )}>
+                  These premium options are available to enhance the musical quality and duration of your evening.
+                </p>
+                <div className="space-y-4 max-w-2xl mx-auto">
+                  {addOns.map((addOn: any, index: number) => (
+                    <div key={index} className={cn(
+                      "flex flex-col sm:flex-row sm:items-center sm:justify-between w-full rounded-md border p-4",
+                      isLivePianoQuote ? "border-livePiano-border/50 bg-livePiano-background/30" : "border-brand-secondary/50 bg-brand-secondary/10 dark:bg-brand-dark/30"
+                    )}>
+                      <div className="space-y-1 leading-none mb-4 sm:mb-0">
+                        <p className={cn(
+                          "text-xl font-bold leading-none",
+                          isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
+                        )}>
+                          {addOn.name}
+                        </p>
+                        {addOn.description && (
+                          <p className={cn(
+                            "text-base",
+                            isLivePianoQuote ? "text-livePiano-light/70" : "text-brand-dark/70 dark:text-brand-light/70"
+                          )}>
+                            {addOn.description}
+                          </p>
+                        )}
+                      </div>
+                      <div className={cn(
+                        "text-3xl font-bold sm:ml-auto",
+                        isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
+                      )}>
+                        A${addOn.cost.toFixed(2)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+          </>
         )}
 
-        {/* Total Estimated Cost */}
-        <div className={cn(
-          "text-center mt-10 p-6 rounded-lg border shadow-lg",
-          isLivePianoQuote ? "bg-livePiano-primary/10 border-livePiano-primary/30" : "bg-brand-primary/10 border-brand-primary/30"
-        )}>
-          <p className={cn(
-            "text-2xl md:text-3xl font-bold text-shadow-sm",
-            isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
+        {/* Total Estimated Cost (Only show for generic quotes, Erin Kennedy quote uses table total) */}
+        {!isErinKennedyQuote && (
+          <div className={cn(
+            "text-center mt-10 p-6 rounded-lg border shadow-lg",
+            isLivePianoQuote ? "bg-livePiano-primary/10 border-livePiano-primary/30" : "bg-brand-primary/10 border-brand-primary/30"
           )}>
-            Total Estimated Cost: <span className={isLivePianoQuote ? "text-livePiano-light text-4xl md:text-5xl" : "text-brand-dark dark:text-brand-light text-4xl md:text-5xl"}>A${quote.total_amount.toFixed(2)}</span>
-          </p>
-        </div>
+            <p className={cn(
+              "text-2xl md:text-3xl font-bold text-shadow-sm",
+              isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
+            )}>
+              Total Estimated Cost: <span className={isLivePianoQuote ? "text-livePiano-light text-4xl md:text-5xl" : "text-brand-dark dark:text-brand-light text-4xl md:text-5xl"}>A${quote.total_amount.toFixed(2)}</span>
+            </p>
+          </div>
+        )}
 
         {/* Booking Information / Important Details */}
         <section className={cn(
@@ -447,13 +533,11 @@ const DynamicQuotePage: React.FC = () => {
               <li><strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>Bank Details for Payment:</strong> BSB: {bankDetails.bsb}, ACC: {bankDetails.acc}</li>
             )}
             {isErinKennedyQuote && (
-              <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by {eventTime || 'event start time'}.</li>
-            )}
-            {isErinKennedyQuote && (
-              <li>To ensure thorough preparation, Daniele kindly requests PDF sheet music for all songs and a complete song list at least two weeks prior to the event (or earlier, if possible).</li>
-            )}
-            {isErinKennedyQuote && (
-              <li>To facilitate efficient scheduling, please inform Daniele of the total number of students participating in the concert as soon as possible. Daniele will then work to schedule rehearsals in convenient, grouped time blocks.</li>
+              <>
+                <li><strong className="text-brand-primary">Keyboard Provision:</strong> Daniele kindly requests that MC Showroom provides a fully weighted keyboard or piano on stage, ready for use by {eventTime || 'event start time'}.</li>
+                <li>To ensure thorough preparation, Daniele kindly requests PDF sheet music for all songs and a complete song list at least two weeks prior to the event (or earlier, if possible).</li>
+                <li>To facilitate efficient scheduling, please inform Daniele of the total number of students participating in the concert as soon as possible. Daniele will then work to schedule rehearsals in convenient, grouped time blocks.</li>
+              </>
             )}
           </ul>
         </section>
