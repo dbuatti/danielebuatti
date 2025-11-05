@@ -16,7 +16,7 @@ interface AddOn {
   name: string;
   description?: string;
   cost: number;
-  quantity: number; // ADDED QUANTITY
+  quantity: number;
 }
 
 // EXPORTED INTERFACE
@@ -74,12 +74,12 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
   const safeTotalAmount = typeof total_amount === 'number' ? total_amount : parseFloat(String(total_amount)) || 0;
   const safeRequiredDeposit = typeof requiredDeposit === 'number' ? requiredDeposit : parseFloat(String(requiredDeposit)) || 0;
   
-  // NEW: Safely access baseService amount
+  // Safely access baseService amount
   const safeBaseServiceAmount = typeof baseService?.amount === 'number' ? baseService.amount : parseFloat(String(baseService?.amount)) || 0;
 
 
   // Determine if it's the hardcoded Erin Kennedy quote (for specific layout)
-  const isErinKennedyQuote = data.event_title === "Erin Kennedy Quote"; // Assuming event_title is used for this specific case
+  const isErinKennedyQuote = data.event_title === "Erin Kennedy Quote";
 
   // --- Custom Erin Kennedy Quote Breakdown Renderer (Simplified for Preview) ---
   const renderErinKennedyQuote = () => {
@@ -91,13 +91,13 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
     return (
       <>
         <section className={cn(
-          "p-8 rounded-xl shadow-2xl border space-y-6 overflow-hidden", // Added overflow-hidden
+          "p-8 rounded-xl border space-y-6 overflow-hidden", // Removed shadow-2xl
           "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
         )}>
           <h3 className="text-3xl font-bold mb-6 text-center text-brand-primary">
             Quote Breakdown
           </h3>
-          <div className="overflow-x-auto"> {/* Added overflow-x-auto */}
+          <div className="overflow-x-auto">
             <Table className="w-full text-left border-collapse">
               <TableHeader>
                 <TableRow className="bg-brand-secondary/10 dark:bg-brand-dark/50">
@@ -132,7 +132,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
           </div>
         </section>
         <section className={cn(
-          "p-8 rounded-xl shadow-2xl border space-y-6 overflow-hidden", // Added overflow-hidden
+          "p-8 rounded-xl border space-y-6 overflow-hidden", // Removed shadow-2xl
           "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
         )}>
           <h3 className="text-3xl font-bold text-brand-primary text-center">Optional Rehearsal Support for Students</h3>
@@ -191,11 +191,11 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
           {/* Base Service Section (Generic) */}
           {baseService && (
             <section className={cn(
-              "p-8 rounded-xl shadow-2xl border space-y-6 overflow-hidden", // Added overflow-hidden
+              "p-8 rounded-xl border space-y-6 overflow-hidden", // Removed shadow-2xl
               isLivePianoTheme ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
             )}>
               <h3 className={cn(
-                "text-3xl font-bold mb-6 text-center",
+                "text-3xl font-bold mb-6 text-center", // Removed text-shadow-sm
                 isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
               )}>
                 {baseService.description || "Base Engagement Fee"}
@@ -207,7 +207,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
                 This fee secures a premium, seamless musical experience for your event.
               </p>
               <p className={cn(
-                "text-3xl font-semibold text-center mt-8",
+                "text-3xl font-semibold text-center mt-8", // Removed text-shadow-sm
                 isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
               )}>
                 All-Inclusive Engagement Fee: <strong className={isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{currencySymbol}{safeBaseServiceAmount.toFixed(2)}</strong>
@@ -218,7 +218,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
           {/* Optional Add-Ons Section (Generic) */}
           {addOns.length > 0 && (
             <section className={cn(
-              "p-8 rounded-xl shadow-2xl border space-y-8 overflow-hidden", // Added overflow-hidden
+              "p-8 rounded-xl border space-y-8 overflow-hidden", // Removed shadow-2xl
               isLivePianoTheme ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
             )}>
               <h3 className="text-3xl font-bold mb-6 text-center text-brand-dark dark:text-brand-light">Optional Add-Ons</h3>
@@ -273,7 +273,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
 
       {/* Total Estimated Cost */}
       <div className={cn(
-        "text-center mt-10 p-6 rounded-lg border shadow-lg",
+        "text-center mt-10 p-6 rounded-lg border", // Removed shadow-lg
         isLivePianoTheme ? "bg-livePiano-primary/10 border-livePiano-primary/30" : "bg-brand-primary/10 border-brand-primary/30"
       )}>
         <p className={cn(
@@ -286,7 +286,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
 
       {/* Booking Information / Important Details */}
       <section className={cn(
-        "p-8 rounded-xl shadow-2xl border space-y-6 overflow-hidden", // Added overflow-hidden
+        "p-8 rounded-xl border space-y-6 overflow-hidden", // Removed shadow-2xl
         isLivePianoTheme ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
       )}>
         <h3 className={cn(
