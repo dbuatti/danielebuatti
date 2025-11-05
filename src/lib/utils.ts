@@ -16,7 +16,3 @@ export function createSlug(text: string): string {
     .replace(/[^\w-]+/g, '') // Remove all non-word chars
     .replace(/--+/g, '-'); // Replace multiple - with single -
 }
-
-export function formatCurrency(amount: number, currencySymbol: string = 'A$'): string {
-  return `${currencySymbol}${amount.toFixed(2)}`;
-}

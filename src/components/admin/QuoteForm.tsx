@@ -20,7 +20,6 @@ import { Loader2, PlusCircle, Trash2, Wand2, Eye, Copy } from 'lucide-react';
 import { useGeminiQuoteGenerator } from '@/hooks/use-gemini-quote-generator';
 import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatCurrency } from '@/lib/utils'; // Import formatCurrency
 
 // Zod schema for the quote form
 const quoteFormSchema = z.object({
@@ -176,12 +175,12 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 font-sans">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         
         {/* AI Input Section */}
         <Card className="bg-brand-secondary/10 dark:bg-brand-dark/30 p-6 border-brand-secondary/50">
           <CardHeader className="p-0 pb-4">
-            <CardTitle className="text-xl text-brand-primary flex items-center gap-2 font-display">
+            <CardTitle className="text-xl text-brand-primary flex items-center gap-2">
               <Wand2 className="h-5 w-5" /> AI Quote Extractor
             </CardTitle>
           </CardHeader>
@@ -208,7 +207,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
               type="button"
               onClick={handleAutoGenerate}
               disabled={isGenerating || isSubmitting || !watchedFormValues.emailContent || watchedFormValues.emailContent.trim().length < 50}
-              className="w-full bg-brand-blue hover:bg-brand-blue/90 text-brand-light font-sans"
+              className="w-full bg-brand-blue hover:bg-brand-blue/90 text-brand-light"
               size="lg"
             >
               {isGenerating ? (
@@ -224,7 +223,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
           </CardContent>
         </Card>
         
-        <h3 className="text-xl font-semibold font-display text-brand-primary">Client & Event Details</h3>
+        <h3 className="text-xl font-semibold text-brand-primary">Client & Event Details</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -333,7 +332,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
           />
         </div>
 
-        <h3 className="text-xl font-semibold font-display text-brand-primary mt-8">Quote Line Items</h3>
+        <h3 className="text-xl font-semibold text-brand-primary mt-8">Quote Line Items</h3>
         
         <h4 className="text-lg font-medium text-brand-dark dark:text-brand-light">Base Service</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -369,7 +368,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
         <div className="space-y-4">
           {fields.map((item, index) => (
             <div key={item.id} className="flex flex-col gap-4 p-4 border rounded-md bg-brand-secondary/10 dark:bg-brand-dark/30">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end"> {/* Added items-end for alignment */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <FormField
                   control={form.control}
                   name={`addOns.${index}.name`}
@@ -429,7 +428,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
                   variant="outline"
                   size="sm"
                   onClick={() => handleDuplicateAddOn(index)}
-                  className="border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50 font-sans"
+                  className="border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50"
                 >
                   <Copy className="h-4 w-4 mr-2" /> Duplicate
                 </Button>
@@ -438,7 +437,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
                   variant="destructive"
                   size="sm"
                   onClick={() => remove(index)}
-                  className="font-sans"
                 >
                   <Trash2 className="h-4 w-4 mr-2" /> Remove
                 </Button>
@@ -449,13 +447,13 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
             type="button"
             variant="outline"
             onClick={() => append({ name: '', description: '', cost: 0, quantity: 1 })}
-            className="w-full border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50 font-sans"
+            className="w-full border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50"
           >
             <PlusCircle className="mr-2 h-4 w-4" /> Add Add-on
           </Button>
         </div>
 
-        <h3 className="text-xl font-semibold font-display text-brand-primary mt-8">Payment Details</h3>
+        <h3 className="text-xl font-semibold text-brand-primary mt-8">Payment Details</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -532,22 +530,22 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
         />
 
         <div className="mt-8 p-6 bg-brand-primary/10 rounded-lg border border-brand-primary/30 text-center space-y-2">
-          <p className="text-2xl font-bold font-sans text-brand-primary">Total Quote Amount: <span className="text-brand-dark dark:text-brand-light">{formatCurrency(totalAmount, watchedFormValues.currencySymbol)}</span></p>
-          <p className="text-xl font-sans text-brand-dark/80 dark:text-brand-light/80">Required Deposit ({depositPercentage}%): <span className="font-semibold">{formatCurrency(requiredDeposit, watchedFormValues.currencySymbol)}</span></p>
+          <p className="text-2xl font-bold text-brand-primary">Total Quote Amount: <span className="text-brand-dark dark:text-brand-light">{watchedFormValues.currencySymbol}{totalAmount.toFixed(2)}</span></p>
+          <p className="text-xl text-brand-dark/80 dark:text-brand-light/80">Required Deposit ({depositPercentage}%): <span className="font-semibold">{watchedFormValues.currencySymbol}{requiredDeposit.toFixed(2)}</span></p>
         </div>
 
         <div className="flex gap-4">
           <Button
             type="button"
             onClick={handlePreviewClick}
-            className="flex-1 bg-brand-secondary hover:bg-brand-secondary/90 text-brand-dark dark:text-brand-light text-lg px-8 py-6 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 font-sans"
+            className="flex-1 bg-brand-secondary hover:bg-brand-secondary/90 text-brand-dark dark:text-brand-light text-lg px-8 py-6 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105"
             disabled={isSubmitting || isGenerating}
           >
             <Eye className="mr-2 h-4 w-4" /> Preview Quote
           </Button>
           <Button
             type="submit"
-            className="flex-1 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 font-sans"
+            className="flex-1 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105"
             disabled={isSubmitting || isGenerating}
           >
             {isSubmitting ? (
