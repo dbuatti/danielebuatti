@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, PlusCircle, Trash2, Wand2 } from 'lucide-react';
+import { Loader2, PlusCircle, Trash2, Wand2, Eye } from 'lucide-react';
 import { useGeminiQuoteGenerator } from '@/hooks/use-gemini-quote-generator';
 import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -52,9 +52,10 @@ interface QuoteFormProps {
   initialData?: QuoteFormValues;
   onSubmit: (values: QuoteFormValues) => Promise<void>;
   isSubmitting: boolean;
+  onPreview: (values: QuoteFormValues) => void; // NEW PROP
 }
 
-const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitting }) => {
+const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitting, onPreview }) => {
   const { generateQuote, isGenerating } = useGeminiQuoteGenerator();
   
   const form = useForm<QuoteFormValues>({
@@ -130,6 +131,17 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
       replace(result.addOns); // Replace existing add-ons with generated ones
       toast.success("Quote details auto-populated successfully!");
     }
+  };
+
+  const handlePreviewClick = () => {
+    // Validate only the fields necessary for a basic preview
+    const { clientName, eventTitle, eventDate, eventLocation, baseServiceDescription, baseServiceAmount } = form.getValues();
+    if (!clientName || !eventTitle || !eventDate || !eventLocation || !baseServiceDescription || baseServiceAmount === 0) {
+      toast.warning("Please fill out the required Client & Event Details and Base Service fields before previewing.");
+      form.trigger(); // Trigger validation to show errors
+      return;
+    }
+    onPreview(form.getValues());
   };
 
   return (
@@ -468,19 +480,29 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
           <p className="text-xl text-brand-dark/80 dark:text-brand-light/80">Required Deposit ({depositPercentage}%): <span className="font-semibold">{form.watch('currencySymbol')}{requiredDeposit.toFixed(2)}</span></p>
         </div>
 
-        <Button
-          type="submit"
-          className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
-          disabled={isSubmitting || isGenerating}
-        >
-          {isSubmitting ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating Quote...
-            </>
-          ) : (
-            'Create Quote'
-          )}
-        </Button>
+        <div className="flex gap-4">
+          <Button
+            type="button"
+            onClick={handlePreviewClick}
+            className="flex-1 bg-brand-secondary hover:bg-brand-secondary/90 text-brand-dark dark:text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+            disabled={isSubmitting || isGenerating}
+          >
+            <Eye className="mr-2 h-4 w-4" /> Preview Quote
+          </Button>
+          <Button
+            type="submit"
+            className="flex-1 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+            disabled={isSubmitting || isGenerating}
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating Quote...
+              </>
+            ) : (
+              'Create Quote'
+            )}
+          </Button>
+        </div>
       </form>
     </Form>
   );

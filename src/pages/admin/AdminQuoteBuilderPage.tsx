@@ -6,11 +6,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import QuoteForm, { QuoteFormValues } from '@/components/admin/QuoteForm';
 import { supabase } from '@/integrations/supabase/client';
-import { createSlug } from '@/lib/utils'; // Assuming createSlug is available
+import { createSlug } from '@/lib/utils';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import QuoteDisplay from '@/components/admin/QuoteDisplay'; // Import the new display component
+import { ScrollArea } from '@/components/ui/scroll-area'; // Import ScrollArea
 
 const AdminQuoteBuilderPage: React.FC = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewData, setPreviewData] = useState<QuoteFormValues | null>(null);
+
+  const handlePreviewQuote = (values: QuoteFormValues) => {
+    setPreviewData(values);
+    setIsPreviewOpen(true);
+  };
 
   const handleCreateQuote = async (values: QuoteFormValues) => {
     setIsSubmitting(true);
@@ -97,6 +107,39 @@ const AdminQuoteBuilderPage: React.FC = () => {
     }
   };
 
+  // Transform form values into QuoteDisplayData structure for preview
+  const getPreviewData = (values: QuoteFormValues): QuoteDisplayData | null => {
+    if (!values.clientName || !values.eventTitle) return null;
+
+    const totalAmount = values.baseServiceAmount + (values.addOns?.reduce((sum: number, addOn: { cost: number }) => sum + addOn.cost, 0) || 0);
+    const requiredDeposit = totalAmount * (values.depositPercentage / 100);
+
+    return {
+      client_name: values.clientName,
+      event_title: values.eventTitle,
+      event_date: values.eventDate,
+      event_location: values.eventLocation,
+      prepared_by: values.preparedBy,
+      total_amount: totalAmount,
+      details: {
+        baseService: {
+          description: values.baseServiceDescription,
+          amount: values.baseServiceAmount,
+        },
+        addOns: values.addOns || [],
+        depositPercentage: values.depositPercentage,
+        requiredDeposit: requiredDeposit,
+        bankDetails: {
+          bsb: values.bankBSB,
+          acc: values.bankACC,
+        },
+        eventTime: values.eventTime,
+        currencySymbol: values.currencySymbol,
+        paymentTerms: values.paymentTerms,
+      },
+    };
+  };
+
   return (
     <div className="space-y-8">
       <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Create New Quote</h2>
@@ -109,9 +152,32 @@ const AdminQuoteBuilderPage: React.FC = () => {
           <CardTitle className="text-xl text-brand-primary">Quote Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <QuoteForm onSubmit={handleCreateQuote} isSubmitting={isSubmitting} />
+          <QuoteForm 
+            onSubmit={handleCreateQuote} 
+            isSubmitting={isSubmitting} 
+            onPreview={handlePreviewQuote} // Pass the handler down
+          />
         </CardContent>
       </Card>
+
+      {/* Quote Preview Modal */}
+      <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+        <DialogContent className="sm:max-w-[90vw] w-[90vw] h-[90vh] p-0 bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50">
+          <DialogHeader className="p-6 pb-0">
+            <DialogTitle className="text-brand-primary text-2xl">Quote Preview: {previewData?.eventTitle}</DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="h-[calc(90vh-70px)]">
+            {previewData ? (
+              <QuoteDisplay 
+                data={getPreviewData(previewData)!} 
+                isLivePianoTheme={previewData.invoiceType.toLowerCase().includes('live piano')} // Simple heuristic for theme
+              />
+            ) : (
+              <div className="p-8 text-center">No preview data available.</div>
+            )}
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
