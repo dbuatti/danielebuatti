@@ -99,11 +99,11 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
           "p-8 rounded-xl border space-y-6 overflow-hidden",
           "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
         )}>
-          <h3 className="text-3xl font-bold mb-6 text-center text-brand-primary">
+          <h3 className="text-3xl font-bold mb-6 text-center font-display text-brand-primary">
             Quote Breakdown
           </h3>
           <div className="overflow-x-auto">
-            <Table className="w-full text-left border-collapse">
+            <Table className="w-full text-left border-collapse font-sans">
               <TableHeader>
                 <TableRow className="bg-brand-secondary/10 dark:bg-brand-dark/50">
                   <TableHead className="text-brand-primary w-[30%]">Service Component</TableHead>
@@ -140,11 +140,11 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
           "p-8 rounded-xl border space-y-6 overflow-hidden",
           "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
         )}>
-          <h3 className="text-3xl font-bold text-brand-primary text-center">Optional Rehearsal Support for Students</h3>
-          <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
+          <h3 className="text-3xl font-bold font-display text-brand-primary text-center">Optional Rehearsal Support for Students</h3>
+          <p className="text-lg font-sans text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
             To help students feel fully prepared and confident for their performance, Daniele offers dedicated 1:1 rehearsal opportunities at his studio in Toorak.
           </p>
-          <div className="max-w-md mx-auto space-y-4">
+          <div className="max-w-md mx-auto space-y-4 font-sans">
             <h4 className="text-xl font-semibold text-brand-primary">Individual Rehearsal Rates:</h4>
             <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-1 pl-4">
               <li>15-minute rehearsal: {formatCurrency(30, 'A$')}</li>
@@ -174,7 +174,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
           {event_title}
         </h2>
         <div className={cn(
-          "text-lg max-w-3xl mx-auto space-y-3 font-medium",
+          "text-lg max-w-3xl mx-auto space-y-3 font-medium font-sans",
           isLivePianoTheme ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
         )}>
           <p>Prepared for: <strong className={isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"}>{client_name}</strong></p>
@@ -197,22 +197,41 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
           {baseService && (
             <section className={cn(
               "p-8 rounded-xl border space-y-6 overflow-hidden",
-              isLivePianoTheme ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
+              "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
             )}>
               <h3 className={cn(
-                "text-3xl font-bold mb-6 text-center",
+                "text-3xl font-bold mb-6 text-center font-display",
                 isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
               )}>
                 {baseService.description || "Base Engagement Fee"}
               </h3>
               <p className={cn(
-                "text-xl text-center max-w-3xl mx-auto",
+                "text-xl text-center max-w-3xl mx-auto font-sans",
                 isLivePianoTheme ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
               )}>
                 This fee secures a premium, seamless musical experience for your event.
               </p>
+              <div className={cn(
+                "space-y-4 max-w-3xl mx-auto font-sans",
+                isLivePianoTheme ? "text-livePiano-light/80" : "text-brand-dark/80 dark:text-brand-light/80"
+              )}>
+                <h4 className={cn(
+                  "text-2xl font-semibold text-center mb-4 font-display",
+                  isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
+                )}>
+                  Service Components
+                </h4>
+                <ul className={cn(
+                  "list-disc list-inside space-y-2 pl-4",
+                  isLivePianoTheme ? "[&>li]:marker:text-livePiano-primary [&>li]:marker:text-xl" : ""
+                )}>
+                  <li><strong>Performance:</strong> {baseService.description}</li>
+                  <li><strong>All-Inclusive Logistics:</strong> Covers all sheet music preparation, travel, and setup required for the evening.</li>
+                  {isLivePianoTheme && <li><strong>Flexible Timing:</strong> Performance timing is flexible to dynamically respond to the needs of guests (the "on-call buffer").</li>}
+                </ul>
+              </div>
               <p className={cn(
-                "text-3xl font-semibold text-center mt-8",
+                "text-3xl font-semibold text-center mt-8 font-sans",
                 isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
               )}>
                 All-Inclusive Engagement Fee: <strong className={isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{formatCurrency(safeBaseServiceAmount, currencySymbol)}</strong>
@@ -226,7 +245,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
               "p-8 rounded-xl border space-y-8 overflow-hidden",
               isLivePianoTheme ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
             )}>
-              <h3 className="text-3xl font-bold mb-6 text-center text-brand-dark dark:text-brand-light">Optional Add-Ons</h3>
+              <h3 className="text-3xl font-bold mb-6 text-center font-display text-brand-dark dark:text-brand-light">Optional Add-Ons</h3>
               <div className="space-y-4 max-w-2xl mx-auto">
                 {addOns.map((addOn: AddOn, index: number) => {
                   // Ensure cost and quantity are numbers
@@ -241,28 +260,28 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
                     )}>
                       <div className="space-y-1 leading-none mb-4 sm:mb-0 sm:flex-1">
                         <p className={cn(
-                          "text-xl font-bold leading-none",
+                          "text-xl font-bold leading-none font-sans",
                           isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
                         )}>
                           {addOn.name}
                         </p>
                         {addOn.description && (
                           <p className={cn(
-                            "text-base",
+                            "text-base font-sans",
                             isLivePianoTheme ? "text-livePiano-light/70" : "text-brand-dark/70 dark:text-brand-light/70"
                           )}>
                             {addOn.description}
                           </p>
                         )}
                         <p className={cn(
-                          "text-sm italic",
+                          "text-sm italic font-sans",
                           isLivePianoTheme ? "text-livePiano-light/60" : "text-brand-dark/60 dark:text-brand-light/60"
                         )}>
                           {quantity} x {formatCurrency(cost, currencySymbol)}
                         </p>
                       </div>
                       <div className={cn(
-                        "text-3xl font-bold sm:ml-auto",
+                        "text-3xl font-bold sm:ml-auto font-sans",
                         isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
                       )}>
                         {formatCurrency(subtotal, currencySymbol)}
@@ -282,7 +301,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
         isLivePianoTheme ? "bg-livePiano-primary/10 border-livePiano-primary/30" : "bg-brand-primary/10 border-brand-primary/30"
       )}>
         <p className={cn(
-          "text-2xl md:text-3xl font-bold",
+          "text-2xl md:text-3xl font-bold font-sans",
           isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
         )}>
           Total Estimated Cost: <span className={cn(isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light", "text-4xl md:text-5xl")}>{formatCurrency(safeTotalAmount, currencySymbol)}</span>
@@ -292,14 +311,14 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
       {/* Booking Information / Important Details */}
       <section className={cn(
         "p-8 rounded-xl border space-y-6 overflow-hidden",
-        isLivePianoTheme ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
+        "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
       )}>
         <h3 className={cn(
-          "text-3xl font-bold mb-6 text-center",
+          "text-3xl font-bold mb-6 text-center font-display",
           isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
         )}>Important Booking Details</h3>
         <ul className={cn(
-          "list-disc list-inside text-lg space-y-2 pl-4",
+          "list-disc list-inside text-lg space-y-2 pl-4 font-sans",
           isLivePianoTheme ? "text-livePiano-light/90 [&>li::marker]:text-livePiano-primary" : "text-brand-dark/90 dark:text-brand-light/90 [&>li::marker]:text-brand-primary"
         )}>
           {isErinKennedyQuote ? (
@@ -328,7 +347,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
 
       {/* Acceptance Status (Only for preview/admin view) */}
       {(isAccepted || isRejected) && (
-        <div className="text-center space-y-4 p-6 rounded-xl bg-brand-secondary/20 dark:bg-brand-dark/50">
+        <div className="text-center space-y-4 p-6 rounded-xl bg-brand-secondary/20 dark:bg-brand-dark/50 font-sans">
           {isAccepted && (
             <p className="text-2xl font-bold text-green-500">This quote has been accepted.</p>
           )}

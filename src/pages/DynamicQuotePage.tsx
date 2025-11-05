@@ -169,10 +169,10 @@ const DynamicQuotePage: React.FC = () => {
   if (error || !quote) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light p-4">
-        <h2 className="text-3xl font-bold mb-4">Error</h2>
-        <p className="text-lg text-red-500 mb-6">{error || "Quote not found."}</p>
+        <h2 className="text-3xl font-bold mb-4 font-display">Error</h2>
+        <p className="text-lg text-red-500 mb-6 font-sans">{error || "Quote not found."}</p>
         <Button asChild>
-          <Link to="/">Back to Home</Link>
+          <Link to="/" className="font-sans">Back to Home</Link>
         </Button>
       </div>
     );
@@ -309,11 +309,11 @@ const DynamicQuotePage: React.FC = () => {
           "p-8 rounded-xl border space-y-6 overflow-hidden",
           "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
         )}>
-          <h3 className="text-3xl font-bold mb-6 text-center text-brand-primary">
+          <h3 className="text-3xl font-bold mb-6 text-center font-display text-brand-primary">
             Quote Breakdown
           </h3>
           <div className="overflow-x-auto">
-            <Table className="w-full text-left border-collapse">
+            <Table className="w-full text-left border-collapse font-sans">
               <TableHeader>
                 <TableRow className="bg-brand-secondary/10 dark:bg-brand-dark/50">
                   <TableHead className="text-brand-primary w-[30%]">Service Component</TableHead>
@@ -352,11 +352,11 @@ const DynamicQuotePage: React.FC = () => {
           "p-8 rounded-xl border space-y-6 overflow-hidden",
           "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
         )}>
-          <h3 className="text-3xl font-bold text-brand-primary text-center">Optional Rehearsal Support for Students</h3>
-          <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
+          <h3 className="text-3xl font-bold font-display text-brand-primary text-center">Optional Rehearsal Support for Students</h3>
+          <p className="text-lg font-sans text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
             To help students feel fully prepared and confident for their performance, Daniele offers dedicated 1:1 rehearsal opportunities at his studio in Toorak.
           </p>
-          <div className="max-w-md mx-auto space-y-4">
+          <div className="max-w-md mx-auto space-y-4 font-sans">
             <h4 className="text-xl font-semibold text-brand-primary">Individual Rehearsal Rates:</h4>
             <ul className="list-disc list-inside text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-1 pl-4">
               <li>15-minute rehearsal: {formatCurrency(30, 'A$')}</li>
@@ -389,7 +389,7 @@ const DynamicQuotePage: React.FC = () => {
             isLivePianoQuote ? "text-livePiano-light hover:text-livePiano-primary" : "text-brand-dark dark:text-brand-light hover:text-brand-primary"
           )}>
             <Link to="/">
-              <span className="flex items-center text-base md:text-lg font-semibold">
+              <span className="flex items-center text-base md:text-lg font-semibold font-sans">
                 <ArrowLeft className="h-5 w-5 mr-2" /> <span>Back to Home</span>
               </span>
             </Link>
@@ -422,7 +422,7 @@ const DynamicQuotePage: React.FC = () => {
             {quote.event_title || quote.invoice_type}
           </h2>
           <div className={cn(
-            "text-xl max-w-3xl mx-auto space-y-3 font-medium",
+            "text-xl max-w-3xl mx-auto space-y-3 font-medium font-sans",
             isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
           )}>
             <p>Prepared for: <strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>{quote.client_name}</strong></p>
@@ -447,26 +447,26 @@ const DynamicQuotePage: React.FC = () => {
             {baseService && (
               <section className={cn(
                 "p-8 rounded-xl border space-y-6 overflow-hidden",
-                isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
+                "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
               )}>
                 <h3 className={cn(
-                  "text-3xl font-bold mb-6 text-center",
+                  "text-3xl font-bold mb-6 text-center font-display",
                   isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
                 )}>
                   {baseService.description || "Base Engagement Fee"}
                 </h3>
                 <p className={cn(
-                  "text-xl text-center max-w-3xl mx-auto",
+                  "text-xl text-center max-w-3xl mx-auto font-sans",
                   isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
                 )}>
                   This fee secures a premium, seamless musical experience for your event.
                 </p>
                 <div className={cn(
-                  "space-y-4 max-w-3xl mx-auto",
+                  "space-y-4 max-w-3xl mx-auto font-sans",
                   isLivePianoQuote ? "text-livePiano-light/80" : "text-brand-dark/80 dark:text-brand-light/80"
                 )}>
                   <h4 className={cn(
-                    "text-2xl font-semibold text-center mb-4",
+                    "text-2xl font-semibold text-center mb-4 font-display",
                     isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
                   )}>
                     Service Components
@@ -481,7 +481,7 @@ const DynamicQuotePage: React.FC = () => {
                   </ul>
                 </div>
                 <p className={cn(
-                  "text-3xl font-semibold text-center mt-8",
+                  "text-3xl font-semibold text-center mt-8 font-sans",
                   isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
                 )}>
                   All-Inclusive Engagement Fee: <strong className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{formatCurrency(baseAmount, symbol)}</strong>
@@ -494,14 +494,14 @@ const DynamicQuotePage: React.FC = () => {
         {/* Booking Information / Important Details - KEEP OUTSIDE FORM */}
         <section className={cn(
           "p-8 rounded-xl border space-y-6 overflow-hidden",
-          isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
+          "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
         )}>
           <h3 className={cn(
-            "text-3xl font-bold mb-6 text-center",
+            "text-3xl font-bold mb-6 text-center font-display",
             isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
           )}>Important Booking Details</h3>
           <ul className={cn(
-            "list-disc list-inside text-lg space-y-2 pl-4",
+            "list-disc list-inside text-lg space-y-2 pl-4 font-sans",
             isLivePianoQuote ? "text-livePiano-light/90 [&>li::marker]:text-livePiano-primary" : "text-brand-dark/90 dark:text-brand-light/90 [&>li::marker]:text-brand-primary"
           )}>
             {isErinKennedyQuote ? (
@@ -534,29 +534,29 @@ const DynamicQuotePage: React.FC = () => {
           isLivePianoQuote ? "bg-livePiano-darker border-livePiano-primary/50" : "bg-brand-light dark:bg-brand-dark-alt border-brand-primary/50"
         )}>
           <h3 className={cn(
-            "text-3xl font-bold mb-6 text-center",
+            "text-3xl font-bold mb-6 text-center font-display",
             isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
           )}>Accept Your Quote</h3>
           {isActionTaken ? (
-            <div className="text-center space-y-4">
+            <div className="text-center space-y-4 font-sans">
               {isAccepted && (
                 <p className="text-2xl font-bold text-green-500">This quote has already been accepted!</p>
               )}
               {isRejected && (
                 <p className="text-2xl font-bold text-red-500">This quote has been rejected.</p>
               )}
-              <Button asChild size="lg" className="mt-4 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105">
+              <Button asChild size="lg" className="mt-4 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 font-sans">
                 <Link to="/">Return to Home</Link>
               </Button>
             </div>
           ) : (
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmitGeneric)} className="space-y-6 max-w-xl mx-auto">
+              <form onSubmit={form.handleSubmit(onSubmitGeneric)} className="space-y-6 max-w-xl mx-auto font-sans">
                 
                 {/* MOVED: Optional Add-Ons Section (Generic) - Now interactive with quantity */}
                 {addOnFields.length > 0 && !isErinKennedyQuote && (
                   <div className="space-y-8">
-                    <h4 className="text-2xl font-bold text-center text-brand-dark dark:text-brand-light">Adjust Optional Add-Ons</h4>
+                    <h4 className="text-2xl font-bold text-center font-display text-brand-dark dark:text-brand-light">Adjust Optional Add-Ons</h4>
                     <div className="space-y-4 max-w-2xl mx-auto">
                       {addOnFields.map((item: AddOnItem, index) => { // Explicitly type item
                         const cost = parseFloat(String(item.cost)) || 0;
@@ -759,7 +759,7 @@ const DynamicQuotePage: React.FC = () => {
                 type="submit"
                 size="lg"
                 className={cn(
-                  "w-full text-xl py-7 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105",
+                  "w-full text-xl py-7 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 font-sans",
                   isLivePianoQuote ? "bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-darker" : "bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
                 )}
                 disabled={form.formState.isSubmitting || !form.formState.isValid}
@@ -782,7 +782,7 @@ const DynamicQuotePage: React.FC = () => {
         <div className="absolute inset-0 bg-black/60"></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4">
           <p className={cn(
-            "text-2xl font-semibold flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8",
+            "text-2xl font-semibold flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 font-sans",
             isLivePianoQuote ? "text-livePiano-light" : "text-brand-light"
           )}>
             <a
