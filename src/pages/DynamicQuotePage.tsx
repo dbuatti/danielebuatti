@@ -11,7 +11,7 @@ import { useTheme } from "next-themes";
 import { toast } from 'sonner';
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import * => z from "zod";
 import {
   Form,
   FormControl,
@@ -409,7 +409,7 @@ const DynamicQuotePage: React.FC = () => {
         <section className="text-center space-y-6">
           <h2 className={cn(
             "text-5xl md:text-6xl font-extrabold mb-6 leading-none",
-            isLivePianoQuote ? "font-libre-baskerville text-livePiano-primary" : "text-brand-primary"
+            isLivePianoQuote ? "font-libre-baskerville text-livePiano-primary" : "font-display text-brand-primary" // Use font-display for default theme
           )}>
             {quote.event_title || quote.invoice_type}
           </h2>
@@ -464,7 +464,7 @@ const DynamicQuotePage: React.FC = () => {
                     Service Components
                   </h4>
                   <ul className={cn(
-                    "list-disc list-inside space-y-2",
+                    "list-disc list-inside space-y-2 pl-4",
                     isLivePianoQuote ? "[&>li]:marker:text-livePiano-primary [&>li]:marker:text-xl" : ""
                   )}>
                     <li><strong>Performance:</strong> {baseService.description}</li>
@@ -493,7 +493,7 @@ const DynamicQuotePage: React.FC = () => {
             isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
           )}>Important Booking Details</h3>
           <ul className={cn(
-            "list-disc list-inside text-lg space-y-2",
+            "list-disc list-inside text-lg space-y-2 pl-4",
             isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
           )}>
             {isErinKennedyQuote ? (

@@ -164,7 +164,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
       <section className="text-center space-y-6">
         <h2 className={cn(
           "text-4xl md:text-5xl font-extrabold mb-6 leading-none",
-          isLivePianoTheme ? "font-libre-baskerville text-livePiano-primary" : "text-brand-primary"
+          isLivePianoTheme ? "font-libre-baskerville text-livePiano-primary" : "font-display text-brand-primary" // Use font-display for default theme
         )}>
           {event_title}
         </h2>
@@ -234,7 +234,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
                       "flex flex-col sm:flex-row sm:items-center sm:justify-between w-full rounded-md border p-4",
                       isLivePianoTheme ? "border-livePiano-border/50 bg-livePiano-background/30" : "border-brand-secondary/50 bg-brand-secondary/10 dark:bg-brand-dark/30"
                     )}>
-                      <div className="space-y-1 leading-none mb-4 sm:mb-0">
+                      <div className="space-y-1 leading-none mb-4 sm:mb-0 sm:flex-1">
                         <p className={cn(
                           "text-xl font-bold leading-none",
                           isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
@@ -294,7 +294,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ data, isLivePianoTheme = fa
           isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
         )}>Important Booking Details</h3>
         <ul className={cn(
-          "list-disc list-inside text-lg space-y-2",
+          "list-disc list-inside text-lg space-y-2 pl-4", // Added pl-4 for consistent list indent
           isLivePianoTheme ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
         )}>
           {isErinKennedyQuote ? (
