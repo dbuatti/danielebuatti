@@ -90,7 +90,10 @@ const router = createBrowserRouter([
       { path: "create-quote", element: <AdminQuoteBuilderPage /> },
     ],
   },
-] /* Removed future configuration block */);
+], {
+  // Removed 'future' property to resolve TypeScript error TS2353, 
+  // as the current type definitions do not recognize the v7 flags.
+});
 
 function App() {
   return (
