@@ -18,7 +18,8 @@ interface AddOn {
   cost: number;
 }
 
-interface QuoteDisplayData {
+// EXPORTED INTERFACE
+export interface QuoteDisplayData {
   client_name: string;
   event_title: string;
   event_date?: string | null;

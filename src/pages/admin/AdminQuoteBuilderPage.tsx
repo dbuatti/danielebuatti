@@ -8,8 +8,8 @@ import QuoteForm, { QuoteFormValues } from '@/components/admin/QuoteForm';
 import { supabase } from '@/integrations/supabase/client';
 import { createSlug } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import QuoteDisplay from '@/components/admin/QuoteDisplay'; // Import the new display component
-import { ScrollArea } from '@/components/ui/scroll-area'; // Import ScrollArea
+import QuoteDisplay, { QuoteDisplayData } from '@/components/admin/QuoteDisplay';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const AdminQuoteBuilderPage: React.FC = () => {
   const navigate = useNavigate();
