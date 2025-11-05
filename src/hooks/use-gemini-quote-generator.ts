@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import { GoogleGenAI } from '@google/genai';
 import { showError } from '@/utils/toast';
 
-// Initialize Gemini client
+// Initialize Gemini client outside of the hook for efficiency
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
@@ -17,7 +17,11 @@ interface GeneratedQuote {
   eventLocation: string;
   baseServiceDescription: string;
   baseServiceAmount: number;
-  addOns: { name: string; description: string; cost: number }[];
+  addOns: {
+    name: string;
+    description: string;
+    cost: number
+  }[];
 }
 
 export function useGeminiQuoteGenerator() {
@@ -25,7 +29,7 @@ export function useGeminiQuoteGenerator() {
 
   const generateQuote = useCallback(async (emailContent: string): Promise<GeneratedQuote | null> => {
     if (!ai) {
-      showError("Gemini API Key is missing. Please set VITE_GEMINI_API_KEY in your .env file.");
+      showError("Gemini API Key is missing. Please set VITE_GEMINI_API_KEY in your .env file and restart the app.");
       return null;
     }
 
@@ -89,7 +93,7 @@ export function useGeminiQuoteGenerator() {
 
     } catch (error) {
       console.error("Gemini API Error:", error);
-      showError("Failed to auto-generate quote details. Please check the API key and try again.");
+      showError("Failed to auto-generate quote details. Check console for details, or ensure the Gemini API key is valid.");
       return null;
     } finally {
       setIsGenerating(false);
