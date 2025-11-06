@@ -11,6 +11,9 @@ import { showError, showSuccess } from '@/utils/toast';
 import EmailComposerModal from '@/components/admin/EmailComposerModal';
 import { format } from 'date-fns';
 import { toast } from 'sonner'; // Import toast
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'; // Import Table components
+import { cn, formatCurrency } from '@/lib/utils'; // Import cn and formatCurrency
+import { QuoteDetails, AddOnItem } from '@/components/admin/QuoteDisplay'; // Import QuoteDetails and AddOnItem
 
 interface Quote {
   id: string;
@@ -22,7 +25,7 @@ interface Quote {
   event_location?: string;
   prepared_by?: string;
   total_amount: number;
-  details: any; // JSONB column
+  details: QuoteDetails; // Changed from 'any' to 'QuoteDetails'
   accepted_at: string | null;
   rejected_at: string | null;
   slug?: string | null;
@@ -172,6 +175,14 @@ const AdminQuoteDetailsPage: React.FC = () => {
     ...quote.details, // Spread all properties from the 'details' JSONB column
   };
 
+  const { baseService, addOns, currencySymbol = 'A$', depositPercentage, requiredDeposit, bankDetails, eventTime, paymentTerms } = quote.details;
+
+  const symbol = currencySymbol;
+  const baseAmount = baseService?.amount || 0;
+  const calculatedTotal = baseAmount + (addOns?.reduce((sum, item) => sum + (item.cost * item.quantity), 0) || 0);
+  const safeRequiredDeposit = requiredDeposit || (calculatedTotal * ((depositPercentage || 0) / 100));
+
+
   return (
     <div className="p-6 bg-brand-light dark:bg-brand-dark-alt min-h-screen">
       <Button onClick={() => navigate('/admin/quotes')} className="mb-6 bg-brand-secondary hover:bg-brand-secondary/90 text-brand-light">
@@ -185,39 +196,66 @@ const AdminQuoteDetailsPage: React.FC = () => {
             {currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1)}
           </Badge>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <p><strong>Client Name:</strong> {quote.client_name}</p>
-            <p><strong>Client Email:</strong> {quote.client_email}</p>
-            <p><strong>Quote Type:</strong> {quote.invoice_type}</p>
-            {quote.event_title && <p><strong>Event Title:</strong> {quote.event_title}</p>}
-            {(quote.event_date && quote.event_date !== '') && <p><strong>Event Date:</strong> {format(new Date(quote.event_date), 'EEEE d MMMM yyyy')}</p>} {/* Updated format */}
-            {quote.event_location && <p><strong>Event Location:</strong> {quote.event_location}</p>}
-            {quote.prepared_by && <p><strong>Prepared By:</strong> {quote.prepared_by}</p>}
-            <p><strong>Created At:</strong> {(quote.created_at && quote.created_at !== '') ? format(new Date(quote.created_at), 'PPP p') : 'N/A'}</p>
-            {(quote.accepted_at && quote.accepted_at !== '') && <p><strong>Accepted On:</strong> {format(new Date(quote.accepted_at), 'PPP p')}</p>}
-            {(quote.rejected_at && quote.rejected_at !== '') && <p><strong>Rejected On:</strong> {format(new Date(quote.rejected_at), 'PPP p')}</p>}
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <h3 className="text-xl font-semibold text-brand-primary">Client & Event Information</h3>
+              <p><strong>Client Name:</strong> {quote.client_name}</p>
+              <p><strong>Client Email:</strong> <a href={`mailto:${quote.client_email}`} className="text-brand-primary hover:underline">{quote.client_email}</a></p>
+              <p><strong>Quote Type:</strong> {quote.invoice_type}</p>
+              {quote.event_title && <p><strong>Event Title:</strong> {quote.event_title}</p>}
+              {(quote.event_date && quote.event_date !== '') && <p><strong>Event Date:</strong> {format(new Date(quote.event_date), 'EEEE d MMMM yyyy')}</p>}
+              {eventTime && <p><strong>Event Time:</strong> {eventTime}</p>}
+              {quote.event_location && <p><strong>Event Location:</strong> {quote.event_location}</p>}
+              {quote.prepared_by && <p><strong>Prepared By:</strong> {quote.prepared_by}</p>}
+              <p><strong>Created At:</strong> {(quote.created_at && quote.created_at !== '') ? format(new Date(quote.created_at), 'PPP p') : 'N/A'}</p>
+              {(quote.accepted_at && quote.accepted_at !== '') && <p><strong>Accepted On:</strong> {format(new Date(quote.accepted_at), 'PPP p')}</p>}
+              {(quote.rejected_at && quote.rejected_at !== '') && <p><strong>Rejected On:</strong> {format(new Date(quote.rejected_at), 'PPP p')}</p>}
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-xl font-semibold text-brand-primary">Financial Details</h3>
+              {baseService && (
+                <div className="bg-brand-secondary/10 dark:bg-brand-dark/30 p-3 rounded-md">
+                  <p><strong>Base Service:</strong> {baseService.description}</p>
+                  <p><strong>Base Amount:</strong> {formatCurrency(baseService.amount, symbol)}</p>
+                </div>
+              )}
+
+              {addOns && addOns.length > 0 && (
+                <div className="bg-brand-secondary/10 dark:bg-brand-dark/30 p-3 rounded-md">
+                  <p className="font-semibold mb-2">Add-Ons:</p>
+                  <Table className="w-full text-sm">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-brand-primary">Item</TableHead>
+                        <TableHead className="text-brand-primary text-center">Qty</TableHead>
+                        <TableHead className="text-brand-primary text-right">Cost</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {addOns.map((item, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{item.name} {item.description && `(${item.description})`}</TableCell>
+                          <TableCell className="text-center">{item.quantity}</TableCell>
+                          <TableCell className="text-right">{formatCurrency(item.cost * item.quantity, symbol)}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+
+              {depositPercentage !== undefined && <p><strong>Deposit Percentage:</strong> {depositPercentage}%</p>}
+              {safeRequiredDeposit !== undefined && <p><strong>Required Deposit:</strong> {formatCurrency(safeRequiredDeposit, symbol)}</p>}
+              {bankDetails && <p><strong>Bank Details:</strong> BSB: {bankDetails.bsb}, ACC: {bankDetails.acc}</p>}
+              {paymentTerms && <p><strong>Payment Terms:</strong> {paymentTerms}</p>}
+              <p><strong>Currency Symbol:</strong> {currencySymbol}</p>
+            </div>
           </div>
 
-          {/* Display details from the JSONB column if available */}
-          {quote.details && Object.keys(quote.details).length > 0 && (
-            <>
-              <h3 className="text-xl font-semibold text-brand-primary mt-6 mb-3">Additional Details</h3>
-              <div className="space-y-2">
-                {Object.entries(quote.details).map(([key, value], index) => (
-                  <div key={index} className="bg-brand-light dark:bg-brand-dark border-brand-secondary/30 p-3 rounded-md">
-                    <p><strong>{key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:</strong> {
-                      typeof value === 'boolean' ? (value ? 'Yes' : 'No') :
-                      (typeof value === 'object' && value !== null ? JSON.stringify(value) : String(value))
-                    }</p>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-
           <div className="text-right text-xl font-bold text-brand-primary mt-6">
-            <p><strong>Total Amount:</strong> A${quote.total_amount.toFixed(2)}</p>
+            <p><strong>Total Amount:</strong> {formatCurrency(calculatedTotal, symbol)}</p>
           </div>
 
           <div className="flex justify-end space-x-4 mt-6">
