@@ -179,7 +179,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
 
   const symbol = currencySymbol;
   const baseAmount = baseService?.amount || 0;
-  const calculatedTotal = baseAmount + (addOns?.reduce((sum, item) => sum + (item.cost * item.quantity), 0) || 0);
+  const calculatedTotal = baseAmount + (addOns?.reduce((sum: number, item: AddOnItem) => sum + (item.cost * item.quantity), 0) || 0);
   const safeRequiredDeposit = requiredDeposit || (calculatedTotal * ((depositPercentage || 0) / 100));
 
 
@@ -234,7 +234,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {addOns.map((item, index) => (
+                      {addOns.map((item: AddOnItem, index: number) => (
                         <TableRow key={index}>
                           <TableCell>{item.name} {item.description && `(${item.description})`}</TableCell>
                           <TableCell className="text-center">{item.quantity}</TableCell>
