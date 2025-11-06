@@ -255,7 +255,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isLivePianoTheme, is
               </>
             ) : (
               <>
-                <li><strong className={isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit ({symbol}{safeRequiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {quote.event_date && format(new Date(event_date), 'EEEE d MMMM yyyy') || 'event'} date.</li>
+                <li><strong className={isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit ({symbol}{safeRequiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {event_date ? format(new Date(event_date), 'EEEE d MMMM yyyy') : 'event'} date.</li>
                 {paymentTerms && <li>{paymentTerms}</li>}
                 {!paymentTerms && <li>The remaining balance is due 7 days prior to the event.</li>}
                 
