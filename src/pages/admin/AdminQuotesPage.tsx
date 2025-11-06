@@ -104,8 +104,8 @@ const AdminQuotesPage: React.FC = () => {
                     <TableHead className="text-brand-primary">Quote Type</TableHead>
                     <TableHead className="text-brand-primary">Event Date</TableHead>
                     <TableHead className="text-brand-primary text-right">Total Amount</TableHead>
-                    <TableHead className="text-brand-primary">Status</TableHead> {/* New Status column */}
-                    <TableHead className="text-brand-primary">Created On</TableHead> {/* Changed from Accepted On */}
+                    <TableHead className="text-brand-primary">Status</TableHead>
+                    <TableHead className="text-brand-primary">Created On</TableHead>
                     <TableHead className="text-brand-primary text-center">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -118,8 +118,8 @@ const AdminQuotesPage: React.FC = () => {
                       <TableCell className="text-right font-semibold text-brand-primary">A${quote.total_amount.toFixed(2)}</TableCell>
                       <TableCell className="text-brand-dark/80 dark:text-brand-light/80">
                         {getQuoteStatus(quote)}
-                      </TableCell> {/* Display Status */}
-                      <TableCell className="text-brand-dark/70 dark:text-brand-light/70">{format(new Date(quote.created_at), 'PPP p')}</TableCell> {/* Display Created On */}
+                      </TableCell>
+                      <TableCell className="text-brand-dark/70 dark:text-brand-light/70">{format(new Date(quote.created_at), 'PPP p')}</TableCell>
                       <TableCell className="text-center flex gap-2 justify-center">
                         <Link to={`/admin/quotes/${quote.id}`} className="text-brand-primary hover:underline flex items-center justify-center">
                           View Details <ExternalLink className="ml-1 h-4 w-4" />
