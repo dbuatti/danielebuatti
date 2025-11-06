@@ -10,17 +10,7 @@ import { Loader2, ExternalLink, Trash2 } from 'lucide-react';
 import { showError } from '@/utils/toast';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-
-interface Quote {
-  id: string;
-  client_name: string;
-  client_email: string;
-  invoice_type: string; // Renamed from invoice_type to better reflect quote type
-  event_title?: string;
-  event_date?: string;
-  total_amount: number;
-  accepted_at: string;
-}
+import { Quote } from '@/types/quote'; // Import Quote interface
 
 const AdminQuotesPage: React.FC = () => {
   const [quotes, setQuotes] = useState<Quote[]>([]);
@@ -30,9 +20,9 @@ const AdminQuotesPage: React.FC = () => {
     const fetchQuotes = async () => {
       setIsLoading(true);
       const { data, error } = await supabase
-        .from('invoices') // Still fetching from 'invoices' table as it houses accepted quotes
+        .from('invoices')
         .select('*')
-        .order('accepted_at', { ascending: false });
+        .order('created_at', { ascending: false }); // Order by creation date to see all recent activity
 
       if (error) {
         console.error('Error fetching quotes:', error);
@@ -76,6 +66,12 @@ const AdminQuotesPage: React.FC = () => {
     );
   };
 
+  const getQuoteStatus = (quote: Quote) => {
+    if (quote.accepted_at) return 'Accepted';
+    if (quote.rejected_at) return 'Rejected';
+    return 'Pending';
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -87,18 +83,18 @@ const AdminQuotesPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">All Accepted Quotes</h2>
+      <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Manage Quotes</h2>
       <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
-        View and manage all accepted quote proposals submitted through your website.
+        View and manage all quote proposals submitted through your website, regardless of their acceptance status.
       </p>
 
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
         <CardHeader>
-          <CardTitle className="text-xl text-brand-primary">Recent Quotes</CardTitle>
+          <CardTitle className="text-xl text-brand-primary">All Quote Proposals</CardTitle>
         </CardHeader>
         <CardContent>
           {quotes.length === 0 ? (
-            <p className="text-center text-brand-dark/70 dark:text-brand-light/70">No accepted quotes found yet.</p>
+            <p className="text-center text-brand-dark/70 dark:text-brand-light/70">No quote proposals found yet.</p>
           ) : (
             <div className="overflow-x-auto">
               <Table>
@@ -108,7 +104,8 @@ const AdminQuotesPage: React.FC = () => {
                     <TableHead className="text-brand-primary">Quote Type</TableHead>
                     <TableHead className="text-brand-primary">Event Date</TableHead>
                     <TableHead className="text-brand-primary text-right">Total Amount</TableHead>
-                    <TableHead className="text-brand-primary">Accepted On</TableHead>
+                    <TableHead className="text-brand-primary">Status</TableHead> {/* New Status column */}
+                    <TableHead className="text-brand-primary">Created On</TableHead> {/* Changed from Accepted On */}
                     <TableHead className="text-brand-primary text-center">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -119,7 +116,10 @@ const AdminQuotesPage: React.FC = () => {
                       <TableCell className="text-brand-dark/80 dark:text-brand-light/80">{quote.invoice_type}</TableCell>
                       <TableCell className="text-brand-dark/80 dark:text-brand-light/80">{quote.event_date && format(new Date(quote.event_date), 'EEEE d MMMM yyyy') || 'N/A'}</TableCell>
                       <TableCell className="text-right font-semibold text-brand-primary">A${quote.total_amount.toFixed(2)}</TableCell>
-                      <TableCell className="text-brand-dark/70 dark:text-brand-light/70">{format(new Date(quote.accepted_at), 'PPP p')}</TableCell>
+                      <TableCell className="text-brand-dark/80 dark:text-brand-light/80">
+                        {getQuoteStatus(quote)}
+                      </TableCell> {/* Display Status */}
+                      <TableCell className="text-brand-dark/70 dark:text-brand-light/70">{format(new Date(quote.created_at), 'PPP p')}</TableCell> {/* Display Created On */}
                       <TableCell className="text-center flex gap-2 justify-center">
                         <Link to={`/admin/quotes/${quote.id}`} className="text-brand-primary hover:underline flex items-center justify-center">
                           View Details <ExternalLink className="ml-1 h-4 w-4" />
