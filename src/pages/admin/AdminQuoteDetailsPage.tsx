@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { formatCurrency } from '@/lib/utils'; // Import formatCurrency
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'; // Import Table components
-import { AddOnItem, Quote } from '@/types/quote'; // Import centralized interfaces, removed QuoteDetails
+import { AddOnItem, Quote } from '@/types/quote'; // Import centralized interfaces
 
 const AdminQuoteDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -136,7 +136,6 @@ const AdminQuoteDetailsPage: React.FC = () => {
     event_date,
     event_location,
     prepared_by,
-    // total_amount, // Removed as it's unused
     details,
     accepted_at,
     rejected_at,
@@ -148,11 +147,14 @@ const AdminQuoteDetailsPage: React.FC = () => {
   const baseAmount = baseService?.amount || 0;
   const addOns = client_selected_add_ons && client_selected_add_ons.length > 0 ? client_selected_add_ons : quoteAddOns;
 
-  const calculatedTotal = baseAmount + (addOns?.reduce((sum: number, item: AddOnItem) => sum + (item.cost * item.quantity), 0) || 0);
-  const requiredDeposit = calculatedTotal * ((depositPercentage || 0) / 100);
-
   const isErinKennedyQuote = invoice_type === "Erin Kennedy Quote";
   const erinKennedyBaseInvoice = 400.00; // Hardcoded for Erin Kennedy quote type
+
+  const calculatedTotal = isErinKennedyQuote
+    ? erinKennedyBaseInvoice
+    : baseAmount + (addOns?.reduce((sum: number, item: AddOnItem) => sum + (item.cost * item.quantity), 0) || 0);
+  
+  const requiredDeposit = calculatedTotal * ((depositPercentage || 0) / 100);
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-6">
