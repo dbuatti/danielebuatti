@@ -1,61 +1,42 @@
-"use client";
-
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Loader2, ArrowLeft, Mail, CheckCircle, XCircle, Eye, Trash2 } from 'lucide-react'; // Import Trash2 icon
-import { showError, showSuccess } from '@/utils/toast';
-import EmailComposerModal from '@/components/admin/EmailComposerModal';
+import { Button } from "@/components/ui/button";
+import { Loader2, ArrowLeft, Edit, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { format } from 'date-fns';
-import { toast } from 'sonner'; // Import toast
+import { formatCurrency } from '@/lib/utils'; // Import formatCurrency
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'; // Import Table components
-import { cn, formatCurrency } from '@/lib/utils'; // Import cn and formatCurrency
-import { QuoteDetails, AddOnItem } from '@/components/admin/QuoteDisplay'; // Import QuoteDetails and AddOnItem
-
-interface Quote {
-  id: string;
-  client_name: string;
-  client_email: string;
-  invoice_type: string; // This will be 'Live Piano Services Quote' or 'Erin Kennedy Quote'
-  event_title?: string;
-  event_date?: string | null; // Changed to allow null
-  event_location?: string;
-  prepared_by?: string;
-  total_amount: number;
-  details: QuoteDetails; // Changed from 'any' to 'QuoteDetails'
-  accepted_at: string | null;
-  rejected_at: string | null;
-  slug?: string | null;
-  created_at: string | null; // Changed to allow null
-}
+import { AddOnItem, Quote } from '@/types/quote'; // Import centralized interfaces, removed QuoteDetails
 
 const AdminQuoteDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const [quote, setQuote] = useState<Quote | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
-  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchQuote = async () => {
-      if (!id) return;
+      if (!id) {
+        setError("Quote ID is missing.");
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
+      setError(null);
       const { data, error } = await supabase
-        .from('invoices') // Fetching from 'invoices' table
+        .from('invoices')
         .select('*')
         .eq('id', id)
         .single();
 
       if (error) {
         console.error('Error fetching quote:', error);
-        showError('Failed to load quote details.');
+        setError('Failed to load quote details. It might not exist or you do not have access.');
         setQuote(null);
       } else {
-        setQuote(data as Quote); // Cast data to Quote interface
+        setQuote(data as Quote);
       }
       setIsLoading(false);
     };
@@ -63,253 +44,278 @@ const AdminQuoteDetailsPage: React.FC = () => {
     fetchQuote();
   }, [id]);
 
-  const handleUpdateStatus = async (newStatus: 'accepted' | 'rejected') => {
-    if (!quote) return;
-
-    setIsUpdatingStatus(true);
-    const updateData: { accepted_at: string | null; rejected_at: string | null } = {
-      accepted_at: null,
-      rejected_at: null,
-    };
-
-    if (newStatus === 'accepted') {
-      updateData.accepted_at = new Date().toISOString();
-    } else if (newStatus === 'rejected') {
-      updateData.rejected_at = new Date().toISOString();
+  const handleDelete = async () => {
+    if (!quote || !window.confirm(`Are you sure you want to delete the quote for ${quote.client_name}?`)) {
+      return;
     }
 
-    const { error } = await supabase
-      .from('invoices')
-      .update(updateData) // Directly update accepted_at/rejected_at
-      .eq('id', quote.id);
+    const loadingToastId = toast.loading("Deleting quote...");
+    try {
+      const { error } = await supabase
+        .from('invoices')
+        .delete()
+        .eq('id', quote.id);
 
-    if (error) {
-      console.error(`Error updating quote status to ${newStatus}:`, error);
-      showError(`Failed to update quote status to ${newStatus}.`);
-    } else {
-      showSuccess(`Quote status updated to ${newStatus}.`);
-      // Manually update the local state to reflect the change
-      setQuote((prev) => (prev ? { ...prev, ...updateData } : null));
+      if (error) throw error;
+
+      toast.success("Quote deleted successfully!", { id: loadingToastId });
+      // Redirect to admin quotes list after deletion
+      window.location.href = '/admin/quotes';
+    } catch (error: any) {
+      console.error("Error deleting quote:", error);
+      toast.error(`Failed to delete quote: ${error.message}`, { id: loadingToastId });
     }
-    setIsUpdatingStatus(false);
   };
 
-  const handleDeleteQuote = async () => {
-    if (!quote) return;
+  const handleAccept = async () => {
+    if (!quote || quote.accepted_at) return;
 
-    toast.promise(
-      async () => {
-        const { error } = await supabase
-          .from('invoices')
-          .delete()
-          .eq('id', quote.id);
+    const loadingToastId = toast.loading("Accepting quote...");
+    try {
+      const { error } = await supabase
+        .from('invoices')
+        .update({ accepted_at: new Date().toISOString(), rejected_at: null })
+        .eq('id', quote.id);
 
-        if (error) throw error;
-        
-        navigate('/admin/quotes'); // Redirect after successful deletion
-        return 'Quote deleted successfully!';
-      },
-      {
-        loading: 'Deleting quote...',
-        success: (message) => message,
-        error: (err) => {
-          console.error('Error deleting quote:', err);
-          return 'Failed to delete quote.';
-        },
-        action: {
-          label: 'Confirm Delete',
-          onClick: () => { /* The promise handles the actual deletion */ },
-        },
-        description: 'Are you sure you want to delete this quote? This action cannot be undone.',
-      }
-    );
+      if (error) throw error;
+
+      setQuote((prev: Quote | null) => prev ? { ...prev, accepted_at: new Date().toISOString(), rejected_at: null } : null);
+      toast.success("Quote marked as accepted!", { id: loadingToastId });
+    } catch (error: any) {
+      console.error("Error accepting quote:", error);
+      toast.error(`Failed to accept quote: ${error.message}`, { id: loadingToastId });
+    }
+  };
+
+  const handleReject = async () => {
+    if (!quote || quote.rejected_at) return;
+
+    const loadingToastId = toast.loading("Rejecting quote...");
+    try {
+      const { error } = await supabase
+        .from('invoices')
+        .update({ rejected_at: new Date().toISOString(), accepted_at: null })
+        .eq('id', quote.id);
+
+      if (error) throw error;
+
+      setQuote((prev: Quote | null) => prev ? { ...prev, rejected_at: new Date().toISOString(), accepted_at: null } : null);
+      toast.success("Quote marked as rejected!", { id: loadingToastId });
+    } catch (error: any) {
+      console.error("Error rejecting quote:", error);
+      toast.error(`Failed to reject quote: ${error.message}`, { id: loadingToastId });
+    }
   };
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-brand-primary" />
+      <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+        <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
+        <span className="sr-only">Loading quote...</span>
       </div>
     );
   }
 
-  if (!quote) {
+  if (error || !quote) {
     return (
-      <div className="p-6 text-center">
-        <p className="text-lg text-brand-dark dark:text-brand-light">Quote not found.</p>
-        <Button onClick={() => navigate('/admin/quotes')} className="mt-4 bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Quotes
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-4">
+        <h2 className="text-3xl font-bold mb-4">Error</h2>
+        <p className="text-lg text-red-500 mb-6">{error || "Quote not found."}</p>
+        <Button asChild>
+          <Link to="/admin/quotes">Back to Quotes List</Link>
         </Button>
       </div>
     );
   }
 
-  // Determine current status based on accepted_at and rejected_at
-  const currentStatus = quote.accepted_at ? 'accepted' : (quote.rejected_at ? 'rejected' : 'pending');
+  const {
+    client_name,
+    client_email,
+    invoice_type,
+    event_title,
+    event_date,
+    event_location,
+    prepared_by,
+    // total_amount, // Removed as it's unused
+    details,
+    accepted_at,
+    rejected_at,
+    slug,
+  } = quote;
 
-  const getStatusBadgeVariant = (status: string) => {
-    switch (status) {
-      case 'accepted':
-        return 'secondary';
-      case 'rejected':
-        return 'destructive';
-      case 'pending':
-      default:
-        return 'default';
-    }
-  };
-
-  const dynamicEmailDetails = {
-    clientName: quote.client_name,
-    clientEmail: quote.client_email,
-    quoteId: quote.id,
-    quoteType: quote.invoice_type,
-    eventTitle: quote.event_title || 'N/A',
-    eventDate: (quote.event_date && quote.event_date !== '') ? format(new Date(quote.event_date), 'EEEE d MMMM yyyy') : 'N/A', // Updated format
-    eventLocation: quote.event_location || 'N/A',
-    preparedBy: quote.prepared_by || 'N/A',
-    totalAmount: `A$${quote.total_amount.toFixed(2)}`,
-    quoteStatus: currentStatus,
-    quoteCreatedAt: (quote.created_at && quote.created_at !== '') ? format(new Date(quote.created_at), 'PPP p') : 'N/A',
-    // Add other quote-specific details from the 'details' JSONB column if needed
-    ...quote.details, // Spread all properties from the 'details' JSONB column
-  };
-
-  const { baseService, addOns, currencySymbol = 'A$', depositPercentage, requiredDeposit, bankDetails, eventTime, paymentTerms } = quote.details;
-
-  const symbol = currencySymbol;
+  const { baseService, currencySymbol, depositPercentage, bankDetails, eventTime, paymentTerms, addOns: quoteAddOns, client_selected_add_ons } = details || {};
+  const symbol = currencySymbol || 'A$';
   const baseAmount = baseService?.amount || 0;
-  const calculatedTotal = baseAmount + (addOns?.reduce((sum: number, item: AddOnItem) => sum + (item.cost * item.quantity), 0) || 0);
-  const safeRequiredDeposit = requiredDeposit || (calculatedTotal * ((depositPercentage || 0) / 100));
+  const addOns = client_selected_add_ons && client_selected_add_ons.length > 0 ? client_selected_add_ons : quoteAddOns;
 
+  const calculatedTotal = baseAmount + (addOns?.reduce((sum: number, item: AddOnItem) => sum + (item.cost * item.quantity), 0) || 0);
+  const requiredDeposit = calculatedTotal * ((depositPercentage || 0) / 100);
+
+  const isErinKennedyQuote = invoice_type === "Erin Kennedy Quote";
+  const erinKennedyBaseInvoice = 400.00; // Hardcoded for Erin Kennedy quote type
 
   return (
-    <div className="p-6 bg-brand-light dark:bg-brand-dark-alt min-h-screen">
-      <Button onClick={() => navigate('/admin/quotes')} className="mb-6 bg-brand-secondary hover:bg-brand-secondary/90 text-brand-light">
-        <ArrowLeft className="mr-2 h-4 w-4" /> Back to Quotes
-      </Button>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-6">
+      <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8">
+        <div className="flex justify-between items-center mb-6">
+          <Button asChild variant="ghost" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200">
+            <Link to="/admin/quotes">
+              <ArrowLeft className="h-5 w-5 mr-2" /> Back to Quotes
+            </Link>
+          </Button>
+          <div className="flex space-x-2">
+            <Button asChild variant="outline" className="text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+              <Link to={`/admin/quotes/edit/${id}`}>
+                <Edit className="h-4 w-4 mr-2" /> Edit
+              </Link>
+            </Button>
+            <Button variant="destructive" onClick={handleDelete}>
+              <Trash2 className="h-4 w-4 mr-2" /> Delete
+            </Button>
+          </div>
+        </div>
 
-      <Card className="bg-brand-card dark:bg-brand-card-dark text-brand-dark dark:text-brand-light border-brand-secondary/50 shadow-lg">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-2xl font-bold text-brand-primary">Quote Details #{quote.id.substring(0, 8)}</CardTitle>
-          <Badge variant={getStatusBadgeVariant(currentStatus)} className="text-lg px-3 py-1">
-            {currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1)}
-          </Badge>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <h3 className="text-xl font-semibold text-brand-primary">Client & Event Information</h3>
-              <p><strong>Client Name:</strong> {quote.client_name}</p>
-              <p><strong>Client Email:</strong> <a href={`mailto:${quote.client_email}`} className="text-brand-primary hover:underline">{quote.client_email}</a></p>
-              <p><strong>Quote Type:</strong> {quote.invoice_type}</p>
-              {quote.event_title && <p><strong>Event Title:</strong> {quote.event_title}</p>}
-              {(quote.event_date && quote.event_date !== '') && <p><strong>Event Date:</strong> {format(new Date(quote.event_date), 'EEEE d MMMM yyyy')}</p>}
-              {eventTime && <p><strong>Event Time:</strong> {eventTime}</p>}
-              {quote.event_location && <p><strong>Event Location:</strong> {quote.event_location}</p>}
-              {quote.prepared_by && <p><strong>Prepared By:</strong> {quote.prepared_by}</p>}
-              <p><strong>Created At:</strong> {(quote.created_at && quote.created_at !== '') ? format(new Date(quote.created_at), 'PPP p') : 'N/A'}</p>
-              {(quote.accepted_at && quote.accepted_at !== '') && <p><strong>Accepted On:</strong> {format(new Date(quote.accepted_at), 'PPP p')}</p>}
-              {(quote.rejected_at && quote.rejected_at !== '') && <p><strong>Rejected On:</strong> {format(new Date(quote.rejected_at), 'PPP p')}</p>}
+        <h1 className="text-4xl font-extrabold text-center text-gray-900 dark:text-white mb-8">
+          {event_title || invoice_type}
+        </h1>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div>
+            <p className="text-lg"><strong className="font-semibold">Client Name:</strong> {client_name}</p>
+            <p className="text-lg"><strong className="font-semibold">Client Email:</strong> {client_email}</p>
+            <p className="text-lg"><strong className="font-semibold">Invoice Type:</strong> {invoice_type}</p>
+            <p className="text-lg"><strong className="font-semibold">Prepared By:</strong> {prepared_by || 'N/A'}</p>
+          </div>
+          <div>
+            <p className="text-lg"><strong className="font-semibold">Event Date:</strong> {event_date ? format(new Date(event_date), 'EEEE d MMMM yyyy') : 'N/A'}</p>
+            <p className="text-lg"><strong className="font-semibold">Event Time:</strong> {eventTime || 'N/A'}</p>
+            <p className="text-lg"><strong className="font-semibold">Event Location:</strong> {event_location || 'N/A'}</p>
+            {slug && (
+              <p className="text-lg">
+                <strong className="font-semibold">Public Link:</strong>{' '}
+                <a
+                  href={`${window.location.origin}/quote/${slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 dark:text-blue-400 hover:underline"
+                >
+                  View Quote
+                </a>
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="mb-8 p-4 border rounded-md bg-gray-50 dark:bg-gray-700">
+          <p className="text-lg">
+            <strong className="font-semibold">Status:</strong>{' '}
+            {accepted_at ? (
+              <span className="text-green-600 dark:text-green-400">Accepted on {format(new Date(accepted_at), 'PPP')}</span>
+            ) : rejected_at ? (
+              <span className="text-red-600 dark:text-red-400">Rejected on {format(new Date(rejected_at), 'PPP')}</span>
+            ) : (
+              <span className="text-yellow-600 dark:text-yellow-400">Pending</span>
+            )}
+          </p>
+          {!accepted_at && !rejected_at && (
+            <div className="flex space-x-4 mt-4">
+              <Button onClick={handleAccept} className="bg-green-600 hover:bg-green-700 text-white">
+                Mark as Accepted
+              </Button>
+              <Button onClick={handleReject} className="bg-red-600 hover:bg-red-700 text-white">
+                Mark as Rejected
+              </Button>
             </div>
+          )}
+        </div>
 
-            <div className="space-y-2">
-              <h3 className="text-xl font-semibold text-brand-primary">Financial Details</h3>
-              {baseService && (
-                <div className="bg-brand-secondary/10 dark:bg-brand-dark/30 p-3 rounded-md">
-                  <p><strong>Base Service:</strong> {baseService.description}</p>
-                  <p><strong>Base Amount:</strong> {formatCurrency(baseService.amount, symbol)}</p>
-                </div>
-              )}
-
-              {addOns && addOns.length > 0 && (
-                <div className="bg-brand-secondary/10 dark:bg-brand-dark/30 p-3 rounded-md">
-                  <p className="font-semibold mb-2">Add-Ons:</p>
-                  <Table className="w-full text-sm">
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="text-brand-primary">Item</TableHead>
-                        <TableHead className="text-brand-primary text-center">Qty</TableHead>
-                        <TableHead className="text-brand-primary text-right">Cost</TableHead>
+        {/* Quote Breakdown Section */}
+        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Quote Breakdown</h2>
+        <div className="overflow-x-auto mb-8">
+          <Table className="min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md">
+            <TableHeader>
+              <TableRow className="bg-gray-100 dark:bg-gray-700">
+                <TableHead className="py-3 px-4 text-left text-sm font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">Description</TableHead>
+                <TableHead className="py-3 px-4 text-right text-sm font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">Quantity</TableHead>
+                <TableHead className="py-3 px-4 text-right text-sm font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">Unit Cost</TableHead>
+                <TableHead className="py-3 px-4 text-right text-sm font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">Total</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isErinKennedyQuote ? (
+                <>
+                  <TableRow className="border-b border-gray-200 dark:border-gray-700">
+                    <TableCell className="py-3 px-4 font-medium">Performance & On-Site Engagement</TableCell>
+                    <TableCell className="py-3 px-4 text-right">1</TableCell>
+                    <TableCell className="py-3 px-4 text-right">{formatCurrency(300.00, symbol)}</TableCell>
+                    <TableCell className="py-3 px-4 text-right font-semibold">{formatCurrency(300.00, symbol)}</TableCell>
+                  </TableRow>
+                  <TableRow className="border-b border-gray-200 dark:border-gray-700">
+                    <TableCell className="py-3 px-4 font-medium">Production Coordination & Music Preparation</TableCell>
+                    <TableCell className="py-3 px-4 text-right">1</TableCell>
+                    <TableCell className="py-3 px-4 text-right">{formatCurrency(100.00, symbol)}</TableCell>
+                    <TableCell className="py-3 px-4 text-right font-semibold">{formatCurrency(100.00, symbol)}</TableCell>
+                  </TableRow>
+                  <TableRow className="bg-gray-50 dark:bg-gray-700 font-bold">
+                    <TableCell colSpan={3} className="py-3 px-4 text-right text-lg">TOTAL BASE INVOICE (Erin Kennedy)</TableCell>
+                    <TableCell className="py-3 px-4 text-right text-lg">{formatCurrency(erinKennedyBaseInvoice, symbol)}</TableCell>
+                  </TableRow>
+                </>
+              ) : (
+                <>
+                  {baseService && (
+                    <TableRow className="border-b border-gray-200 dark:border-gray-700">
+                      <TableCell className="py-3 px-4 font-medium">{baseService.description}</TableCell>
+                      <TableCell className="py-3 px-4 text-right">1</TableCell>
+                      <TableCell className="py-3 px-4 text-right">{formatCurrency(baseService.amount, symbol)}</TableCell>
+                      <TableCell className="py-3 px-4 text-right font-semibold">{formatCurrency(baseService.amount, symbol)}</TableCell>
+                    </TableRow>
+                  )}
+                  {addOns && addOns.length > 0 && (
+                    <>
+                      <TableRow className="bg-gray-50 dark:bg-gray-700">
+                        <TableCell colSpan={4} className="py-2 px-4 text-left text-sm font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                          Selected Add-Ons
+                        </TableCell>
                       </TableRow>
-                    </TableHeader>
-                    <TableBody>
                       {addOns.map((item: AddOnItem, index: number) => (
-                        <TableRow key={index}>
-                          <TableCell>{item.name} {item.description && `(${item.description})`}</TableCell>
-                          <TableCell className="text-center">{item.quantity}</TableCell>
-                          <TableCell className="text-right">{formatCurrency(item.cost * item.quantity, symbol)}</TableCell>
+                        <TableRow key={index} className="border-b border-gray-200 dark:border-gray-700">
+                          <TableCell className="py-3 px-4">{item.name} {item.description && <span className="text-gray-500 dark:text-gray-400 text-sm">({item.description})</span>}</TableCell>
+                          <TableCell className="py-3 px-4 text-right">{item.quantity}</TableCell>
+                          <TableCell className="py-3 px-4 text-right">{formatCurrency(item.cost, symbol)}</TableCell>
+                          <TableCell className="py-3 px-4 text-right font-semibold">{formatCurrency(item.cost * item.quantity, symbol)}</TableCell>
                         </TableRow>
                       ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                    </>
+                  )}
+                </>
               )}
+              <TableRow className="bg-blue-50 dark:bg-blue-900/30 font-bold">
+                <TableCell colSpan={3} className="py-4 px-4 text-right text-xl text-blue-700 dark:text-blue-300">Total Amount</TableCell>
+                <TableCell className="py-4 px-4 text-right text-xl text-blue-700 dark:text-blue-300">{formatCurrency(calculatedTotal, symbol)}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
 
-              {depositPercentage !== undefined && <p><strong>Deposit Percentage:</strong> {depositPercentage}%</p>}
-              {safeRequiredDeposit !== undefined && <p><strong>Required Deposit:</strong> {formatCurrency(safeRequiredDeposit, symbol)}</p>}
-              {bankDetails && <p><strong>Bank Details:</strong> BSB: {bankDetails.bsb}, ACC: {bankDetails.acc}</p>}
-              {paymentTerms && <p><strong>Payment Terms:</strong> {paymentTerms}</p>}
-              <p><strong>Currency Symbol:</strong> {currencySymbol}</p>
-            </div>
-          </div>
-
-          <div className="text-right text-xl font-bold text-brand-primary mt-6">
-            <p><strong>Total Amount:</strong> {formatCurrency(calculatedTotal, symbol)}</p>
-          </div>
-
-          <div className="flex justify-end space-x-4 mt-6">
-            {currentStatus === 'pending' && (
-              <>
-                <Button
-                  onClick={() => handleUpdateStatus('accepted')}
-                  disabled={isUpdatingStatus}
-                  className="bg-green-600 hover:bg-green-700 text-brand-light"
-                >
-                  {isUpdatingStatus ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
-                  Accept Quote
-                </Button>
-                <Button
-                  onClick={() => handleUpdateStatus('rejected')}
-                  disabled={isUpdatingStatus}
-                  className="bg-red-600 hover:bg-red-700 text-brand-light"
-                >
-                  {isUpdatingStatus ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <XCircle className="mr-2 h-4 w-4" />}
-                  Reject Quote
-                </Button>
-              </>
-            )}
-            {quote.slug && (
-              <Button asChild className="bg-brand-blue hover:bg-brand-blue/90 text-brand-light">
-                <Link to={`/quotes/${quote.slug}`} target="_blank" rel="noopener noreferrer">
-                  <Eye className="mr-2 h-4 w-4" /> View Public Quote
-                </Link>
-              </Button>
-            )}
-            <Button
-              onClick={() => setIsEmailModalOpen(true)}
-              className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-            >
-              <Mail className="mr-2 h-4 w-4" /> Compose Email
-            </Button>
-            <Button
-              onClick={handleDeleteQuote}
-              variant="destructive"
-              className="bg-red-600 hover:bg-red-700 text-white"
-            >
-              <Trash2 className="mr-2 h-4 w-4" /> Delete Quote
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      <EmailComposerModal
-        isOpen={isEmailModalOpen}
-        onClose={() => setIsEmailModalOpen(false)}
-        initialRecipientEmail={quote.client_email}
-        initialSubject={`Regarding your quote for ${quote.event_title || quote.invoice_type}`}
-        dynamicDetails={dynamicEmailDetails}
-      />
+        {/* Payment Details */}
+        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Payment Details</h2>
+        <div className="p-4 border rounded-md bg-gray-50 dark:bg-gray-700 mb-8">
+          <p className="text-lg mb-2">
+            <strong className="font-semibold">Required Deposit:</strong>{' '}
+            {symbol}{requiredDeposit.toFixed(2)} ({depositPercentage || 0}%)
+          </p>
+          <p className="text-lg mb-2">
+            <strong className="font-semibold">Payment Terms:</strong>{' '}
+            {paymentTerms || 'The remaining balance is due 7 days prior to the event.'}
+          </p>
+          {bankDetails && (
+            <p className="text-lg">
+              <strong className="font-semibold">Bank Details:</strong> BSB: {bankDetails.bsb}, ACC: {bankDetails.acc}
+            </p>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

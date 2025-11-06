@@ -25,47 +25,7 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns'; // Ensure format is imported
-
-// Re-using AddOnItem from QuoteDisplay for consistency
-interface AddOnItem {
-  id: string; // Added for useFieldArray
-  name: string;
-  description?: string;
-  cost: number;
-  quantity: number;
-}
-
-// Define a more specific interface for the 'details' JSONB column
-interface QuoteDetails {
-  baseService?: {
-    description: string;
-    amount: number;
-  };
-  currencySymbol?: string;
-  depositPercentage?: number;
-  bankDetails?: { bsb: string; acc: string };
-  eventTime?: string;
-  paymentTerms?: string;
-  addOns?: AddOnItem[]; // Now correctly typed
-  final_total_amount?: number;
-  client_selected_add_ons?: AddOnItem[];
-}
-
-interface Quote {
-  id: string;
-  client_name: string;
-  client_email: string;
-  invoice_type: string;
-  event_title?: string;
-  event_date?: string | null;
-  event_location?: string;
-  prepared_by?: string;
-  total_amount: number;
-  details: QuoteDetails; // Changed from 'any' to 'QuoteDetails'
-  accepted_at: string | null;
-  rejected_at: string | null;
-  slug?: string | null; // Include slug
-}
+import { AddOnItem, Quote } from '@/types/quote'; // Import centralized interfaces, removed QuoteDetails
 
 // Zod schema for generic quote acceptance
 const genericQuoteAcceptanceSchema = z.object({
@@ -485,7 +445,7 @@ const DynamicQuotePage: React.FC = () => {
                 </div>
                 <p className={cn(
                   "text-3xl font-semibold text-center mt-8",
-                  isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
+                  isLivePianoQuote ? "text-livePiano-primary" : "text-brand-dark dark:text-brand-light"
                 )}>
                   All-Inclusive Engagement Fee: <strong className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{currencySymbol}{baseAmount.toFixed(2)}</strong>
                 </p>
@@ -646,7 +606,6 @@ const DynamicQuotePage: React.FC = () => {
                                                 field.onChange(isNaN(value) ? 0 : Math.max(0, Math.min(10, value)));
                                               }}
                                               className={cn(
-                                                "text-center h-8",
                                                 isLivePianoQuote ? "bg-livePiano-background border-livePiano-border/50 text-livePiano-light focus-visible:ring-2 focus-visible:ring-livePiano-primary focus-visible:ring-offset-2" : "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
                                               )}
                                             />
