@@ -46,12 +46,12 @@ serve(async (req: Request) => { // Added type annotation for 'req'
       preparedBy,
       onSitePerformanceCost, // This will now be the fixed $300
       showPreparationFee,
-      totalBaseInvoice, // This will be onSitePerformanceCost + showPreparationFee
+      // totalBaseInvoice, // Removed as it will be hardcoded
       // Removed rehearsalBundleCostPerStudent from here as it's no longer part of the invoice
     } = await req.json();
 
     if (!clientName || !clientEmail || !eventTitle || !eventDate || !eventLocation || !preparedBy ||
-        onSitePerformanceCost === undefined || showPreparationFee === undefined || totalBaseInvoice === undefined) { // Adjusted validation
+        onSitePerformanceCost === undefined || showPreparationFee === undefined) { // Adjusted validation
       return new Response(JSON.stringify({ error: 'Missing required fields for quote acceptance' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -79,6 +79,8 @@ serve(async (req: Request) => { // Added type annotation for 'req'
       uniqueSlug = `${baseSlug}-${counter}`;
     }
 
+    const fixedErinKennedyTotal = 400.00; // Hardcode the total for Erin Kennedy Quote
+
     // Insert data into the new 'invoices' table
     const { data, error: insertError } = await supabaseClient
       .from('invoices')
@@ -91,7 +93,7 @@ serve(async (req: Request) => { // Added type annotation for 'req'
           event_date: eventDate,
           event_location: eventLocation,
           prepared_by: preparedBy,
-          total_amount: totalBaseInvoice, // Total base invoice for Erin Kennedy
+          total_amount: fixedErinKennedyTotal, // Use the hardcoded total
           details: { // Store specific details in the JSONB column
             on_site_performance_cost: onSitePerformanceCost,
             show_preparation_fee: showPreparationFee,
@@ -164,15 +166,15 @@ serve(async (req: Request) => { // Added type annotation for 'req'
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Performance Cost:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${insertedRecord.details.on_site_performance_cost}.00</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${onSitePerformanceCost}.00</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Preparation Fee:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${insertedRecord.details.show_preparation_fee}.00</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${showPreparationFee}.00</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Total Base Invoice:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${insertedRecord.total_amount}.00</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${fixedErinKennedyTotal}.00</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Rehearsal Support:</td>

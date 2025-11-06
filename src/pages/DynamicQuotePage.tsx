@@ -25,7 +25,7 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns'; // Ensure format is imported
-import { AddOnItem, Quote } from '@/types/quote'; // Import centralized interfaces, removed QuoteDetails
+import { AddOnItem, Quote } from '@/types/quote'; // Import centralized interfaces
 
 // Zod schema for generic quote acceptance
 const genericQuoteAcceptanceSchema = z.object({
@@ -114,9 +114,16 @@ const DynamicQuotePage: React.FC = () => {
   const baseAmount = parseFloat(String(baseService?.amount)) || 0;
   const symbol = currencySymbol || 'A$';
 
+  const isErinKennedyQuote = quote?.invoice_type === "Erin Kennedy Quote";
+  const erinKennedyBaseInvoice = 400.00; // Hardcoded for Erin Kennedy quote type
+
   const calculatedTotal = useMemo(() => {
     if (!quote) return 0;
     
+    if (isErinKennedyQuote) {
+      return erinKennedyBaseInvoice;
+    }
+
     let total = baseAmount;
     
     watchedAddOns?.forEach(addOn => {
@@ -125,7 +132,7 @@ const DynamicQuotePage: React.FC = () => {
       total += cost * quantity;
     });
     return total;
-  }, [watchedAddOns, baseAmount, quote]);
+  }, [watchedAddOns, baseAmount, quote, isErinKennedyQuote]);
 
   const requiredDeposit = calculatedTotal * ((depositPercentage || 0) / 100);
 
@@ -158,7 +165,6 @@ const DynamicQuotePage: React.FC = () => {
   const isActionTaken = isAccepted || isRejected;
 
   const isLivePianoQuote = quote.invoice_type.toLowerCase().includes("live piano");
-  const isErinKennedyQuote = quote.invoice_type === "Erin Kennedy Quote";
 
   async function onSubmitGeneric(values: QuoteFormValues) {
     const loadingToastId = toast.loading("Submitting your acceptance...");
