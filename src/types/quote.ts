@@ -35,5 +35,5 @@ export interface Quote {
   accepted_at: string | null;
   rejected_at: string | null;
   slug?: string | null;
-  created_at: string; // Added missing property
+  created_at: string;
 }
