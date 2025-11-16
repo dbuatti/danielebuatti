@@ -55,7 +55,13 @@ const AdminEditQuotePage: React.FC = () => {
           preparedBy: data.prepared_by || 'Daniele Buatti',
           baseServiceDescription: data.details?.baseService?.description || '',
           baseServiceAmount: data.details?.baseService?.amount || 0,
-          addOns: data.details?.addOns || [],
+          addOns: data.details?.addOns?.map((addOn: any) => ({ // Ensure each add-on has an ID
+            id: addOn.id || Math.random().toString(36).substring(2, 11), // Fallback ID if missing
+            name: addOn.name,
+            description: addOn.description,
+            cost: addOn.cost,
+            quantity: addOn.quantity,
+          })) || [],
           depositPercentage: data.details?.depositPercentage || 50,
           bankBSB: data.details?.bankDetails?.bsb || '923100',
           bankACC: data.details?.bankDetails?.acc || '301110875',

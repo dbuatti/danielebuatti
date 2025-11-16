@@ -35,10 +35,11 @@ const quoteFormSchema = z.object({
   baseServiceDescription: z.string().min(1, { message: "Base service description is required." }),
   baseServiceAmount: z.coerce.number().min(0, { message: "Base service amount must be a positive number." }),
   addOns: z.array(z.object({
+    id: z.string().optional(), // Added optional ID for new add-ons
     name: z.string().min(1, { message: "Add-on name is required." }),
     description: z.string().optional(),
     cost: z.coerce.number().min(0, { message: "Add-on cost must be a positive number." }),
-    quantity: z.coerce.number().min(1, { message: "Quantity must be at least 1." }).default(1), // ADDED QUANTITY
+    quantity: z.coerce.number().min(1, { message: "Quantity must be at least 1." }).default(1),
   })).optional(),
   depositPercentage: z.coerce.number().min(0).max(100).default(50),
   bankBSB: z.string().min(1, { message: "Bank BSB is required." }).default("923100"),
@@ -143,7 +144,11 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
       form.setValue('paymentTerms', result.paymentTerms || 'The remaining balance is due 7 days prior to the event.', { shouldValidate: true });
       
       // Ensure generated add-ons have a default quantity of 0 for optional items
-      const generatedAddOnsWithQuantity = result.addOns.map(a => ({ ...a, quantity: 0 })); // Default to 0 for AI-generated optional add-ons
+      const generatedAddOnsWithQuantity = result.addOns.map(a => ({ 
+        ...a, 
+        id: Math.random().toString(36).substring(2, 11), // Generate a temporary ID
+        quantity: 0 
+      })); 
       replace(generatedAddOnsWithQuantity); // Replace existing add-ons with generated ones
       
       toast.success("Quote details auto-populated successfully!");
@@ -165,10 +170,9 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
     const addOnToDuplicate = form.getValues('addOns')?.[index];
     if (addOnToDuplicate) {
       append({
+        ...addOnToDuplicate,
+        id: Math.random().toString(36).substring(2, 11), // Generate a new unique ID for the duplicate
         name: `${addOnToDuplicate.name} (Copy)`,
-        description: addOnToDuplicate.description,
-        cost: addOnToDuplicate.cost,
-        quantity: addOnToDuplicate.quantity,
       });
     }
   };
@@ -446,7 +450,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
           <Button
             type="button"
             variant="outline"
-            onClick={() => append({ name: '', description: '', cost: 0, quantity: 1 })}
+            onClick={() => append({ id: Math.random().toString(36).substring(2, 11), name: '', description: '', cost: 0, quantity: 1 })}
             className="w-full border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50"
           >
             <PlusCircle className="mr-2 h-4 w-4" /> Add Add-on
