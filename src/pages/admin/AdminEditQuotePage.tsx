@@ -46,7 +46,7 @@ const AdminEditQuotePage: React.FC = () => {
           emailContent: '',
           clientName: data.client_name,
           clientEmail: data.client_email,
-          invoiceType: data.invoice_type,
+          invoiceType: data.invoice_type, // Fixed: use invoice_type from database
           eventTitle: data.event_title || '',
           eventDate: data.event_date || '',
           eventTime: data.details?.eventTime || '',
@@ -116,7 +116,7 @@ const AdminEditQuotePage: React.FC = () => {
         .update({
           client_name: values.clientName,
           client_email: values.clientEmail,
-          invoiceType: values.invoiceType,
+          invoice_type: values.invoiceType, // Fixed: use invoice_type for database column
           event_title: values.eventTitle,
           event_date: values.eventDate,
           event_location: values.eventLocation,
