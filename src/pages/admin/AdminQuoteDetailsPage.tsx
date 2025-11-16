@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Loader2, ArrowLeft, Edit, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
-import { formatCurrency } from '@/lib/utils'; // Import formatCurrency
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'; // Import Table components
-import { AddOnItem, Quote } from '@/types/quote'; // Import centralized interfaces
+import { formatCurrency } from '@/lib/utils';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { AddOnItem, Quote } from '@/types/quote';
 
 const AdminQuoteDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -167,7 +167,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
           </Button>
           <div className="flex space-x-2">
             <Button asChild variant="outline" className="text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
-              <Link to={`/admin/quotes/edit/${id}`}>
+              <Link to={`/admin/quotes/edit/${id}`}> {/* Updated link here */}
                 <Edit className="h-4 w-4 mr-2" /> Edit
               </Link>
             </Button>

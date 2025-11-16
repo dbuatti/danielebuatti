@@ -20,14 +20,15 @@ import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminQuotesPage from './pages/admin/AdminQuotesPage';
 import AdminQuoteDetailsPage from './pages/admin/AdminQuoteDetailsPage';
 import AdminAmebBookingsPage from './pages/admin/AdminAmebBookingsPage';
-import AdminAmebBookingDetailsPage from './pages/admin/AdminAmebBookingDetailsPage'; // Import new page
+import AdminAmebBookingDetailsPage from './pages/admin/AdminAmebBookingDetailsPage';
 import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage';
 import AdminQuoteBuilderPage from './pages/admin/AdminQuoteBuilderPage';
+import AdminEditQuotePage from './pages/admin/AdminEditQuotePage'; // Import new page
 import AboutPage from './pages/AboutPage';
 import NotFound from './pages/NotFound';
 import RootLayout from './layouts/RootLayout';
 import ScrollToTop from './components/ScrollToTop';
-import { SessionContextProvider } from "./components/SessionContextProvider.tsx"; // Import SessionContextProvider here
+import { SessionContextProvider } from "./components/SessionContextProvider.tsx";
 
 const router = createBrowserRouter([
   {
@@ -35,7 +36,7 @@ const router = createBrowserRouter([
     element: (
       <>
         <ScrollToTop />
-        <SessionContextProvider> {/* Wrap RootLayout with SessionContextProvider */}
+        <SessionContextProvider>
           <RootLayout />
         </SessionContextProvider>
       </>
@@ -64,7 +65,7 @@ const router = createBrowserRouter([
     element: (
       <>
         <ScrollToTop />
-        <SessionContextProvider> {/* Login page also needs SessionContextProvider */}
+        <SessionContextProvider>
           <Login />
         </SessionContextProvider>
       </>
@@ -75,7 +76,7 @@ const router = createBrowserRouter([
     element: (
       <>
         <ScrollToTop />
-        <SessionContextProvider> {/* AdminLayout also needs SessionContextProvider */}
+        <SessionContextProvider>
           <AdminLayout />
         </SessionContextProvider>
       </>
@@ -84,14 +85,15 @@ const router = createBrowserRouter([
       { index: true, element: <AdminDashboardPage /> },
       { path: "quotes", element: <AdminQuotesPage /> },
       { path: "quotes/:id", element: <AdminQuoteDetailsPage /> },
+      { path: "quotes/edit/:id", element: <AdminEditQuotePage /> }, // New route for editing quotes
       { path: "ameb-bookings", element: <AdminAmebBookingsPage /> },
-      { path: "ameb-bookings/:id", element: <AdminAmebBookingDetailsPage /> }, // New route
+      { path: "ameb-bookings/:id", element: <AdminAmebBookingDetailsPage /> },
       { path: "email-templates", element: <AdminEmailTemplatesPage /> },
       { path: "create-quote", element: <AdminQuoteBuilderPage /> },
     ],
   },
 ], {
-  // Removed 'future' property to resolve TypeScript error TS2353, 
+  // Removed 'future' property to resolve TypeScript error TS2353,
   // as the current type definitions do not recognize the v7 flags.
 });
 
