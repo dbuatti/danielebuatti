@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-import { Quote } from '@/types/quote'; // Import Quote from centralized types
+import { Quote } from '@/types/quote';
 
 const AdminEditQuotePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -40,11 +40,10 @@ const AdminEditQuotePage: React.FC = () => {
       if (error) {
         console.error('Error fetching quote for editing:', error);
         showError('Failed to load quote for editing.');
-        navigate('/admin/quotes'); // Redirect if quote not found or error
+        navigate('/admin/quotes');
       } else {
-        // Map fetched data to QuoteFormValues
         const mappedData: QuoteFormValues = {
-          emailContent: '', // Not stored in DB, so empty for edit
+          emailContent: '',
           clientName: data.client_name,
           clientEmail: data.client_email,
           invoiceType: data.invoice_type,
@@ -55,8 +54,8 @@ const AdminEditQuotePage: React.FC = () => {
           preparedBy: data.prepared_by || 'Daniele Buatti',
           baseServiceDescription: data.details?.baseService?.description || '',
           baseServiceAmount: data.details?.baseService?.amount || 0,
-          addOns: data.details?.addOns?.map((addOn: any) => ({ // Ensure each add-on has an ID
-            id: addOn.id || Math.random().toString(36).substring(2, 11), // Fallback ID if missing
+          addOns: data.details?.addOns?.map((addOn: any) => ({
+            id: addOn.id || Math.random().toString(36).substring(2, 11),
             name: addOn.name,
             description: addOn.description,
             cost: addOn.cost,
@@ -92,21 +91,17 @@ const AdminEditQuotePage: React.FC = () => {
 
     try {
       const totalAmount = values.baseServiceAmount + (values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => sum + (addOn.cost * addOn.quantity), 0) || 0);
-      
-      // Note: Slug is not updated on edit to maintain existing links.
-      // If slug needs to be editable, additional logic for uniqueness check would be required.
 
       const details = {
         baseService: {
           description: values.baseServiceDescription,
           amount: values.baseServiceAmount,
         },
-        addOns: values.addOns?.map(addOn => ({ // Ensure ID is always a string
+        addOns: values.addOns?.map(addOn => ({
           ...addOn,
           id: addOn.id || Math.random().toString(36).substring(2, 11),
         })) || [],
         depositPercentage: values.depositPercentage,
-        requiredDeposit: totalAmount * (values.depositPercentage / 100), // Recalculate
         bankDetails: {
           bsb: values.bankBSB,
           acc: values.bankACC,
@@ -136,7 +131,7 @@ const AdminEditQuotePage: React.FC = () => {
       }
 
       showSuccess('Quote updated successfully!', { id: toastId });
-      navigate(`/admin/quotes/${id}`); // Redirect to details page after update
+      navigate(`/admin/quotes/${id}`);
     } catch (error: any) {
       console.error('Error updating quote:', error);
       showError(`Failed to update quote: ${error.message}`, { id: toastId });
@@ -146,13 +141,11 @@ const AdminEditQuotePage: React.FC = () => {
     }
   };
 
-  // Transform form values into Quote interface structure for preview
   const getPreviewData = (values: QuoteFormValues): Quote => {
     const totalAmount = values.baseServiceAmount + (values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => sum + (addOn.cost * addOn.quantity), 0) || 0);
-    const requiredDeposit = totalAmount * (values.depositPercentage / 100);
 
     return {
-      id: id || '', // Provide a fallback for ID
+      id: id || '',
       client_name: values.clientName,
       client_email: values.clientEmail,
       event_title: values.eventTitle,
@@ -161,18 +154,17 @@ const AdminEditQuotePage: React.FC = () => {
       event_location: values.eventLocation,
       prepared_by: values.preparedBy,
       total_amount: totalAmount,
-      accepted_at: null, // Not relevant for preview, but required by interface
-      rejected_at: null, // Not relevant for preview, but required by interface
-      created_at: new Date().toISOString(), // Not relevant for preview, but required by interface
+      accepted_at: null,
+      rejected_at: null,
+      created_at: new Date().toISOString(),
       details: {
-        requiredDeposit: requiredDeposit,
         depositPercentage: values.depositPercentage,
         paymentTerms: values.paymentTerms,
         bankDetails: {
           bsb: values.bankBSB,
           acc: values.bankACC,
         },
-        addOns: values.addOns?.map(addOn => ({ // Ensure ID is always a string
+        addOns: values.addOns?.map(addOn => ({
           ...addOn,
           id: addOn.id || Math.random().toString(36).substring(2, 11),
         })) || [],
@@ -214,7 +206,7 @@ const AdminEditQuotePage: React.FC = () => {
         <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Edit Quote</h2>
       </div>
       <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
-        Modify the details of this existing quote.
+        Modify the details of this existing quote. The public URL (slug) remains unchanged to maintain existing links.
       </p>
 
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
@@ -231,11 +223,10 @@ const AdminEditQuotePage: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Quote Preview Modal */}
       <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
         <DialogContent className="sm:max-w-[90vw] w-[90vw] h-[90vh] p-0 bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50">
           <DialogHeader className="p-6 pb-0">
-            <DialogTitle className="text-brand-primary text-2xl">Quote Preview: {previewData?.eventTitle}</DialogTitle>
+            <DialogTitle className="text-brand-primary text-2xl">Quote Preview</DialogTitle>
           </DialogHeader>
           <ScrollArea className="h-[calc(90vh-70px)]">
             {previewData ? (

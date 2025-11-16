@@ -10,7 +10,7 @@ import { createSlug } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Quote } from '@/types/quote'; // Corrected import to use centralized Quote interface
+import { Quote } from '@/types/quote';
 
 const AdminQuoteBuilderPage: React.FC = () => {
   const navigate = useNavigate();
@@ -28,9 +28,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
     const toastId = showLoading('Creating new quote...');
 
     try {
-      // Calculate total amount and deposit based on form values
       const totalAmount = values.baseServiceAmount + (values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => sum + (addOn.cost * addOn.quantity), 0) || 0);
-      const requiredDeposit = totalAmount * (values.depositPercentage / 100);
 
       // Generate a base slug
       const baseSlug = createSlug(`${values.eventTitle}-${values.clientName}-${values.eventDate}`);
@@ -60,12 +58,11 @@ const AdminQuoteBuilderPage: React.FC = () => {
           description: values.baseServiceDescription,
           amount: values.baseServiceAmount,
         },
-        addOns: values.addOns?.map(addOn => ({ // Ensure ID is always a string
+        addOns: values.addOns?.map(addOn => ({
           ...addOn,
           id: addOn.id || Math.random().toString(36).substring(2, 11),
         })) || [],
         depositPercentage: values.depositPercentage,
-        requiredDeposit: requiredDeposit,
         bankDetails: {
           bsb: values.bankBSB,
           acc: values.bankACC,
@@ -80,7 +77,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         body: {
           clientName: values.clientName,
           clientEmail: values.clientEmail,
-          invoiceType: values.invoiceType, // Use the new invoiceType field
+          invoiceType: values.invoiceType,
           eventTitle: values.eventTitle,
           eventDate: values.eventDate,
           eventLocation: values.eventLocation,
@@ -98,9 +95,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
       showSuccess('Quote created successfully!', { id: toastId });
       // Redirect to the newly created quote's public page or admin details page
       if (data && data.slug) {
-        navigate(`/quotes/${data.slug}`); // Redirect to public quote page
+        navigate(`/quotes/${data.slug}`);
       } else {
-        navigate('/admin/quotes'); // Fallback to admin quotes list
+        navigate('/admin/quotes');
       }
     } catch (error: any) {
       console.error('Error creating quote:', error);
@@ -114,10 +111,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
   // Transform form values into Quote interface structure for preview
   const getPreviewData = (values: QuoteFormValues): Quote => {
     const totalAmount = values.baseServiceAmount + (values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => sum + (addOn.cost * addOn.quantity), 0) || 0);
-    const requiredDeposit = totalAmount * (values.depositPercentage / 100);
 
     return {
-      id: Math.random().toString(36).substring(2, 11), // Generate a temporary ID for preview
+      id: Math.random().toString(36).substring(2, 11),
       client_name: values.clientName,
       client_email: values.clientEmail,
       event_title: values.eventTitle,
@@ -126,18 +122,17 @@ const AdminQuoteBuilderPage: React.FC = () => {
       event_location: values.eventLocation,
       prepared_by: values.preparedBy,
       total_amount: totalAmount,
-      accepted_at: null, // Not relevant for preview, but required by interface
-      rejected_at: null, // Not relevant for preview, but required by interface
-      created_at: new Date().toISOString(), // Not relevant for preview, but required by interface
+      accepted_at: null,
+      rejected_at: null,
+      created_at: new Date().toISOString(),
       details: {
-        requiredDeposit: requiredDeposit,
         depositPercentage: values.depositPercentage,
         paymentTerms: values.paymentTerms,
         bankDetails: {
           bsb: values.bankBSB,
           acc: values.bankACC,
         },
-        addOns: values.addOns?.map(addOn => ({ // Ensure ID is always a string
+        addOns: values.addOns?.map(addOn => ({
           ...addOn,
           id: addOn.id || Math.random().toString(36).substring(2, 11),
         })) || [],
@@ -155,7 +150,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
     <div className="space-y-8">
       <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Create New Quote</h2>
       <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
-        Use this form to generate a new client-facing quote page.
+        Use this form to generate a new client-facing quote page. The slug will be automatically generated but can be customized in the QuoteForm if needed.
       </p>
 
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
@@ -171,11 +166,10 @@ const AdminQuoteBuilderPage: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Quote Preview Modal */}
       <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
         <DialogContent className="sm:max-w-[90vw] w-[90vw] h-[90vh] p-0 bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50">
           <DialogHeader className="p-6 pb-0">
-            <DialogTitle className="text-brand-primary text-2xl">Quote Preview: {previewData?.eventTitle}</DialogTitle>
+            <DialogTitle className="text-brand-primary text-2xl">Quote Preview</DialogTitle>
           </DialogHeader>
           <ScrollArea className="h-[calc(90vh-70px)]">
             {previewData ? (
