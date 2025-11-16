@@ -19,6 +19,7 @@ export interface QuoteDetails {
   addOns?: AddOnItem[];
   final_total_amount?: number;
   client_selected_add_ons?: AddOnItem[];
+  requiredDeposit?: number;
 }
 
 export interface Quote {
