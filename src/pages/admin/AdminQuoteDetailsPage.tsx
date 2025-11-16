@@ -196,7 +196,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
               <p className="text-lg">
                 <strong className="font-semibold">Public Link:</strong>{' '}
                 <a
-                  href={`${window.location.origin}/quote/${slug}`}
+                  href={`${window.location.origin}/quotes/${slug}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 dark:text-blue-400 hover:underline"
