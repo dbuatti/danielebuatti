@@ -5,38 +5,8 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { Phone, Mail } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
-import { format } from 'date-fns'; // Ensure format is imported
-
-// Define AddOnItem type
-export interface AddOnItem {
-  name: string;
-  description?: string;
-  cost: number;
-  quantity: number;
-}
-
-// Define Quote type (simplified based on usage)
-export interface Quote {
-  client_name?: string;
-  client_email?: string;
-  event_title?: string;
-  invoice_type?: string;
-  event_date?: string;
-  event_location?: string;
-  prepared_by?: string;
-  total_amount: number;
-  requiredDeposit: number;
-  depositPercentage: number;
-  paymentTerms?: string;
-  bankDetails?: { bsb: string; acc: string };
-  addOns?: AddOnItem[];
-  currencySymbol?: string;
-  baseService?: {
-    description: string;
-    amount: number;
-  };
-  eventTime?: string;
-}
+import { format } from 'date-fns';
+import { AddOnItem, Quote } from '@/types/quote'; // Import centralized interfaces
 
 interface QuoteDisplayProps {
   quote: Quote;
@@ -45,7 +15,6 @@ interface QuoteDisplayProps {
 }
 
 const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isLivePianoTheme, isErinKennedyQuote }) => {
-  // All data is accessed directly from the 'quote' prop
   const {
     client_name,
     client_email,
@@ -54,23 +23,21 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isLivePianoTheme, is
     event_date,
     event_location,
     prepared_by,
-    // total_amount is used in calculatedTotal, so keep it
-    requiredDeposit,
-    depositPercentage,
-    paymentTerms,
-    bankDetails,
-    addOns,
-    currencySymbol = '$',
-    baseService,
-    eventTime,
+    details, // Access details from the quote object
   } = quote;
 
-  const symbol = currencySymbol;
-  const baseAmount = typeof baseService?.amount === 'number' ? baseService.amount : parseFloat(String(quote.total_amount)) || 0;
-  const safeRequiredDeposit = typeof requiredDeposit === 'number' ? requiredDeposit : parseFloat(String(requiredDeposit)) || 0;
+  const { baseService, currencySymbol, depositPercentage, bankDetails, eventTime, paymentTerms, addOns: quoteAddOns, client_selected_add_ons } = details || {};
+  const symbol = currencySymbol || '$';
+  const baseAmount = baseService?.amount || 0;
+  const addOns = client_selected_add_ons && client_selected_add_ons.length > 0 ? client_selected_add_ons : quoteAddOns;
 
-  // Calculate total for display, including add-ons
-  const calculatedTotal = baseAmount + (addOns?.reduce((sum, item) => sum + (item.cost * item.quantity), 0) || 0);
+  const erinKennedyBaseInvoice = 400.00; // Hardcoded for Erin Kennedy quote type
+
+  const calculatedTotal = isErinKennedyQuote
+    ? erinKennedyBaseInvoice
+    : baseAmount + (addOns?.reduce((sum: number, item: AddOnItem) => sum + (item.cost * item.quantity), 0) || 0);
+  
+  const requiredDeposit = calculatedTotal * ((depositPercentage || 0) / 100);
 
   // --- Custom Erin Kennedy Quote Breakdown Renderer ---
   const renderErinKennedyQuote = () => {
@@ -255,7 +222,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isLivePianoTheme, is
               </>
             ) : (
               <>
-                <li><strong className={isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit ({symbol}{safeRequiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {event_date ? format(new Date(event_date), 'EEEE d MMMM yyyy') : 'event'} date.</li>
+                <li><strong className={isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"}>A non-refundable {depositPercentage}% deposit ({symbol}{requiredDeposit.toFixed(2)}) is required immediately</strong> to formally secure the {event_date ? format(new Date(event_date), 'EEEE d MMMM yyyy') : 'event'} date.</li>
                 {paymentTerms && <li>{paymentTerms}</li>}
                 {!paymentTerms && <li>The remaining balance is due 7 days prior to the event.</li>}
                 

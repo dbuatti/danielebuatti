@@ -8,9 +8,10 @@ import QuoteForm, { QuoteFormValues } from '@/components/admin/QuoteForm';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import QuoteDisplay, { Quote } from '@/components/admin/QuoteDisplay';
+import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
+import { Quote } from '@/types/quote'; // Import Quote from centralized types
 
 const AdminEditQuotePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -142,6 +143,7 @@ const AdminEditQuotePage: React.FC = () => {
     const requiredDeposit = totalAmount * (values.depositPercentage / 100);
 
     return {
+      id: id || '', // Provide a fallback for ID
       client_name: values.clientName,
       client_email: values.clientEmail,
       event_title: values.eventTitle,
@@ -150,20 +152,25 @@ const AdminEditQuotePage: React.FC = () => {
       event_location: values.eventLocation,
       prepared_by: values.preparedBy,
       total_amount: totalAmount,
-      requiredDeposit: requiredDeposit,
-      depositPercentage: values.depositPercentage,
-      paymentTerms: values.paymentTerms,
-      bankDetails: {
-        bsb: values.bankBSB,
-        acc: values.bankACC,
+      accepted_at: null, // Not relevant for preview, but required by interface
+      rejected_at: null, // Not relevant for preview, but required by interface
+      created_at: new Date().toISOString(), // Not relevant for preview, but required by interface
+      details: {
+        requiredDeposit: requiredDeposit,
+        depositPercentage: values.depositPercentage,
+        paymentTerms: values.paymentTerms,
+        bankDetails: {
+          bsb: values.bankBSB,
+          acc: values.bankACC,
+        },
+        addOns: values.addOns || [],
+        currencySymbol: values.currencySymbol,
+        baseService: {
+          description: values.baseServiceDescription,
+          amount: values.baseServiceAmount,
+        },
+        eventTime: values.eventTime,
       },
-      addOns: values.addOns || [],
-      currencySymbol: values.currencySymbol,
-      baseService: {
-        description: values.baseServiceDescription,
-        amount: values.baseServiceAmount,
-      },
-      eventTime: values.eventTime,
     };
   };
 
