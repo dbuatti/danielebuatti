@@ -101,7 +101,10 @@ const AdminEditQuotePage: React.FC = () => {
           description: values.baseServiceDescription,
           amount: values.baseServiceAmount,
         },
-        addOns: values.addOns,
+        addOns: values.addOns?.map(addOn => ({ // Ensure ID is always a string
+          ...addOn,
+          id: addOn.id || Math.random().toString(36).substring(2, 11),
+        })) || [],
         depositPercentage: values.depositPercentage,
         requiredDeposit: totalAmount * (values.depositPercentage / 100), // Recalculate
         bankDetails: {
@@ -118,7 +121,7 @@ const AdminEditQuotePage: React.FC = () => {
         .update({
           client_name: values.clientName,
           client_email: values.clientEmail,
-          invoice_type: values.invoiceType,
+          invoiceType: values.invoiceType,
           event_title: values.eventTitle,
           event_date: values.eventDate,
           event_location: values.eventLocation,
@@ -169,7 +172,10 @@ const AdminEditQuotePage: React.FC = () => {
           bsb: values.bankBSB,
           acc: values.bankACC,
         },
-        addOns: values.addOns || [],
+        addOns: values.addOns?.map(addOn => ({ // Ensure ID is always a string
+          ...addOn,
+          id: addOn.id || Math.random().toString(36).substring(2, 11),
+        })) || [],
         currencySymbol: values.currencySymbol,
         baseService: {
           description: values.baseServiceDescription,

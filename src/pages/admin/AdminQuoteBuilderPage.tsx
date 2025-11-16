@@ -60,7 +60,10 @@ const AdminQuoteBuilderPage: React.FC = () => {
           description: values.baseServiceDescription,
           amount: values.baseServiceAmount,
         },
-        addOns: values.addOns, // Now includes quantity
+        addOns: values.addOns?.map(addOn => ({ // Ensure ID is always a string
+          ...addOn,
+          id: addOn.id || Math.random().toString(36).substring(2, 11),
+        })) || [],
         depositPercentage: values.depositPercentage,
         requiredDeposit: requiredDeposit,
         bankDetails: {
@@ -134,7 +137,10 @@ const AdminQuoteBuilderPage: React.FC = () => {
           bsb: values.bankBSB,
           acc: values.bankACC,
         },
-        addOns: values.addOns || [],
+        addOns: values.addOns?.map(addOn => ({ // Ensure ID is always a string
+          ...addOn,
+          id: addOn.id || Math.random().toString(36).substring(2, 11),
+        })) || [],
         currencySymbol: values.currencySymbol,
         baseService: {
           description: values.baseServiceDescription,
