@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import QuoteForm, { QuoteFormValues } from '@/components/admin/QuoteForm';
 import { supabase } from '@/integrations/supabase/client';
-import { createSlug } from '@/lib/utils';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import QuoteDisplay, { Quote } from '@/components/admin/QuoteDisplay';
@@ -143,7 +142,6 @@ const AdminEditQuotePage: React.FC = () => {
     const requiredDeposit = totalAmount * (values.depositPercentage / 100);
 
     return {
-      id: id || '', // Provide a fallback for ID
       client_name: values.clientName,
       client_email: values.clientEmail,
       event_title: values.eventTitle,
@@ -152,25 +150,20 @@ const AdminEditQuotePage: React.FC = () => {
       event_location: values.eventLocation,
       prepared_by: values.preparedBy,
       total_amount: totalAmount,
-      accepted_at: null, // Not relevant for preview
-      rejected_at: null, // Not relevant for preview
-      created_at: new Date().toISOString(), // Not relevant for preview
-      details: {
-        baseService: {
-          description: values.baseServiceDescription,
-          amount: values.baseServiceAmount,
-        },
-        addOns: values.addOns || [],
-        depositPercentage: values.depositPercentage,
-        requiredDeposit: requiredDeposit,
-        bankDetails: {
-          bsb: values.bankBSB,
-          acc: values.bankACC,
-        },
-        eventTime: values.eventTime,
-        currencySymbol: values.currencySymbol,
-        paymentTerms: values.paymentTerms,
+      requiredDeposit: requiredDeposit,
+      depositPercentage: values.depositPercentage,
+      paymentTerms: values.paymentTerms,
+      bankDetails: {
+        bsb: values.bankBSB,
+        acc: values.bankACC,
       },
+      addOns: values.addOns || [],
+      currencySymbol: values.currencySymbol,
+      baseService: {
+        description: values.baseServiceDescription,
+        amount: values.baseServiceAmount,
+      },
+      eventTime: values.eventTime,
     };
   };
 
