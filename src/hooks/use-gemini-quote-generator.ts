@@ -31,7 +31,7 @@ export function useGeminiQuoteGenerator() {
 
   const generateQuote = useCallback(async (emailContent: string): Promise<GeneratedQuote | null> => {
     if (!ai) {
-      showError("Gemini API Key is missing. Please set VITE_GEMINI_API_KEY in your .env file and restart the app.");
+      showError("Gemini API Key is missing. Please ensure VITE_GEMINI_API_KEY is set in your environment variables.");
       return null;
     }
 
