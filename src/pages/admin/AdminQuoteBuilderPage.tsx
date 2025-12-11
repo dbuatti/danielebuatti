@@ -93,7 +93,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
     try {
       const draftData = {
-        user_id: user.id,
+        user_id: user.id, // Ensure user_id is explicitly included
         title: values.eventTitle || `Draft: ${values.clientName || 'Untitled'}`,
         data: values, // Store the entire form values object
         updated_at: new Date().toISOString(),
@@ -119,6 +119,8 @@ const AdminQuoteBuilderPage: React.FC = () => {
       }
 
       if (result.error) {
+        // Log detailed error from Supabase
+        console.error('Supabase Draft Save Error:', result.error);
         throw result.error;
       }
 
@@ -129,7 +131,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
     } catch (error: any) {
       console.error('Error saving draft:', error);
-      showError(`Failed to save draft: ${error.message || 'Unknown error occurred'}`, { id: toastId });
+      // Provide a more informative error message if possible
+      const errorMessage = error.message || 'Unknown error occurred during draft save.';
+      showError(`Failed to save draft: ${errorMessage}`, { id: toastId });
     } finally {
       dismissToast(toastId);
     }
