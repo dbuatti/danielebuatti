@@ -1,37 +1,54 @@
 "use client";
 
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import IndexPage from './pages/Index';
-import AdminQuoteBuilderPage from './pages/admin/AdminQuoteBuilderPage';
-import AdminEditQuotePage from './pages/admin/AdminEditQuotePage';
-import AdminDraftsPage from './pages/admin/AdminDraftsPage';
-import { SessionContextProvider } from '@/components/auth/SessionContextProvider';
 import { Toaster } from 'react-hot-toast';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import QuotePublicPage from './pages/QuotePublicPage';
-import AdminQuotesPage from './pages/admin/AdminQuotesPage';
-import AdminLayout from '@/components/layout/AdminLayout';
+import { SessionContextProvider } from '@supabase/auth-helpers-react';
+import { supabase } from '@/integrations/supabase/client';
+import Index from '@/pages/Index';
+import Login from '@/pages/Login';
+import AdminLayout from '@/layouts/AdminLayout';
+import AdminDashboardPage from '@/pages/admin/AdminDashboardPage';
+import AdminQuotesListPage from '@/pages/admin/AdminQuotesListPage';
+import AdminQuoteBuilderPage from '@/pages/admin/AdminQuoteBuilderPage';
+import AdminEditQuotePage from '@/pages/admin/AdminEditQuotePage';
+import AdminQuoteDetailsPage from '@/pages/admin/AdminQuoteDetailsPage';
+import QuotePage from '@/pages/QuotePage';
+import AMEBBookingsPage from '@/pages/admin/AMEBBookingsPage';
+import EmailTemplatesPage from '@/pages/admin/EmailTemplatesPage';
+import ContactPage from '@/pages/ContactPage';
+import ResourcesPage from '@/pages/ResourcesPage';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import '@/App.css';
 
 function App() {
   return (
-    <SessionContextProvider>
+    <SessionContextProvider supabaseClient={supabase}>
       <Router>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<IndexPage />} />
-          <Route path="/quotes/:slug" element={<QuotePublicPage />} />
-
-          {/* Admin Routes (Protected) */}
-          <Route path="/admin" element={<ProtectedRoute element={<AdminLayout />} />}>
-            <Route index element={<AdminQuotesPage />} />
-            <Route path="quotes" element={<AdminQuotesPage />} />
-            <Route path="quotes/:slug" element={<AdminEditQuotePage />} />
-            <Route path="quote-builder" element={<AdminQuoteBuilderPage />} />
-            <Route path="drafts" element={<AdminDraftsPage />} />
-          </Route>
-        </Routes>
+        <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/quotes/:slug" element={<QuotePage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/resources" element={<ResourcesPage />} />
+            
+            {/* Admin routes */}
+            <Route element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+              <Route path="/admin" element={<AdminDashboardPage />} />
+              <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+              <Route path="/admin/quotes" element={<AdminQuotesListPage />} />
+              <Route path="/admin/quotes/new" element={<AdminQuoteBuilderPage />} />
+              <Route path="/admin/quotes/:slug/edit" element={<AdminEditQuotePage />} />
+              <Route path="/admin/quotes/:slug" element={<AdminQuoteDetailsPage />} />
+              <Route path="/admin/ameb-bookings" element={<AMEBBookingsPage />} />
+              <Route path="/admin/email-templates" element={<EmailTemplatesPage />} />
+            </Route>
+          </Routes>
+          <Toaster position="top-right" />
+        </div>
       </Router>
-      <Toaster />
     </SessionContextProvider>
   );
 }

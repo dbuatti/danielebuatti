@@ -1,200 +1,266 @@
 "use client";
 
 import React from 'react';
-import { Quote, QuoteItem } from '@/types/quote';
+import { Quote } from '@/types/quote';
 import { formatCurrency } from '@/lib/utils';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Separator } from '@/components/ui/separator';
+import { 
+  Calendar, 
+  MapPin, 
+  User, 
+  Clock,
+  FileText
+} from 'lucide-react';
 
 interface QuoteDisplayProps {
   quote: Quote;
 }
 
-// Helper component for rendering a single item row
-const QuoteItemRow: React.FC<{ item: QuoteItem; currencySymbol: string; isOptional: boolean }> = ({
-  item,
-  currencySymbol,
-  isOptional,
-}) => {
-  const totalAmount = item.price * item.quantity;
-  
-  // Logic to display unit cost for optional items with quantity 0
-  const displayAmount = () => {
-    if (isOptional && item.quantity === 0) {
-      // If optional and quantity is 0, show the unit price with a strikethrough 
-      // in the unit price column (which is always shown), and indicate 'Unselected' 
-      // in the Amount column.
-      return (
-        <div className="text-right">
-          <span className="text-sm text-muted-foreground line-through">
-            {formatCurrency(item.price, currencySymbol)}
-          </span>
-          <p className="text-xs text-red-500">Unselected</p>
-        </div>
-      );
-    }
+const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return 'N/A';
+    return new Date(dateString).toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const formatTime = (timeString: string | undefined) => {
+    if (!timeString) return '';
+    // Assuming timeString is in HH:MM format
+    const [hours, minutes] = timeString.split(':');
+    const hour = parseInt(hours, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const formattedHour = hour % 12 || 12;
+    return `${formattedHour}:${minutes} ${ampm}`;
+  };
+
+  const calculateSubtotal = () => {
+    const compulsoryTotal = quote.details.compulsoryItems.reduce(
+      (sum, item) => sum + (item.price * item.quantity), 
+      0
+    );
     
-    // Otherwise, show the calculated total amount
-    return formatCurrency(totalAmount, currencySymbol);
+    const addOnsTotal = quote.details.addOns.reduce(
+      (sum, item) => sum + (item.price * item.quantity), 
+      0
+    );
+    
+    return compulsoryTotal + addOnsTotal;
+  };
+
+  const calculateDeposit = () => {
+    const subtotal = calculateSubtotal();
+    return subtotal * (quote.details.depositPercentage / 100);
   };
 
   return (
-    <TableRow className={isOptional && item.quantity === 0 ? 'opacity-60' : ''}>
-      <TableCell className="font-medium">
-        {item.name}
-        {item.description && (
-          <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
+    <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-brand-primary to-brand-secondary p-8 text-white">
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-3xl font-bold">{quote.invoice_type}</h1>
+            <p className="text-brand-light/90 mt-2">
+              Prepared for {quote.client_name}
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="text-2xl font-bold">#{quote.quote_number || 'N/A'}</p>
+            <p className="mt-2">{formatDate(quote.event_date)}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Details */}
+      <div className="p-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+          {/* Client Info */}
+          <div>
+            <h2 className="text-xl font-bold text-brand-dark dark:text-brand-light mb-4">Client Information</h2>
+            <div className="space-y-2">
+              <p className="font-medium">{quote.client_name}</p>
+              <p className="text-gray-600 dark:text-gray-300">{quote.client_email}</p>
+            </div>
+          </div>
+
+          {/* Event Info */}
+          <div>
+            <h2 className="text-xl font-bold text-brand-dark dark:text-brand-light mb-4">Event Details</h2>
+            <div className="space-y-3">
+              <div className="flex items-start">
+                <FileText className="h-5 w-5 text-brand-primary mt-0.5 mr-3 flex-shrink-0" />
+                <div>
+                  <p className="font-medium">{quote.event_title}</p>
+                  <p className="text-gray-600 dark:text-gray-300">{quote.invoice_type}</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start">
+                <Calendar className="h-5 w-5 text-brand-primary mt-0.5 mr-3 flex-shrink-0" />
+                <div>
+                  <p className="font-medium">{formatDate(quote.event_date)}</p>
+                  {quote.details.eventTime && (
+                    <p className="text-gray-600 dark:text-gray-300">
+                      {formatTime(quote.details.eventTime)}
+                    </p>
+                  )}
+                </div>
+              </div>
+              
+              <div className="flex items-start">
+                <MapPin className="h-5 w-5 text-brand-primary mt-0.5 mr-3 flex-shrink-0" />
+                <p className="text-gray-600 dark:text-gray-300">{quote.event_location}</p>
+              </div>
+              
+              <div className="flex items-start">
+                <User className="h-5 w-5 text-brand-primary mt-0.5 mr-3 flex-shrink-0" />
+                <p className="text-gray-600 dark:text-gray-300">Prepared by: {quote.prepared_by}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Preparation Notes */}
+        {quote.details.preparationNotes && (
+          <div className="mb-10 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <h3 className="text-lg font-bold text-brand-dark dark:text-brand-light mb-2">Preparation Notes</h3>
+            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line">
+              {quote.details.preparationNotes}
+            </p>
+          </div>
         )}
-      </TableCell>
-      <TableCell className="text-center w-[100px]">{item.quantity}</TableCell>
-      <TableCell className="text-right w-[120px]">
-        {formatCurrency(item.price, currencySymbol)}
-      </TableCell>
-      <TableCell className="text-right font-semibold w-[120px]">
-        {displayAmount()}
-      </TableCell>
-    </TableRow>
-  );
-};
 
-const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
-  const { details, total_amount } = quote;
-  const currencySymbol = details.currencySymbol || '$';
-
-  const subtotal = total_amount; // Assuming no tax/discount applied here for simplicity
-
-  // Calculate deposit amount
-  const depositAmount = subtotal * (details.depositPercentage / 100);
-  const remainingBalance = subtotal - depositAmount;
-
-  return (
-    <div className={`p-8 max-w-4xl mx-auto space-y-8 ${details.theme === 'black-gold' ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
-      
-      {/* Header Image */}
-      {details.headerImageUrl && (
-        <div className="mb-8">
-          <img 
-            src={details.headerImageUrl} 
-            alt="Quote Header" 
-            className="w-full h-48 object-cover rounded-lg shadow-md"
-          />
-        </div>
-      )}
-
-      {/* Quote/Invoice Details */}
-      <div className="flex justify-between items-start border-b pb-4 border-gray-700">
-        <div>
-          <h1 className="text-4xl font-extrabold text-brand-primary">{quote.invoice_type}</h1>
-          <p className="text-lg mt-2">Prepared By: {quote.prepared_by}</p>
-        </div>
-        <div className="text-right">
-          <h2 className="text-2xl font-semibold">{quote.event_title}</h2>
-          <p className="mt-1">{quote.event_date} {details.eventTime}</p>
-          <p>{quote.event_location}</p>
-        </div>
-      </div>
-
-      {/* Client Details */}
-      <div className="pt-4">
-        <h3 className="text-xl font-semibold mb-2">Client:</h3>
-        <p>{quote.client_name}</p>
-        <p>{quote.client_email}</p>
-      </div>
-
-      {/* Items Table */}
-      <div className="pt-4">
-        <h3 className="text-xl font-semibold mb-4">Items Included</h3>
-        <Table className="border border-gray-700">
-          <TableHeader>
-            <TableRow className="bg-gray-800 hover:bg-gray-800">
-              <TableHead className="text-white">Description</TableHead>
-              <TableHead className="text-center text-white w-[100px]">Qty</TableHead>
-              <TableHead className="text-right text-white w-[120px]">Unit Price</TableHead>
-              <TableHead className="text-right text-white w-[120px]">Amount</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {/* Compulsory Items */}
-            {details.compulsoryItems.map((item) => (
-              <QuoteItemRow 
-                key={item.id} 
-                item={item} 
-                currencySymbol={currencySymbol} 
-                isOptional={false} 
-              />
-            ))}
-
-            {/* Add-Ons (Optional Items) */}
-            {details.addOns.length > 0 && (
-              <TableRow className="bg-gray-700/50 hover:bg-gray-700/50">
-                <TableCell colSpan={4} className="font-bold text-brand-secondary">Optional Add-Ons</TableCell>
-              </TableRow>
-            )}
-            {details.addOns.map((item) => (
-              <QuoteItemRow 
-                key={item.id} 
-                item={item} 
-                currencySymbol={currencySymbol} 
-                isOptional={true} 
-              />
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-
-      {/* Totals and Notes */}
-      <div className="flex justify-end">
-        <div className="w-full max-w-sm space-y-2">
-          <div className="flex justify-between font-medium">
-            <span>Subtotal:</span>
-            <span>{formatCurrency(subtotal, currencySymbol)}</span>
-          </div>
+        {/* Items */}
+        <div className="mb-10">
+          <h2 className="text-xl font-bold text-brand-dark dark:text-brand-light mb-4">Quote Items</h2>
           
-          <Separator className="bg-gray-700" />
-
-          <div className="flex justify-between font-bold text-xl">
-            <span>Total:</span>
-            <span>{formatCurrency(subtotal, currencySymbol)}</span>
+          {/* Compulsory Items */}
+          <div className="mb-8">
+            <h3 className="text-lg font-semibold text-brand-dark dark:text-brand-light mb-3">Service Fees</h3>
+            <div className="border rounded-lg overflow-hidden">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-700">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Description</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Amount</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                  {quote.details.compulsoryItems.map((item) => (
+                    <tr key={item.id}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="font-medium text-gray-900 dark:text-white">{item.name}</div>
+                        {item.description && (
+                          <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            {item.description}
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right font-medium">
+                        {formatCurrency(item.price * item.quantity, quote.details.currencySymbol)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          <Separator className="bg-gray-700" />
-
-          {/* Deposit Section */}
-          <div className="pt-4 space-y-2">
-            <div className="flex justify-between text-lg font-semibold">
-              <span>Deposit Required ({details.depositPercentage}%):</span>
-              <span>{formatCurrency(depositAmount, currencySymbol)}</span>
+          {/* Add-Ons */}
+          {quote.details.addOns.length > 0 && (
+            <div>
+              <h3 className="text-lg font-semibold text-brand-dark dark:text-brand-light mb-3">Add-On Services</h3>
+              <div className="border rounded-lg overflow-hidden">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                  <thead className="bg-gray-50 dark:bg-gray-700">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Description</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Unit Price</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    {quote.details.addOns.map((item) => (
+                      <tr key={item.id}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="font-medium text-gray-900 dark:text-white">{item.name}</div>
+                          {item.description && (
+                            <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                              {item.description}
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-gray-500 dark:text-gray-400">
+                          {item.quantity}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-gray-500 dark:text-gray-400">
+                          {formatCurrency(item.price, quote.details.currencySymbol)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right font-medium">
+                          {formatCurrency(item.price * item.quantity, quote.details.currencySymbol)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <div className="flex justify-between text-lg font-semibold text-brand-secondary">
-              <span>Remaining Balance:</span>
-              <span>{formatCurrency(remainingBalance, currencySymbol)}</span>
+          )}
+        </div>
+
+        {/* Totals */}
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+          <div className="flex justify-end">
+            <div className="w-full md:w-1/2">
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-300">Subtotal:</span>
+                  <span className="font-medium">{formatCurrency(calculateSubtotal(), quote.details.currencySymbol)}</span>
+                </div>
+                
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-300">Deposit ({quote.details.depositPercentage}%):</span>
+                  <span className="font-medium">{formatCurrency(calculateDeposit(), quote.details.currencySymbol)}</span>
+                </div>
+                
+                <div className="flex justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <span className="text-lg font-bold text-brand-dark dark:text-brand-light">Total:</span>
+                  <span className="text-lg font-bold">{formatCurrency(quote.total_amount || 0, quote.details.currencySymbol)}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Preparation Notes */}
-      {details.preparationNotes && (
-        <div className="pt-4 border-t border-gray-700">
-          <h3 className="text-xl font-semibold mb-2">Preparation Notes</h3>
-          <p className="whitespace-pre-wrap text-sm text-muted-foreground">{details.preparationNotes}</p>
+        {/* Payment Terms */}
+        <div className="mt-10 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-bold text-brand-dark dark:text-brand-light mb-3">Payment Terms</h3>
+          <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line">
+            {quote.details.paymentTerms}
+          </p>
+          
+          {/* Bank Details */}
+          {(quote.details.bankDetails.bsb || quote.details.bankDetails.acc) && (
+            <div className="mt-4">
+              <h4 className="font-medium text-brand-dark dark:text-brand-light mb-2">Bank Details:</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                {quote.details.bankDetails.bsb && (
+                  <p className="text-gray-600 dark:text-gray-300">
+                    <span className="font-medium">BSB:</span> {quote.details.bankDetails.bsb}
+                  </p>
+                )}
+                {quote.details.bankDetails.acc && (
+                  <p className="text-gray-600 dark:text-gray-300">
+                    <span className="font-medium">Account:</span> {quote.details.bankDetails.acc}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
         </div>
-      )}
-
-      {/* Payment Terms */}
-      <div className="pt-4 border-t border-gray-700">
-        <h3 className="text-xl font-semibold mb-2">Payment Terms</h3>
-        <p className="text-sm text-muted-foreground">{details.paymentTerms}</p>
-        <p className="text-sm text-muted-foreground mt-2">
-          Bank Details: BSB {details.bankDetails.bsb}, ACC {details.bankDetails.acc}
-        </p>
       </div>
     </div>
   );
