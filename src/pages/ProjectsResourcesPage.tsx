@@ -16,7 +16,7 @@ const ProjectsResourcesPage: React.FC = () => {
         <div className="text-center space-y-4 mb-6">
           <SectionHeading>My Projects & Resources</SectionHeading>
           <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 max-w-3xl mx-auto">
-            Explore my diverse range of musical and educational ventures, from specialized services and products to community initiatives.
+            Explore my diverse range of musical and educational ventures, from specialised services and products to community initiatives.
           </p>
           {/* Removed redundant Separator here */}
         </div>

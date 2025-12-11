@@ -27,7 +27,7 @@ const defaultFormValues: Partial<QuoteFormValues> = {
   eventTime: '', // Added explicit default value
   eventLocation: '',
   preparedBy: 'Daniele Buatti', // Updated default
-  currencySymbol: 'A$', // Changed default currency to A$
+  currencySymbol: '£', // Changed default currency to £
   depositPercentage: 50,
   paymentTerms: 'Payment due within 7 days.',
   bankBSB: '923100', // Default BSB

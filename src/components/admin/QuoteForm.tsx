@@ -219,7 +219,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onSubmit, isSubmitting, onP
               <FormItem>
                 <FormLabel>Currency Symbol</FormLabel>
                 <FormControl>
-                  <Input placeholder="A$" {...field} />
+                  <Input placeholder="£" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -270,7 +270,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onSubmit, isSubmitting, onP
               <FormItem>
                 <FormLabel>Header Image Position (Tailwind Class)</FormLabel>
                 <FormControl>
-                  <Input placeholder="e.g., object-center, object-top, object-[50%_20%]" {...field} />
+                  <Input placeholder="e.g., object-centre, object-top, object-[50%_20%]" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

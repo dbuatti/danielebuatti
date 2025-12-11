@@ -53,7 +53,7 @@ const AmebAccompanyingPage: React.FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-4">
-              <p className="text-xl font-semibold">Rate: A$100 per exam</p>
+              <p className="text-xl font-semibold">Rate: £100 per exam</p>
               <p>
                 I will arrive <strong className="text-brand-primary">15 minutes</strong> prior to your exam to ensure readiness and setup. Your exam repertoire will be fully prepared in advance, and all music will be rehearsed as discussed prior to the date.
               </p>
@@ -74,9 +74,9 @@ const AmebAccompanyingPage: React.FC = () => {
               </p>
               <h4 className="text-xl font-semibold text-brand-primary">Available durations and rates:</h4>
               <ul className="list-disc list-inside space-y-2 pl-4">
-                <li>15 minutes – A$30</li>
-                <li>30 minutes – A$50</li>
-                <li>45 minutes – A$75</li>
+                <li>15 minutes – £30</li>
+                <li>30 minutes – £50</li>
+                <li>45 minutes – £75</li>
               </ul>
               <h4 className="text-xl font-semibold text-brand-primary flex items-center gap-2">
                 <MapPin className="h-6 w-6" /> Rehearsal Location:

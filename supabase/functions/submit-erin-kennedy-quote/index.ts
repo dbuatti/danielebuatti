@@ -141,55 +141,51 @@ serve(async (req: Request) => { // Added type annotation for 'req'
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${insertedRecord.client_name}</td>
             </tr>
             <tr>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Client Email:</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Client Email:</td>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;"><a href="mailto:${insertedRecord.client_email}" style="color: #DB4CA3; text-decoration: none;">${insertedRecord.client_email}</a></td>
             </tr>
             <tr>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Event Title:</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Event Title:</td>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${insertedRecord.event_title}</td>
             </tr>
             <tr>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Event Date:</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Event Date:</td>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${insertedRecord.event_date}</td>
             </tr>
             <tr>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Event Time:</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Event Time:</td>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">3:00 PM – 6:00 PM</td>
             </tr>
             <tr>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Event Location:</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Event Location:</td>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${insertedRecord.event_location}</td>
             </tr>
             <tr>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Prepared By:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${insertedRecord.prepared_by}</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Performance Cost:</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">£${onSitePerformanceCost}.00</td>
             </tr>
             <tr>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Performance Cost:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${onSitePerformanceCost}.00</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Preparation Fee:</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">£${showPreparationFee}.00</td>
             </tr>
             <tr>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Preparation Fee:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${showPreparationFee}.00</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Total Base Invoice:</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">£${fixedErinKennedyTotal}.00</td>
             </tr>
             <tr>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Total Base Invoice:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${fixedErinKennedyTotal}.00</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Rehearsal Support:</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Rehearsal Support:</td>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">Students will book 1:1 rehearsals directly with Daniele.</td>
             </tr>
             <tr>
-              <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Accepted On:</td>
+              <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Accepted On:</td>
               <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;">${new Date(insertedRecord.accepted_at).toLocaleString()}</td>
             </tr>
             <tr>
-              <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Bank Details:</td>
+              <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Bank Details:</td>
               <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;">BSB: 923100, ACC: 301110875</td>
             </tr>
             <tr>
-              <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Direct Quote Link:</td>
+              <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Direct Quote Link:</td>
               <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;"><a href="${quoteLink}" style="color: #DB4CA3; text-decoration: none;">View Quote Page</a></td>
             </tr>
           </table>

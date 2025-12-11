@@ -26,7 +26,7 @@ const SeoStructuredData: React.FC = () => {
       },
       {
         "@type": "LocalBusiness",
-        "@id": "https://danielebuatti.com/#organization",
+        "@id": "https://danielebuatti.com/#organisation",
         "name": "Daniele Buatti Coaching",
         "url": "https://danielebuatti.com/",
         "logo": "https://danielebuatti.com/logo-pinkwhite.png",

@@ -177,10 +177,10 @@ const CoachingPage: React.FC = () => {
                 <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3 flex-grow">
                   <p className="text-lg font-semibold">Flexible durations for focused work:</p>
                   <ul className="list-disc list-inside text-left mx-auto max-w-xs">
-                    <li>30-minute session: A$50</li>
-                    <li>45-minute session: A$75</li>
-                    <li>60-minute session: A$95</li>
-                    <li>90-minute session: A$140</li>
+                    <li>30-minute session: £50</li>
+                    <li>45-minute session: £75</li>
+                    <li>60-minute session: £95</li>
+                    <li>90-minute session: £140</li>
                   </ul>
                   <p className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-2">
                     Perfect for technical deep dives, repertoire building, and communication skills.
@@ -195,8 +195,8 @@ const CoachingPage: React.FC = () => {
                 <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3 flex-grow">
                   <p className="text-lg font-semibold">Commit to deeper transformation and save:</p>
                   <ul className="list-disc list-inside text-left mx-auto max-w-xs">
-                    <li>4 x 60-minute sessions: A$360 (Save A$20)</li>
-                    <li>8 x 60-minute sessions: A$700 (Save A$60)</li>
+                    <li>4 x 60-minute sessions: £360 (Save £20)</li>
+                    <li>8 x 60-minute sessions: £700 (Save £60)</li>
                     <li>Custom packages available upon request.</li>
                   </ul>
                   <p className="text-sm text-brand-dark/70 dark:text-brand-light/70 mt-2">

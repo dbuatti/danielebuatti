@@ -14,7 +14,7 @@ export function createSlug(text: string): string {
     .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
 }
 
-export function formatCurrency(amount: number, currencySymbol: string = '$'): string {
+export function formatCurrency(amount: number, currencySymbol: string = '£'): string {
   // Ensure amount is treated as a number and handles potential null/undefined gracefully
   const numericAmount = amount ?? 0;
   return `${currencySymbol}${numericAmount.toFixed(2)}`;

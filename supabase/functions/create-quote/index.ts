@@ -94,31 +94,31 @@ serve(async (req: Request) => {
                 <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${insertedRecord.client_name}</td>
               </tr>
               <tr>
-                <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Client Email:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Client Email:</td>
                 <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;"><a href="mailto:${insertedRecord.client_email}" style="color: #fdb813; text-decoration: none;">${insertedRecord.client_email}</a></td>
               </tr>
               <tr>
-                <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Quote Title:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Quote Title:</td>
                 <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${insertedRecord.event_title}</td>
               </tr>
               <tr>
-                <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Event Date:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Event Date:</td>
                 <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${insertedRecord.event_date}</td>
               </tr>
               <tr>
-                <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold;">Total Amount:</td>
-                <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${insertedRecord.total_amount.toFixed(2)}</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Total Amount:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">£${insertedRecord.total_amount.toFixed(2)}</td>
               </tr>
               <tr>
-                <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Created On:</td>
+                <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Created On:</td>
                 <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;">${new Date(insertedRecord.created_at).toLocaleString()}</td>
               </tr>
               <tr>
-                <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Admin Link:</td>
+                <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Admin Link:</td>
                 <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;"><a href="${adminQuoteLink}" style="color: #fdb813; text-decoration: none;">View in Admin Panel</a></td>
               </tr>
               <tr>
-                <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold;">Public Link:</td>
+                <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Public Link:</td>
                 <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;"><a href="${publicQuoteLink}" style="color: #fdb813; text-decoration: none;">Share with Client</a></td>
               </tr>
             </table>

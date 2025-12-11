@@ -43,7 +43,7 @@ const VoicePianoServicesPage: React.FC = () => {
           {/* Introduction Text Section with subtle background */}
           <section className="bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-8 rounded-xl shadow-inner space-y-6">
             <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-              Unlock your full vocal and musical potential with personalized 1:1 coaching. Whether you're a seasoned performer or just starting your journey, my holistic approach integrates technical mastery with body awareness and mindset strategies to help you achieve authentic, confident expression.
+              Unlock your full vocal and musical potential with personalised 1:1 coaching. Whether you're a seasoned performer or just starting your journey, my holistic approach integrates technical mastery with body awareness and mindset strategies to help you achieve authentic, confident expression.
             </p>
             <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
               This work is deeply connected to overall well-being. By integrating body-voice practices and healing modalities, we can release physical tension, calm the nervous system, and clear mental blocks that might be hindering your vocal performance, confidence, and overall expressive freedom.

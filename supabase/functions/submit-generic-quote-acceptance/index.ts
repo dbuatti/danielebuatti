@@ -88,11 +88,11 @@ serve(async (req: Request) => {
     const subject = `🎉 Quote Accepted: ${updatedRecord.event_title || updatedRecord.invoice_type} from ${clientName}`;
     
     const compulsoryList = (updatedRecord.details?.compulsoryItems || [])
-      .map((item: any) => `<li>${item.name}: A$${(item.price * item.quantity).toFixed(2)}</li>`)
+      .map((item: any) => `<li>${item.name}: £${(item.price * item.quantity).toFixed(2)}</li>`)
       .join('');
       
     const addOnList = finalSelectedAddOns.length > 0 
-      ? finalSelectedAddOns.map((a: any) => `<li>${a.name} (Qty: ${a.quantity}, Cost: A$${(a.price * a.quantity).toFixed(2)})</li>`).join('')
+      ? finalSelectedAddOns.map((a: any) => `<li>${a.name} (Qty: ${a.quantity}, Cost: £${(a.price * a.quantity).toFixed(2)})</li>`).join('')
       : '<li>None selected.</li>';
 
     const emailHtml = `
@@ -123,7 +123,7 @@ serve(async (req: Request) => {
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">FINAL TOTAL:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${finalTotal.toFixed(2)}</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">£${finalTotal.toFixed(2)}</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Accepted On:</td>
@@ -159,11 +159,11 @@ serve(async (req: Request) => {
     const clientSubject = `Booking Confirmed: ${updatedRecord.event_title || updatedRecord.invoice_type}`;
     
     const compulsoryListClient = (updatedRecord.details?.compulsoryItems || [])
-      .map((item: any) => `<li>${item.name}: A$${(item.price * item.quantity).toFixed(2)}</li>`)
+      .map((item: any) => `<li>${item.name}: £${(item.price * item.quantity).toFixed(2)}</li>`)
       .join('');
       
     const addOnListClient = finalSelectedAddOns.length > 0 
-      ? finalSelectedAddOns.map((a: any) => `<li>${a.name} (Qty: ${a.quantity}, Cost: A$${(a.price * a.quantity).toFixed(2)})</li>`).join('')
+      ? finalSelectedAddOns.map((a: any) => `<li>${a.name} (Qty: ${a.quantity}, Cost: £${(a.price * a.quantity).toFixed(2)})</li>`).join('')
       : '<li>None selected.</li>';
 
     const clientEmailHtml = `
@@ -185,7 +185,7 @@ serve(async (req: Request) => {
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">FINAL TOTAL:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${finalTotal.toFixed(2)}</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">£${finalTotal.toFixed(2)}</td>
             </tr>
           </table>
 
@@ -201,7 +201,7 @@ serve(async (req: Request) => {
           </ul>
 
           <h3 style="color: #DB4CA3; margin-top: 20px; font-size: 18px;">Next Steps:</h3>
-          <p style="font-size: 16px; line-height: 1.6;">Daniele will be in touch shortly to finalize the deposit payment (A$${(finalTotal * (updatedRecord.details.depositPercentage / 100)).toFixed(2)}) and all remaining details.</p>
+          <p style="font-size: 16px; line-height: 1.6;">Daniele will be in touch shortly to finalise the deposit payment (£${(finalTotal * (updatedRecord.details.depositPercentage / 100)).toFixed(2)}) and all remaining details.</p>
           
           <p style="font-size: 14px; color: #666666; text-align: center; margin-top: 30px;">
             This is an automated confirmation.

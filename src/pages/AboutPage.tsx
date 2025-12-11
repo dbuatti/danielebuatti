@@ -53,7 +53,7 @@ const AboutPage: React.FC = () => {
               Daniele's journey began with a deep passion for music and performance, leading him to a Bachelor of Music at the Australian Institute of Music. His career has spanned a wide range of productions, from large-scale musicals to intimate workshops, where he has collaborated with artists to unlock their full potential.
             </p>
             <p>
-              Beyond the stage, Daniele's commitment to holistic development led him to pursue a Diploma of Kinesiology, specializing in mind-body integration for performance and well-being. This unique blend of artistic and therapeutic knowledge allows him to guide students not only in technical mastery but also in fostering authentic connection and healing through self-awareness.
+              Beyond the stage, Daniele's commitment to holistic development led him to pursue a Diploma of Kinesiology, specialising in mind-body integration for performance and well-being. This unique blend of artistic and therapeutic knowledge allows him to guide students not only in technical mastery but also in fostering authentic connection and healing through self-awareness.
             </p>
             <p>
               He believes expression truly happens when the thought arises to express, and his therapeutic approach helps students gain a deeper understanding of their own mannerisms, expressions, and thoughts. Daniele is passionate about the transformative power of music and theatre, inspiring performers of all ages and levels to combine artistry, empathy, and technical skill to create performances that are both compelling and heartfelt.
@@ -95,7 +95,7 @@ const AboutPage: React.FC = () => {
           </p>
           <div className="text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-4 pl-4">
             <p>
-              <strong className="text-brand-primary">THOUGHT:</strong> We address the mental blocks and patterned behaviors that hinder your freedom. This involves conscious intention-setting and cultivating the self-awareness necessary for growth.
+              <strong className="text-brand-primary">THOUGHT:</strong> We address the mental blocks and patterned behaviours that hinder your freedom. This involves conscious intention-setting and cultivating the self-awareness necessary for growth.
             </p>
             <p>
               <strong className="text-brand-primary">INTENTION:</strong> We clarify your artistic purpose and desired outcome for every performance and interaction. When your physical body aligns with your intention, your expression becomes effortlessly powerful.

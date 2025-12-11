@@ -163,7 +163,7 @@ const AdminEditQuotePage: React.FC = () => {
         paymentTerms: values.paymentTerms,
         theme: values.theme,
         headerImageUrl: values.headerImageUrl,
-        headerImagePosition: values.headerImagePosition || 'object-center', // NEW
+        headerImagePosition: values.headerImagePosition || 'object-centre', // NEW: Updated to British English
         preparationNotes: values.preparationNotes || '',
       };
 
@@ -255,7 +255,7 @@ const AdminEditQuotePage: React.FC = () => {
         eventTime: values.eventTime ?? '', // FIX: Ensure eventTime is a string
         theme: values.theme, // Pass theme
         headerImageUrl: values.headerImageUrl,
-        headerImagePosition: values.headerImagePosition || 'object-center', // NEW
+        headerImagePosition: values.headerImagePosition || 'object-centre', // NEW: Updated to British English
         preparationNotes: values.preparationNotes || '',
       },
     };
