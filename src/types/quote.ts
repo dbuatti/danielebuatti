@@ -1,44 +1,39 @@
-export interface AddOnItem {
+export interface QuoteItem {
   id: string;
-  name: string;
-  description?: string;
-  cost: number;
+  name: string; // Short title/name of the item
+  description?: string; // Detailed description (new field)
   quantity: number;
-}
-
-export interface CompulsoryItem {
-  id: string;
-  name: string;
-  description?: string;
-  amount: number;
+  price: number; // Cost per unit
 }
 
 export interface QuoteDetails {
-  compulsoryItems?: CompulsoryItem[];
-  currencySymbol?: string;
-  depositPercentage?: number;
-  bankDetails?: { bsb: string; acc: string };
+  depositPercentage: number;
+  paymentTerms: string;
+  bankDetails: {
+    bsb: string;
+    acc: string;
+  };
+  addOns: QuoteItem[];
+  compulsoryItems: QuoteItem[];
+  currencySymbol: string;
   eventTime?: string;
-  paymentTerms?: string;
-  addOns?: AddOnItem[];
-  final_total_amount?: number;
-  client_selected_add_ons?: AddOnItem[];
-  requiredDeposit?: number;
+  theme: 'default' | 'livePiano'; // New field for theme selection
+  headerImageUrl?: string; // New field for header image
 }
 
 export interface Quote {
   id: string;
   client_name: string;
   client_email: string;
+  event_title: string;
   invoice_type: string;
-  event_title?: string;
-  event_date?: string | null;
-  event_location?: string;
-  prepared_by?: string;
+  event_date: string;
+  event_location: string;
+  prepared_by: string;
   total_amount: number;
-  details: QuoteDetails;
   accepted_at: string | null;
   rejected_at: string | null;
-  slug?: string | null;
   created_at: string;
+  slug: string; // Added slug (Fix Error 6)
+  details: QuoteDetails;
 }

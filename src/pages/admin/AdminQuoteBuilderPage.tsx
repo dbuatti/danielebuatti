@@ -10,7 +10,7 @@ import { createSlug } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Quote } from '@/types/quote';
+import { Quote, QuoteItem } from '@/types/quote';
 import { useAuth } from '@/hooks/useAuth';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -30,7 +30,11 @@ const defaultFormValues: Partial<QuoteFormValues> = {
   paymentTerms: 'Payment due within 7 days.',
   bankBSB: '',
   bankACC: '',
-  compulsoryItems: [{ description: 'Service Fee', amount: 1000 }],
+  // New defaults
+  theme: 'default', // Default theme
+  headerImageUrl: '', // Placeholder image URL
+  // Updated item structure (using 'name' and 'description' now)
+  compulsoryItems: [{ name: 'Service Fee', description: 'Standard service charge.', amount: 1000 }],
   addOns: [],
 };
 
@@ -155,14 +159,20 @@ const AdminQuoteBuilderPage: React.FC = () => {
       form.setValue('eventTime', extractedContent.eventTime);
       form.setValue('eventLocation', extractedContent.eventLocation);
       
-      // Map items, ensuring temporary IDs are added
+      // Map items, transforming old 'description' (item name) into new 'name' field
+      // We assume the AI returns the old structure where 'description' is the item title.
       form.setValue('compulsoryItems', extractedContent.compulsoryItems.map(item => ({
-        ...item,
         id: Math.random().toString(36).substring(2, 11),
+        name: item.description, // Map old description to new name
+        description: '', // Detailed description is left empty
+        amount: item.amount,
       })));
       form.setValue('addOns', extractedContent.addOns.map(item => ({
-        ...item,
         id: Math.random().toString(36).substring(2, 11),
+        name: item.description, // Map old description to new name
+        description: '', // Detailed description is left empty
+        cost: item.cost,
+        quantity: item.quantity,
       })));
       form.setValue('paymentTerms', extractedContent.paymentTerms);
 
@@ -195,14 +205,17 @@ const AdminQuoteBuilderPage: React.FC = () => {
       // Prepare details for JSONB column
       const details = {
         compulsoryItems: values.compulsoryItems.map(item => ({
-          ...item,
           id: item.id || Math.random().toString(36).substring(2, 11),
-          name: item.description,
+          name: item.name, // Use new name field
+          description: item.description || '', // Use new description field
+          amount: item.amount,
         })),
         addOns: values.addOns?.map(addOn => ({
-          ...addOn,
           id: addOn.id || Math.random().toString(36).substring(2, 11),
-          name: addOn.description,
+          name: addOn.name, // Use new name field
+          description: addOn.description || '', // Use new description field
+          cost: addOn.cost,
+          quantity: addOn.quantity,
         })) || [],
         depositPercentage: values.depositPercentage,
         bankDetails: {
@@ -212,6 +225,8 @@ const AdminQuoteBuilderPage: React.FC = () => {
         eventTime: values.eventTime,
         currencySymbol: values.currencySymbol,
         paymentTerms: values.paymentTerms,
+        theme: values.theme, // Include new theme
+        headerImageUrl: values.headerImageUrl, // Include new header image URL
       };
 
       // Invoke the Edge Function to create the quote
@@ -266,8 +281,23 @@ const AdminQuoteBuilderPage: React.FC = () => {
       sum + (addOn.cost * addOn.quantity), 0) || 0;
     const totalAmount = compulsoryTotal + addOnTotal;
 
-    return {
+    // Helper function to map form item to QuoteItem structure
+    const mapFormItemToQuoteItem = (item: { id?: string, name: string, description?: string, amount?: number, cost?: number, quantity?: number }): QuoteItem => {
+      const quantity = item.quantity ?? 1;
+      const price = item.amount ?? item.cost ?? 0;
+      
+      return {
+        id: item.id || Math.random().toString(36).substring(2, 11),
+        name: item.name,
+        description: item.description || '',
+        quantity: quantity,
+        price: price,
+      };
+    };
+
+    return { // Fix Error 8
       id: Math.random().toString(36).substring(2, 11),
+      slug: 'preview-slug', // Placeholder slug for preview
       client_name: values.clientName,
       client_email: values.clientEmail,
       event_title: values.eventTitle,
@@ -286,18 +316,12 @@ const AdminQuoteBuilderPage: React.FC = () => {
           bsb: values.bankBSB ?? '',
           acc: values.bankACC ?? '',
         },
-        addOns: values.addOns?.map(addOn => ({
-          ...addOn,
-          id: addOn.id || Math.random().toString(36).substring(2, 11),
-          name: addOn.description,
-        })) || [],
-        compulsoryItems: values.compulsoryItems.map(item => ({
-          ...item,
-          id: item.id || Math.random().toString(36).substring(2, 11),
-          name: item.description,
-        })),
+        addOns: values.addOns?.map(item => mapFormItemToQuoteItem(item)) || [],
+        compulsoryItems: values.compulsoryItems.map(item => mapFormItemToQuoteItem(item)),
         currencySymbol: values.currencySymbol,
         eventTime: values.eventTime,
+        theme: values.theme, // Pass theme
+        headerImageUrl: values.headerImageUrl, // Pass image URL
       },
     };
   };
@@ -338,8 +362,6 @@ const AdminQuoteBuilderPage: React.FC = () => {
             {previewData ? (
               <QuoteDisplay 
                 quote={getPreviewData(previewData)} 
-                isLivePianoTheme={previewData.invoiceType.toLowerCase().includes('live piano')} 
-                isErinKennedyQuote={previewData.invoiceType === 'Erin Kennedy Quote'} 
               />
             ) : (
               <div className="p-8 text-center">No preview data available.</div>
