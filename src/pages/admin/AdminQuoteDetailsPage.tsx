@@ -218,6 +218,16 @@ const AdminQuoteDetailsPage: React.FC = () => {
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Quote Theme</p>
               <p className="text-lg">{theme === 'black-gold' ? 'Black & Gold' : 'Default (White/Pink)'}</p>
             </div>
+            {(details.contentImageUrl1 || details.contentImageUrl2) && (
+              <div className="flex flex-col col-span-2">
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Content Images</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  {details.contentImageUrl1 && `Image 1: ${details.contentImageUrl1}`}
+                  {details.contentImageUrl1 && details.contentImageUrl2 && ' | '}
+                  {details.contentImageUrl2 && `Image 2: ${details.contentImageUrl2}`}
+                </p>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

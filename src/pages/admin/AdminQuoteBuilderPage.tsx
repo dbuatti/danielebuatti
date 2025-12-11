@@ -35,8 +35,8 @@ const defaultFormValues: Partial<QuoteFormValues> = {
   // New defaults
   theme: 'black-gold', // Default theme set to the new Black/Gold theme
   headerImageUrl: '/blacktie.avif', // Default image URL
-  contentImageUrl1: '/quote-option-2.jpeg', // Default content image 1
-  contentImageUrl2: '/quote-option-3.jpeg', // Default content image 2
+  contentImageUrl1: '/blackgoldquoteimage1.jpg', // Default content image 1
+  contentImageUrl2: '/blackgoldquoteimage2.jpg', // Default content image 2
   preparationNotes: 'This fee covers 7 hours of commitment, including the performance call, soundcheck, and all essential preparation required for a seamless, high-energy performance.\n\nThis fee secures a premium, seamless musical experience for your event.', // New default preparation notes
   // Updated item structure (using 'name' and 'description' now)
   compulsoryItems: [{ name: 'Live Piano Performance Fee', description: '3 hours of performance time.', amount: 1000 }], // Updated default item
