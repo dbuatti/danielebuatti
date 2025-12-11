@@ -1,6 +1,6 @@
-/// <reference lib="deno.ns" />
-
+// @ts-ignore
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+// @ts-ignore
 import { GoogleGenAI } from "https://esm.sh/@google/genai@0.15.0";
 
 const corsHeaders = {
@@ -66,6 +66,7 @@ serve(async (req: Request) => {
       });
     }
 
+    // @ts-ignore
     const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
     if (!GEMINI_API_KEY) {
       throw new Error("GEMINI_API_KEY environment variable not set.");
@@ -100,8 +101,18 @@ ${emailContent}
 
   } catch (error: any) {
     console.error('AI Extraction Error:', error);
-    return new Response(JSON.stringify({ error: error.message || 'Failed to process AI extraction' }), {
-      status: 500,
+    
+    let status = 500;
+    let errorMessage = error.message || 'Failed to process AI extraction';
+
+    // Check for rate limit error message
+    if (errorMessage.includes('429 Too Many Requests') || errorMessage.includes('Quota exceeded')) {
+      status = 429;
+      errorMessage = 'AI Quota Exceeded. Please wait a few minutes before trying again.';
+    }
+
+    return new Response(JSON.stringify({ error: errorMessage }), {
+      status: status,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
