@@ -53,7 +53,7 @@ interface QuoteFormProps {
   onCreateAndSend: (values: QuoteFormValues) => Promise<void>; // Renamed prop
   isSubmitting: boolean;
   onPreview: (values: QuoteFormValues) => void;
-  onSaveDraft: (values: QuoteFormValues) => Promise<void>;
+  onSaveDraft?: (values: QuoteFormValues) => Promise<void>; // Made optional
   isQuoteCreated?: boolean; // New prop to indicate if a quote ID exists (i.e., it's saved/created)
 }
 
@@ -75,13 +75,20 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
   };
 
   const handleSave = () => {
-    onSaveDraft(getValues());
+    if (onSaveDraft) {
+      onSaveDraft(getValues());
+    }
   };
   
   // The final submission button now triggers the onCreateAndSend flow (which includes saving/creating + opening modal)
   const handleFinalSubmit = (values: QuoteFormValues) => {
     onCreateAndSend(values);
   };
+  
+  // Determine the text for the final submit button
+  const submitButtonText = isQuoteCreated 
+    ? (onSaveDraft ? 'Create & Send Quote' : 'Update Quote') // If editing (isQuoteCreated=true) and onSaveDraft is NOT provided (like on Edit page), show Update Quote
+    : 'Create & Send Quote';
 
   return (
     <Form {...form}>
@@ -532,9 +539,11 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
         />
 
         <div className="flex justify-end space-x-4 pt-4">
-          <Button type="button" variant="secondary" onClick={handleSave} disabled={isSubmitting}>
-            <Save className="h-4 w-4 mr-2" /> Save Draft
-          </Button>
+          {onSaveDraft && (
+            <Button type="button" variant="secondary" onClick={handleSave} disabled={isSubmitting}>
+              <Save className="h-4 w-4 mr-2" /> Save Draft
+            </Button>
+          )}
           <Button type="button" variant="outline" onClick={handlePreview} disabled={isSubmitting}>
             <Eye className="h-4 w-4 mr-2" /> Preview Quote
           </Button>
@@ -543,10 +552,18 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             disabled={isSubmitting || !isValid}
             className={cn(
               "bg-brand-primary hover:bg-brand-primary/90 text-brand-light",
-              isQuoteCreated ? "bg-green-600 hover:bg-green-700" : ""
+              isQuoteCreated && !onSaveDraft ? "bg-green-600 hover:bg-green-700" : ""
             )}
           >
-            <Send className="h-4 w-4 mr-2" /> {isQuoteCreated ? 'Send Quote' : 'Create & Send Quote'}
+            {isQuoteCreated && !onSaveDraft ? (
+              <>
+                <Send className="h-4 w-4 mr-2" /> {submitButtonText}
+              </>
+            ) : (
+              <>
+                <Send className="h-4 w-4 mr-2" /> {submitButtonText}
+              </>
+            )}
           </Button>
         </div>
       </form>

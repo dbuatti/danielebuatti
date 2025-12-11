@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
-import QuoteForm, { QuoteFormValues, QuoteFormSchema } from '@/components/admin/QuoteForm';
+import QuoteForm, { QuoteFormSchema, QuoteFormValues } from '@/components/admin/QuoteForm';
 import { supabase } from '@/integrations/supabase/client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
@@ -118,11 +118,6 @@ const AdminEditQuotePage: React.FC = () => {
   const handlePreviewQuote = (values: QuoteFormValues) => {
     setPreviewData(values);
     setIsPreviewOpen(true);
-  };
-
-  const handleSaveDraft = async () => {
-    // Draft saving logic is not typically used on an Edit page, as the quote is already published.
-    showError('Draft saving is not supported on the Edit page. Use "Update Quote" instead.');
   };
 
   const handleUpdateQuote = async (values: QuoteFormValues) => {
@@ -294,10 +289,11 @@ const AdminEditQuotePage: React.FC = () => {
         <CardContent>
           <QuoteForm 
             form={form}
-            onCreateAndSend={handleUpdateQuote} // Fix 13: Renamed prop
+            onCreateAndSend={handleUpdateQuote}
             isSubmitting={isSubmitting} 
             onPreview={handlePreviewQuote} 
-            onSaveDraft={handleSaveDraft} // Placeholder, not used for editing
+            // Removed onSaveDraft as it's not supported here
+            isQuoteCreated={true} // Explicitly set to true for editing context
           />
         </CardContent>
       </Card>
