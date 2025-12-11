@@ -320,7 +320,7 @@ const DynamicQuotePage: React.FC = () => {
           
           {/* Header Image */}
           {headerImageUrl && (
-            <div className="mb-6">
+            <div className="mb-4"> {/* Changed mb-6 to mb-4 */}
               <DynamicImage 
                 src={headerImageUrl} 
                 alt="Quote Header" 

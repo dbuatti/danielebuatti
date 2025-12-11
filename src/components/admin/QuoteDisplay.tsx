@@ -138,7 +138,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
       
       {/* Header Image */}
       {details.headerImageUrl && (
-        <div className="mb-8">
+        <div className="mb-4"> {/* Changed mb-8 to mb-4 */}
           <DynamicImage 
             src={details.headerImageUrl} 
             alt="Quote Header" 
