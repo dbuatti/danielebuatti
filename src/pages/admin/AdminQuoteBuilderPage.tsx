@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
@@ -16,6 +16,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ExtractedQuoteContent } from '@/types/ai';
 import AIQuoteExtractor from '@/components/admin/AIQuoteExtractor';
+import DraftLoader from '@/components/admin/DraftLoader'; // Import DraftLoader
 
 const defaultFormValues: Partial<QuoteFormValues> = {
   clientName: '',
@@ -40,6 +41,14 @@ const defaultFormValues: Partial<QuoteFormValues> = {
   addOns: [],
 };
 
+// Define Draft type
+interface QuoteDraft {
+  id: string;
+  title: string;
+  updated_at: string;
+  data: QuoteFormValues; // Assuming the full form data is stored in the 'data' JSONB column
+}
+
 const AdminQuoteBuilderPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -47,12 +56,77 @@ const AdminQuoteBuilderPage: React.FC = () => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState<QuoteFormValues | null>(null);
   const [currentDraftId, setCurrentDraftId] = useState<string | undefined>(undefined);
+  const [drafts, setDrafts] = useState<QuoteDraft[]>([]); // New state for draft list
+  const [isLoadingDrafts, setIsLoadingDrafts] = useState(true); // New state for draft loading
 
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(QuoteFormSchema),
     defaultValues: defaultFormValues as QuoteFormValues,
     mode: 'onChange',
   });
+
+  const fetchDrafts = useCallback(async () => {
+    if (!user) return;
+    setIsLoadingDrafts(true);
+    const { data, error } = await supabase
+      .from('quote_drafts')
+      .select('id, title, updated_at, data')
+      .eq('user_id', user.id)
+      .order('updated_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching drafts:', error);
+      showError('Failed to load saved drafts.');
+      setDrafts([]);
+    } else {
+      setDrafts(data as QuoteDraft[]);
+    }
+    setIsLoadingDrafts(false);
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchDrafts();
+    }
+  }, [user, fetchDrafts]);
+
+  const handleLoadDraft = (draftId: string) => {
+    const selectedDraft = drafts.find(d => d.id === draftId);
+    if (selectedDraft) {
+      // Reset the form with the draft data
+      form.reset(selectedDraft.data);
+      setCurrentDraftId(draftId);
+      showSuccess(`Draft "${selectedDraft.title}" loaded.`);
+    }
+  };
+
+  const handleDeleteDraft = async (draftId: string) => {
+    if (!window.confirm('Are you sure you want to delete this draft?')) return;
+    
+    const toastId = showLoading('Deleting draft...');
+    try {
+      const { error } = await supabase
+        .from('quote_drafts')
+        .delete()
+        .eq('id', draftId);
+
+      if (error) throw error;
+
+      // Reset form if the deleted draft was the one currently loaded
+      if (currentDraftId === draftId) {
+        form.reset(defaultFormValues as QuoteFormValues);
+        setCurrentDraftId(undefined);
+      }
+      
+      await fetchDrafts(); // Refresh list
+      showSuccess('Draft deleted successfully!', { id: toastId });
+    } catch (error: any) {
+      console.error('Error deleting draft:', error);
+      showError(`Failed to delete draft: ${error.message}`, { id: toastId });
+    } finally {
+      dismissToast(toastId);
+    }
+  };
 
   const handlePreviewQuote = (values: QuoteFormValues) => {
     setPreviewData(values);
@@ -130,6 +204,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       setCurrentDraftId(savedDraftId);
       
       showSuccess('Draft saved successfully!', { id: toastId });
+      await fetchDrafts(); // Refresh the draft list
 
     } catch (error: any) {
       console.error('Error saving draft:', error);
@@ -269,6 +344,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         if (deleteError) {
           console.warn('Failed to delete draft after quote creation:', deleteError);
         }
+        await fetchDrafts(); // Refresh draft list after deletion
       }
 
       showSuccess('Quote created successfully!', { id: toastId });
@@ -346,9 +422,18 @@ const AdminQuoteBuilderPage: React.FC = () => {
     <div className="space-y-8">
       <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Create New Quote</h2>
       <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
-        Use this form to generate a new client-facing quote page. The slug will be automatically generated but can be customized in the QuoteForm if needed.
+        Use this form to generate a new client-facing quote page.
       </p>
       
+      {/* NEW: Draft Loader */}
+      <DraftLoader
+        drafts={drafts}
+        isLoading={isLoadingDrafts}
+        onLoadDraft={handleLoadDraft}
+        onDeleteDraft={handleDeleteDraft}
+        currentDraftId={currentDraftId}
+      />
+
       <AIQuoteExtractor 
         onExtract={handleExtractAI}
         isSubmitting={isSubmitting}

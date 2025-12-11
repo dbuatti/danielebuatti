@@ -118,8 +118,8 @@ const AdminEditQuotePage: React.FC = () => {
     setIsPreviewOpen(true);
   };
 
-  const handleSaveDraft = async () => { // Removed unused 'values' parameter
-    // Draft saving logic is not typically used on an Edit page, but we keep the function signature
+  const handleSaveDraft = async () => {
+    // Draft saving logic is not typically used on an Edit page, as the quote is already published.
     showError('Draft saving is not supported on the Edit page. Use "Update Quote" instead.');
   };
 
