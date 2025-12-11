@@ -31,6 +31,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { formatCurrency } from '@/lib/utils'; // IMPORTED formatCurrency
 
 // Define the structure for the data fetched from Supabase (which includes the JSONB details)
 interface QuoteData extends Omit<Quote, 'details'> {
@@ -260,7 +261,7 @@ const DynamicQuotePage: React.FC = () => {
 
   const depositAmount = subtotal * (depositPercentage / 100);
   
-  const formatCurrency = (amount: number) => `${symbol}${amount.toFixed(2)}`;
+  // REMOVED LOCAL formatCurrency DEFINITION, now using imported utility
   const calculateItemTotal = (item: QuoteItem) => item.price * item.quantity;
 
   // Theme setup
@@ -406,7 +407,7 @@ const DynamicQuotePage: React.FC = () => {
               {/* All-Inclusive Total (Keep this separate for emphasis) */}
               <div className="text-center pt-4">
                 <p className={`text-3xl font-extrabold ${themeClasses.primary}`}>
-                  All-Inclusive Engagement Fee: {formatCurrency(compulsoryTotal)}
+                  All-Inclusive Engagement Fee: {formatCurrency(compulsoryTotal, symbol)}
                 </p>
               </div>
             </section>
@@ -522,7 +523,7 @@ const DynamicQuotePage: React.FC = () => {
               
               <ul className={`space-y-3 text-base ${themeClasses.text} list-disc list-inside pl-4`}>
                 <li>
-                  <span className={`font-bold ${themeClasses.primary}`}>Deposit:</span> A non-refundable <span className="font-bold">{depositPercentage}% deposit ({formatCurrency(depositAmount)})</span> is required immediately to formally secure {eventDateShort}.
+                  <span className={`font-bold ${themeClasses.primary}`}>Deposit:</span> A non-refundable <span className="font-bold">{depositPercentage}% deposit ({formatCurrency(depositAmount, symbol)})</span> is required immediately to formally secure {eventDateShort}.
                 </li>
                 <li>
                   <span className={`font-bold ${themeClasses.primary}`}>Balance:</span> The remaining balance is due 7 days prior to the event.
@@ -539,7 +540,7 @@ const DynamicQuotePage: React.FC = () => {
             {/* Final Total Cost Box */}
             <div className={`mt-8 p-6 rounded-lg text-center ${themeClasses.totalBoxBg} border-2 ${themeClasses.acceptBoxBorder}`}>
               <h3 className={`text-4xl font-extrabold ${themeClasses.totalBoxText}`}>
-                Final Total Cost: {formatCurrency(subtotal)}
+                Final Total Cost: {formatCurrency(subtotal, symbol)}
               </h3>
               <p className={`text-sm ${themeClasses.secondary}`}>
                 This includes the All-Inclusive Engagement Fee and your selected optional add-ons.
