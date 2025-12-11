@@ -17,7 +17,7 @@ const ItemSchema = z.object({
   description: z.string().optional(),
   amount: z.number().min(0, 'Amount must be non-negative.').optional(), // Used for compulsory items
   cost: z.number().min(0, 'Cost must be non-negative.').optional(), // Used for add-ons
-  quantity: z.number().min(1, 'Quantity must be at least 1.').optional(), // Used for add-ons
+  quantity: z.number().min(0, 'Quantity must be non-negative.').optional(), // Used for add-ons
 });
 
 // Define the main form schema
@@ -421,9 +421,9 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onSubmit, isSubmitting, onP
                         <FormControl>
                           <Input 
                             type="number" 
-                            placeholder="1" 
+                            placeholder="0" 
                             {...itemField} 
-                            onChange={e => itemField.onChange(parseInt(e.target.value) || 1)}
+                            onChange={e => itemField.onChange(parseInt(e.target.value) || 0)}
                           />
                         </FormControl>
                         <FormMessage />
@@ -445,7 +445,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onSubmit, isSubmitting, onP
           <Button
             type="button"
             variant="outline"
-            onClick={() => appendAddOn({ name: '', description: '', cost: 0, quantity: 1 })}
+            onClick={() => appendAddOn({ name: '', description: '', cost: 0, quantity: 0 })}
             className="w-full"
           >
             <Plus className="h-4 w-4 mr-2" /> Add Optional Add-On
