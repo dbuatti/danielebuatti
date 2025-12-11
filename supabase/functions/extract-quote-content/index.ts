@@ -1,90 +1,136 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { GoogleGenAI } from "https://esm.sh/@google/genai@0.15.0";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
 
-// Define Deno environment types for TypeScript compatibility
-declare global {
-  const Deno: {
-    env: {
-      get: (key: string) => string | undefined;
-    };
-  };
-}
+// Ensure you have VITE_GEMINI_API_KEY set as a secret in Supabase
+const GEMINI_API_KEY = Deno.env.get('VITE_GEMINI_API_KEY');
+const GEMINI_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Content-Type': 'application/json',
 };
 
-serve(async (req: Request) => {
+// Define the expected JSON output structure for the AI
+const JSON_SCHEMA = {
+  type: "object",
+  properties: {
+    clientName: { type: "string", description: "The full name of the client or contact person." },
+    clientEmail: { type: "string", description: "The client's email address." },
+    invoiceType: { type: "string", enum: ["Quote", "Invoice"], description: "The type of document requested, default to 'Quote'." },
+    eventTitle: { type: "string", description: "A concise title for the event." },
+    eventDate: { type: "string", description: "The date of the event in YYYY-MM-DD format." },
+    eventTime: { type: "string", description: "The time of the event (e.g., '7:00 PM'). Optional." },
+    eventLocation: { type: "string", description: "The location or venue of the event." },
+    paymentTerms: { type: "string", description: "Any specific payment terms mentioned by the client." },
+    preparationNotes: { type: "string", description: "Any detailed notes or requirements regarding preparation, service, or commitment hours mentioned in the email. Combine related points into a single text block." },
+    compulsoryItems: {
+      type: "array",
+      description: "A list of mandatory services or items requested, including their cost.",
+      items: {
+        type: "object",
+        properties: {
+          description: { type: "string", description: "The name or title of the compulsory service." },
+          amount: { type: "number", description: "The fixed cost of the service." },
+        },
+        required: ["description", "amount"]
+      }
+    },
+    addOns: {
+      type: "array",
+      description: "A list of optional add-ons or items requested, including their unit cost and quantity.",
+      items: {
+        type: "object",
+        properties: {
+          description: { type: "string", description: "The name or title of the optional add-on." },
+          cost: { type: "number", description: "The unit cost of the add-on." },
+          quantity: { type: "number", description: "The quantity requested, default to 1 if not specified." },
+        },
+        required: ["description", "cost", "quantity"]
+      }
+    }
+  },
+  required: ["clientName", "clientEmail", "invoiceType", "eventTitle", "eventDate", "eventLocation", "paymentTerms", "compulsoryItems", "addOns", "preparationNotes"]
+};
+
+serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  if (!GEMINI_API_KEY) {
+    return new Response(JSON.stringify({ error: 'GEMINI_API_KEY not set' }), {
+      status: 500,
+      headers: corsHeaders,
+    });
   }
 
   try {
     const { emailContent } = await req.json();
 
     if (!emailContent) {
-      return new Response(JSON.stringify({ error: 'Missing email content.' }), {
+      return new Response(JSON.stringify({ error: 'Missing emailContent in request body' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: corsHeaders,
       });
     }
 
-    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
-    if (!GEMINI_API_KEY) {
-      throw new Error("GEMINI_API_KEY not set.");
-    }
+    const prompt = `Analyze the following client email content and extract all relevant details for generating a professional quote. Pay special attention to identifying the client, event details, requested services (compulsory items), optional services (add-ons), and any specific notes regarding service commitment or preparation.
 
-    const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
-
-    const prompt = `You are an expert AI Quote Extractor. Analyze the following email conversation thread and extract all relevant details for creating a professional service quote.
-
-Email Conversation:
+Client Email Content:
 ---
 ${emailContent}
 ---
 
-Extract the following fields and return them as a single JSON object. If a field is missing or cannot be reliably determined, use a placeholder or a reasonable default (e.g., 'Quote' for invoiceType, current date for eventDate, empty string for optional fields).
+Please output the result strictly as a single JSON object conforming to the provided schema. Ensure all numeric fields are numbers and all required fields are present. If a field is not explicitly mentioned, use a reasonable default or leave it empty if optional, but ensure the structure is maintained.`;
 
-Constraints:
-1. The output MUST be a single JSON object that strictly follows the TypeScript interface:
-   interface ExtractedQuoteContent {
-     clientName: string;
-     clientEmail: string;
-     invoiceType: string; // e.g., 'Wedding Quote', 'Live Piano Quote'
-     eventTitle: string; // e.g., 'Wedding Ceremony & Reception'
-     eventDate: string; // MUST be in YYYY-MM-DD format
-     eventTime?: string; // Optional, e.g., '7:00 PM'
-     eventLocation: string;
-     compulsoryItems: { description: string; amount: number; }[]; // At least 1 item
-     addOns: { description: string; cost: number; quantity: number; }[]; // Can be empty
-     paymentTerms: string; // Concise payment terms
-   }
-2. Ensure all amounts and costs are realistic positive numbers based on the context, or use 0 if fees are not mentioned.
-3. Extract the client's name and email address from the conversation context.
-4. If multiple dates/events are mentioned, extract the primary one.
-
-JSON Output:`;
-
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
+    const response = await fetch(GEMINI_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': GEMINI_API_KEY,
+      },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: JSON_SCHEMA,
+        },
+      }),
     });
 
-    const jsonText = response.text.trim().replace(/```json|```/g, '').trim();
-    const generatedContent = JSON.parse(jsonText);
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Gemini API Error:', errorText);
+      throw new Error(`Gemini API failed with status ${response.status}: ${errorText}`);
+    }
 
-    return new Response(JSON.stringify(generatedContent), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    const geminiData = await response.json();
+    
+    // The response structure from Gemini is usually { candidates: [{ content: { parts: [{ text: JSON_STRING }] } }] }
+    const jsonString = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!jsonString) {
+      throw new Error("AI response was empty or malformed.");
+    }
+
+    const extractedData = JSON.parse(jsonString);
+
+    // Basic validation to ensure required fields are present before returning
+    if (!extractedData.clientName || !extractedData.eventTitle) {
+        throw new Error("AI failed to extract core client or event details.");
+    }
+
+    return new Response(JSON.stringify(extractedData), {
+      headers: corsHeaders,
       status: 200,
     });
 
   } catch (error) {
-    console.error('AI Extraction Error:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
-    return new Response(JSON.stringify({ error: errorMessage }), { 
+    console.error('Edge Function Error:', error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      headers: corsHeaders,
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 });
