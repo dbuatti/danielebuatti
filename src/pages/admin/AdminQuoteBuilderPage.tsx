@@ -259,7 +259,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
     };
   };
 
-  const handleSaveCreateQuote = async (values: QuoteFormValues, status: 'Draft' | 'Created') => {
+  const handleSaveCreateQuote = async (values: QuoteFormValues, status: 'Draft' | 'Created'): Promise<Quote | null> => {
     setIsSubmitting(true);
     const toastId = showLoading(status === 'Draft' ? 'Saving draft...' : 'Creating quote...');
 
@@ -291,13 +291,16 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
       const newQuoteId = data.id;
       
-      // Update currentQuote state with the newly saved/created data
-      setCurrentQuote({
+      // Construct the full Quote object based on form data and returned ID/slug/status
+      const savedQuote: Quote = {
         ...quoteData,
         id: newQuoteId,
         slug: data.slug,
         status: data.status,
-      });
+      };
+      
+      // Update currentQuote state with the newly saved/created data
+      setCurrentQuote(savedQuote);
 
       // If successful, delete the draft if one exists
       if (currentDraftId) {
@@ -310,7 +313,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       }
 
       showSuccess(`Quote successfully ${status === 'Draft' ? 'saved as draft' : 'created'}!`, { id: toastId });
-      return newQuoteId;
+      return savedQuote; // Return the full object
 
     } catch (error: any) {
       console.error('Error saving/creating quote:', error);
@@ -324,10 +327,10 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
   const handleCreateAndSend = async (values: QuoteFormValues) => {
     // 1. Save/Create the quote first, setting status to 'Created'
-    const quoteId = await handleSaveCreateQuote(values, 'Created');
+    const savedQuote = await handleSaveCreateQuote(values, 'Created');
 
-    if (quoteId && currentQuote) {
-      // 2. Open the sending modal
+    if (savedQuote) {
+      // 2. Open the sending modal using the immediately available savedQuote object
       setIsSendingModal(true);
     }
   };
