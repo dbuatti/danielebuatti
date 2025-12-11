@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,7 +10,7 @@ import { createSlug } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Quote, QuoteItem } from '@/types/quote';
+import { Quote, QuoteItem, QuoteTheme } from '@/types/quote';
 import { useAuth } from '@/hooks/useAuth';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -49,6 +50,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
   const [previewData, setPreviewData] = useState<QuoteFormValues | null>(null);
   const [currentDraftId, setCurrentDraftId] = useState<string | undefined>(undefined);
   const [isLoadingDraft, setIsLoadingDraft] = useState(false);
+
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(QuoteFormSchema),
     defaultValues: defaultFormValues as QuoteFormValues,
@@ -65,7 +67,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
         .select('*')
         .eq('id', draftId)
         .single();
+
       if (error) throw error;
+
       const draft = data as Draft;
       form.reset(draft.data);
       setCurrentDraftId(draft.id);
@@ -104,18 +108,23 @@ const AdminQuoteBuilderPage: React.FC = () => {
     let uniqueSlug = baseSlug;
     let counter = 0;
     const maxAttempts = 100; // Prevent infinite loops
+
     while (counter < maxAttempts) {
       const { data: existingSlugs, error: slugCheckError } = await supabase
         .from('quotes')
         .select('slug')
         .eq('slug', uniqueSlug);
+
       if (slugCheckError) throw slugCheckError;
+
       if (existingSlugs && existingSlugs.length === 0) {
         return uniqueSlug; // Slug is unique
       }
+
       counter++;
       uniqueSlug = `${baseSlug}-${counter}`;
     }
+
     // If we've reached max attempts, generate a random suffix
     return `${baseSlug}-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
   };
@@ -125,6 +134,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       showError('You must be logged in to save a draft.');
       return;
     }
+
     // Use a persistent toast ID for loading state
     const toastId = showLoading(currentDraftId ? 'Updating draft...' : 'Saving draft...');
     try {
@@ -134,6 +144,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         data: values, // Store the entire form values object
         updated_at: new Date().toISOString(),
       };
+
       let result;
       if (currentDraftId) {
         // Update existing draft
@@ -151,13 +162,16 @@ const AdminQuoteBuilderPage: React.FC = () => {
           .select('id')
           .single();
       }
+
       if (result.error) {
         // Log detailed error from Supabase
         console.error('Supabase Draft Save Error:', result.error);
         throw result.error;
       }
+
       const savedDraftId = result.data.id;
       setCurrentDraftId(savedDraftId);
+
       // Show success message using the same toast ID
       showSuccess('Draft saved successfully!', { id: toastId });
     } catch (error: any) {
@@ -176,13 +190,17 @@ const AdminQuoteBuilderPage: React.FC = () => {
       const { data, error } = await supabase.functions.invoke('extract-quote-content', {
         body: { emailContent },
       });
+
       if (error) {
         throw error;
       }
+
       const extractedContent = data as ExtractedQuoteContent;
+
       // Update form fields with AI extracted content
       form.setValue('clientName', extractedContent.clientName);
       form.setValue('clientEmail', extractedContent.clientEmail);
+
       // Ensure extracted type is valid or default to 'Quote'
       const invoiceType = extractedContent.invoiceType === 'Invoice' ? 'Invoice' : 'Quote';
       form.setValue('invoiceType', invoiceType);
@@ -190,6 +208,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       form.setValue('eventDate', extractedContent.eventDate);
       form.setValue('eventTime', extractedContent.eventTime);
       form.setValue('eventLocation', extractedContent.eventLocation);
+
       // --- AI Extraction Mapping Update: Use new 'name' and 'description' fields ---
       form.setValue('compulsoryItems', extractedContent.compulsoryItems.map(item => ({
         id: Math.random().toString(36).substring(2, 11),
@@ -197,6 +216,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         description: item.description || '', // Use the new 'description' field from AI
         amount: item.amount,
       })));
+
       // Set quantity to 0 for optional add-ons upon extraction, as requested
       form.setValue('addOns', extractedContent.addOns.map(item => ({
         id: Math.random().toString(36).substring(2, 11),
@@ -205,8 +225,10 @@ const AdminQuoteBuilderPage: React.FC = () => {
         cost: item.cost,
         quantity: 0, // Defaulting quantity to 0 for optional add-ons
       })));
+
       form.setValue('paymentTerms', extractedContent.paymentTerms);
       form.setValue('preparationNotes', extractedContent.preparationNotes);
+
       showSuccess('Quote details extracted and applied!', { id: toastId });
     } catch (error: any) {
       console.error('Error extracting AI content:', error);
@@ -225,9 +247,11 @@ const AdminQuoteBuilderPage: React.FC = () => {
       const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.amount ?? 0), 0);
       const addOnTotal = values.addOns?.reduce((sum: number, addOn) => sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
       const totalAmount = compulsoryTotal + addOnTotal;
+
       // Generate a base slug
       const baseSlug = createSlug(`${values.eventTitle}-${values.clientName}-${values.eventDate}`);
       const uniqueSlug = await generateUniqueSlug(baseSlug);
+
       // Prepare details for JSONB column
       const details = {
         compulsoryItems: values.compulsoryItems.map(item => ({
@@ -255,6 +279,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         headerImageUrl: values.headerImageUrl || '',
         preparationNotes: values.preparationNotes || '',
       };
+
       // Invoke the Edge Function to create the quote
       const { data, error } = await supabase.functions.invoke('create-quote', {
         body: {
@@ -270,9 +295,11 @@ const AdminQuoteBuilderPage: React.FC = () => {
           slug: uniqueSlug,
         },
       });
+
       if (error) {
         throw error;
       }
+
       // If successful, delete the draft if one exists
       if (currentDraftId) {
         const { error: deleteError } = await supabase.from('quote_drafts').delete().eq('id', currentDraftId);
@@ -280,7 +307,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
           console.warn('Failed to delete draft after quote creation:', deleteError);
         }
       }
+
       showSuccess('Quote created successfully!', { id: toastId });
+
       // Redirect to the newly created quote's public page or admin details page
       if (data && data.slug) {
         navigate(`/quotes/${data.slug}`);
@@ -302,6 +331,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
     const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.amount ?? 0), 0);
     const addOnTotal = values.addOns?.reduce((sum: number, addOn) => sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
     const totalAmount = compulsoryTotal + addOnTotal;
+
     // Helper function to map form item to QuoteItem structure
     const mapFormItemToQuoteItem = (item: { id?: string, name: string, description?: string, amount?: number, cost?: number, quantity?: number }): QuoteItem => {
       const quantity = item.quantity ?? 1;
@@ -340,7 +370,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         compulsoryItems: values.compulsoryItems.map(item => mapFormItemToQuoteItem(item)),
         currencySymbol: values.currencySymbol,
         eventTime: values.eventTime ?? '',
-        theme: values.theme as "black-gold" | "blue-white" | "green-white" || 'black-gold',
+        theme: (values.theme as QuoteTheme) || 'black-gold',
         headerImageUrl: values.headerImageUrl || '',
         preparationNotes: values.preparationNotes || '',
       },
@@ -364,7 +394,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
           Use this form to generate a new client-facing quote page. The slug will be automatically generated but can be customized in the QuoteForm if needed.
         </p>
       </div>
+
       <AIQuoteExtractor onExtract={handleExtractAI} isSubmitting={isSubmitting} />
+
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
         <CardHeader>
           <CardTitle className="text-xl text-brand-primary">
@@ -382,6 +414,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
           />
         </CardContent>
       </Card>
+
       <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
         <DialogContent className="sm:max-w-[90vw] w-[90vw] h-[90vh] p-0 bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50">
           <DialogHeader className="p-6 pb-0">

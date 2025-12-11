@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,7 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Quote, QuoteItem } from '@/types/quote';
+import { Quote, QuoteItem, QuoteTheme } from '@/types/quote';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
@@ -21,6 +22,7 @@ const AdminEditQuotePage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState<QuoteFormValues | null>(null);
+
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(QuoteFormSchema),
     mode: 'onChange',
@@ -36,7 +38,9 @@ const AdminEditQuotePage: React.FC = () => {
         .select('*')
         .eq('slug', slug)
         .single();
+
       if (error) throw error;
+
       const fetchedQuote: Quote = {
         id: data.id,
         slug: data.slug,
@@ -53,8 +57,10 @@ const AdminEditQuotePage: React.FC = () => {
         created_at: data.created_at,
         details: data.details,
       };
+
       setQuote(fetchedQuote);
       const details = fetchedQuote.details;
+
       // Map Quote data to Form values
       const defaultValues: QuoteFormValues = {
         clientName: fetchedQuote.client_name,
@@ -87,6 +93,7 @@ const AdminEditQuotePage: React.FC = () => {
           quantity: item.quantity,
         })),
       };
+
       form.reset(defaultValues);
       showSuccess('Quote loaded.', { id: toastId });
     } catch (error: any) {
@@ -123,6 +130,7 @@ const AdminEditQuotePage: React.FC = () => {
       const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.amount ?? 0), 0);
       const addOnTotal = values.addOns?.reduce((sum: number, addOn) => sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
       const totalAmount = compulsoryTotal + addOnTotal;
+
       // Prepare details for JSONB column
       const details = {
         compulsoryItems: values.compulsoryItems.map(item => ({
@@ -151,6 +159,7 @@ const AdminEditQuotePage: React.FC = () => {
         headerImageUrl: values.headerImageUrl || '',
         preparationNotes: values.preparationNotes || '',
       };
+
       // Update the quote record
       const { data, error } = await supabase
         .from('quotes')
@@ -169,10 +178,13 @@ const AdminEditQuotePage: React.FC = () => {
         .eq('id', quote.id)
         .select('slug')
         .single();
+
       if (error) {
         throw error;
       }
+
       showSuccess('Quote updated successfully!', { id: toastId });
+
       // Refresh data and navigate back to details page
       if (data && data.slug) {
         navigate(`/admin/quotes/${data.slug}`);
@@ -193,6 +205,7 @@ const AdminEditQuotePage: React.FC = () => {
     const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.amount ?? 0), 0);
     const addOnTotal = values.addOns?.reduce((sum: number, addOn) => sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
     const totalAmount = compulsoryTotal + addOnTotal;
+
     // Helper function to map form item to QuoteItem structure
     const mapFormItemToQuoteItem = (item: { id?: string, name: string, description?: string, amount?: number, cost?: number, quantity?: number }): QuoteItem => {
       const quantity = item.quantity ?? 1;
@@ -231,7 +244,7 @@ const AdminEditQuotePage: React.FC = () => {
         compulsoryItems: values.compulsoryItems.map(item => mapFormItemToQuoteItem(item)),
         currencySymbol: values.currencySymbol,
         eventTime: values.eventTime ?? '', // FIX: Ensure eventTime is a string
-        theme: values.theme as "black-gold" | "blue-white" | "green-white" || 'black-gold',
+        theme: (values.theme as QuoteTheme) || 'black-gold',
         headerImageUrl: values.headerImageUrl || '',
         preparationNotes: values.preparationNotes || '',
       },
@@ -261,6 +274,7 @@ const AdminEditQuotePage: React.FC = () => {
       <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
         Modify the details of this existing quote.
       </p>
+
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
         <CardHeader>
           <CardTitle className="text-xl text-brand-primary">Quote Details</CardTitle>
@@ -275,6 +289,7 @@ const AdminEditQuotePage: React.FC = () => {
           />
         </CardContent>
       </Card>
+
       <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
         <DialogContent className="sm:max-w-[90vw] w-[90vw] h-[90vh] p-0 bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50">
           <DialogHeader className="p-6 pb-0">
