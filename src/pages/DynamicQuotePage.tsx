@@ -230,6 +230,7 @@ const DynamicQuotePage: React.FC = () => {
         totalBoxText: 'text-brand-yellow',
         acceptBoxBorder: 'border-brand-yellow/50',
         checkbox: 'border-brand-yellow data-[state=checked]:bg-brand-yellow data-[state=checked]:text-brand-dark',
+        contentImageBorder: 'border-brand-yellow/50',
       }
     : {
         // Default Theme (Premium Light/Pink)
@@ -247,6 +248,7 @@ const DynamicQuotePage: React.FC = () => {
         totalBoxText: 'text-brand-primary',
         acceptBoxBorder: 'border-brand-primary/50',
         checkbox: 'border-brand-primary data-[state=checked]:bg-brand-primary data-[state=checked]:text-white',
+        contentImageBorder: 'border-brand-primary/50',
       };
       
   const eventDateFormatted = quote.event_date ? format(new Date(quote.event_date), 'EEEE dd MMMM yyyy') : 'TBD';
@@ -306,14 +308,14 @@ const DynamicQuotePage: React.FC = () => {
               </section>
             )}
             
-            {/* Content Images (Black/Gold Theme Only) */}
-            {isBlackGoldTheme && (contentImageUrl1 || contentImageUrl2) && (
+            {/* Content Images (Render for both themes now) */}
+            {(contentImageUrl1 || contentImageUrl2) && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
                 {contentImageUrl1 && (
                   <DynamicImage 
                     src={contentImageUrl1} 
                     alt="Quote Content Image 1" 
-                    className="w-full h-48 object-cover rounded-lg shadow-lg"
+                    className={`w-full h-48 object-cover rounded-lg shadow-lg border ${themeClasses.contentImageBorder}`}
                     width={400}
                     height={192}
                   />
@@ -322,7 +324,7 @@ const DynamicQuotePage: React.FC = () => {
                   <DynamicImage 
                     src={contentImageUrl2} 
                     alt="Quote Content Image 2" 
-                    className="w-full h-48 object-cover rounded-lg shadow-lg"
+                    className={`w-full h-48 object-cover rounded-lg shadow-lg border ${themeClasses.contentImageBorder}`}
                     width={400}
                     height={192}
                   />
