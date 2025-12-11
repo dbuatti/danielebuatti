@@ -15,7 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 
 const AdminEditQuotePage: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [quote, setQuote] = useState<Quote | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -29,7 +29,7 @@ const AdminEditQuotePage: React.FC = () => {
   });
 
   const fetchQuote = useCallback(async () => {
-    if (!slug) return;
+    if (!id) return;
 
     setIsLoading(true);
     const toastId = showLoading('Loading quote for editing...');
@@ -38,7 +38,7 @@ const AdminEditQuotePage: React.FC = () => {
       const { data, error } = await supabase
         .from('invoices')
         .select('*')
-        .eq('slug', slug)
+        .eq('id', id)
         .single();
 
       if (error) throw error;
@@ -107,7 +107,7 @@ const AdminEditQuotePage: React.FC = () => {
       setIsLoading(false);
       dismissToast(toastId);
     }
-  }, [slug, form]);
+  }, [id, form]);
 
   useEffect(() => {
     fetchQuote();
@@ -192,7 +192,7 @@ const AdminEditQuotePage: React.FC = () => {
 
       // Refresh data and navigate back to details page
       if (data && data.slug) {
-        navigate(`/admin/quotes/${data.slug}`);
+        navigate(`/admin/quotes/${quote.id}`);
       } else {
         navigate('/admin/quotes');
       }

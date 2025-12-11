@@ -18,7 +18,7 @@ import { format } from 'date-fns';
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 
 const AdminQuoteDetailsPage: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [quote, setQuote] = useState<Quote | null>(null);
@@ -28,7 +28,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
   const [, copy] = useCopyToClipboard(); // Removed unused 'copiedText'
 
   const fetchQuote = useCallback(async () => {
-    if (!slug) return;
+    if (!id) return;
 
     setIsLoading(true);
     const toastId = showLoading('Loading quote details...');
@@ -37,7 +37,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
       const { data, error } = await supabase
         .from('invoices')
         .select('*')
-        .eq('slug', slug)
+        .eq('id', id)
         .single();
 
       if (error) throw error;
@@ -70,7 +70,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
       setIsLoading(false);
       dismissToast(toastId);
     }
-  }, [slug]);
+  }, [id]);
 
   useEffect(() => {
     fetchQuote();
@@ -139,7 +139,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
           {quote.invoice_type} Details: {quote.event_title}
         </h2>
         <div className="flex space-x-2">
-          <Button variant="outline" onClick={() => navigate(`/admin/quotes/edit/${quote.slug}`)}>
+          <Button variant="outline" onClick={() => navigate(`/admin/quotes/edit/${quote.id}`)}>
             <Edit className="h-4 w-4 mr-2" /> Edit
           </Button>
           <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
