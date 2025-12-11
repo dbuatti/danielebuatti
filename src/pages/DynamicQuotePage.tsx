@@ -243,6 +243,8 @@ const DynamicQuotePage: React.FC = () => {
         acceptButton: 'bg-brand-yellow text-brand-dark hover:bg-brand-yellow/90',
         rejectButton: 'bg-red-600 text-white hover:bg-red-700',
         acceptBoxBorder: 'border-brand-yellow/50',
+        inputBg: 'bg-brand-dark', // Added input background
+        inputBorder: 'border-brand-yellow/30', // Added input border
       }
     : {
         bg: 'bg-brand-light',
@@ -254,6 +256,8 @@ const DynamicQuotePage: React.FC = () => {
         acceptButton: 'bg-brand-primary text-white hover:bg-brand-primary/90',
         rejectButton: 'bg-red-600 text-white hover:bg-red-700',
         acceptBoxBorder: 'border-brand-primary/50',
+        inputBg: 'bg-brand-light', // Added input background
+        inputBorder: 'border-brand-secondary/50', // Added input border
       };
 
   return (
@@ -273,7 +277,7 @@ const DynamicQuotePage: React.FC = () => {
           <CardFooter className={`p-8 pt-0 flex flex-col space-y-8 border-t border-current/20 ${themeClasses.cardBg}`}>
             
             <div className={`p-6 rounded-lg text-center border-2 ${themeClasses.acceptBoxBorder}`}>
-              <h2 className={`text-2xl font-extrabold mb-6 ${themeClasses.text}`}>
+              <h2 className={`text-2xl font-extrabold mb-6 ${themeClasses.primary}`}>
                 {isFinalized ? 'Booking Status' : 'Accept Your Quote'}
               </h2>
               
@@ -291,7 +295,7 @@ const DynamicQuotePage: React.FC = () => {
                               <Input 
                                 placeholder="Enter your name" 
                                 {...field} 
-                                className={`${themeClasses.cardBg} ${themeClasses.text} border-current/30`}
+                                className={`${themeClasses.inputBg} ${themeClasses.text} ${themeClasses.inputBorder} placeholder:${themeClasses.secondary}`}
                               />
                             </FormControl>
                             <FormMessage />
@@ -309,7 +313,7 @@ const DynamicQuotePage: React.FC = () => {
                                 type="email"
                                 placeholder="Enter your email" 
                                 {...field} 
-                                className={`${themeClasses.cardBg} ${themeClasses.text} border-current/30`}
+                                className={`${themeClasses.inputBg} ${themeClasses.text} ${themeClasses.inputBorder} placeholder:${themeClasses.secondary}`}
                               />
                             </FormControl>
                             <FormMessage />
@@ -322,7 +326,7 @@ const DynamicQuotePage: React.FC = () => {
                     </div>
                   )}
 
-                  <div className="mt-8 flex justify-center space-x-4">
+                  <div className="mt-8 flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                     {!isFinalized ? (
                       <>
                         <Button 
@@ -344,9 +348,9 @@ const DynamicQuotePage: React.FC = () => {
                         </Button>
                       </>
                     ) : (
-                      <div className={`mt-4 p-3 rounded-md font-semibold flex items-center justify-center space-x-2 ${isAccepted ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'}`}>
+                      <div className={`mt-4 p-3 rounded-md font-semibold flex flex-col sm:flex-row items-center justify-center space-x-2 ${isAccepted ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'}`}>
                         {isAccepted ? <CheckCircle className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
-                        <span>This quote was {isAccepted ? 'ACCEPTED' : 'REJECTED'} on {format(new Date(quote.accepted_at || quote.rejected_at!), 'PPP')}.</span>
+                        <span className="mt-2 sm:mt-0">This quote was {isAccepted ? 'ACCEPTED' : 'REJECTED'} on {format(new Date(quote.accepted_at || quote.rejected_at!), 'PPP')}.</span>
                       </div>
                     )}
                   </div>

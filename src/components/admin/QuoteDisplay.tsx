@@ -188,7 +188,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
   const headerImagePositionClass = details.headerImagePosition || 'object-center';
 
   return (
-    <div className={`p-8 max-w-4xl mx-auto space-y-8 ${themeClasses.bg} ${themeClasses.text}`}>
+    <div className={`p-4 sm:p-8 max-w-4xl mx-auto space-y-8 ${themeClasses.bg} ${themeClasses.text}`}>
       
       {/* Header Image */}
       {details.headerImageUrl && (
@@ -204,12 +204,12 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       )}
 
       {/* Quote/Invoice Details */}
-      <div className={`flex justify-between items-start border-b pb-4 border-current/20`}>
+      <div className={`flex flex-col sm:flex-row justify-between items-start border-b pb-4 border-current/20`}>
         <div>
           <h1 className={`text-4xl font-extrabold ${themeClasses.primary}`}>{quote.invoice_type}</h1>
           <p className="text-lg mt-2">Prepared By: {quote.prepared_by}</p>
         </div>
-        <div className="text-right">
+        <div className="text-right mt-4 sm:mt-0">
           <h2 className="text-2xl font-semibold">{quote.event_title}</h2>
           <p className="mt-1 text-sm">{quote.event_date} {details.eventTime}</p>
           <p className="text-sm">{quote.event_location}</p>
@@ -226,9 +226,9 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       )}
       
       {/* Items Table */}
-      <div className="pt-4">
+      <div className="pt-4 overflow-x-auto"> {/* Added overflow-x-auto for responsiveness */}
         <h3 className={`text-xl font-semibold mb-4 ${themeClasses.primary}`}>Items Included</h3>
-        <Table className={`border ${themeClasses.tableBorder} ${themeClasses.tableText}`}>
+        <Table className={`min-w-full border ${themeClasses.tableBorder} ${themeClasses.tableText}`}>
           <TableHeader>
             <TableRow className={themeClasses.tableHeaderBg}>
               <TableHead className={`font-bold ${themeClasses.primary} border-r border-current/10`}>Description</TableHead>
