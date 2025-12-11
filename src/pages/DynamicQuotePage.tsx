@@ -11,6 +11,18 @@ import { Quote, QuoteItem } from '@/types/quote';
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import DynamicImage from '@/components/DynamicImage'; // Import DynamicImage
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 // Define the structure for the data fetched from Supabase (which includes the JSONB details)
 interface QuoteData extends Omit<Quote, 'details'> {
@@ -32,6 +44,12 @@ interface QuoteData extends Omit<Quote, 'details'> {
   };
 }
 
+// Define schema for acceptance form
+const acceptanceSchema = z.object({
+  clientName: z.string().min(1, { message: "Your name is required for acceptance." }),
+  clientEmail: z.string().email({ message: "A valid email is required for acceptance." }),
+});
+
 const DynamicQuotePage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
@@ -41,6 +59,15 @@ const DynamicQuotePage: React.FC = () => {
   const [isAccepting, setIsAccepting] = useState(false);
   // State to hold the mutable quantities for optional add-ons (only used if not finalized)
   const [currentOptionalAddOns, setCurrentOptionalAddOns] = useState<QuoteItem[]>([]); 
+  
+  // Initialize acceptance form (will be reset once quote data is loaded)
+  const acceptanceForm = useForm<z.infer<typeof acceptanceSchema>>({
+    resolver: zodResolver(acceptanceSchema),
+    defaultValues: {
+        clientName: '',
+        clientEmail: '',
+    },
+  });
 
   useEffect(() => {
     if (!slug) {
@@ -69,6 +96,12 @@ const DynamicQuotePage: React.FC = () => {
           };
           setQuote(quoteData);
           
+          // Reset acceptance form with client data
+          acceptanceForm.reset({
+            clientName: quoteData.client_name,
+            clientEmail: quoteData.client_email,
+          });
+
           // Initialize mutable state for quantity controls
           if (quoteData.accepted_at && quoteData.details.client_selected_add_ons) {
             // If accepted, use the final selected list for display (though controls will be disabled)
@@ -93,7 +126,7 @@ const DynamicQuotePage: React.FC = () => {
     };
 
     fetchQuote();
-  }, [slug]);
+  }, [slug, acceptanceForm]);
 
   const handleQuantityChange = (itemId: string, delta: number) => {
     if (isFinalized) return;
@@ -109,7 +142,7 @@ const DynamicQuotePage: React.FC = () => {
     );
   };
 
-  const handleAcceptQuote = async () => {
+  const handleAcceptQuote = acceptanceForm.handleSubmit(async (values) => {
     if (!quote) return;
 
     setIsAccepting(true);
@@ -127,8 +160,8 @@ const DynamicQuotePage: React.FC = () => {
       // 2. Prepare data for Edge Function
       const acceptancePayload = {
         quoteId: quote.id,
-        clientName: quote.client_name,
-        clientEmail: quote.client_email,
+        clientName: values.clientName, // Use form value
+        clientEmail: values.clientEmail, // Use form value
         finalTotal: finalTotal,
         finalSelectedAddOns: finalAddOns,
       };
@@ -152,7 +185,7 @@ const DynamicQuotePage: React.FC = () => {
       setIsAccepting(false);
       dismissToast(toastId);
     }
-  };
+  });
 
   const handleRejectQuote = async () => {
     if (!quote) return;
@@ -268,7 +301,7 @@ const DynamicQuotePage: React.FC = () => {
 
   return (
     <ScrollArea className={`min-h-screen ${themeClasses.bg}`}>
-      <div className={`max-w-4xl mx-auto p-4 sm:p-8`}>
+      <div className={`max-w-6xl mx-auto p-4 sm:p-8`}> {/* Increased max-width to 6xl */}
         <Card className={`shadow-2xl rounded-lg ${themeClasses.cardBg} ${themeClasses.text} border-2 ${themeClasses.border}`}>
           
           {/* Header Image */}
@@ -278,7 +311,7 @@ const DynamicQuotePage: React.FC = () => {
                 src={headerImageUrl} 
                 alt="Quote Header" 
                 className="w-full h-64 object-cover rounded-t-lg shadow-md"
-                width={800}
+                width={1200} // Increased width for better display on wider container
                 height={256}
               />
             </div>
@@ -313,7 +346,7 @@ const DynamicQuotePage: React.FC = () => {
             {/* Main Content / Description Block (Using preparationNotes) */}
             {preparationNotes && (
               <section className="text-center mb-10">
-                <p className={`text-xl font-extrabold ${themeClasses.text} max-w-3xl mx-auto whitespace-pre-wrap`}>
+                <p className={`text-xl font-extrabold ${themeClasses.text} max-w-4xl mx-auto whitespace-pre-wrap`}>
                   {preparationNotes}
                 </p>
               </section>
@@ -327,7 +360,7 @@ const DynamicQuotePage: React.FC = () => {
               {compulsoryItems.length > 0 && (
                 <div className="space-y-4 border-b border-current/20 pb-4">
                   {compulsoryItems.map((item, index) => (
-                    <div key={index} className="flex justify-between items-start">
+                    <div key={index} className="flex justify-between items-start py-2">
                       <div className="flex-1 pr-4">
                         <p className={`${themeClasses.text} flex items-start text-lg`}>
                           <span className={`mr-2 ${themeClasses.primary} text-xl leading-none`}>&bull;</span>
@@ -335,7 +368,7 @@ const DynamicQuotePage: React.FC = () => {
                           {item.description && <span className={`text-base ml-2 ${themeClasses.secondary}`}>{item.description}</span>}
                         </p>
                       </div>
-                      <p className={`font-bold text-lg ${themeClasses.primary}`}>{formatCurrency(calculateItemTotal(item))}</p>
+                      <p className={`font-bold text-lg ${themeClasses.primary} flex-shrink-0`}>{formatCurrency(calculateItemTotal(item))}</p>
                     </div>
                   ))}
                   
@@ -371,7 +404,7 @@ const DynamicQuotePage: React.FC = () => {
                             <p className={`text-sm ml-0 ${themeClasses.secondary}`}>Unit Cost: {formatCurrency(item.price)}</p>
                         </div>
                         
-                        <div className="flex items-center space-x-4 mt-2 sm:mt-0">
+                        <div className="flex items-center space-x-4 mt-2 sm:mt-0 flex-shrink-0">
                             {/* Quantity Controls */}
                             {!isFinalized ? (
                                 <div className="flex items-center border rounded-md border-current/30">
@@ -399,7 +432,7 @@ const DynamicQuotePage: React.FC = () => {
                                     </Button>
                                 </div>
                             ) : (
-                                <span className={`w-8 text-center font-semibold ${themeClasses.text}`}>
+                                <span className={`w-16 text-center font-semibold ${themeClasses.text}`}>
                                     Qty: {item.quantity}
                                 </span>
                             )}
@@ -446,36 +479,84 @@ const DynamicQuotePage: React.FC = () => {
               </p>
             </div>
 
-            {/* Acceptance Buttons */}
+            {/* Acceptance Form/Buttons */}
             <div className={`mt-8 p-6 rounded-lg text-center border-2 ${themeClasses.acceptBoxBorder}`}>
               <h2 className={`text-2xl font-extrabold mb-6 ${themeClasses.text}`}>Accept Your Quote</h2>
               
-              <div className="mt-8 flex justify-center space-x-4">
-                {!isFinalized ? (
-                  <>
-                    <Button 
-                      variant="destructive" 
-                      onClick={handleRejectQuote} 
-                      disabled={isAccepting}
-                      className={themeClasses.rejectButton}
-                    >
-                      Reject Quote
-                    </Button>
-                    <Button 
-                      onClick={handleAcceptQuote} 
-                      disabled={isAccepting}
-                      className={themeClasses.acceptButton}
-                    >
-                      {isAccepting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
-                      Accept Quote
-                    </Button>
-                  </>
-                ) : (
-                  <Button onClick={() => navigate('/')} className={themeClasses.acceptButton}>
-                    Back to Home
-                  </Button>
-                )}
-              </div>
+              <Form {...acceptanceForm}>
+                <form onSubmit={handleAcceptQuote} className="space-y-6">
+                  {!isFinalized && (
+                    <div className="space-y-4 max-w-md mx-auto">
+                      <FormField
+                        control={acceptanceForm.control}
+                        name="clientName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className={themeClasses.text}>Your Full Name *</FormLabel>
+                            <FormControl>
+                              <Input 
+                                placeholder="Enter your name" 
+                                {...field} 
+                                className={`${themeClasses.cardBg} ${themeClasses.text} border-current/30`}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={acceptanceForm.control}
+                        name="clientEmail"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className={themeClasses.text}>Your Email Address *</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="email"
+                                placeholder="Enter your email" 
+                                {...field} 
+                                className={`${themeClasses.cardBg} ${themeClasses.text} border-current/30`}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <p className={`text-sm ${themeClasses.secondary}`}>
+                        By clicking "Accept Quote", you agree to the terms and confirm your booking with a {depositPercentage}% deposit.
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="mt-8 flex justify-center space-x-4">
+                    {!isFinalized ? (
+                      <>
+                        <Button 
+                          type="button"
+                          variant="destructive" 
+                          onClick={handleRejectQuote} 
+                          disabled={isAccepting}
+                          className={themeClasses.rejectButton}
+                        >
+                          Reject Quote
+                        </Button>
+                        <Button 
+                          type="submit"
+                          disabled={isAccepting}
+                          className={themeClasses.acceptButton}
+                        >
+                          {isAccepting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
+                          Accept Quote
+                        </Button>
+                      </>
+                    ) : (
+                      <Button onClick={() => navigate('/')} className={themeClasses.acceptButton}>
+                        Back to Home
+                      </Button>
+                    )}
+                  </div>
+                </form>
+              </Form>
             </div>
 
           </CardContent>

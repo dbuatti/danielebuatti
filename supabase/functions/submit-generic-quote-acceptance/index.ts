@@ -56,8 +56,8 @@ serve(async (req: Request) => {
       .from('invoices')
       .update({
         accepted_at: new Date().toISOString(),
-        client_name: clientName,
-        client_email: clientEmail,
+        client_name: clientName, // Update client name
+        client_email: clientEmail, // Update client email
         total_amount: finalTotal,
         details: updatedDetails,
         rejected_at: null,
@@ -88,11 +88,11 @@ serve(async (req: Request) => {
     const subject = `🎉 Quote Accepted: ${updatedRecord.event_title || updatedRecord.invoice_type} from ${clientName}`;
     
     const compulsoryList = (updatedRecord.details?.compulsoryItems || [])
-      .map((item: any) => `<li>${item.name}: A$${item.amount.toFixed(2)}</li>`)
+      .map((item: any) => `<li>${item.name}: A$${(item.price * item.quantity).toFixed(2)}</li>`)
       .join('');
       
     const addOnList = finalSelectedAddOns.length > 0 
-      ? finalSelectedAddOns.map((a: any) => `<li>${a.name} (Qty: ${a.quantity}, Cost: A$${(a.cost * a.quantity).toFixed(2)})</li>`).join('')
+      ? finalSelectedAddOns.map((a: any) => `<li>${a.name} (Qty: ${a.quantity}, Cost: A$${(a.price * a.quantity).toFixed(2)})</li>`).join('')
       : '<li>None selected.</li>';
 
     const emailHtml = `
@@ -154,6 +154,39 @@ serve(async (req: Request) => {
         html: emailHtml,
       }),
     });
+    
+    // 4. Send Client Confirmation Email
+    const clientSubject = `Booking Confirmed: ${updatedRecord.event_title || updatedRecord.invoice_type}`;
+    const clientEmailHtml = `
+      <div style="font-family: 'Outfit', sans-serif; color: #1b1b1b; background-color: #F8F8F8; padding: 20px; border-radius: 8px;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+          <h2 style="color: #DB4CA3; text-align: center; margin-bottom: 20px;">Booking Confirmed!</h2>
+          <p style="font-size: 16px; line-height: 1.6;">Dear ${clientName},</p>
+          <p style="font-size: 16px; line-height: 1.6;">Thank you for accepting the quote for your event, <strong>${updatedRecord.event_title || updatedRecord.invoice_type}</strong>. Your booking is now confirmed!</p>
+          <p style="font-size: 16px; line-height: 1.6;"><strong>Event Date:</strong> ${updatedRecord.event_date}</p>
+          <p style="font-size: 16px; line-height: 1.6;"><strong>Total Amount:</strong> A$${finalTotal.toFixed(2)}</p>
+          <p style="font-size: 16px; line-height: 1.6;">Daniele will be in touch shortly to finalize the deposit payment and all remaining details.</p>
+          <p style="font-size: 14px; color: #666666; text-align: center; margin-top: 30px;">
+            This is an automated confirmation.
+          </p>
+        </div>
+      </div>
+    `;
+
+    await fetch(EMAIL_SERVICE_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${EMAIL_SERVICE_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: 'info@danielebuatti.com',
+        to: clientEmail,
+        subject: clientSubject,
+        html: clientEmailHtml,
+      }),
+    });
+
 
     console.log(`Quote acceptance processed and email notification sent successfully!`);
 
