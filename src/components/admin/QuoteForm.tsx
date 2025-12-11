@@ -37,6 +37,7 @@ export const QuoteFormSchema = z.object({
   bankACC: z.string().min(1, 'Account Number is required.'),
   theme: z.enum(['default', 'black-gold']), // Added 'black-gold' theme
   headerImageUrl: z.string(), // Simplified validation
+  headerImagePosition: z.string().optional(), // NEW: Added headerImagePosition
   
   // Removed contentImageUrl1 and contentImageUrl2
   
@@ -227,7 +228,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onSubmit, isSubmitting, onP
         </div>
 
         {/* Theme and Header Image */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <FormField
             control={control}
             name="theme"
@@ -257,6 +258,19 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onSubmit, isSubmitting, onP
                 <FormLabel>Header Image URL (Optional)</FormLabel>
                 <FormControl>
                   <Input placeholder="https://example.com/image.jpg" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="headerImagePosition"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Header Image Position (Tailwind Class)</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., object-center, object-top, object-[50%_20%]" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

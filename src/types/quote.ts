@@ -21,6 +21,7 @@ export interface QuoteDetails {
   eventTime: string;
   theme: QuoteTheme; // Updated to use specific theme type
   headerImageUrl: string;
+  headerImagePosition?: string; // NEW: Added headerImagePosition
   preparationNotes: string;
   client_selected_add_ons?: QuoteItem[]; // Added missing property
 }

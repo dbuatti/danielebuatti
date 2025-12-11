@@ -35,6 +35,7 @@ const defaultFormValues: Partial<QuoteFormValues> = {
   // New defaults
   theme: 'black-gold', // Default theme set to the new Black/Gold theme
   headerImageUrl: '/blacktie.avif', // Default image URL
+  headerImagePosition: 'object-[50%_70%]', // NEW default: Shift crop down vertically
   preparationNotes: 'This fee covers 7 hours of commitment, including the performance call, soundcheck, and all essential preparation required for a seamless, high-energy performance.\n\nThis fee secures a premium, seamless musical experience for your event.', // New default preparation notes
   // Updated item structure (using 'name' and 'description' now)
   compulsoryItems: [{ name: 'Live Piano Performance Fee', description: '3 hours of performance time.', amount: 1000 }], // Updated default item
@@ -316,7 +317,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         paymentTerms: values.paymentTerms,
         theme: values.theme, // Include new theme
         headerImageUrl: values.headerImageUrl, // Include new header image URL
-        // Removed contentImageUrl1 and contentImageUrl2
+        headerImagePosition: values.headerImagePosition || 'object-center', // NEW
         preparationNotes: values.preparationNotes || '', // Include new preparation notes
       };
 
@@ -415,6 +416,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         eventTime: values.eventTime ?? '', // Ensure eventTime is a string for QuoteDetails
         theme: values.theme, // Pass theme
         headerImageUrl: values.headerImageUrl, // Pass image URL
+        headerImagePosition: values.headerImagePosition || 'object-center', // NEW
         preparationNotes: values.preparationNotes || '', // Pass preparation notes
       },
     };

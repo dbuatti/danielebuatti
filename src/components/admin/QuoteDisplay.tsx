@@ -130,6 +130,8 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
         tableText: 'text-brand-dark',
         contentImageBorder: 'border-brand-primary/50',
       };
+      
+  const headerImagePositionClass = details.headerImagePosition || 'object-center';
 
   return (
     <div className={`p-8 max-w-4xl mx-auto space-y-8 ${themeClasses.bg} ${themeClasses.text}`}>
@@ -140,7 +142,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
           <DynamicImage 
             src={details.headerImageUrl} 
             alt="Quote Header" 
-            className="w-full h-48 object-cover rounded-lg shadow-xl"
+            className={`w-full h-48 object-cover rounded-lg shadow-xl ${headerImagePositionClass}`}
             width={800}
             height={192}
           />

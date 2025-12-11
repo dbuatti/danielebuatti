@@ -48,6 +48,7 @@ interface QuoteData extends Omit<Quote, 'details'> {
     eventTime: string;
     theme: 'default' | 'black-gold';
     headerImageUrl: string;
+    headerImagePosition?: string; // NEW: Added headerImagePosition
     preparationNotes: string;
     client_selected_add_ons?: QuoteItem[]; // Final selected items list
   };
@@ -233,7 +234,7 @@ const DynamicQuotePage: React.FC = () => {
   }
 
   const { details, accepted_at, rejected_at } = quote;
-  const { compulsoryItems, addOns: optionalAddOns, currencySymbol, depositPercentage, paymentTerms, bankDetails, eventTime, theme, headerImageUrl, preparationNotes } = details;
+  const { compulsoryItems, addOns: optionalAddOns, currencySymbol, depositPercentage, paymentTerms, bankDetails, eventTime, theme, headerImageUrl, preparationNotes, headerImagePosition } = details; // Destructure headerImagePosition
   
   const isAccepted = !!accepted_at;
   const isRejected = !!rejected_at;
@@ -323,7 +324,7 @@ const DynamicQuotePage: React.FC = () => {
               <DynamicImage 
                 src={headerImageUrl} 
                 alt="Quote Header" 
-                className="w-full h-64 object-cover rounded-t-lg shadow-md"
+                className={`w-full h-64 object-cover rounded-t-lg shadow-md ${headerImagePosition || 'object-center'}`}
                 width={1200} // Increased width for better display on wider container
                 height={256}
               />

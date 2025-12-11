@@ -81,6 +81,7 @@ const AdminEditQuotePage: React.FC = () => {
         bankACC: details.bankDetails.acc,
         theme: details.theme,
         headerImageUrl: details.headerImageUrl || '',
+        headerImagePosition: details.headerImagePosition || 'object-center', // NEW
         preparationNotes: details.preparationNotes || '',
         compulsoryItems: details.compulsoryItems.map(item => ({
           id: item.id,
@@ -162,6 +163,7 @@ const AdminEditQuotePage: React.FC = () => {
         paymentTerms: values.paymentTerms,
         theme: values.theme,
         headerImageUrl: values.headerImageUrl,
+        headerImagePosition: values.headerImagePosition || 'object-center', // NEW
         preparationNotes: values.preparationNotes || '',
       };
 
@@ -253,6 +255,7 @@ const AdminEditQuotePage: React.FC = () => {
         eventTime: values.eventTime ?? '', // FIX: Ensure eventTime is a string
         theme: values.theme, // Pass theme
         headerImageUrl: values.headerImageUrl,
+        headerImagePosition: values.headerImagePosition || 'object-center', // NEW
         preparationNotes: values.preparationNotes || '',
       },
     };
