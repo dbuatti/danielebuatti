@@ -1,9 +1,8 @@
 "use client";
-
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { showError, showSuccess } from '@/utils/toast';
+import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import QuoteForm, { QuoteFormValues, QuoteFormSchema } from '@/components/admin/QuoteForm';
 import { supabase } from '@/integrations/supabase/client';
 import { createSlug } from '@/lib/utils';
@@ -315,6 +314,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         price: price,
       };
     };
+
     return {
       id: Math.random().toString(36).substring(2, 11),
       slug: 'preview-slug', // Placeholder slug for preview
@@ -340,7 +340,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         compulsoryItems: values.compulsoryItems.map(item => mapFormItemToQuoteItem(item)),
         currencySymbol: values.currencySymbol,
         eventTime: values.eventTime ?? '',
-        theme: (values.theme as "black-gold" | "blue-white" | "green-white") || 'black-gold',
+        theme: values.theme as "black-gold" | "blue-white" | "green-white" || 'black-gold',
         headerImageUrl: values.headerImageUrl || '',
         preparationNotes: values.preparationNotes || '',
       },
@@ -368,11 +368,18 @@ const AdminQuoteBuilderPage: React.FC = () => {
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
         <CardHeader>
           <CardTitle className="text-xl text-brand-primary">
-            Quote Details {currentDraftId && <span className="text-sm text-gray-500">(Draft ID: {currentDraftId.substring(0, 8)}...)</span>}
+            Quote Details
+            {currentDraftId && <span className="text-sm text-gray-500">(Draft ID: {currentDraftId.substring(0, 8)}...)</span>}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <QuoteForm form={form} onSubmit={handleCreateQuote} isSubmitting={isSubmitting} onPreview={handlePreviewQuote} onSaveDraft={handleSaveDraft} />
+          <QuoteForm 
+            form={form} 
+            onSubmit={handleCreateQuote} 
+            isSubmitting={isSubmitting} 
+            onPreview={handlePreviewQuote} 
+            onSaveDraft={handleSaveDraft} 
+          />
         </CardContent>
       </Card>
       <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>

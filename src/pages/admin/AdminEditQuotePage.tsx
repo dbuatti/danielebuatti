@@ -1,9 +1,8 @@
 "use client";
-
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { showError, showSuccess } from '@/utils/toast';
+import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import QuoteForm, { QuoteFormValues, QuoteFormSchema } from '@/components/admin/QuoteForm';
 import { supabase } from '@/integrations/supabase/client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -164,7 +163,8 @@ const AdminEditQuotePage: React.FC = () => {
           event_location: values.eventLocation,
           prepared_by: values.preparedBy,
           total_amount: totalAmount,
-          details: details, // Slug remains unchanged
+          details: details,
+          // Slug remains unchanged
         })
         .eq('id', quote.id)
         .select('slug')
@@ -205,6 +205,7 @@ const AdminEditQuotePage: React.FC = () => {
         price: price,
       };
     };
+
     return {
       id: quote?.id || Math.random().toString(36).substring(2, 11),
       slug: quote?.slug || 'preview-slug',
@@ -230,7 +231,7 @@ const AdminEditQuotePage: React.FC = () => {
         compulsoryItems: values.compulsoryItems.map(item => mapFormItemToQuoteItem(item)),
         currencySymbol: values.currencySymbol,
         eventTime: values.eventTime ?? '', // FIX: Ensure eventTime is a string
-        theme: (values.theme as "black-gold" | "blue-white" | "green-white") || 'black-gold',
+        theme: values.theme as "black-gold" | "blue-white" | "green-white" || 'black-gold',
         headerImageUrl: values.headerImageUrl || '',
         preparationNotes: values.preparationNotes || '',
       },
@@ -265,7 +266,13 @@ const AdminEditQuotePage: React.FC = () => {
           <CardTitle className="text-xl text-brand-primary">Quote Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <QuoteForm form={form} onSubmit={handleUpdateQuote} isSubmitting={isSubmitting} onPreview={handlePreviewQuote} onSaveDraft={handleSaveDraft} // Placeholder, not used for editing />
+          <QuoteForm 
+            form={form} 
+            onSubmit={handleUpdateQuote} 
+            isSubmitting={isSubmitting} 
+            onPreview={handlePreviewQuote} 
+            onSaveDraft={handleSaveDraft} 
+          />
         </CardContent>
       </Card>
       <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
