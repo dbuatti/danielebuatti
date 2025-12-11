@@ -52,7 +52,7 @@ serve(async (req: Request) => {
     const EMAIL_SERVICE_ENDPOINT = Deno.env.get('EMAIL_SERVICE_ENDPOINT');
 
     if (!EMAIL_SERVICE_API_KEY || !CONTACT_FORM_RECIPIENT_EMAIL || !EMAIL_SERVICE_ENDPOINT) {
-      console.error('Missing email service environment variables for sending quote.');
+      console.error('Missing email service environment variables for sending quote. Check EMAIL_SERVICE_API_KEY, CONTACT_FORM_RECIPIENT_EMAIL, EMAIL_SERVICE_ENDPOINT.');
       // Log error but proceed with success since DB update was successful
       return new Response(JSON.stringify({ message: 'Quote status updated, but email notification failed due to server config.', slug: updatedRecord.slug }), {
         status: 200,
@@ -76,8 +76,8 @@ serve(async (req: Request) => {
 
     if (!emailResponse.ok) {
       const errorData = await emailResponse.json();
-      console.error('Email service error for sending quote:', errorData);
-      throw new Error(`Failed to send quote email: ${emailResponse.statusText}`);
+      console.error('Email service error for sending quote - Status:', emailResponse.status, 'Body:', errorData);
+      throw new Error(`Failed to send quote email: ${emailResponse.statusText} - ${JSON.stringify(errorData)}`);
     }
 
     console.log(`Quote email sent successfully to ${recipientEmail}!`);
