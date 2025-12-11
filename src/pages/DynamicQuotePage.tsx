@@ -242,9 +242,13 @@ const DynamicQuotePage: React.FC = () => {
         border: 'border-brand-yellow/50',
         acceptButton: 'bg-brand-yellow text-brand-dark hover:bg-brand-yellow/90',
         rejectButton: 'bg-red-600 text-white hover:bg-red-700',
-        acceptBoxBg: 'bg-brand-dark', // NEW: Use a slightly darker background for the acceptance box
+        acceptBoxBg: 'bg-brand-dark',
         inputBg: 'bg-brand-dark',
         inputBorder: 'border-brand-yellow/30',
+        statusAcceptedBg: 'bg-green-900/50',
+        statusAcceptedText: 'text-green-400',
+        statusRejectedBg: 'bg-red-900/50',
+        statusRejectedText: 'text-red-400',
       }
     : {
         bg: 'bg-brand-light',
@@ -255,9 +259,13 @@ const DynamicQuotePage: React.FC = () => {
         border: 'border-brand-primary/50',
         acceptButton: 'bg-brand-primary text-white hover:bg-brand-primary/90',
         rejectButton: 'bg-red-600 text-white hover:bg-red-700',
-        acceptBoxBg: 'bg-brand-secondary/10', // NEW: Use a light background for the acceptance box
+        acceptBoxBg: 'bg-brand-secondary/10',
         inputBg: 'bg-brand-light',
         inputBorder: 'border-brand-secondary/50',
+        statusAcceptedBg: 'bg-green-100',
+        statusAcceptedText: 'text-green-700',
+        statusRejectedBg: 'bg-red-100',
+        statusRejectedText: 'text-red-700',
       };
 
   return (
@@ -276,7 +284,7 @@ const DynamicQuotePage: React.FC = () => {
           {/* Acceptance Form/Buttons Wrapper */}
           <CardFooter className={`p-8 pt-12 flex flex-col space-y-8 border-t border-current/20 ${themeClasses.cardBg}`}>
             
-            <div className={`p-8 rounded-lg text-center shadow-inner ${themeClasses.acceptBoxBg}`}>
+            <div className={`p-8 rounded-xl text-center shadow-2xl border ${themeClasses.border} ${themeClasses.acceptBoxBg}`}>
               <h2 className={`text-3xl font-extrabold mb-8 ${themeClasses.primary}`}>
                 {isFinalized ? 'Booking Status' : 'Accept Your Quote'}
               </h2>
@@ -332,7 +340,7 @@ const DynamicQuotePage: React.FC = () => {
                     </div>
                   ) : (
                     // Display status message if finalized
-                    <div className={`mt-4 p-4 rounded-md font-semibold flex flex-col sm:flex-row items-center justify-center space-x-2 ${isAccepted ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'}`}>
+                    <div className={`mt-4 p-4 rounded-md font-semibold flex flex-col sm:flex-row items-center justify-center space-x-2 ${isAccepted ? `${themeClasses.statusAcceptedBg} ${themeClasses.statusAcceptedText}` : `${themeClasses.statusRejectedBg} ${themeClasses.statusRejectedText}`}`}>
                         {isAccepted ? <CheckCircle className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
                         <span className="mt-2 sm:mt-0">This quote was {isAccepted ? 'ACCEPTED' : 'REJECTED'} on {format(new Date(quote.accepted_at || quote.rejected_at!), 'PPP')}.</span>
                     </div>
