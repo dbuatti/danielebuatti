@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Trash2, Eye, Save, Send, Brain } from 'lucide-react';
+import { Plus, Trash2, Eye, Save, Send } from 'lucide-react';
 
 // --- Schemas and Types ---
 
@@ -56,7 +56,6 @@ interface QuoteFormProps {
   onSubmit: (values: QuoteFormValues) => void;
   onSaveDraft: (values: QuoteFormValues) => void;
   onPreview: (values: QuoteFormValues) => void;
-  onGenerateAI: (values: QuoteFormValues) => Promise<void>;
   isSubmitting: boolean;
 }
 
@@ -65,7 +64,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
   onSubmit, 
   onSaveDraft, 
   onPreview, 
-  onGenerateAI,
   isSubmitting, 
 }) => {
   const { fields: compulsoryFields, append: appendCompulsory, remove: removeCompulsory } = useFieldArray({
@@ -80,20 +78,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
 
   const handleSave = () => {
     onSaveDraft(form.getValues());
-  };
-
-  const handleGenerate = async () => {
-    // Only validate the core fields needed for AI generation
-    const coreFields = ['clientName', 'eventTitle', 'invoiceType'] as const;
-    const coreValues = form.getValues(coreFields);
-
-    // Simple check for required fields before calling AI
-    if (!coreValues.clientName || !coreValues.eventTitle || !coreValues.invoiceType) {
-      form.trigger(coreFields); // Trigger validation for these fields
-      return;
-    }
-
-    await onGenerateAI(form.getValues());
   };
 
   return (
@@ -206,19 +190,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
               </FormItem>
             )}
           />
-        </div>
-
-        {/* AI Generation Button */}
-        <div className="flex justify-end">
-          <Button 
-            type="button" 
-            variant="default" 
-            onClick={handleGenerate}
-            disabled={isSubmitting}
-            className="bg-green-600 hover:bg-green-700 text-white"
-          >
-            <Brain className="h-4 w-4 mr-2" /> Generate Content with AI
-          </Button>
         </div>
 
         {/* Compulsory Items */}

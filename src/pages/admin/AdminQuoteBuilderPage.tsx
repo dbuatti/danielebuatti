@@ -14,7 +14,8 @@ import { Quote } from '@/types/quote';
 import { useAuth } from '@/hooks/useAuth';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AIQuoteContent } from '@/types/ai';
+import { ExtractedQuoteContent } from '@/types/ai';
+import AIQuoteExtractor from '@/components/admin/AIQuoteExtractor';
 
 const defaultFormValues: Partial<QuoteFormValues> = {
   clientName: '',
@@ -130,41 +131,46 @@ const AdminQuoteBuilderPage: React.FC = () => {
     }
   };
 
-  const handleGenerateAI = async (values: QuoteFormValues) => {
+  const handleExtractAI = async (emailContent: string) => {
     setIsSubmitting(true);
-    const toastId = showLoading('Generating content with AI...');
+    const toastId = showLoading('Extracting quote details from email...');
 
     try {
-      const { data, error } = await supabase.functions.invoke('generate-quote-content', {
-        body: {
-          clientName: values.clientName,
-          eventTitle: values.eventTitle,
-          invoiceType: values.invoiceType,
-        },
+      const { data, error } = await supabase.functions.invoke('extract-quote-content', {
+        body: { emailContent },
       });
 
       if (error) {
         throw error;
       }
 
-      const aiContent = data as AIQuoteContent;
+      const extractedContent = data as ExtractedQuoteContent;
 
-      // Update form fields with AI generated content
-      form.setValue('compulsoryItems', aiContent.compulsoryItems.map(item => ({
+      // Update form fields with AI extracted content
+      form.setValue('clientName', extractedContent.clientName);
+      form.setValue('clientEmail', extractedContent.clientEmail);
+      form.setValue('invoiceType', extractedContent.invoiceType);
+      form.setValue('eventTitle', extractedContent.eventTitle);
+      form.setValue('eventDate', extractedContent.eventDate);
+      form.setValue('eventTime', extractedContent.eventTime);
+      form.setValue('eventLocation', extractedContent.eventLocation);
+      
+      // Map items, ensuring temporary IDs are added
+      form.setValue('compulsoryItems', extractedContent.compulsoryItems.map(item => ({
         ...item,
-        id: Math.random().toString(36).substring(2, 11), // Add temporary ID
+        id: Math.random().toString(36).substring(2, 11),
       })));
-      form.setValue('addOns', aiContent.addOns.map(item => ({
+      form.setValue('addOns', extractedContent.addOns.map(item => ({
         ...item,
-        id: Math.random().toString(36).substring(2, 11), // Add temporary ID
+        id: Math.random().toString(36).substring(2, 11),
       })));
-      form.setValue('paymentTerms', aiContent.paymentTerms);
+      form.setValue('paymentTerms', extractedContent.paymentTerms);
 
-      showSuccess('AI content generated and applied!', { id: toastId });
+      showSuccess('Quote details extracted and applied!', { id: toastId });
 
     } catch (error: any) {
-      console.error('Error generating AI content:', error);
-      showError(`AI generation failed: ${error.message || 'Unknown error occurred'}`, { id: toastId });
+      console.error('Error extracting AI content:', error);
+      showError(`AI extraction failed: ${error.message || 'Unknown error occurred'}`, { id: toastId });
     } finally {
       setIsSubmitting(false);
       dismissToast(toastId);
@@ -303,6 +309,11 @@ const AdminQuoteBuilderPage: React.FC = () => {
         Use this form to generate a new client-facing quote page. The slug will be automatically generated but can be customized in the QuoteForm if needed.
       </p>
       
+      <AIQuoteExtractor 
+        onExtract={handleExtractAI}
+        isSubmitting={isSubmitting}
+      />
+
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
         <CardHeader>
           <CardTitle className="text-xl text-brand-primary">Quote Details {currentDraftId && <span className="text-sm text-gray-500">(Draft ID: {currentDraftId.substring(0, 8)}...)</span>}</CardTitle>
@@ -314,7 +325,6 @@ const AdminQuoteBuilderPage: React.FC = () => {
             isSubmitting={isSubmitting} 
             onPreview={handlePreviewQuote} 
             onSaveDraft={handleSaveDraft}
-            onGenerateAI={handleGenerateAI}
           />
         </CardContent>
       </Card>

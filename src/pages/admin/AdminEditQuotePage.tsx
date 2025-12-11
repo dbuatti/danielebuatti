@@ -4,13 +4,15 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
-import QuoteForm, { QuoteFormValues } from '@/components/admin/QuoteForm';
+import QuoteForm, { QuoteFormValues, QuoteFormSchema } from '@/components/admin/QuoteForm';
 import { supabase } from '@/integrations/supabase/client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Quote } from '@/types/quote';
 import { Loader2 } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 const AdminEditQuotePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,6 +22,11 @@ const AdminEditQuotePage: React.FC = () => {
   const [initialQuoteData, setInitialQuoteData] = useState<QuoteFormValues | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState<QuoteFormValues | null>(null);
+
+  const form = useForm<QuoteFormValues>({
+    resolver: zodResolver(QuoteFormSchema),
+    mode: 'onChange',
+  });
 
   useEffect(() => {
     const fetchQuote = async () => {
@@ -40,7 +47,6 @@ const AdminEditQuotePage: React.FC = () => {
       if (data) {
         // Map database structure to QuoteFormValues
         const mappedData: QuoteFormValues = {
-          // Removed emailContent field (Fix Error 5)
           clientName: data.client_name,
           clientEmail: data.client_email,
           invoiceType: data.invoice_type,
@@ -58,12 +64,13 @@ const AdminEditQuotePage: React.FC = () => {
           eventTime: data.details?.eventTime || '',
         };
         setInitialQuoteData(mappedData);
+        form.reset(mappedData); // Set form values using reset
       }
       setIsLoading(false);
     };
 
     fetchQuote();
-  }, [id]);
+  }, [id, form]); // Dependency array includes form instance
 
   const handlePreviewQuote = (values: QuoteFormValues) => {
     setPreviewData(values);
@@ -88,17 +95,17 @@ const AdminEditQuotePage: React.FC = () => {
         compulsoryItems: values.compulsoryItems.map(item => ({
           ...item,
           id: item.id || Math.random().toString(36).substring(2, 11),
-          name: item.description, // Fix Error 9
+          name: item.description,
         })),
         addOns: values.addOns?.map(addOn => ({
           ...addOn,
           id: addOn.id || Math.random().toString(36).substring(2, 11),
-          name: addOn.description, // Fix Error 8
+          name: addOn.description,
         })) || [],
         depositPercentage: values.depositPercentage,
         bankDetails: {
-          bsb: values.bankBSB ?? '', // Fix Error 6
-          acc: values.bankACC ?? '', // Fix Error 7
+          bsb: values.bankBSB ?? '',
+          acc: values.bankACC ?? '',
         },
         eventTime: values.eventTime,
         currencySymbol: values.currencySymbol,
@@ -206,12 +213,10 @@ const AdminEditQuotePage: React.FC = () => {
         </CardHeader>
         <CardContent>
           <QuoteForm
-            defaultValues={initialQuoteData} // Fix Error 10: Changed prop name
+            form={form} // Pass the form instance
             onSubmit={handleUpdateQuote}
             isSubmitting={isSubmitting}
             onPreview={handlePreviewQuote}
-            // Draft saving is typically not needed on an existing, finalized quote, 
-            // but we keep the prop definition for consistency.
             onSaveDraft={() => showError("Cannot save draft on a finalized quote.")} 
           />
         </CardContent>
