@@ -6,10 +6,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns'; // Ensure format is imported
-import { Quote, QuoteItem } from '@/types/quote'; // Import centralized interfaces (Fix Errors 1, 2)
-import { CheckCircle, XCircle, Loader2, Calendar, MapPin, Clock } from 'lucide-react';
+import { Quote, QuoteItem } from '@/types/quote'; // Import centralized interfaces
+import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
@@ -69,13 +68,7 @@ const DynamicQuotePage: React.FC = () => {
           };
           setQuote(quoteData);
           
-          // Initialize selected add-ons based on compulsory items (if any)
-          // Or based on previously selected items if the quote was already accepted/rejected
-          // For now, we assume all add-ons are optional unless explicitly selected later.
-          // If the quote was already accepted, we should load the accepted items.
-          
-          // Since we don't have a mechanism for storing client selections yet, 
-          // we'll just ensure the compulsory items are always included in calculations.
+          // If the quote is already accepted, we should load the accepted items.
         } else {
           setError('Quote not found.');
         }
@@ -112,7 +105,7 @@ const DynamicQuotePage: React.FC = () => {
           accepted_at: new Date().toISOString(),
           rejected_at: null,
           total_amount: finalTotal,
-          // Optionally store the client's selected add-ons in the details JSONB
+          // Store the client's selected add-ons in the details JSONB
           details: {
             ...quote.details,
             client_selected_add_ons: finalAddOns,
@@ -187,8 +180,7 @@ const DynamicQuotePage: React.FC = () => {
   // Calculate totals based on current selections
   const selectedAddOnsData = optionalAddOns.filter(item => selectedAddOns.includes(item.id));
   
-  // Define compulsoryTotal here so it's available in JSX
-  const compulsoryTotal = compulsoryItems?.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0; // Fix Error 3
+  const compulsoryTotal = compulsoryItems?.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0;
   const addOnTotal = selectedAddOnsData.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const subtotal = compulsoryTotal + addOnTotal;
   const depositAmount = subtotal * (depositPercentage / 100);
@@ -200,21 +192,34 @@ const DynamicQuotePage: React.FC = () => {
   const isLivePianoTheme = theme === 'livePiano';
   const themeClasses = isLivePianoTheme
     ? {
-        bg: 'bg-gray-900 text-yellow-400',
+        // Gold/Black Theme (Live Piano)
+        bg: 'bg-gray-900',
         cardBg: 'bg-gray-800',
         text: 'text-gray-100',
-        primary: 'text-yellow-400',
+        primary: 'text-amber-400', // Gold color
         secondary: 'text-gray-400',
-        border: 'border-yellow-400/50',
+        border: 'border-amber-400/50',
+        separator: 'bg-amber-400 h-0.5',
+        headerText: 'text-gray-100',
+        acceptButton: 'bg-amber-400 text-gray-900 hover:bg-amber-500',
+        rejectButton: 'bg-gray-700 text-gray-100 hover:bg-gray-600',
       }
     : {
-        bg: 'bg-gray-50 text-gray-800',
+        // White/Pink Theme (Default)
+        bg: 'bg-gray-50',
         cardBg: 'bg-white',
         text: 'text-gray-800',
-        primary: 'text-pink-600',
+        primary: 'text-fuchsia-600', // Proper vibrant pink
         secondary: 'text-gray-500',
-        border: 'border-pink-600/50',
+        border: 'border-fuchsia-600/50',
+        separator: 'bg-fuchsia-600 h-0.5',
+        headerText: 'text-gray-800',
+        acceptButton: 'bg-fuchsia-600 text-white hover:bg-fuchsia-700',
+        rejectButton: 'bg-red-600 text-white hover:bg-red-700',
       };
+      
+  const eventDateFormatted = quote.event_date ? format(new Date(quote.event_date), 'EEEE dd MMMM yyyy') : 'TBD';
+
 
   return (
     <ScrollArea className={`min-h-screen ${themeClasses.bg}`}>
@@ -232,12 +237,33 @@ const DynamicQuotePage: React.FC = () => {
             </div>
           )}
 
-          <CardHeader className="pb-4">
+          {/* Logo Placeholder (Based on design images) */}
+          <div className="text-center mb-8">
+            {/* Placeholder for logo/branding */}
+            <div className={`text-4xl font-serif font-bold ${themeClasses.primary}`}>
+              {isLivePianoTheme ? 'Live Piano Services' : 'Daniele Buatti'}
+            </div>
+          </div>
+
+          <CardHeader className="pb-4 text-center">
             <CardTitle className={`text-4xl font-extrabold ${themeClasses.primary}`}>{quote.event_title}</CardTitle>
-            <p className={`${themeClasses.secondary} text-lg`}>{quote.invoice_type} for {quote.client_name}</p>
+            
+            <div className="space-y-1 pt-4">
+              <p className={`text-lg ${themeClasses.headerText}`}>Prepared for: <span className="font-semibold">{quote.prepared_by}</span></p>
+              <p className={`text-lg ${themeClasses.headerText}`}>Client Email: <span className="font-semibold">{quote.client_email}</span></p>
+              <p className={`text-lg ${themeClasses.headerText}`}>Date of Event: <span className="font-semibold">{eventDateFormatted}</span></p>
+              {eventTime && <p className={`text-lg ${themeClasses.headerText}`}>Time: <span className="font-semibold">{eventTime}</span></p>}
+              <p className={`text-lg ${themeClasses.headerText}`}>Location: <span className="font-semibold">{quote.event_location}</span></p>
+              <p className={`text-lg ${themeClasses.headerText}`}>Prepared by: <span className="font-semibold">{quote.prepared_by}</span></p>
+            </div>
+
+            {/* Custom Separator Line */}
+            <div className="flex justify-center pt-4">
+              <div className={`w-1/3 ${themeClasses.separator}`}></div>
+            </div>
             
             {isFinalized && (
-              <div className={`mt-4 p-3 rounded-md font-semibold flex items-center space-x-2 ${isAccepted ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+              <div className={`mt-4 p-3 rounded-md font-semibold flex items-center justify-center space-x-2 ${isAccepted ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                 {isAccepted ? <CheckCircle className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
                 <span>This quote was {isAccepted ? 'ACCEPTED' : 'REJECTED'} on {format(new Date(accepted_at || rejected_at!), 'PPP')}.</span>
               </div>
@@ -246,52 +272,50 @@ const DynamicQuotePage: React.FC = () => {
 
           <CardContent className="space-y-8">
             
-            {/* Event Details */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-              <div className="flex items-center space-x-2">
-                <Calendar className={`h-5 w-5 ${themeClasses.primary}`} />
-                <span className={themeClasses.text}>{format(new Date(quote.event_date), 'PPP')}</span>
-              </div>
-              {eventTime && (
-                <div className="flex items-center space-x-2">
-                  <Clock className={`h-5 w-5 ${themeClasses.primary}`} />
-                  <span className={themeClasses.text}>{eventTime}</span>
-                </div>
-              )}
-              <div className="flex items-center space-x-2">
-                <MapPin className={`h-5 w-5 ${themeClasses.primary}`} />
-                <span className={themeClasses.text}>{quote.event_location}</span>
-              </div>
-            </div>
-
-            <Separator className={themeClasses.border} />
+            {/* Main Content / Description Block (Placeholder) */}
+            <section className="text-center mb-10">
+              <p className={`text-lg font-semibold ${themeClasses.headerText}`}>
+                {quote.invoice_type} Details
+              </p>
+              <p className={`text-sm ${themeClasses.secondary} mt-2`}>
+                This fee secures a premium, seamless musical experience for your event.
+              </p>
+            </section>
 
             {/* Quote Breakdown */}
             <section className="space-y-6">
-              <h2 className={`text-2xl font-bold ${themeClasses.primary}`}>Quote Breakdown</h2>
+              <h2 className={`text-2xl font-bold text-center ${themeClasses.primary}`}>Service Components</h2>
 
               {/* Compulsory Items */}
               {compulsoryItems.length > 0 && (
                 <div className="space-y-4">
-                  <h3 className={`text-xl font-semibold ${themeClasses.text}`}>Required Services</h3>
                   {compulsoryItems.map((item, index) => (
-                    <div key={index} className="border-b pb-3 last:border-b-0">
+                    <div key={index} className="pb-3">
                       <div className="flex justify-between items-start">
                         <div className="flex-1 pr-4">
-                          <p className={`font-medium ${themeClasses.text}`}>{item.name}</p>
-                          {item.description && <p className={`text-sm italic ${themeClasses.secondary}`}>{item.description}</p>}
+                          <p className={`font-medium ${themeClasses.text} flex items-center`}>
+                            <span className={`mr-2 ${themeClasses.primary}`}>&bull;</span>
+                            {item.name}
+                          </p>
+                          {item.description && <p className={`text-sm italic ml-4 ${themeClasses.secondary}`}>{item.description}</p>}
                         </div>
-                        <p className={`font-semibold ${themeClasses.primary}`}>{formatCurrency(calculateItemTotal(item))}</p>
                       </div>
                     </div>
                   ))}
+                  
+                  {/* All-Inclusive Total (Based on design) */}
+                  <div className="text-center pt-4">
+                    <p className={`text-2xl font-extrabold ${themeClasses.primary}`}>
+                      All-Inclusive Engagement Fee: {formatCurrency(compulsoryTotal)}
+                    </p>
+                  </div>
                 </div>
               )}
 
               {/* Optional Add-Ons */}
               {optionalAddOns.length > 0 && (
-                <div className="space-y-4 pt-4 border-t">
-                  <h3 className={`text-xl font-semibold ${themeClasses.text}`}>Optional Add-Ons (Select to include)</h3>
+                <div className="space-y-4 pt-8 border-t border-dashed">
+                  <h3 className={`text-xl font-semibold text-center ${themeClasses.text}`}>Optional Add-Ons (Select to include)</h3>
                   {optionalAddOns.map((item) => (
                     <div key={item.id} className="flex items-center justify-between p-3 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                       <div className="flex items-center space-x-3 flex-1">
@@ -300,7 +324,7 @@ const DynamicQuotePage: React.FC = () => {
                           checked={selectedAddOns.includes(item.id)}
                           onCheckedChange={(checked) => handleAddOnChange(item.id, !!checked)}
                           disabled={isFinalized}
-                          className={isLivePianoTheme ? 'border-yellow-400 data-[state=checked]:bg-yellow-400 data-[state=checked]:text-gray-900' : ''}
+                          className={isLivePianoTheme ? 'border-amber-400 data-[state=checked]:bg-amber-400 data-[state=checked]:text-gray-900' : 'border-fuchsia-600 data-[state=checked]:bg-fuchsia-600 data-[state=checked]:text-white'}
                         />
                         <Label htmlFor={`addon-${item.id}`} className="cursor-pointer flex-1">
                           <p className={`font-medium ${themeClasses.text}`}>{item.name}</p>
@@ -315,39 +339,24 @@ const DynamicQuotePage: React.FC = () => {
               )}
             </section>
 
-            <Separator className={`my-8 ${themeClasses.border}`} />
-
-            {/* Totals */}
-            <div className="flex justify-end">
-              <div className="w-full max-w-xs space-y-2">
-                <div className="flex justify-between">
-                  <span className={themeClasses.text}>Subtotal:</span>
-                  <span className={themeClasses.text}>{formatCurrency(subtotal)}</span>
-                </div>
-                <div className="flex justify-between font-bold text-xl pt-2 border-t">
-                  <span className={themeClasses.primary}>Total Quote Amount:</span>
-                  <span className={themeClasses.primary}>{formatCurrency(subtotal)}</span>
-                </div>
-                <div className="flex justify-between pt-2 border-t">
-                  <span className={themeClasses.text}>Required Deposit ({depositPercentage}%):</span>
-                  <span className={themeClasses.text}>{formatCurrency(depositAmount)}</span>
-                </div>
-              </div>
-            </div>
-
-            <Separator className={`my-8 ${themeClasses.border}`} />
-
-            {/* Terms and Bank Details */}
-            <section className="text-sm space-y-4">
-              <h3 className={`text-lg font-semibold ${themeClasses.primary}`}>Payment Information</h3>
-              <p className={themeClasses.secondary}>Terms: {paymentTerms}</p>
-              {(bankDetails.bsb || bankDetails.acc) && (
-                <div className={themeClasses.secondary}>
-                  <p>Bank Details:</p>
-                  {bankDetails.bsb && <p>BSB: {bankDetails.bsb}</p>}
-                  {bankDetails.acc && <p>Account: {bankDetails.acc}</p>}
-                </div>
-              )}
+            {/* Important Booking Details Section */}
+            <section className={`mt-12 p-6 rounded-lg ${isLivePianoTheme ? 'bg-gray-700' : 'bg-gray-100'}`}>
+              <h2 className={`text-2xl font-bold text-center mb-4 ${themeClasses.headerText}`}>Important Booking Details</h2>
+              
+              <ul className={`space-y-3 text-sm ${themeClasses.headerText}`}>
+                <li>
+                  <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> A non-refundable <span className="font-bold">{details.depositPercentage}% deposit ({formatCurrency(depositAmount)})</span> is required immediately to formally secure the booking.
+                </li>
+                <li>
+                  <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> The remaining balance is due 7 days prior to the event.
+                </li>
+                <li>
+                  <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> Bank Details for Payment: BSB: {bankDetails.bsb}, ACC: {bankDetails.acc}
+                </li>
+                <li>
+                  <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> Terms: {paymentTerms}
+                </li>
+              </ul>
             </section>
 
           </CardContent>
@@ -359,13 +368,14 @@ const DynamicQuotePage: React.FC = () => {
                   variant="destructive" 
                   onClick={handleRejectQuote} 
                   disabled={isAccepting}
+                  className={themeClasses.rejectButton}
                 >
                   Reject Quote
                 </Button>
                 <Button 
                   onClick={handleAcceptQuote} 
                   disabled={isAccepting}
-                  className={isLivePianoTheme ? 'bg-yellow-400 text-gray-900 hover:bg-yellow-500' : 'bg-pink-600 hover:bg-pink-700'}
+                  className={themeClasses.acceptButton}
                 >
                   {isAccepting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
                   Accept Quote

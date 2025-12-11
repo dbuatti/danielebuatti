@@ -28,8 +28,8 @@ const defaultFormValues: Partial<QuoteFormValues> = {
   currencySymbol: '$',
   depositPercentage: 50,
   paymentTerms: 'Payment due within 7 days.',
-  bankBSB: '',
-  bankACC: '',
+  bankBSB: '923100', // Default BSB
+  bankACC: '301110875', // Default ACC
   // New defaults
   theme: 'default', // Default theme
   headerImageUrl: '', // Placeholder image URL
@@ -159,17 +159,18 @@ const AdminQuoteBuilderPage: React.FC = () => {
       form.setValue('eventTime', extractedContent.eventTime);
       form.setValue('eventLocation', extractedContent.eventLocation);
       
-      // Map items, transforming old 'description' (item name) into new 'name' field
-      // We assume the AI returns the old structure where 'description' is the item title.
+      // --- AI Extraction Mapping Update ---
+      // Assuming the AI returns the old structure where 'description' holds the item title.
+      // We map this to the new 'name' field, leaving the new 'description' field empty.
       form.setValue('compulsoryItems', extractedContent.compulsoryItems.map(item => ({
         id: Math.random().toString(36).substring(2, 11),
-        name: item.description, // Map old description to new name
+        name: item.description, // Map old description (title) to new name
         description: '', // Detailed description is left empty
         amount: item.amount,
       })));
       form.setValue('addOns', extractedContent.addOns.map(item => ({
         id: Math.random().toString(36).substring(2, 11),
-        name: item.description, // Map old description to new name
+        name: item.description, // Map old description (title) to new name
         description: '', // Detailed description is left empty
         cost: item.cost,
         quantity: item.quantity,
@@ -295,7 +296,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       };
     };
 
-    return { // Fix Error 8
+    return {
       id: Math.random().toString(36).substring(2, 11),
       slug: 'preview-slug', // Placeholder slug for preview
       client_name: values.clientName,
