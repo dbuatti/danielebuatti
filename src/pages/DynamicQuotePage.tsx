@@ -283,7 +283,7 @@ const DynamicQuotePage: React.FC = () => {
               
               <Form {...acceptanceForm}>
                 <form onSubmit={handleAcceptQuote} className="space-y-6">
-                  {!isFinalized && (
+                  {!isFinalized ? (
                     <div className="space-y-4 max-w-md mx-auto">
                       <FormField
                         control={acceptanceForm.control}
@@ -295,7 +295,10 @@ const DynamicQuotePage: React.FC = () => {
                               <Input 
                                 placeholder="Enter your name" 
                                 {...field} 
-                                className={`${themeClasses.inputBg} ${themeClasses.text} ${themeClasses.inputBorder} placeholder:${themeClasses.secondary}`}
+                                className={`
+                                  ${themeClasses.inputBg} ${themeClasses.text} ${themeClasses.inputBorder} 
+                                  placeholder:${themeClasses.secondary} focus-visible:ring-brand-primary
+                                `}
                               />
                             </FormControl>
                             <FormMessage />
@@ -313,7 +316,10 @@ const DynamicQuotePage: React.FC = () => {
                                 type="email"
                                 placeholder="Enter your email" 
                                 {...field} 
-                                className={`${themeClasses.inputBg} ${themeClasses.text} ${themeClasses.inputBorder} placeholder:${themeClasses.secondary}`}
+                                className={`
+                                  ${themeClasses.inputBg} ${themeClasses.text} ${themeClasses.inputBorder} 
+                                  placeholder:${themeClasses.secondary} focus-visible:ring-brand-primary
+                                `}
                               />
                             </FormControl>
                             <FormMessage />
@@ -324,10 +330,16 @@ const DynamicQuotePage: React.FC = () => {
                         By clicking "Accept Quote", you agree to the terms and confirm your booking with a {depositPercentage}% deposit.
                       </p>
                     </div>
+                  ) : (
+                    // Display status message if finalized
+                    <div className={`mt-4 p-3 rounded-md font-semibold flex flex-col sm:flex-row items-center justify-center space-x-2 ${isAccepted ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'}`}>
+                        {isAccepted ? <CheckCircle className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
+                        <span className="mt-2 sm:mt-0">This quote was {isAccepted ? 'ACCEPTED' : 'REJECTED'} on {format(new Date(quote.accepted_at || quote.rejected_at!), 'PPP')}.</span>
+                    </div>
                   )}
 
                   <div className="mt-8 flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                    {!isFinalized ? (
+                    {!isFinalized && (
                       <>
                         <Button 
                           type="button"
@@ -347,11 +359,6 @@ const DynamicQuotePage: React.FC = () => {
                           Accept Quote
                         </Button>
                       </>
-                    ) : (
-                      <div className={`mt-4 p-3 rounded-md font-semibold flex flex-col sm:flex-row items-center justify-center space-x-2 ${isAccepted ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'}`}>
-                        {isAccepted ? <CheckCircle className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
-                        <span className="mt-2 sm:mt-0">This quote was {isAccepted ? 'ACCEPTED' : 'REJECTED'} on {format(new Date(quote.accepted_at || quote.rejected_at!), 'PPP')}.</span>
-                      </div>
                     )}
                   </div>
                 </form>

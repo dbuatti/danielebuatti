@@ -65,18 +65,18 @@ const QuoteItemRow: React.FC<{
     if (isOptional && isClientView && !isFinalized && onQuantityChange) {
         // Interactive controls for client view (pending state)
         return (
-            <div className="flex items-center justify-center border rounded-md border-current/30 mx-auto w-24">
+            <div className={`flex items-center justify-center border rounded-full border-current/30 mx-auto w-24 h-8 ${themeClasses.inputBg}`}>
                 <Button 
                     type="button" 
                     variant="ghost" 
                     size="icon" 
                     onClick={() => onQuantityChange(item.id, -1)}
                     disabled={item.quantity <= 0}
-                    className={`h-8 w-8 ${themeClasses.text} hover:bg-current/10 p-0`}
+                    className={`h-7 w-7 ${themeClasses.text} hover:bg-current/10 p-0 rounded-full`}
                 >
                     -
                 </Button>
-                <span className={`w-8 text-center font-semibold ${themeClasses.text}`}>
+                <span className={`w-8 text-center font-semibold text-sm ${themeClasses.text}`}>
                     {item.quantity}
                 </span>
                 <Button 
@@ -84,7 +84,7 @@ const QuoteItemRow: React.FC<{
                     variant="ghost" 
                     size="icon" 
                     onClick={() => onQuantityChange(item.id, 1)}
-                    className={`h-8 w-8 ${themeClasses.text} hover:bg-current/10 p-0`}
+                    className={`h-7 w-7 ${themeClasses.text} hover:bg-current/10 p-0 rounded-full`}
                 >
                     +
                 </Button>
@@ -101,17 +101,17 @@ const QuoteItemRow: React.FC<{
 
   return (
     <TableRow className={isOptional && !isSelected && !isFinalized ? 'opacity-60' : 'hover:bg-current/5'}>
-      <TableCell className="font-medium border-r border-current/10">
+      <TableCell className="font-medium border-r border-current/10 py-3">
         {item.name}
         {item.description && (
           <p className={`text-sm ${themeClasses.secondary} mt-1`}>{item.description}</p>
         )}
       </TableCell>
-      <TableCell className="text-center w-[100px] border-r border-current/10">{displayQuantity()}</TableCell>
-      <TableCell className="text-right w-[120px] border-r border-current/10">
+      <TableCell className="text-center w-[100px] border-r border-current/10 py-3">{displayQuantity()}</TableCell>
+      <TableCell className="text-right w-[120px] border-r border-current/10 py-3">
         {formatCurrency(item.price, currencySymbol)}
       </TableCell>
-      <TableCell className="text-right font-semibold w-[120px]">
+      <TableCell className="text-right font-semibold w-[120px] py-3">
         {displayAmount()}
       </TableCell>
     </TableRow>
@@ -119,7 +119,7 @@ const QuoteItemRow: React.FC<{
 };
 
 const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false, onQuantityChange, mutableAddOns }) => {
-  const { details, total_amount, accepted_at, rejected_at } = quote;
+  const { details, total_amount, accepted_at, rejected_at, event_title, event_date, event_location, prepared_by } = quote;
   const currencySymbol = details.currencySymbol || '$';
   
   const isAccepted = !!accepted_at;
@@ -169,6 +169,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         totalBoxText: 'text-brand-yellow',
         tableText: 'text-brand-light',
         contentImageBorder: 'border-brand-yellow/50',
+        inputBg: 'bg-brand-dark-alt', // Added input background
       }
     : {
         // Default Theme (Premium Light/Pink)
@@ -183,6 +184,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         totalBoxText: 'text-brand-primary',
         tableText: 'text-brand-dark',
         contentImageBorder: 'border-brand-primary/50',
+        inputBg: 'bg-brand-light', // Added input background
       };
       
   const headerImagePositionClass = details.headerImagePosition || 'object-center';
@@ -206,13 +208,13 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       {/* Quote/Invoice Details */}
       <div className={`flex flex-col sm:flex-row justify-between items-start border-b pb-4 border-current/20`}>
         <div>
-          <h1 className={`text-4xl font-extrabold ${themeClasses.primary}`}>{quote.invoice_type}</h1>
-          <p className="text-lg mt-2">Prepared By: {quote.prepared_by}</p>
+          <h1 className={`text-4xl font-extrabold font-display ${themeClasses.primary}`}>{quote.invoice_type}</h1>
+          <p className="text-lg mt-2 font-medium">Prepared By: {prepared_by}</p>
         </div>
         <div className="text-right mt-4 sm:mt-0">
-          <h2 className="text-2xl font-semibold">{quote.event_title}</h2>
-          <p className="mt-1 text-sm">{quote.event_date} {details.eventTime}</p>
-          <p className="text-sm">{quote.event_location}</p>
+          <h2 className="text-2xl font-semibold font-display">{event_title}</h2>
+          <p className="mt-1 text-sm">{event_date} {details.eventTime}</p>
+          <p className="text-sm">{event_location}</p>
         </div>
       </div>
 
@@ -226,15 +228,15 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       )}
       
       {/* Items Table */}
-      <div className="pt-4 overflow-x-auto"> {/* Added overflow-x-auto for responsiveness */}
+      <div className="pt-4 overflow-x-auto">
         <h3 className={`text-xl font-semibold mb-4 ${themeClasses.primary}`}>Items Included</h3>
         <Table className={`min-w-full border ${themeClasses.tableBorder} ${themeClasses.tableText}`}>
           <TableHeader>
             <TableRow className={themeClasses.tableHeaderBg}>
-              <TableHead className={`font-bold ${themeClasses.primary} border-r border-current/10`}>Description</TableHead>
-              <TableHead className={`text-center font-bold ${themeClasses.primary} w-[100px] border-r border-current/10`}>Qty</TableHead>
-              <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px] border-r border-current/10`}>Unit Price</TableHead>
-              <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px]`}>Amount</TableHead>
+              <TableHead className={`font-bold ${themeClasses.primary} border-r border-current/10 py-3`}>Description</TableHead>
+              <TableHead className={`text-center font-bold ${themeClasses.primary} w-[100px] border-r border-current/10 py-3`}>Qty</TableHead>
+              <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px] border-r border-current/10 py-3`}>Unit Price</TableHead>
+              <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px] py-3`}>Amount</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -254,8 +256,9 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
             {/* Add-Ons (Optional Items) */}
             {details.addOns.length > 0 && (
               <TableRow className={`${themeClasses.tableHeaderBg} hover:${themeClasses.tableHeaderBg}`}>
-                <TableCell colSpan={4} className={`font-bold ${themeClasses.primary}`}>
-                  Optional Add-Ons {isAccepted && `(Client Selected: ${optionalItemsToDisplay.filter(i => i.quantity > 0).length} of ${details.addOns.length})`}
+                <TableCell colSpan={4} className={`font-bold ${themeClasses.primary} py-3`}>
+                  Optional Add-Ons {isClientView && !isFinalized && <span className="text-sm font-normal"> (Select Quantity Below)</span>}
+                  {isAccepted && `(Client Selected: ${optionalItemsToDisplay.filter(i => i.quantity > 0).length} of ${details.addOns.length})`}
                 </TableCell>
               </TableRow>
             )}
@@ -307,8 +310,16 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         <div className="w-full max-w-sm space-y-2">
           <div className="flex justify-between font-medium">
             <span>Subtotal:</span>
-            <span>{formatCurrency(subtotal, currencySymbol)}</span>
+            <span>{formatCurrency(compulsoryTotal, currencySymbol)}</span>
           </div>
+          
+          {/* Display Add-on total if applicable */}
+          {details.addOns.length > 0 && (
+            <div className="flex justify-between font-medium text-sm">
+              <span>Selected Add-ons:</span>
+              <span>{formatCurrency(addOnTotal, currencySymbol)}</span>
+            </div>
+          )}
           
           <Separator className={themeClasses.separator} />
 
