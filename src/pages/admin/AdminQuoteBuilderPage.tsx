@@ -23,6 +23,7 @@ const defaultFormValues: Partial<QuoteFormValues> = {
   invoiceType: 'Quote',
   eventTitle: '',
   eventDate: new Date().toISOString().split('T')[0],
+  eventTime: '', // Added explicit default value
   eventLocation: '',
   preparedBy: 'Daniele Buatti', // Updated default
   currencySymbol: '$',
