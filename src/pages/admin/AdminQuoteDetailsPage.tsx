@@ -44,7 +44,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('invoices')
-        .select('*, status') // Select all columns including the new status
+        .select('*') // Changed from '*, status' to '*'
         .eq('id', id)
         .single();
 
@@ -155,7 +155,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
     showSuccess('Quote link copied to clipboard!');
   };
   
-  const handleQuoteSent = () => { // Fix 5: Removed unused slug parameter
+  const handleQuoteSent = () => {
     // Update status locally after successful send
     setQuote(prev => prev ? { ...prev, status: 'Sent' } : null);
   };

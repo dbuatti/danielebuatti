@@ -26,7 +26,7 @@ const AdminQuotesPage: React.FC = () => {
       setIsLoading(true);
       const { data, error } = await supabase
         .from('invoices')
-        .select('*, status') // Select all columns including the new status
+        .select('*') // Changed from '*, status' to '*'
         .order('created_at', { ascending: false });
 
       if (error) {
