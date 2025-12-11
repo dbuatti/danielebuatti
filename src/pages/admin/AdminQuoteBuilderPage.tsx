@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
+import { showError, showSuccess, showLoading } from '@/utils/toast';
 import QuoteForm, { QuoteFormValues, QuoteFormSchema } from '@/components/admin/QuoteForm';
 import { supabase } from '@/integrations/supabase/client';
 import { createSlug } from '@/lib/utils';
@@ -91,6 +91,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       return;
     }
 
+    // Use a persistent toast ID for loading state
     const toastId = showLoading(currentDraftId ? 'Updating draft...' : 'Saving draft...');
 
     try {
@@ -129,15 +130,19 @@ const AdminQuoteBuilderPage: React.FC = () => {
       const savedDraftId = result.data.id;
       setCurrentDraftId(savedDraftId);
       
+      // Show success message using the same toast ID
       showSuccess('Draft saved successfully!', { id: toastId });
 
     } catch (error: any) {
       console.error('Error saving draft:', error);
       // Extract specific Supabase error message if available
       const errorMessage = error.message || error.details || 'Unknown error occurred during draft save.';
+      // Show error message using the same toast ID
       showError(`Failed to save draft: ${errorMessage}`, { id: toastId });
     } finally {
-      dismissToast(toastId);
+      // We don't dismiss the toast here if we use showSuccess/showError with the ID, 
+      // as they automatically replace the loading state and dismiss themselves after a timeout.
+      // Removing dismissToast(toastId) here to ensure the success/error message is visible.
     }
   };
 
@@ -196,7 +201,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       showError(`AI extraction failed: ${error.message || 'Unknown error occurred'}`, { id: toastId });
     } finally {
       setIsSubmitting(false);
-      dismissToast(toastId);
+      // Removed dismissToast(toastId) here as showSuccess/showError handles dismissal
     }
   };
 
@@ -284,7 +289,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       showError(`Failed to create quote: ${error.message || 'Unknown error occurred'}`, { id: toastId });
     } finally {
       setIsSubmitting(false);
-      dismissToast(toastId);
+      // Removed dismissToast(toastId) here as showSuccess/showError handles dismissal
     }
   };
 
