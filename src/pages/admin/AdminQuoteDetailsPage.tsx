@@ -180,7 +180,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
   const { details, accepted_at, rejected_at, status } = quote;
   const theme = details.theme;
   const isFinalized = !!accepted_at || !!rejected_at;
-  const isReadyToSend = status === 'Created' || status === 'Draft';
+  const isSendable = !isFinalized; // Can send if not accepted or rejected
 
   return (
     <div className="space-y-8">
@@ -237,9 +237,9 @@ const AdminQuoteDetailsPage: React.FC = () => {
             
             <Separator />
 
-            {isReadyToSend && (
+            {isSendable && (
               <Button onClick={() => setIsSendingModalOpen(true)} className="w-full bg-green-600 hover:bg-green-700 text-white">
-                <Send className="h-4 w-4 mr-2" /> Send Quote
+                <Send className="h-4 w-4 mr-2" /> {status === 'Sent' ? 'Resend Quote' : 'Send Quote'}
               </Button>
             )}
             
