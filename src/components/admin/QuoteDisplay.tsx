@@ -213,6 +213,26 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
           </TableBody>
         </Table>
       </div>
+      
+      {/* NEW: Image Section for Black & Gold Theme */}
+      {isBlackGoldTheme && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+          <DynamicImage 
+            src="/blackgoldquoteimage1.jpg" 
+            alt="Daniele Buatti playing piano" 
+            className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
+            width={400}
+            height={256}
+          />
+          <DynamicImage 
+            src="/blackgoldquoteimage2.jpg" 
+            alt="Daniele Buatti performing live" 
+            className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
+            width={400}
+            height={256}
+          />
+        </div>
+      )}
 
       {/* Totals and Notes */}
       <div className="flex justify-end">
