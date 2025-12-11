@@ -6,8 +6,7 @@ import { formatCurrency } from '@/lib/utils';
 import { 
   Calendar, 
   MapPin, 
-  User, 
-  Clock,
+  User,
   FileText
 } from 'lucide-react';
 
@@ -67,7 +66,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
             </p>
           </div>
           <div className="text-right">
-            <p className="text-2xl font-bold">#{quote.quote_number || 'N/A'}</p>
+            <p className="text-2xl font-bold">#{quote.id.substring(0, 8)}</p>
             <p className="mt-2">{formatDate(quote.event_date)}</p>
           </div>
         </div>

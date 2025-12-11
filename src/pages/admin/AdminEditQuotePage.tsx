@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
+import { showError, showSuccess } from '@/utils/toast';
 import QuoteForm, { QuoteFormValues, QuoteFormSchema } from '@/components/admin/QuoteForm';
 import { supabase } from '@/integrations/supabase/client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -22,7 +22,6 @@ const AdminEditQuotePage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState<QuoteFormValues | null>(null);
-
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(QuoteFormSchema),
     mode: 'onChange',
@@ -30,19 +29,15 @@ const AdminEditQuotePage: React.FC = () => {
 
   const fetchQuote = useCallback(async () => {
     if (!slug) return;
-
     setIsLoading(true);
     const toastId = showLoading('Loading quote for editing...');
-
     try {
       const { data, error } = await supabase
-        .from('invoices')
+        .from('quotes')
         .select('*')
         .eq('slug', slug)
         .single();
-
       if (error) throw error;
-
       const fetchedQuote: Quote = {
         id: data.id,
         slug: data.slug,
@@ -59,11 +54,8 @@ const AdminEditQuotePage: React.FC = () => {
         created_at: data.created_at,
         details: data.details,
       };
-
       setQuote(fetchedQuote);
-
       const details = fetchedQuote.details;
-
       // Map Quote data to Form values
       const defaultValues: QuoteFormValues = {
         clientName: fetchedQuote.client_name,
@@ -96,7 +88,6 @@ const AdminEditQuotePage: React.FC = () => {
           quantity: item.quantity,
         })),
       };
-
       form.reset(defaultValues);
       showSuccess('Quote loaded.', { id: toastId });
     } catch (error: any) {
@@ -118,24 +109,21 @@ const AdminEditQuotePage: React.FC = () => {
     setIsPreviewOpen(true);
   };
 
-  const handleSaveDraft = async () => { // Removed unused 'values' parameter
+  const handleSaveDraft = async () => {
+    // Removed unused 'values' parameter
     // Draft saving logic is not typically used on an Edit page, but we keep the function signature
     showError('Draft saving is not supported on the Edit page. Use "Update Quote" instead.');
   };
 
   const handleUpdateQuote = async (values: QuoteFormValues) => {
     if (!quote) return;
-
     setIsSubmitting(true);
     const toastId = showLoading('Updating quote...');
-
     try {
       // Calculate total amount based on compulsory items and add-ons
       const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.amount ?? 0), 0);
-      const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
-        sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
+      const addOnTotal = values.addOns?.reduce((sum: number, addOn) => sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
       const totalAmount = compulsoryTotal + addOnTotal;
-
       // Prepare details for JSONB column
       const details = {
         compulsoryItems: values.compulsoryItems.map(item => ({
@@ -160,14 +148,13 @@ const AdminEditQuotePage: React.FC = () => {
         eventTime: values.eventTime ?? '', // FIX: Ensure eventTime is a string
         currencySymbol: values.currencySymbol,
         paymentTerms: values.paymentTerms,
-        theme: values.theme,
-        headerImageUrl: values.headerImageUrl,
+        theme: values.theme || 'black-gold',
+        headerImageUrl: values.headerImageUrl || '',
         preparationNotes: values.preparationNotes || '',
       };
-
-      // Update the invoice record
+      // Update the quote record
       const { data, error } = await supabase
-        .from('invoices')
+        .from('quotes')
         .update({
           client_name: values.clientName,
           client_email: values.clientEmail,
@@ -177,19 +164,15 @@ const AdminEditQuotePage: React.FC = () => {
           event_location: values.eventLocation,
           prepared_by: values.preparedBy,
           total_amount: totalAmount,
-          details: details,
-          // Slug remains unchanged
+          details: details, // Slug remains unchanged
         })
         .eq('id', quote.id)
         .select('slug')
         .single();
-
       if (error) {
         throw error;
       }
-
       showSuccess('Quote updated successfully!', { id: toastId });
-
       // Refresh data and navigate back to details page
       if (data && data.slug) {
         navigate(`/admin/quotes/${data.slug}`);
@@ -208,15 +191,12 @@ const AdminEditQuotePage: React.FC = () => {
   // Transform form values into Quote interface structure for preview
   const getPreviewData = (values: QuoteFormValues): Quote => {
     const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.amount ?? 0), 0);
-    const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
-      sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
+    const addOnTotal = values.addOns?.reduce((sum: number, addOn) => sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
     const totalAmount = compulsoryTotal + addOnTotal;
-
     // Helper function to map form item to QuoteItem structure
     const mapFormItemToQuoteItem = (item: { id?: string, name: string, description?: string, amount?: number, cost?: number, quantity?: number }): QuoteItem => {
       const quantity = item.quantity ?? 1;
       const price = item.amount ?? item.cost ?? 0;
-      
       return {
         id: item.id || Math.random().toString(36).substring(2, 11),
         name: item.name,
@@ -225,7 +205,6 @@ const AdminEditQuotePage: React.FC = () => {
         price: price,
       };
     };
-
     return {
       id: quote?.id || Math.random().toString(36).substring(2, 11),
       slug: quote?.slug || 'preview-slug',
@@ -251,8 +230,8 @@ const AdminEditQuotePage: React.FC = () => {
         compulsoryItems: values.compulsoryItems.map(item => mapFormItemToQuoteItem(item)),
         currencySymbol: values.currencySymbol,
         eventTime: values.eventTime ?? '', // FIX: Ensure eventTime is a string
-        theme: values.theme,
-        headerImageUrl: values.headerImageUrl,
+        theme: (values.theme as "black-gold" | "blue-white" | "green-white") || 'black-gold',
+        headerImageUrl: values.headerImageUrl || '',
         preparationNotes: values.preparationNotes || '',
       },
     };
@@ -281,22 +260,14 @@ const AdminEditQuotePage: React.FC = () => {
       <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
         Modify the details of this existing quote.
       </p>
-      
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
         <CardHeader>
           <CardTitle className="text-xl text-brand-primary">Quote Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <QuoteForm 
-            form={form}
-            onSubmit={handleUpdateQuote} 
-            isSubmitting={isSubmitting} 
-            onPreview={handlePreviewQuote} 
-            onSaveDraft={handleSaveDraft} // Placeholder, not used for editing
-          />
+          <QuoteForm form={form} onSubmit={handleUpdateQuote} isSubmitting={isSubmitting} onPreview={handlePreviewQuote} onSaveDraft={handleSaveDraft} // Placeholder, not used for editing />
         </CardContent>
       </Card>
-
       <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
         <DialogContent className="sm:max-w-[90vw] w-[90vw] h-[90vh] p-0 bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50">
           <DialogHeader className="p-6 pb-0">
@@ -304,9 +275,7 @@ const AdminEditQuotePage: React.FC = () => {
           </DialogHeader>
           <ScrollArea className="h-[calc(90vh-70px)]">
             {previewData ? (
-              <QuoteDisplay 
-                quote={getPreviewData(previewData)} 
-              />
+              <QuoteDisplay quote={getPreviewData(previewData)} />
             ) : (
               <div className="p-8 text-center">No preview data available.</div>
             )}

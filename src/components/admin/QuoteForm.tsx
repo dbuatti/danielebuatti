@@ -1,9 +1,7 @@
 "use client";
 
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
 import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -30,7 +28,6 @@ import {
   AccordionItem, 
   AccordionTrigger 
 } from '@/components/ui/accordion';
-import { QuoteItemField } from './QuoteItemField';
 import { PlusCircle, Eye, Save } from 'lucide-react';
 
 // Define the form schema
@@ -67,6 +64,117 @@ export const QuoteFormSchema = z.object({
 });
 
 export type QuoteFormValues = z.infer<typeof QuoteFormSchema>;
+
+interface QuoteItemFieldProps {
+  itemType: 'compulsory' | 'addOn';
+  index: number;
+  form: any;
+}
+
+const QuoteItemField: React.FC<QuoteItemFieldProps> = ({ itemType, index, form }) => {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 border rounded-lg mb-4">
+      <div className="md:col-span-5">
+        <FormField
+          control={form.control}
+          name={`${itemType === 'compulsory' ? 'compulsoryItems' : 'addOns'}.${index}.name`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className={index !== 0 ? "sr-only" : ""}>
+                {itemType === 'compulsory' ? 'Item Name' : 'Add-On Name'}
+              </FormLabel>
+              <FormControl>
+                <Input placeholder={itemType === 'compulsory' ? 'Item name' : 'Add-on name'} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+      
+      <div className="md:col-span-4">
+        <FormField
+          control={form.control}
+          name={`${itemType === 'compulsory' ? 'compulsoryItems' : 'addOns'}.${index}.description`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className={index !== 0 ? "sr-only" : ""}>
+                Description
+              </FormLabel>
+              <FormControl>
+                <Input placeholder="Description" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+      
+      <div className={itemType === 'addOn' ? "md:col-span-2" : "md:col-span-3"}>
+        <FormField
+          control={form.control}
+          name={`${itemType === 'compulsory' ? 'compulsoryItems' : 'addOns'}.${index}.${itemType === 'compulsory' ? 'amount' : 'cost'}`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className={index !== 0 ? "sr-only" : ""}>
+                {itemType === 'compulsory' ? 'Amount' : 'Cost'}
+              </FormLabel>
+              <FormControl>
+                <Input 
+                  type="number" 
+                  placeholder={itemType === 'compulsory' ? 'Amount' : 'Cost'} 
+                  {...field} 
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+      
+      {itemType === 'addOn' && (
+        <div className="md:col-span-1">
+          <FormField
+            control={form.control}
+            name={`addOns.${index}.quantity`}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className={index !== 0 ? "sr-only" : ""}>
+                  Qty
+                </FormLabel>
+                <FormControl>
+                  <Input 
+                    type="number" 
+                    placeholder="Qty" 
+                    {...field} 
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      )}
+      
+      <div className="md:col-span-12 flex justify-end">
+        <Button
+          type="button"
+          variant="destructive"
+          size="sm"
+          onClick={() => {
+            const currentItems = form.getValues(itemType === 'compulsory' ? 'compulsoryItems' : 'addOns') || [];
+            const newItems = currentItems.filter((_: any, i: number) => i !== index);
+            form.setValue(itemType === 'compulsory' ? 'compulsoryItems' : 'addOns', newItems);
+          }}
+        >
+          Remove
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 interface QuoteFormProps {
   onSubmit: (values: QuoteFormValues) => void;

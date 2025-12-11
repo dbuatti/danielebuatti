@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,7 @@ import {
   TableRow 
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { showError, showSuccess } from '@/utils/toast';
+import { showError } from '@/utils/toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Quote } from '@/types/quote';
 import { formatCurrency } from '@/lib/utils';
@@ -75,33 +75,27 @@ const AdminQuotesListPage = () => {
       const term = searchTerm.toLowerCase();
       result = result.filter(quote => 
         quote.client_name.toLowerCase().includes(term) ||
-        quote.event_title.toLowerCase().includes(term) ||
-        quote.quote_number?.toLowerCase().includes(term)
+        quote.event_title.toLowerCase().includes(term)
       );
     }
     
     // Apply status filter
     if (statusFilter !== 'all') {
       result = result.filter(quote => 
-        quote.status?.toLowerCase() === statusFilter
+        statusFilter === 'accepted' ? quote.accepted_at : !quote.accepted_at
       );
     }
     
     setFilteredQuotes(result);
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status?.toLowerCase()) {
-      case 'draft':
-        return <Badge variant="secondary">Draft</Badge>;
-      case 'sent':
-        return <Badge className="bg-blue-500 hover:bg-blue-600">Sent</Badge>;
-      case 'accepted':
-        return <Badge className="bg-green-500 hover:bg-green-600">Accepted</Badge>;
-      case 'rejected':
-        return <Badge variant="destructive">Rejected</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
+  const getStatusBadge = (quote: Quote) => {
+    if (quote.accepted_at) {
+      return <Badge className="bg-green-500 hover:bg-green-600">Accepted</Badge>;
+    } else if (quote.rejected_at) {
+      return <Badge variant="destructive">Rejected</Badge>;
+    } else {
+      return <Badge variant="secondary">Draft</Badge>;
     }
   };
 
@@ -149,7 +143,6 @@ const AdminQuotesListPage = () => {
                 <SelectContent>
                   <SelectItem value="all">All Statuses</SelectItem>
                   <SelectItem value="draft">Draft</SelectItem>
-                  <SelectItem value="sent">Sent</SelectItem>
                   <SelectItem value="accepted">Accepted</SelectItem>
                   <SelectItem value="rejected">Rejected</SelectItem>
                 </SelectContent>
@@ -223,7 +216,7 @@ const AdminQuotesListPage = () => {
                         {formatCurrency(quote.total_amount || 0)}
                       </TableCell>
                       <TableCell>
-                        {getStatusBadge(quote.status || 'draft')}
+                        {getStatusBadge(quote)}
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
