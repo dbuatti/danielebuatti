@@ -13,25 +13,40 @@ import {
 } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
 import DynamicImage from '../DynamicImage'; // Import DynamicImage
+import { Button } from '../ui/button'; // Import Button for interactive controls
 
 interface QuoteDisplayProps {
   quote: Quote;
+  isClientView?: boolean; // New prop: true if rendered on the client-facing page
+  onQuantityChange?: (itemId: string, delta: number) => void; // New prop: handler for quantity change
+  mutableAddOns?: QuoteItem[]; // New prop: used for pending client view to show current selections
 }
 
 // Helper component for rendering a single item row
-const QuoteItemRow: React.FC<{ item: QuoteItem; currencySymbol: string; isOptional: boolean; themeClasses: any }> = ({
+const QuoteItemRow: React.FC<{ 
+  item: QuoteItem; 
+  currencySymbol: string; 
+  isOptional: boolean; 
+  themeClasses: any; 
+  isClientView: boolean; 
+  isFinalized: boolean;
+  onQuantityChange?: (itemId: string, delta: number) => void 
+}> = ({
   item,
   currencySymbol,
   isOptional,
   themeClasses,
+  isClientView,
+  isFinalized,
+  onQuantityChange,
 }) => {
   const isSelected = item.quantity > 0;
   const totalAmount = item.price * item.quantity;
   
   // Logic to display unit cost for optional items that were NOT selected (quantity 0)
   const displayAmount = () => {
-    if (isOptional && !isSelected) {
-      // If optional and not selected (quantity 0), show 'Unselected'
+    if (isOptional && !isSelected && !isFinalized) {
+      // If optional and not selected (quantity 0) in pending view, show unit price and 'Unselected'
       return (
         <div className="text-right">
           <span className="text-sm text-muted-foreground">
@@ -47,14 +62,45 @@ const QuoteItemRow: React.FC<{ item: QuoteItem; currencySymbol: string; isOption
   };
   
   const displayQuantity = () => {
-    if (isOptional && !isSelected) {
+    if (isOptional && isClientView && !isFinalized && onQuantityChange) {
+        // Interactive controls for client view (pending state)
+        return (
+            <div className="flex items-center justify-center border rounded-md border-current/30 mx-auto w-24">
+                <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={() => onQuantityChange(item.id, -1)}
+                    disabled={item.quantity <= 0}
+                    className={`h-8 w-8 ${themeClasses.text} hover:bg-current/10 p-0`}
+                >
+                    -
+                </Button>
+                <span className={`w-8 text-center font-semibold ${themeClasses.text}`}>
+                    {item.quantity}
+                </span>
+                <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={() => onQuantityChange(item.id, 1)}
+                    className={`h-8 w-8 ${themeClasses.text} hover:bg-current/10 p-0`}
+                >
+                    +
+                </Button>
+            </div>
+        );
+    }
+    
+    // Static quantity display (Admin view or Finalized Client view)
+    if (isOptional && !isSelected && !isFinalized) {
         return <span className="text-muted-foreground">0</span>;
     }
     return item.quantity;
   }
 
   return (
-    <TableRow className={isOptional && !isSelected ? 'opacity-60' : 'hover:bg-current/5'}>
+    <TableRow className={isOptional && !isSelected && !isFinalized ? 'opacity-60' : 'hover:bg-current/5'}>
       <TableCell className="font-medium border-r border-current/10">
         {item.name}
         {item.description && (
@@ -72,27 +118,35 @@ const QuoteItemRow: React.FC<{ item: QuoteItem; currencySymbol: string; isOption
   );
 };
 
-const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
-  const { details, total_amount, accepted_at } = quote;
+const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false, onQuantityChange, mutableAddOns }) => {
+  const { details, total_amount, accepted_at, rejected_at } = quote;
   const currencySymbol = details.currencySymbol || '$';
   
-  // Determine which list of add-ons to display
   const isAccepted = !!accepted_at;
+  const isRejected = !!rejected_at;
+  const isFinalized = isAccepted || isRejected;
   
-  // If accepted, use the client_selected_add_ons (which only contains items with quantity > 0)
-  // If pending/rejected, use the original addOns list (which contains all optional items, with admin-set quantities, usually 0)
-  const optionalItemsToDisplay = isAccepted && details.client_selected_add_ons 
-    ? details.client_selected_add_ons 
-    : details.addOns;
-
-  // Calculate totals based on the items displayed
+  // Determine which list of add-ons to display and calculate totals
+  let optionalItemsToDisplay: QuoteItem[];
+  let subtotal: number;
+  
+  if (isClientView && !isFinalized && mutableAddOns) {
+      // Client view, pending: use mutable state for display and calculation
+      optionalItemsToDisplay = mutableAddOns;
+  } else if (isAccepted && details.client_selected_add_ons) {
+      // Finalized (Accepted): use the final selected list
+      optionalItemsToDisplay = details.client_selected_add_ons;
+  } else {
+      // Admin preview or Rejected: use original addOns list
+      optionalItemsToDisplay = details.addOns;
+  }
+  
+  // Calculate totals based on the items being displayed/calculated
   const compulsoryTotal = details.compulsoryItems.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
-  
-  // Calculate addOnTotal based on the list being displayed (which already has the correct quantities)
   const addOnTotal = optionalItemsToDisplay.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
   
-  // If accepted, the total_amount from the DB is the final total. Otherwise, calculate based on proposal.
-  const subtotal = isAccepted ? total_amount : (compulsoryTotal + addOnTotal); 
+  // If accepted, the total_amount from the DB is the final total. Otherwise, calculate based on current proposal/selection.
+  subtotal = isAccepted ? total_amount : (compulsoryTotal + addOnTotal); 
 
   // Calculate deposit amount
   const depositAmount = subtotal * (details.depositPercentage / 100);
@@ -138,7 +192,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
       
       {/* Header Image */}
       {details.headerImageUrl && (
-        <div className="mb-4"> {/* Changed mb-8 to mb-4 */}
+        <div className="mb-4">
           <DynamicImage 
             src={details.headerImageUrl} 
             alt="Quote Header" 
@@ -162,12 +216,14 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
         </div>
       </div>
 
-      {/* Client Details */}
-      <div className="pt-4">
-        <h3 className={`text-xl font-semibold mb-2 ${themeClasses.primary}`}>Client:</h3>
-        <p>{quote.client_name}</p>
-        <p>{quote.client_email}</p>
-      </div>
+      {/* Client Details (Only show if finalized or in admin view) */}
+      {(isFinalized || !isClientView) && (
+        <div className="pt-4">
+          <h3 className={`text-xl font-semibold mb-2 ${themeClasses.primary}`}>Client:</h3>
+          <p>{quote.client_name}</p>
+          <p>{quote.client_email}</p>
+        </div>
+      )}
       
       {/* Items Table */}
       <div className="pt-4">
@@ -190,6 +246,8 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
                 currencySymbol={currencySymbol} 
                 isOptional={false} 
                 themeClasses={themeClasses}
+                isClientView={isClientView}
+                isFinalized={isFinalized}
               />
             ))}
 
@@ -203,15 +261,23 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
             )}
             
             {/* Display all optional items */}
-            {optionalItemsToDisplay.map((item) => (
-              <QuoteItemRow 
-                key={item.id} 
-                item={item} 
-                currencySymbol={currencySymbol} 
-                isOptional={true} 
-                themeClasses={themeClasses}
-              />
-            ))}
+            {optionalItemsToDisplay.map((item) => {
+                // If finalized and client view, only show selected items
+                if (isClientView && isFinalized && item.quantity === 0) return null;
+                
+                return (
+                    <QuoteItemRow 
+                        key={item.id} 
+                        item={item} 
+                        currencySymbol={currencySymbol} 
+                        isOptional={true} 
+                        themeClasses={themeClasses}
+                        isClientView={isClientView}
+                        isFinalized={isFinalized}
+                        onQuantityChange={onQuantityChange}
+                    />
+                );
+            })}
           </TableBody>
         </Table>
       </div>

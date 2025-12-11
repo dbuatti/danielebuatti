@@ -71,7 +71,7 @@ serve(async (req: Request) => {
       throw new Error(`Failed to update quote acceptance: ${updateError?.message}`);
     }
 
-    // 3. Send Admin Notification Email
+    // 3. Send Admin Notification Email (Existing logic remains)
     const EMAIL_SERVICE_API_KEY = Deno.env.get('EMAIL_SERVICE_API_KEY');
     const CONTACT_FORM_RECIPIENT_EMAIL = Deno.env.get('CONTACT_FORM_RECIPIENT_EMAIL');
     const EMAIL_SERVICE_ENDPOINT = Deno.env.get('EMAIL_SERVICE_ENDPOINT');
@@ -155,17 +155,54 @@ serve(async (req: Request) => {
       }),
     });
     
-    // 4. Send Client Confirmation Email
+    // 4. Send Client Confirmation Email (Updated logic)
     const clientSubject = `Booking Confirmed: ${updatedRecord.event_title || updatedRecord.invoice_type}`;
+    
+    const compulsoryListClient = (updatedRecord.details?.compulsoryItems || [])
+      .map((item: any) => `<li>${item.name}: A$${(item.price * item.quantity).toFixed(2)}</li>`)
+      .join('');
+      
+    const addOnListClient = finalSelectedAddOns.length > 0 
+      ? finalSelectedAddOns.map((a: any) => `<li>${a.name} (Qty: ${a.quantity}, Cost: A$${(a.price * a.quantity).toFixed(2)})</li>`).join('')
+      : '<li>None selected.</li>';
+
     const clientEmailHtml = `
       <div style="font-family: 'Outfit', sans-serif; color: #1b1b1b; background-color: #F8F8F8; padding: 20px; border-radius: 8px;">
         <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
           <h2 style="color: #DB4CA3; text-align: center; margin-bottom: 20px;">Booking Confirmed!</h2>
           <p style="font-size: 16px; line-height: 1.6;">Dear ${clientName},</p>
           <p style="font-size: 16px; line-height: 1.6;">Thank you for accepting the quote for your event, <strong>${updatedRecord.event_title || updatedRecord.invoice_type}</strong>. Your booking is now confirmed!</p>
-          <p style="font-size: 16px; line-height: 1.6;"><strong>Event Date:</strong> ${updatedRecord.event_date}</p>
-          <p style="font-size: 16px; line-height: 1.6;"><strong>Total Amount:</strong> A$${finalTotal.toFixed(2)}</p>
-          <p style="font-size: 16px; line-height: 1.6;">Daniele will be in touch shortly to finalize the deposit payment and all remaining details.</p>
+          
+          <h3 style="color: #DB4CA3; margin-top: 20px; font-size: 18px;">Booking Summary:</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px;">
+            <tr>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Event Date:</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${updatedRecord.event_date}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Event Location:</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${updatedRecord.event_location}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">FINAL TOTAL:</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">A$${finalTotal.toFixed(2)}</td>
+            </tr>
+          </table>
+
+          <h3 style="color: #DB4CA3; margin-top: 20px; font-size: 18px;">Selected Services:</h3>
+          <p style="font-weight: bold; margin-top: 10px;">Compulsory Items:</p>
+          <ul style="margin: 0; padding-left: 20px; font-size: 14px;">
+            ${compulsoryListClient}
+          </ul>
+          
+          <p style="font-weight: bold; margin-top: 10px;">Selected Optional Add-Ons:</p>
+          <ul style="margin: 0; padding-left: 20px; font-size: 14px;">
+            ${addOnListClient}
+          </ul>
+
+          <h3 style="color: #DB4CA3; margin-top: 20px; font-size: 18px;">Next Steps:</h3>
+          <p style="font-size: 16px; line-height: 1.6;">Daniele will be in touch shortly to finalize the deposit payment (A$${(finalTotal * (updatedRecord.details.depositPercentage / 100)).toFixed(2)}) and all remaining details.</p>
+          
           <p style="font-size: 14px; color: #666666; text-align: center; margin-top: 30px;">
             This is an automated confirmation.
           </p>
