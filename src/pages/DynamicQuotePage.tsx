@@ -6,8 +6,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { format } from 'date-fns'; // Ensure format is imported
-import { Quote, QuoteItem } from '@/types/quote'; // Import centralized interfaces
+import { format } from 'date-fns';
+import { Quote, QuoteItem } from '@/types/quote';
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -99,8 +99,9 @@ const DynamicQuotePage: React.FC = () => {
       // 1. Calculate final total based on selected add-ons
       const finalAddOns = quote.details.addOns.filter(item => selectedAddOns.includes(item.id));
       
-      const compulsoryTotal = quote.details.compulsoryItems.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0;
-      const addOnTotal = finalAddOns.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      // Ensure compulsoryTotal is calculated here for the payload
+      const compulsoryTotal = quote.details.compulsoryItems.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0) || 0;
+      const addOnTotal = finalAddOns.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
       const finalTotal = compulsoryTotal + addOnTotal;
 
       // 2. Prepare data for Edge Function
@@ -182,8 +183,8 @@ const DynamicQuotePage: React.FC = () => {
   
   const symbol = currencySymbol || '$';
 
-  // Calculate compulsory total unconditionally
-  const compulsoryTotal = compulsoryItems?.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0;
+  // Calculate compulsory total once (FIX: Moved here to ensure scope availability for JSX)
+  const compulsoryTotal = compulsoryItems?.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0) || 0;
 
   // Calculate totals based on current selections (or accepted total if finalized)
   let selectedAddOnsData: QuoteItem[];
@@ -196,7 +197,7 @@ const DynamicQuotePage: React.FC = () => {
   } else {
     // Calculate based on current selection if pending or rejected
     selectedAddOnsData = optionalAddOns.filter(item => selectedAddOns.includes(item.id));
-    const addOnTotal = selectedAddOnsData.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const addOnTotal = selectedAddOnsData.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
     subtotal = compulsoryTotal + addOnTotal;
   }
 
