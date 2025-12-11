@@ -324,7 +324,7 @@ const DynamicQuotePage: React.FC = () => {
               <DynamicImage 
                 src={headerImageUrl} 
                 alt="Quote Header" 
-                className={`w-full h-64 object-cover rounded-t-lg shadow-md ${headerImagePosition || 'object-center'}`}
+                className={`w-full h-40 object-cover rounded-t-lg shadow-md ${headerImagePosition || 'object-center'}`}
                 width={1200} // Increased width for better display on wider container
                 height={256}
               />
