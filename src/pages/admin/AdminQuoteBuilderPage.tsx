@@ -34,8 +34,8 @@ const defaultFormValues: Partial<QuoteFormValues> = {
   bankACC: '301110875', // Default ACC
   // New defaults
   theme: 'black-gold', // Default theme set to the new Black/Gold theme
-  headerImageUrl: '/Piano Keys_edited_edited.avif', // Updated default image URL to a piano image
-  headerImagePosition: 'object-top', // NEW default: Positioned to show the top of the image
+  headerImageUrl: '/blacktie.avif', // Updated default image URL to the blacktie image
+  headerImagePosition: 'object-top', // NEW default: Positioned to show the top of the image (your face)
   preparationNotes: 'This fee covers 7 hours of commitment, including the performance call, soundcheck, and all essential preparation required for a seamless, high-energy performance.\n\nThis fee secures a premium, seamless musical experience for your event.', // New default preparation notes
   // Updated item structure (using 'name' and 'description' now)
   compulsoryItems: [{ name: 'Live Piano Performance Fee', description: '3 hours of performance time.', amount: 1000 }], // Updated default item
