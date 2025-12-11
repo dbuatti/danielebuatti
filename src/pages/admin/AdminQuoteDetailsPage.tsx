@@ -24,6 +24,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
   const [quote, setQuote] = useState<Quote | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [, copy] = useCopyToClipboard(); // Removed unused 'copiedText'
 
@@ -104,6 +105,39 @@ const AdminQuoteDetailsPage: React.FC = () => {
       dismissToast(toastId);
     }
   };
+  
+  const handleResetStatus = async () => {
+    if (!quote || !user) return;
+
+    if (!window.confirm(`Are you sure you want to reset the status of the quote for "${quote.event_title}" back to Pending? This will clear acceptance/rejection dates.`)) {
+      return;
+    }
+
+    setIsResetting(true);
+    const toastId = showLoading('Resetting quote status...');
+
+    try {
+      const { error } = await supabase
+        .from('invoices')
+        .update({
+          accepted_at: null,
+          rejected_at: null,
+        })
+        .eq('id', quote.id);
+
+      if (error) throw error;
+
+      showSuccess('Quote status reset to Pending!', { id: toastId });
+      // Manually update state to reflect change without full refetch
+      setQuote(prev => prev ? { ...prev, accepted_at: null, rejected_at: null } : null);
+    } catch (error: any) {
+      console.error('Error resetting quote status:', error);
+      showError(`Failed to reset quote status: ${error.message || 'Unknown error occurred'}`, { id: toastId });
+    } finally {
+      setIsResetting(false);
+      dismissToast(toastId);
+    }
+  };
 
   const handleCopyLink = () => {
     if (!quote) return;
@@ -131,6 +165,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
 
   const { details, accepted_at, rejected_at } = quote;
   const theme = details.theme;
+  const isFinalized = !!accepted_at || !!rejected_at;
 
   return (
     <div className="space-y-8">
@@ -139,6 +174,17 @@ const AdminQuoteDetailsPage: React.FC = () => {
           {quote.invoice_type} Details: {quote.event_title}
         </h2>
         <div className="flex space-x-2">
+          {isFinalized && (
+            <Button 
+              variant="outline" 
+              onClick={handleResetStatus} 
+              disabled={isResetting}
+              className="text-yellow-600 border-yellow-600 hover:bg-yellow-100 dark:hover:bg-yellow-900/50"
+            >
+              {isResetting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Clock className="h-4 w-4 mr-2" />}
+              Reset Status
+            </Button>
+          )}
           <Button variant="outline" onClick={() => navigate(`/admin/quotes/edit/${quote.id}`)}>
             <Edit className="h-4 w-4 mr-2" /> Edit
           </Button>
