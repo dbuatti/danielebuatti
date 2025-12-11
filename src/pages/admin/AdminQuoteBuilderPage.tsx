@@ -11,12 +11,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Quote } from '@/types/quote';
+import { useAuth } from '@/hooks/useAuth';
 
 const AdminQuoteBuilderPage: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState<QuoteFormValues | null>(null);
+  const [currentDraftId, setCurrentDraftId] = useState<string | undefined>(undefined);
 
   const handlePreviewQuote = (values: QuoteFormValues) => {
     setPreviewData(values);
@@ -47,6 +50,58 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
     // If we've reached max attempts, generate a random suffix
     return `${baseSlug}-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+  };
+
+  const handleSaveDraft = async (values: QuoteFormValues) => {
+    if (!user) {
+      showError('You must be logged in to save a draft.');
+      return;
+    }
+
+    const toastId = showLoading(currentDraftId ? 'Updating draft...' : 'Saving draft...');
+
+    try {
+      const draftData = {
+        user_id: user.id,
+        title: values.eventTitle || `Draft: ${values.clientName || 'Untitled'}`,
+        data: values, // Store the entire form values object
+        updated_at: new Date().toISOString(),
+      };
+
+      let result;
+      
+      if (currentDraftId) {
+        // Update existing draft
+        result = await supabase
+          .from('quote_drafts')
+          .update(draftData)
+          .eq('id', currentDraftId)
+          .select('id')
+          .single();
+      } else {
+        // Insert new draft
+        result = await supabase
+          .from('quote_drafts')
+          .insert(draftData)
+          .select('id')
+          .single();
+      }
+
+      if (result.error) {
+        throw result.error;
+      }
+
+      const savedDraftId = result.data.id;
+      setCurrentDraftId(savedDraftId);
+      
+      showSuccess('Draft saved successfully!', { id: toastId });
+
+    } catch (error: any) {
+      console.error('Error saving draft:', error);
+      showError(`Failed to save draft: ${error.message || 'Unknown error occurred'}`, { id: toastId });
+    } finally {
+      dismissToast(toastId);
+    }
   };
 
   const handleCreateQuote = async (values: QuoteFormValues) => {
@@ -102,6 +157,14 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
       if (error) {
         throw error;
+      }
+
+      // If successful, delete the draft if one exists
+      if (currentDraftId) {
+        const { error: deleteError } = await supabase.from('quote_drafts').delete().eq('id', currentDraftId);
+        if (deleteError) {
+          console.warn('Failed to delete draft after quote creation:', deleteError);
+        }
       }
 
       showSuccess('Quote created successfully!', { id: toastId });
@@ -171,13 +234,14 @@ const AdminQuoteBuilderPage: React.FC = () => {
       
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
         <CardHeader>
-          <CardTitle className="text-xl text-brand-primary">Quote Details</CardTitle>
+          <CardTitle className="text-xl text-brand-primary">Quote Details {currentDraftId && <span className="text-sm text-gray-500">(Draft ID: {currentDraftId.substring(0, 8)}...)</span>}</CardTitle>
         </CardHeader>
         <CardContent>
           <QuoteForm 
             onSubmit={handleCreateQuote} 
             isSubmitting={isSubmitting} 
             onPreview={handlePreviewQuote} 
+            onSaveDraft={handleSaveDraft}
           />
         </CardContent>
       </Card>
