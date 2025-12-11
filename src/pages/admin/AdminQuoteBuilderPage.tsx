@@ -34,7 +34,7 @@ const defaultFormValues: Partial<QuoteFormValues> = {
   bankACC: '301110875', // Default ACC
   // New defaults
   theme: 'black-gold', // Default theme set to the new Black/Gold theme
-  headerImageUrl: '/blacktie.avif', // Default image URL
+  headerImageUrl: '/live-piano-quote-header.jpg', // Updated default image URL
   headerImagePosition: 'object-[50%_70%]', // NEW default: Shift crop down vertically
   preparationNotes: 'This fee covers 7 hours of commitment, including the performance call, soundcheck, and all essential preparation required for a seamless, high-energy performance.\n\nThis fee secures a premium, seamless musical experience for your event.', // New default preparation notes
   // Updated item structure (using 'name' and 'description' now)
@@ -302,8 +302,8 @@ const AdminQuoteBuilderPage: React.FC = () => {
         })),
         addOns: values.addOns?.map(addOn => ({
           id: addOn.id || Math.random().toString(36).substring(2, 11),
-          name: addOn.name, // Use new name field
-          description: addOn.description || '', // Use new description field
+          name: addOn.name,
+          description: addOn.description || '',
           price: addOn.cost ?? 0, // Use cost as price for add-ons
           quantity: addOn.quantity ?? 1, // Ensure quantity is a number
         })) || [],
