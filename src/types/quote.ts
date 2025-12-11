@@ -1,30 +1,30 @@
-export type QuoteItem = {
+export type QuoteTheme = 'default' | 'black-gold';
+
+export interface QuoteItem {
   id: string;
   name: string;
   description: string;
   quantity: number;
-  price: number;
-};
+  price: number; // Unit price/cost
+}
 
-export type BankDetails = {
-  bsb: string;
-  acc: string;
-};
-
-export type QuoteDetails = {
-  compulsoryItems: QuoteItem[];
-  addOns: QuoteItem[];
+export interface QuoteDetails {
   depositPercentage: number;
   paymentTerms: string;
-  bankDetails: BankDetails;
-  eventTime?: string;
+  bankDetails: {
+    bsb: string;
+    acc: string;
+  };
+  addOns: QuoteItem[];
+  compulsoryItems: QuoteItem[];
   currencySymbol: string;
-  theme: 'default' | 'black-gold'; // Added black-gold theme
-  headerImageUrl?: string;
-  preparationNotes?: string; // Added new field
-};
+  eventTime: string;
+  theme: QuoteTheme; // Updated to use specific theme type
+  headerImageUrl: string;
+  preparationNotes: string;
+}
 
-export type Quote = {
+export interface Quote {
   id: string;
   slug: string;
   client_name: string;
@@ -39,4 +39,4 @@ export type Quote = {
   rejected_at: string | null;
   created_at: string;
   details: QuoteDetails;
-};
+}

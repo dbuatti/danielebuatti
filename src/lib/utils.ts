@@ -5,23 +5,17 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatCurrency(amount: number | string, currencySymbol: string = '$'): string {
-  const numericAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
-  if (isNaN(numericAmount)) {
-    return `${currencySymbol}0.00`;
-  }
-  return `${currencySymbol}${numericAmount.toFixed(2)}`;
-}
-
-// Added createSlug function
 export function createSlug(text: string): string {
   return text
-    .toString()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
     .trim()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w-]+/g, '')
-    .replace(/--+/g, '-');
+    .replace(/[^\w\s-]/g, '') // Remove all non-word chars except spaces and hyphens
+    .replace(/[\s_-]+/g, '-') // Replace spaces and multiple hyphens with a single hyphen
+    .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+}
+
+export function formatCurrency(amount: number, currencySymbol: string = '$'): string {
+  // Ensure amount is treated as a number and handles potential null/undefined gracefully
+  const numericAmount = amount ?? 0;
+  return `${currencySymbol}${numericAmount.toFixed(2)}`;
 }

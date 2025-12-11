@@ -235,7 +235,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
           bsb: values.bankBSB ?? '',
           acc: values.bankACC ?? '',
         },
-        eventTime: values.eventTime,
+        eventTime: values.eventTime ?? '', // FIX: Ensure eventTime is a string
         currencySymbol: values.currencySymbol,
         paymentTerms: values.paymentTerms,
         theme: values.theme, // Include new theme
@@ -334,7 +334,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         addOns: values.addOns?.map(item => mapFormItemToQuoteItem(item)) || [],
         compulsoryItems: values.compulsoryItems.map(item => mapFormItemToQuoteItem(item)),
         currencySymbol: values.currencySymbol,
-        eventTime: values.eventTime,
+        eventTime: values.eventTime ?? '', // FIX: Ensure eventTime is a string for QuoteDetails
         theme: values.theme, // Pass theme
         headerImageUrl: values.headerImageUrl, // Pass image URL
         preparationNotes: values.preparationNotes || '', // Pass preparation notes
