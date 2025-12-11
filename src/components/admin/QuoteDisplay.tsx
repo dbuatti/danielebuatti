@@ -105,6 +105,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
         totalBoxBg: 'bg-brand-dark-alt',
         totalBoxText: 'text-brand-yellow',
         tableText: 'text-brand-light',
+        contentImageBorder: 'border-brand-yellow/50',
       }
     : {
         // Default Theme (Premium Light/Pink)
@@ -118,6 +119,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
         totalBoxBg: 'bg-brand-secondary/20',
         totalBoxText: 'text-brand-primary',
         tableText: 'text-brand-dark',
+        contentImageBorder: 'border-brand-primary/50',
       };
 
   return (
@@ -156,14 +158,14 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
         <p>{quote.client_email}</p>
       </div>
       
-      {/* Content Images (Black/Gold Theme Only) */}
-      {isBlackGoldTheme && (details.contentImageUrl1 || details.contentImageUrl2) && (
+      {/* Content Images (Render for both themes now) */}
+      {(details.contentImageUrl1 || details.contentImageUrl2) && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
           {details.contentImageUrl1 && (
             <DynamicImage 
               src={details.contentImageUrl1} 
               alt="Quote Content Image 1" 
-              className="w-full h-48 object-cover rounded-lg shadow-lg"
+              className={`w-full h-48 object-cover rounded-lg shadow-lg border ${themeClasses.contentImageBorder}`}
               width={400}
               height={192}
             />
@@ -172,7 +174,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
             <DynamicImage 
               src={details.contentImageUrl2} 
               alt="Quote Content Image 2" 
-              className="w-full h-48 object-cover rounded-lg shadow-lg"
+              className={`w-full h-48 object-cover rounded-lg shadow-lg border ${themeClasses.contentImageBorder}`}
               width={400}
               height={192}
             />
