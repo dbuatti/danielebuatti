@@ -37,8 +37,8 @@ export const QuoteFormSchema = z.object({
   bankACC: z.string().min(1, 'Account Number is required.'),
   theme: z.enum(['default', 'black-gold']), // Added 'black-gold' theme
   headerImageUrl: z.string(), // Simplified validation
-  contentImageUrl1: z.string(), // Simplified validation
-  contentImageUrl2: z.string(), // Simplified validation
+  
+  // Removed contentImageUrl1 and contentImageUrl2
   
   // New field for detailed notes
   preparationNotes: z.string().optional(), 
@@ -264,36 +264,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onSubmit, isSubmitting, onP
           />
         </div>
         
-        {/* Content Images (New Section) */}
-        <h3 className="text-lg font-semibold pt-4">Content Images (Black/Gold Theme Only)</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={control}
-            name="contentImageUrl1"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Content Image 1 URL (Optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="/quote-option-2.jpeg" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={control}
-            name="contentImageUrl2"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Content Image 2 URL (Optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="/quote-option-3.jpeg" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+        {/* Removed Content Images Section */}
 
         {/* Preparation Notes Field */}
         <FormField

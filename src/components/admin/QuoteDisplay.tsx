@@ -158,29 +158,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
         <p>{quote.client_email}</p>
       </div>
       
-      {/* Content Images (Render for both themes now) */}
-      {(details.contentImageUrl1 || details.contentImageUrl2) && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-          {details.contentImageUrl1 && (
-            <DynamicImage 
-              src={details.contentImageUrl1} 
-              alt="Quote Content Image 1" 
-              className={`w-full h-48 object-cover rounded-lg shadow-lg border ${themeClasses.contentImageBorder}`}
-              width={400}
-              height={192}
-            />
-          )}
-          {details.contentImageUrl2 && (
-            <DynamicImage 
-              src={details.contentImageUrl2} 
-              alt="Quote Content Image 2" 
-              className={`w-full h-48 object-cover rounded-lg shadow-lg border ${themeClasses.contentImageBorder}`}
-              width={400}
-              height={192}
-            />
-          )}
-        </div>
-      )}
+      {/* Removed Content Images Section */}
 
       {/* Items Table */}
       <div className="pt-4">

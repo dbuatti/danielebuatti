@@ -29,8 +29,6 @@ interface QuoteData extends Omit<Quote, 'details'> {
     eventTime: string;
     theme: 'default' | 'black-gold';
     headerImageUrl: string;
-    contentImageUrl1?: string; // New field
-    contentImageUrl2?: string; // New field
     preparationNotes: string;
     client_selected_add_ons?: QuoteItem[];
   };
@@ -180,7 +178,7 @@ const DynamicQuotePage: React.FC = () => {
   }
 
   const { details, accepted_at, rejected_at } = quote;
-  const { compulsoryItems, addOns: optionalAddOns, currencySymbol, depositPercentage, paymentTerms, bankDetails, eventTime, theme, headerImageUrl, contentImageUrl1, contentImageUrl2, preparationNotes } = details;
+  const { compulsoryItems, addOns: optionalAddOns, currencySymbol, depositPercentage, paymentTerms, bankDetails, eventTime, theme, headerImageUrl, preparationNotes } = details;
   
   const isAccepted = !!accepted_at;
   const isRejected = !!rejected_at;
@@ -308,29 +306,7 @@ const DynamicQuotePage: React.FC = () => {
               </section>
             )}
             
-            {/* Content Images (Render for both themes now) */}
-            {(contentImageUrl1 || contentImageUrl2) && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-                {contentImageUrl1 && (
-                  <DynamicImage 
-                    src={contentImageUrl1} 
-                    alt="Quote Content Image 1" 
-                    className={`w-full h-48 object-cover rounded-lg shadow-lg border ${themeClasses.contentImageBorder}`}
-                    width={400}
-                    height={192}
-                  />
-                )}
-                {contentImageUrl2 && (
-                  <DynamicImage 
-                    src={contentImageUrl2} 
-                    alt="Quote Content Image 2" 
-                    className={`w-full h-48 object-cover rounded-lg shadow-lg border ${themeClasses.contentImageBorder}`}
-                    width={400}
-                    height={192}
-                  />
-                )}
-              </div>
-            )}
+            {/* Removed Content Images Section */}
 
             {/* Quote Breakdown */}
             <section className="space-y-6">
