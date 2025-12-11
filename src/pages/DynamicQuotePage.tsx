@@ -23,6 +23,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 // Define the structure for the data fetched from Supabase (which includes the JSONB details)
 interface QuoteData extends Omit<Quote, 'details'> {
@@ -275,6 +283,8 @@ const DynamicQuotePage: React.FC = () => {
         acceptBoxBorder: 'border-brand-yellow/50',
         checkbox: 'border-brand-yellow data-[state=checked]:bg-brand-yellow data-[state=checked]:text-brand-dark',
         contentImageBorder: 'border-brand-yellow/50',
+        tableHeaderBg: 'bg-brand-dark-alt/50', // Added
+        tableText: 'text-brand-light', // Added
       }
     : {
         // Default Theme (Premium Light/Pink)
@@ -293,6 +303,8 @@ const DynamicQuotePage: React.FC = () => {
         acceptBoxBorder: 'border-brand-primary/50',
         checkbox: 'border-brand-primary data-[state=checked]:bg-brand-primary data-[state=checked]:text-white',
         contentImageBorder: 'border-brand-primary/50',
+        tableHeaderBg: 'bg-brand-secondary/30', // Added
+        tableText: 'text-brand-dark', // Added
       };
       
   const eventDateFormatted = quote.event_date ? format(new Date(quote.event_date), 'EEEE dd MMMM yyyy') : 'TBD';
@@ -318,7 +330,7 @@ const DynamicQuotePage: React.FC = () => {
           )}
 
           <CardHeader className="pb-4 text-center px-6">
-            <CardTitle className={`text-5xl font-extrabold ${themeClasses.primary} leading-tight`}>{quote.event_title}</CardTitle>
+            <CardTitle className={`text-4xl font-extrabold ${themeClasses.primary} leading-tight`}>{quote.event_title}</CardTitle>
             
             <div className="space-y-1 pt-4 text-lg">
               <p className={`${themeClasses.headerText}`}>Prepared for: <span className={`font-semibold ${themeClasses.primary}`}>{quote.client_name}</span></p>
@@ -356,30 +368,47 @@ const DynamicQuotePage: React.FC = () => {
             <section className="space-y-6">
               <h2 className={`text-2xl font-bold text-center ${themeClasses.primary}`}>Service Components</h2>
 
-              {/* Compulsory Items */}
+              {/* Compulsory Items Table */}
               {compulsoryItems.length > 0 && (
-                <div className="space-y-4 border-b border-current/20 pb-4">
-                  {compulsoryItems.map((item, index) => (
-                    <div key={index} className="flex justify-between items-start py-2">
-                      <div className="flex-1 pr-4">
-                        <p className={`${themeClasses.text} flex items-start text-lg`}>
-                          <span className={`mr-2 ${themeClasses.primary} text-xl leading-none`}>&bull;</span>
-                          <span className="font-bold">{item.name}:</span>
-                          {item.description && <span className={`text-base ml-2 ${themeClasses.secondary}`}>{item.description}</span>}
-                        </p>
-                      </div>
-                      <p className={`font-bold text-lg ${themeClasses.primary} flex-shrink-0`}>{formatCurrency(calculateItemTotal(item))}</p>
-                    </div>
-                  ))}
-                  
-                  {/* All-Inclusive Total (Based on design) */}
-                  <div className="text-center pt-4">
-                    <p className={`text-3xl font-extrabold ${themeClasses.primary}`}>
-                      All-Inclusive Engagement Fee: {formatCurrency(compulsoryTotal)}
-                    </p>
-                  </div>
+                <div className={`border ${themeClasses.border} rounded-lg overflow-hidden ${themeClasses.tableText}`}>
+                  <Table>
+                    <TableHeader>
+                      <TableRow className={`${themeClasses.tableHeaderBg} border-b ${themeClasses.border}`}>
+                        <TableHead className={`font-bold ${themeClasses.primary} border-r ${themeClasses.border}`}>Description</TableHead>
+                        <TableHead className={`text-center font-bold ${themeClasses.primary} w-[100px] border-r ${themeClasses.border}`}>Qty</TableHead>
+                        <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px] border-r ${themeClasses.border}`}>Unit Price</TableHead>
+                        <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px]`}>Amount</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {compulsoryItems.map((item, index) => (
+                        <TableRow key={index} className={`border-b ${themeClasses.border} last:border-b-0`}>
+                          <TableCell className={`font-medium border-r ${themeClasses.border}`}>
+                            {item.name}
+                            {item.description && (
+                              <p className={`text-sm ${themeClasses.secondary} mt-1`}>{item.description}</p>
+                            )}
+                          </TableCell>
+                          <TableCell className={`text-center w-[100px] border-r ${themeClasses.border}`}>{item.quantity}</TableCell>
+                          <TableCell className={`text-right w-[120px] border-r ${themeClasses.border}`}>
+                            {formatCurrency(item.price, symbol)}
+                          </TableCell>
+                          <TableCell className={`text-right font-semibold w-[120px] ${themeClasses.primary}`}>
+                            {formatCurrency(calculateItemTotal(item), symbol)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </div>
               )}
+              
+              {/* All-Inclusive Total (Keep this separate for emphasis) */}
+              <div className="text-center pt-4">
+                <p className={`text-3xl font-extrabold ${themeClasses.primary}`}>
+                  All-Inclusive Engagement Fee: {formatCurrency(compulsoryTotal)}
+                </p>
+              </div>
             </section>
 
             {/* Optional Add-Ons Section */}
@@ -387,65 +416,103 @@ const DynamicQuotePage: React.FC = () => {
               <div className={`mt-8 p-6 rounded-lg text-center border-2 ${themeClasses.acceptBoxBorder}`}>
                 <h2 className={`text-2xl font-extrabold mb-6 ${themeClasses.text}`}>Optional Add-Ons</h2>
                 
-                <div className="space-y-4 pt-4">
-                  {displayAddOns.map((item) => {
-                    // If finalized, we only show items with quantity > 0
-                    if (isFinalized && item.quantity === 0) return null;
-
-                    const itemTotal = calculateItemTotal(item);
-
-                    return (
-                      <div key={item.id} className="flex flex-col sm:flex-row items-center justify-between p-3 rounded-md transition-colors hover:bg-current/5">
-                        <div className="flex-1 text-left space-y-1 sm:space-y-0">
-                            <p className={`${themeClasses.text} flex items-start text-lg`}>
-                                <span className="font-bold">{item.name}:</span>
-                                {item.description && <span className={`text-base ml-2 ${themeClasses.secondary}`}>{item.description}</span>}
-                            </p>
-                            <p className={`text-sm ml-0 ${themeClasses.secondary}`}>Unit Cost: {formatCurrency(item.price)}</p>
-                        </div>
+                <div className={`border ${themeClasses.border} rounded-lg overflow-hidden ${themeClasses.tableText}`}>
+                  <Table>
+                    <TableHeader>
+                      <TableRow className={`${themeClasses.tableHeaderBg} border-b ${themeClasses.border}`}>
+                        <TableHead className={`font-bold ${themeClasses.primary} border-r ${themeClasses.border}`}>Description</TableHead>
+                        <TableHead className={`text-center font-bold ${themeClasses.primary} w-[100px] border-r ${themeClasses.border}`}>Qty</TableHead>
+                        <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px] border-r ${themeClasses.border}`}>Unit Price</TableHead>
+                        <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px]`}>Amount</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {displayAddOns.map((item) => {
+                        const itemTotal = calculateItemTotal(item);
+                        const isSelected = item.quantity > 0;
                         
-                        <div className="flex items-center space-x-4 mt-2 sm:mt-0 flex-shrink-0">
-                            {/* Quantity Controls */}
-                            {!isFinalized ? (
-                                <div className="flex items-center border rounded-md border-current/30">
-                                    <Button 
-                                        type="button" 
-                                        variant="ghost" 
-                                        size="icon" 
-                                        onClick={() => handleQuantityChange(item.id, -1)}
-                                        disabled={item.quantity <= 0}
-                                        className={`h-8 w-8 ${themeClasses.text} hover:bg-current/10`}
-                                    >
-                                        -
-                                    </Button>
-                                    <span className={`w-8 text-center font-semibold ${themeClasses.text}`}>
-                                        {item.quantity}
-                                    </span>
-                                    <Button 
-                                        type="button" 
-                                        variant="ghost" 
-                                        size="icon" 
-                                        onClick={() => handleQuantityChange(item.id, 1)}
-                                        className={`h-8 w-8 ${themeClasses.text} hover:bg-current/10`}
-                                    >
-                                        +
-                                    </Button>
-                                </div>
-                            ) : (
-                                <span className={`w-16 text-center font-semibold ${themeClasses.text}`}>
-                                    Qty: {item.quantity}
-                                </span>
-                            )}
+                        // If finalized, we only show items with quantity > 0
+                        if (isFinalized && item.quantity === 0) return null;
+
+                        return (
+                          <TableRow 
+                            key={item.id} 
+                            className={`border-b ${themeClasses.border} last:border-b-0 ${!isFinalized && !isSelected ? 'opacity-60' : ''}`}
+                          >
+                            <TableCell className={`font-medium border-r ${themeClasses.border}`}>
+                              {item.name}
+                              {item.description && (
+                                <p className={`text-sm ${themeClasses.secondary} mt-1`}>{item.description}</p>
+                              )}
+                            </TableCell>
                             
-                            {/* Total Amount */}
-                            <p className={`font-semibold text-lg w-24 text-right ${themeClasses.primary}`}>
-                                {formatCurrency(itemTotal)}
-                            </p>
-                        </div>
-                      </div>
-                    );
-                  })}
+                            <TableCell className={`text-center w-[100px] border-r ${themeClasses.border}`}>
+                              {/* Quantity Controls or Static Quantity */}
+                              {!isFinalized ? (
+                                <div className="flex items-center justify-center border rounded-md border-current/30 mx-auto w-24">
+                                  <Button 
+                                    type="button" 
+                                    variant="ghost" 
+                                    size="icon" 
+                                    onClick={() => handleQuantityChange(item.id, -1)}
+                                    disabled={item.quantity <= 0}
+                                    className={`h-8 w-8 ${themeClasses.text} hover:bg-current/10`}
+                                  >
+                                    -
+                                  </Button>
+                                  <span className={`w-8 text-center font-semibold ${themeClasses.text}`}>
+                                    {item.quantity}
+                                  </span>
+                                  <Button 
+                                    type="button" 
+                                    variant="ghost" 
+                                    size="icon" 
+                                    onClick={() => handleQuantityChange(item.id, 1)}
+                                    className={`h-8 w-8 ${themeClasses.text} hover:bg-current/10`}
+                                  >
+                                    +
+                                  </Button>
+                                </div>
+                              ) : (
+                                <span className={`font-semibold ${themeClasses.text}`}>
+                                  {item.quantity}
+                                </span>
+                              )}
+                            </TableCell>
+                            
+                            <TableCell className={`text-right w-[120px] border-r ${themeClasses.border}`}>
+                              {formatCurrency(item.price, symbol)}
+                            </TableCell>
+                            
+                            <TableCell className={`text-right font-semibold w-[120px] ${themeClasses.primary}`}>
+                              {formatCurrency(itemTotal, symbol)}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
                 </div>
+              </div>
+            )}
+
+            {/* NEW: Image Section for Black & Gold Theme */}
+            {isBlackGoldTheme && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                <DynamicImage 
+                  src="/blackgoldquoteimage1.jpg" 
+                  alt="Daniele Buatti playing piano" 
+                  className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
+                  width={400}
+                  height={256}
+                />
+                <DynamicImage 
+                  src="/blackgoldquoteimage2.jpg" 
+                  alt="Daniele Buatti performing live" 
+                  className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
+                  width={400}
+                  height={256}
+                />
               </div>
             )}
 

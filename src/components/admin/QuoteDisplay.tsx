@@ -108,7 +108,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
         text: 'text-brand-light',
         primary: 'text-brand-yellow', // Gold
         secondary: 'text-brand-light/70',
-        tableHeaderBg: 'bg-brand-dark-alt',
+        tableHeaderBg: 'bg-brand-dark-alt/50',
         tableBorder: 'border-brand-dark-alt',
         separator: 'bg-brand-yellow',
         totalBoxBg: 'bg-brand-dark-alt',
@@ -150,7 +150,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
       {/* Quote/Invoice Details */}
       <div className={`flex justify-between items-start border-b pb-4 border-current/20`}>
         <div>
-          <h1 className={`text-5xl font-extrabold ${themeClasses.primary}`}>{quote.invoice_type}</h1>
+          <h1 className={`text-4xl font-extrabold ${themeClasses.primary}`}>{quote.invoice_type}</h1>
           <p className="text-lg mt-2">Prepared By: {quote.prepared_by}</p>
         </div>
         <div className="text-right">
