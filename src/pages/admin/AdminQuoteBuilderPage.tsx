@@ -133,8 +133,8 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
     } catch (error: any) {
       console.error('Error saving draft:', error);
-      // Provide a more informative error message if possible
-      const errorMessage = error.message || 'Unknown error occurred during draft save.';
+      // Extract specific Supabase error message if available
+      const errorMessage = error.message || error.details || 'Unknown error occurred during draft save.';
       showError(`Failed to save draft: ${errorMessage}`, { id: toastId });
     } finally {
       dismissToast(toastId);
