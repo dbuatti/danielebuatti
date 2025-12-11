@@ -34,8 +34,8 @@ const defaultFormValues: Partial<QuoteFormValues> = {
   bankACC: '301110875', // Default ACC
   // New defaults
   theme: 'black-gold', // Default theme set to the new Black/Gold theme
-  headerImageUrl: '/live-piano-quote-header.jpg', // Updated default image URL
-  headerImagePosition: 'object-[50%_70%]', // NEW default: Shift crop down vertically
+  headerImageUrl: '/Piano Keys_edited_edited.avif', // Updated default image URL to a piano image
+  headerImagePosition: 'object-top', // NEW default: Positioned to show the top of the image
   preparationNotes: 'This fee covers 7 hours of commitment, including the performance call, soundcheck, and all essential preparation required for a seamless, high-energy performance.\n\nThis fee secures a premium, seamless musical experience for your event.', // New default preparation notes
   // Updated item structure (using 'name' and 'description' now)
   compulsoryItems: [{ name: 'Live Piano Performance Fee', description: '3 hours of performance time.', amount: 1000 }], // Updated default item
@@ -123,7 +123,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
       showSuccess('Draft deleted successfully!', { id: toastId });
     } catch (error: any) {
       console.error('Error deleting draft:', error);
-      showError(`Failed to delete draft: ${error.message}`, { id: toastId });
+      // Extract specific Supabase error message if available
+      const errorMessage = error.message || error.details || 'Unknown error occurred during draft save.';
+      showError(`Failed to delete draft: ${errorMessage}`, { id: toastId });
     } finally {
       dismissToast(toastId);
     }
