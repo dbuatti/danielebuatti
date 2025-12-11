@@ -81,7 +81,7 @@ const AdminEditQuotePage: React.FC = () => {
         bankACC: details.bankDetails.acc,
         theme: details.theme,
         headerImageUrl: details.headerImageUrl || '',
-        headerImagePosition: details.headerImagePosition || 'object-center', // NEW
+        headerImagePosition: details.headerImagePosition || 'object-[50%_10%]', // NEW: Use the new default position
         preparationNotes: details.preparationNotes || '',
         compulsoryItems: details.compulsoryItems.map(item => ({
           id: item.id,
