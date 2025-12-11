@@ -182,7 +182,7 @@ const DynamicQuotePage: React.FC = () => {
   
   const symbol = currencySymbol || '$';
 
-  // Calculate compulsory total once
+  // Calculate compulsory total unconditionally
   const compulsoryTotal = compulsoryItems?.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0;
 
   // Calculate totals based on current selections (or accepted total if finalized)
