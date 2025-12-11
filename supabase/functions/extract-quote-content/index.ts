@@ -51,6 +51,34 @@ const extractionSchema = {
   required: ["clientName", "clientEmail", "invoiceType", "eventTitle", "eventDate", "eventLocation", "paymentTerms", "preparationNotes", "compulsoryItems", "addOns"],
 };
 
+// @ts-ignore
+const PRIMARY_KEY = Deno.env.get('GEMINI_API_KEY');
+// @ts-ignore
+const BACKUP_KEY = Deno.env.get('GEMINI_API_KEY_BACKUP');
+
+const runExtraction = async (apiKey: string, emailContent: string) => {
+  const ai = new GoogleGenAI({ apiKey });
+
+  const prompt = `You are an expert quote extraction service. Analyze the following raw text input, which contains structured quote details. Extract all fields into a single JSON object strictly following the provided JSON schema. Ensure all dates are in YYYY-MM-DD format and times are in HH:MM format. If a field is missing, use a reasonable default or an empty string/array, but ensure the output strictly adheres to the schema.
+
+Raw Quote Details:
+---
+${emailContent}
+---
+`;
+
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: prompt,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: extractionSchema,
+    },
+  });
+
+  return JSON.parse(response.text);
+};
+
 serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -66,33 +94,29 @@ serve(async (req: Request) => {
       });
     }
 
-    // @ts-ignore
-    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
-    if (!GEMINI_API_KEY) {
+    if (!PRIMARY_KEY) {
       throw new Error("GEMINI_API_KEY environment variable not set.");
     }
 
-    const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+    let extractedData;
 
-    const prompt = `You are an expert quote extraction service. Analyze the following raw text input, which contains structured quote details. Extract all fields into a single JSON object strictly following the provided JSON schema. Ensure all dates are in YYYY-MM-DD format and times are in HH:MM format. If a field is missing, use a reasonable default or an empty string/array, but ensure the output strictly adheres to the schema.
+    try {
+      // 1. Attempt with Primary Key
+      extractedData = await runExtraction(PRIMARY_KEY, emailContent);
+    } catch (primaryError: any) {
+      console.warn('Primary Key failed. Checking for rate limit error...');
+      
+      const isRateLimitError = primaryError.message?.includes('429 Too Many Requests') || primaryError.message?.includes('Quota exceeded');
 
-Raw Quote Details:
----
-${emailContent}
----
-`;
-
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: extractionSchema,
-      },
-    });
-
-    // The response text should be a valid JSON string matching the schema
-    const extractedData = JSON.parse(response.text);
+      if (isRateLimitError && BACKUP_KEY) {
+        // 2. If rate limited, attempt with Backup Key
+        console.log('Rate limit detected. Retrying with backup key...');
+        extractedData = await runExtraction(BACKUP_KEY, emailContent);
+      } else {
+        // 3. Re-throw if not rate limit or no backup key available
+        throw primaryError;
+      }
+    }
 
     return new Response(JSON.stringify(extractedData), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -109,6 +133,9 @@ ${emailContent}
     if (errorMessage.includes('429 Too Many Requests') || errorMessage.includes('Quota exceeded')) {
       status = 429;
       errorMessage = 'AI Quota Exceeded. Please wait a few minutes before trying again.';
+    } else if (errorMessage.includes('API key not valid')) {
+      // Handle case where both keys might be invalid
+      errorMessage = 'AI API Key(s) are invalid or missing.';
     }
 
     return new Response(JSON.stringify({ error: errorMessage }), {
