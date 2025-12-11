@@ -8,7 +8,7 @@ import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, CheckCircle, XCircle, Download, Edit, Trash2, Mail, Copy, Clock, Eye } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, Download, Edit, Trash2, Copy, Clock, Eye, Send } from 'lucide-react';
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -16,17 +16,24 @@ import { useAuth } from '@/hooks/useAuth';
 import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
+import QuoteSendingModal from '@/components/admin/QuoteSendingModal'; // Import the new modal
+
+// Extend Quote interface locally to include the new status field
+interface QuoteWithStatus extends Quote {
+  status: 'Draft' | 'Created' | 'Sent' | 'Accepted' | 'Rejected';
+}
 
 const AdminQuoteDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [quote, setQuote] = useState<Quote | null>(null);
+  const [quote, setQuote] = useState<QuoteWithStatus | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [, copy] = useCopyToClipboard(); // Removed unused 'copiedText'
+  const [isSendingModalOpen, setIsSendingModalOpen] = useState(false); // New state for sending modal
+  const [, copy] = useCopyToClipboard();
 
   const fetchQuote = useCallback(async () => {
     if (!id) return;
@@ -37,14 +44,14 @@ const AdminQuoteDetailsPage: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('invoices')
-        .select('*')
+        .select('*, status') // Select all columns including the new status
         .eq('id', id)
         .single();
 
       if (error) throw error;
 
-      // Map data to Quote type
-      const fetchedQuote: Quote = {
+      // Map data to QuoteWithStatus type
+      const fetchedQuote: QuoteWithStatus = {
         id: data.id,
         slug: data.slug,
         client_name: data.client_name,
@@ -58,7 +65,8 @@ const AdminQuoteDetailsPage: React.FC = () => {
         accepted_at: data.accepted_at,
         rejected_at: data.rejected_at,
         created_at: data.created_at,
-        details: data.details, // JSONB column already mapped
+        details: data.details,
+        status: data.status || 'Pending', // Use the new status field
       };
 
       setQuote(fetchedQuote);
@@ -109,7 +117,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
   const handleResetStatus = async () => {
     if (!quote || !user) return;
 
-    if (!window.confirm(`Are you sure you want to reset the status of the quote for "${quote.event_title}" back to Pending? This will clear acceptance/rejection dates.`)) {
+    if (!window.confirm(`Are you sure you want to reset the status of the quote for "${quote.event_title}" back to Created? This will clear acceptance/rejection dates and set status to 'Created'.`)) {
       return;
     }
 
@@ -122,14 +130,15 @@ const AdminQuoteDetailsPage: React.FC = () => {
         .update({
           accepted_at: null,
           rejected_at: null,
+          status: 'Created', // Reset to 'Created' status
         })
         .eq('id', quote.id);
 
       if (error) throw error;
 
-      showSuccess('Quote status reset to Pending!', { id: toastId });
+      showSuccess('Quote status reset to Created!', { id: toastId });
       // Manually update state to reflect change without full refetch
-      setQuote(prev => prev ? { ...prev, accepted_at: null, rejected_at: null } : null);
+      setQuote(prev => prev ? { ...prev, accepted_at: null, rejected_at: null, status: 'Created' } : null);
     } catch (error: any) {
       console.error('Error resetting quote status:', error);
       showError(`Failed to reset quote status: ${error.message || 'Unknown error occurred'}`, { id: toastId });
@@ -144,6 +153,11 @@ const AdminQuoteDetailsPage: React.FC = () => {
     const quoteUrl = `${window.location.origin}/quotes/${quote.slug}`;
     copy(quoteUrl);
     showSuccess('Quote link copied to clipboard!');
+  };
+  
+  const handleQuoteSent = () => { // Fix 5: Removed unused slug parameter
+    // Update status locally after successful send
+    setQuote(prev => prev ? { ...prev, status: 'Sent' } : null);
   };
 
   if (isLoading) {
@@ -163,9 +177,10 @@ const AdminQuoteDetailsPage: React.FC = () => {
     );
   }
 
-  const { details, accepted_at, rejected_at } = quote;
+  const { details, accepted_at, rejected_at, status } = quote;
   const theme = details.theme;
   const isFinalized = !!accepted_at || !!rejected_at;
+  const isReadyToSend = status === 'Created' || status === 'Draft';
 
   return (
     <div className="space-y-8">
@@ -212,7 +227,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
               )}
               <div>
                 <p className="font-bold">
-                  {accepted_at ? 'Accepted' : rejected_at ? 'Rejected' : 'Pending'}
+                  {accepted_at ? 'Accepted' : rejected_at ? 'Rejected' : status}
                 </p>
                 <p className="text-sm text-gray-500">
                   {accepted_at ? `on ${format(new Date(accepted_at), 'PPP')}` : rejected_at ? `on ${format(new Date(rejected_at), 'PPP')}` : 'Awaiting client response'}
@@ -222,11 +237,14 @@ const AdminQuoteDetailsPage: React.FC = () => {
             
             <Separator />
 
+            {isReadyToSend && (
+              <Button onClick={() => setIsSendingModalOpen(true)} className="w-full bg-green-600 hover:bg-green-700 text-white">
+                <Send className="h-4 w-4 mr-2" /> Send Quote
+              </Button>
+            )}
+            
             <Button onClick={handleCopyLink} variant="secondary" className="w-full">
               <Copy className="h-4 w-4 mr-2" /> Copy Client Link
-            </Button>
-            <Button variant="outline" className="w-full" disabled>
-              <Mail className="h-4 w-4 mr-2" /> Resend Email (WIP)
             </Button>
             <Button variant="outline" className="w-full" disabled>
               <Download className="h-4 w-4 mr-2" /> Download PDF (WIP)
@@ -284,7 +302,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
               </DialogHeader>
               <ScrollArea className="h-[calc(90vh-70px)]">
                 {quote ? (
-                  <QuoteDisplay quote={quote} />
+                  <QuoteDisplay quote={quote as Quote} />
                 ) : (
                   <div className="p-8 text-center">No preview data available.</div>
                 )}
@@ -295,11 +313,20 @@ const AdminQuoteDetailsPage: React.FC = () => {
         <CardContent>
           <div className="border rounded-lg overflow-hidden">
             <div className="scale-[0.7] origin-top-left w-[142%] h-[142%]">
-              <QuoteDisplay quote={quote} />
+              <QuoteDisplay quote={quote as Quote} />
             </div>
           </div>
         </CardContent>
       </Card>
+      
+      {quote && (
+        <QuoteSendingModal
+          isOpen={isSendingModalOpen}
+          onClose={() => setIsSendingModalOpen(false)}
+          quote={quote as Quote}
+          onQuoteSent={handleQuoteSent}
+        />
+      )}
     </div>
   );
 };

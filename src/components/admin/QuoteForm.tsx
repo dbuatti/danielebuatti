@@ -7,8 +7,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Trash2, Eye, Save } from 'lucide-react';
+import { Plus, Trash2, Eye, Save, Send } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 
 // Define the schema for a single item (compulsory or add-on)
 const ItemSchema = z.object({
@@ -35,13 +36,10 @@ export const QuoteFormSchema = z.object({
   paymentTerms: z.string().min(1, 'Payment Terms are required.'),
   bankBSB: z.string().min(1, 'BSB is required.'),
   bankACC: z.string().min(1, 'Account Number is required.'),
-  theme: z.enum(['default', 'black-gold']), // Added 'black-gold' theme
-  headerImageUrl: z.string(), // Simplified validation
-  headerImagePosition: z.string().optional(), // NEW: Added headerImagePosition
+  theme: z.enum(['default', 'black-gold']),
+  headerImageUrl: z.string(),
+  headerImagePosition: z.string().optional(),
   
-  // Removed contentImageUrl1 and contentImageUrl2
-  
-  // New field for detailed notes
   preparationNotes: z.string().optional(), 
 
   compulsoryItems: z.array(ItemSchema).min(1, 'At least one compulsory item is required.'),
@@ -52,14 +50,15 @@ export type QuoteFormValues = z.infer<typeof QuoteFormSchema>;
 
 interface QuoteFormProps {
   form: ReturnType<typeof useFormContext<QuoteFormValues>>;
-  onSubmit: (values: QuoteFormValues) => Promise<void>;
+  onCreateAndSend: (values: QuoteFormValues) => Promise<void>; // Renamed prop
   isSubmitting: boolean;
   onPreview: (values: QuoteFormValues) => void;
   onSaveDraft: (values: QuoteFormValues) => Promise<void>;
+  isQuoteCreated?: boolean; // New prop to indicate if a quote ID exists (i.e., it's saved/created)
 }
 
-const QuoteForm: React.FC<QuoteFormProps> = ({ form, onSubmit, isSubmitting, onPreview, onSaveDraft }) => {
-  const { control, handleSubmit, getValues } = form;
+const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitting, onPreview, onSaveDraft, isQuoteCreated = false }) => {
+  const { control, handleSubmit, getValues, formState: { isValid } } = form;
 
   const { fields: compulsoryFields, append: appendCompulsory, remove: removeCompulsory } = useFieldArray({
     control,
@@ -76,14 +75,17 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onSubmit, isSubmitting, onP
   };
 
   const handleSave = () => {
-    // Manually trigger validation before saving draft if needed, 
-    // but for drafts, we often allow partial data. We rely on the parent component's handler.
     onSaveDraft(getValues());
+  };
+  
+  // The final submission button now triggers the onCreateAndSend flow (which includes saving/creating + opening modal)
+  const handleFinalSubmit = (values: QuoteFormValues) => {
+    onCreateAndSend(values);
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={handleSubmit(handleFinalSubmit)} className="space-y-8">
         
         {/* Client Details */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -278,8 +280,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onSubmit, isSubmitting, onP
           />
         </div>
         
-        {/* Removed Content Images Section */}
-
         {/* Preparation Notes Field */}
         <FormField
           control={control}
@@ -538,8 +538,15 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onSubmit, isSubmitting, onP
           <Button type="button" variant="outline" onClick={handlePreview} disabled={isSubmitting}>
             <Eye className="h-4 w-4 mr-2" /> Preview Quote
           </Button>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Creating...' : 'Create & Send Quote'}
+          <Button 
+            type="submit" 
+            disabled={isSubmitting || !isValid}
+            className={cn(
+              "bg-brand-primary hover:bg-brand-primary/90 text-brand-light",
+              isQuoteCreated ? "bg-green-600 hover:bg-green-700" : ""
+            )}
+          >
+            <Send className="h-4 w-4 mr-2" /> {isQuoteCreated ? 'Send Quote' : 'Create & Send Quote'}
           </Button>
         </div>
       </form>

@@ -58,6 +58,7 @@ const AdminEditQuotePage: React.FC = () => {
         rejected_at: data.rejected_at,
         created_at: data.created_at,
         details: data.details,
+        status: data.status || 'Created', // Ensure status is included
       };
 
       setQuote(fetchedQuote);
@@ -258,6 +259,7 @@ const AdminEditQuotePage: React.FC = () => {
         headerImagePosition: values.headerImagePosition || 'object-centre', // NEW: Updated to British English
         preparationNotes: values.preparationNotes || '',
       },
+      status: quote?.status || 'Created', // Ensure status is included
     };
   };
 
@@ -292,7 +294,7 @@ const AdminEditQuotePage: React.FC = () => {
         <CardContent>
           <QuoteForm 
             form={form}
-            onSubmit={handleUpdateQuote} 
+            onCreateAndSend={handleUpdateQuote} // Fix 13: Renamed prop
             isSubmitting={isSubmitting} 
             onPreview={handlePreviewQuote} 
             onSaveDraft={handleSaveDraft} // Placeholder, not used for editing

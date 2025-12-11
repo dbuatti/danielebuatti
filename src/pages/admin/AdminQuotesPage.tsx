@@ -12,8 +12,13 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { Quote } from '@/types/quote'; // Import Quote interface
 
+// Extend Quote interface locally to include the new status field
+interface QuoteWithStatus extends Quote {
+  status: 'Draft' | 'Created' | 'Sent' | 'Accepted' | 'Rejected';
+}
+
 const AdminQuotesPage: React.FC = () => {
-  const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [quotes, setQuotes] = useState<QuoteWithStatus[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -21,14 +26,14 @@ const AdminQuotesPage: React.FC = () => {
       setIsLoading(true);
       const { data, error } = await supabase
         .from('invoices')
-        .select('*')
-        .order('created_at', { ascending: false }); // Order by creation date to see all recent activity
+        .select('*, status') // Select all columns including the new status
+        .order('created_at', { ascending: false });
 
       if (error) {
         console.error('Error fetching quotes:', error);
         showError('Failed to load quotes.');
       } else {
-        setQuotes(data || []);
+        setQuotes(data as QuoteWithStatus[] || []);
       }
       setIsLoading(false);
     };
@@ -66,10 +71,11 @@ const AdminQuotesPage: React.FC = () => {
     );
   };
 
-  const getQuoteStatus = (quote: Quote) => {
+  const getQuoteStatus = (quote: QuoteWithStatus) => {
     if (quote.accepted_at) return 'Accepted';
     if (quote.rejected_at) return 'Rejected';
-    return 'Pending';
+    // Use the new status column if accepted/rejected are null
+    return quote.status || 'Pending';
   };
 
   if (isLoading) {

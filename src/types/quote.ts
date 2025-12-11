@@ -41,4 +41,5 @@ export interface Quote {
   rejected_at: string | null;
   created_at: string;
   details: QuoteDetails;
+  status: 'Draft' | 'Created' | 'Sent' | 'Accepted' | 'Rejected'; // Added status field
 }
