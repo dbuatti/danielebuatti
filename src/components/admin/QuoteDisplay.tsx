@@ -1,185 +1,262 @@
-"use client";
-
 import React from 'react';
 import { Quote, QuoteItem } from '@/types/quote';
-import { format } from 'date-fns';
+import { CheckCircle, XCircle, Clock, MapPin, Calendar, User } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 interface QuoteDisplayProps {
   quote: Quote;
 }
 
+// --- Theme Definitions ---
+const themes = {
+  'default': {
+    bg: 'bg-white',
+    text: 'text-gray-800',
+    primary: 'text-[#D350A8]', // Pink accent
+    primaryBg: 'bg-[#D350A8]',
+    cardBg: 'bg-gray-50',
+    border: 'border-gray-200',
+    shadow: 'shadow-lg',
+    separator: 'bg-gray-200',
+  },
+  'black-gold': {
+    bg: 'bg-[#1B1B1B]',
+    text: 'text-white',
+    primary: 'text-[#FDBA16]', // Gold accent
+    primaryBg: 'bg-[#FDBA16]',
+    cardBg: 'bg-[#141414]',
+    border: 'border-[#FDBA16]/30',
+    shadow: 'shadow-2xl shadow-black/50',
+    separator: 'bg-[#FDBA16]/50',
+  }
+};
+
+const formatCurrency = (amount: number, symbol: string) => {
+  return `${symbol}${amount.toFixed(2)}`;
+};
+
 const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
-  const { details } = quote;
-  const isLivePianoTheme = details.theme === 'livePiano';
+  const { 
+    client_name, 
+    event_title, 
+    invoice_type, 
+    event_date, 
+    event_location, 
+    prepared_by, 
+    accepted_at, 
+    rejected_at,
+    details 
+  } = quote;
 
-  // Define theme colors based on provided designs
-  const themeClasses = isLivePianoTheme
-    ? {
-        // Gold/Black Theme (Live Piano)
-        bg: 'bg-gray-900',
-        cardBg: 'bg-gray-800',
-        text: 'text-gray-100',
-        primary: 'text-amber-400', // Gold color
-        secondary: 'text-gray-400',
-        border: 'border-amber-400/50',
-        separator: 'bg-amber-400 h-0.5',
-        headerText: 'text-gray-100',
-        totalBoxBg: 'bg-gray-700',
-        totalBoxText: 'text-amber-400',
-        acceptBoxBorder: 'border-amber-400/50',
-      }
-    : {
-        // White/Pink Theme (Default)
-        bg: 'bg-white',
-        cardBg: 'bg-white',
-        text: 'text-gray-800',
-        primary: 'text-pink-600', // Corrected pink color
-        secondary: 'text-gray-500',
-        border: 'border-pink-600/50',
-        separator: 'bg-pink-600 h-0.5',
-        headerText: 'text-gray-800',
-        totalBoxBg: 'bg-pink-50', // Light pink background
-        totalBoxText: 'text-pink-600',
-        acceptBoxBorder: 'border-pink-600/50',
-      };
+  const theme = themes[details.theme] || themes['default'];
+  const isBlackGold = details.theme === 'black-gold';
 
-  const formatCurrency = (amount: number) => {
-    return `${details.currencySymbol}${amount.toFixed(2)}`;
-  };
-
-  const calculateItemTotal = (item: QuoteItem) => {
-    return item.price * item.quantity;
-  };
-
-  const compulsoryTotal = details.compulsoryItems.reduce((sum, item) => sum + calculateItemTotal(item), 0);
-  const addOnTotal = details.addOns.reduce((sum, item) => sum + calculateItemTotal(item), 0);
+  const compulsoryTotal = details.compulsoryItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const addOnTotal = details.addOns.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const subtotal = compulsoryTotal + addOnTotal;
   const depositAmount = subtotal * (details.depositPercentage / 100);
-  
-  const eventDateFormatted = quote.event_date ? format(new Date(quote.event_date), 'EEEE dd MMMM yyyy') : 'TBD';
-  const eventDateShort = quote.event_date ? format(new Date(quote.event_date), 'EEEE dd MMMM yyyy') : 'the event date'; // For use in terms
+  const balanceDue = subtotal - depositAmount;
+
+  const renderItemRow = (item: QuoteItem) => (
+    <div key={item.id} className={`grid grid-cols-12 py-3 ${isBlackGold ? 'border-b border-white/10' : 'border-b border-gray-100'}`}>
+      <div className="col-span-7 pr-4">
+        <p className={`font-semibold ${theme.text}`}>{item.name}</p>
+        {item.description && <p className={`text-sm ${isBlackGold ? 'text-gray-400' : 'text-gray-600'}`}>{item.description}</p>}
+      </div>
+      <p className="col-span-2 text-right">{item.quantity}</p>
+      <p className="col-span-3 text-right font-medium">
+        {formatCurrency(item.price * item.quantity, details.currencySymbol)}
+      </p>
+    </div>
+  );
 
   return (
-    <div className={`min-h-screen p-4 sm:p-8 ${themeClasses.bg}`}>
-      <div className={`max-w-4xl mx-auto p-6 sm:p-10 shadow-2xl rounded-lg ${themeClasses.cardBg}`}>
+    <div className={`min-h-screen p-4 sm:p-8 ${theme.bg} ${theme.text}`}>
+      <div className={`max-w-4xl mx-auto ${theme.shadow} ${theme.cardBg} rounded-xl overflow-hidden`}>
         
         {/* Header Image */}
         {details.headerImageUrl && (
-          <div className="mb-8">
-            <img 
-              src={details.headerImageUrl} 
-              alt="Quote Header" 
-              className="w-full h-64 object-cover rounded-lg shadow-md"
-            />
+          <div className="h-48 w-full bg-cover bg-center" style={{ backgroundImage: `url(${details.headerImageUrl})` }}>
+            <div className="h-full w-full bg-black/30 flex items-center justify-center">
+              <h1 className={`text-4xl font-extrabold uppercase tracking-widest text-white drop-shadow-lg`}>
+                {event_title}
+              </h1>
+            </div>
           </div>
         )}
 
-        {/* Logo Placeholder (Based on design images) */}
-        <div className="text-center mb-8">
-          {/* Placeholder for logo/branding */}
-          <div className={`text-4xl font-serif font-bold ${themeClasses.primary}`}>
-            {isLivePianoTheme ? 'Live Piano Services' : 'Daniele Buatti'}
+        <div className="p-6 sm:p-10 space-y-10">
+          
+          {/* Title and Status */}
+          <div className="flex justify-between items-start border-b pb-4">
+            <div>
+              <h1 className={`text-4xl font-bold ${theme.primary}`}>{invoice_type}</h1>
+              <h2 className={`text-2xl font-semibold mt-1 ${theme.text}`}>{event_title}</h2>
+            </div>
+            <div className="text-right">
+              {accepted_at ? (
+                <div className="flex items-center text-green-500 font-bold">
+                  <CheckCircle className="h-5 w-5 mr-1" /> Accepted
+                </div>
+              ) : rejected_at ? (
+                <div className="flex items-center text-red-500 font-bold">
+                  <XCircle className="h-5 w-5 mr-1" /> Rejected
+                </div>
+              ) : (
+                <div className="flex items-center text-yellow-500 font-bold">
+                  <Clock className="h-5 w-5 mr-1" /> Pending
+                </div>
+              )}
+              <p className={`text-sm mt-1 ${isBlackGold ? 'text-gray-400' : 'text-gray-600'}`}>
+                Prepared by: {prepared_by}
+              </p>
+            </div>
           </div>
-        </div>
 
-        <header className="mb-8 text-center space-y-1">
-          <h1 className={`text-4xl font-extrabold mb-4 ${themeClasses.primary}`}>{quote.event_title}</h1>
-          
-          {/* Metadata matching design structure */}
-          <p className={`text-lg ${themeClasses.headerText}`}>Client Email: <span className={`font-semibold ${themeClasses.primary}`}>{quote.client_email}</span></p>
-          <p className={`text-lg ${themeClasses.headerText}`}>Date of Event: <span className="font-semibold">{eventDateFormatted}</span></p>
-          {details.eventTime && <p className={`text-lg ${themeClasses.headerText}`}>Time: <span className="font-semibold">{details.eventTime}</span></p>}
-          <p className={`text-lg ${themeClasses.headerText}`}>Location: <span className="font-semibold">{quote.event_location}</span></p>
-          <p className={`text-lg ${themeClasses.headerText}`}>Prepared by: <span className="font-semibold">{quote.prepared_by}</span></p>
-          
-          {/* Custom Separator Line */}
-          <div className="flex justify-center pt-4">
-            <div className={`w-1/3 ${themeClasses.separator}`}></div>
+          {/* Event Details */}
+          <div className={`grid grid-cols-2 md:grid-cols-4 gap-4 p-4 rounded-lg ${isBlackGold ? 'bg-[#1B1B1B]' : 'bg-gray-100'}`}>
+            <div className="flex items-center space-x-2">
+              <Calendar className={`h-5 w-5 ${theme.primary}`} />
+              <div>
+                <p className="text-xs uppercase font-medium">Date</p>
+                <p className="font-semibold">{event_date}</p>
+              </div>
+            </div>
+            {details.eventTime && (
+              <div className="flex items-center space-x-2">
+                <Clock className={`h-5 w-5 ${theme.primary}`} />
+                <div>
+                  <p className="text-xs uppercase font-medium">Time</p>
+                  <p className="font-semibold">{details.eventTime}</p>
+                </div>
+              </div>
+            )}
+            <div className="flex items-center space-x-2">
+              <MapPin className={`h-5 w-5 ${theme.primary}`} />
+              <div>
+                <p className="text-xs uppercase font-medium">Location</p>
+                <p className="font-semibold">{event_location}</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <User className={`h-5 w-5 ${theme.primary}`} />
+              <div>
+                <p className="text-xs uppercase font-medium">Client</p>
+                <p className="font-semibold">{client_name}</p>
+              </div>
+            </div>
           </div>
-        </header>
 
-        {/* Main Content / Description Block (Mimicking large bold text from design) */}
-        <section className="text-center mb-10">
-          <p className={`text-xl font-extrabold ${themeClasses.text} max-w-3xl mx-auto`}>
-            This fee covers 7 hours of commitment, including the performance call, soundcheck, and all essential preparation required for a seamless, high-energy performance.
-          </p>
-          <p className={`text-sm ${themeClasses.secondary} mt-4`}>
-            This fee secures a premium, seamless musical experience for your event.
-          </p>
-        </section>
+          {/* Compulsory Items Section */}
+          <div className="space-y-4">
+            <h3 className={`text-xl font-bold border-b pb-2 ${theme.primary}`}>Compulsory Services</h3>
+            
+            {/* Table Header */}
+            <div className={`grid grid-cols-12 font-bold uppercase text-sm pb-2 ${isBlackGold ? 'text-gray-300' : 'text-gray-500'}`}>
+              <p className="col-span-7">Service / Item</p>
+              <p className="col-span-2 text-right">Qty</p>
+              <p className="col-span-3 text-right">Amount</p>
+            </div>
 
-        {/* Important Booking Details Section */}
-        <section className={`mt-12 p-6 rounded-lg ${isLivePianoTheme ? 'bg-gray-700' : 'bg-white border border-gray-200'}`}>
-          <h2 className={`text-2xl font-extrabold text-center mb-4 ${themeClasses.headerText}`}>Important Booking Details</h2>
-          
-          <ul className={`space-y-3 text-sm ${themeClasses.headerText}`}>
-            <li>
-              <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> A non-refundable <span className="font-bold">{details.depositPercentage}% deposit ({formatCurrency(depositAmount)})</span> is required immediately to formally secure {isLivePianoTheme ? `the ${eventDateShort} date` : 'the booking'}.
-            </li>
-            <li>
-              <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> The remaining balance is due 7 days prior to the event.
-            </li>
-            <li>
-              <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> Bank Details for Payment: BSB: {details.bankDetails.bsb}, ACC: {details.bankDetails.acc}
-            </li>
-            <li>
-              <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> Terms: {details.paymentTerms}
-            </li>
-          </ul>
-        </section>
-        
-        {/* Final Total Cost Box (Matching design) */}
-        <div className={`mt-8 p-6 rounded-lg text-center ${themeClasses.totalBoxBg}`}>
-          <h3 className={`text-3xl font-extrabold ${themeClasses.totalBoxText}`}>
-            Final Total Cost: {formatCurrency(subtotal)}
-          </h3>
-          <p className={`text-sm ${isLivePianoTheme ? themeClasses.secondary : themeClasses.text}`}>
-            This includes your selected add-ons and the base quote amount.
-          </p>
-        </div>
+            {/* Items */}
+            {details.compulsoryItems.map(item => renderItemRow(item))}
+            
+            {/* Preparation Notes (New Feature) */}
+            {details.preparationNotes && (
+              <div className={`mt-4 p-4 rounded-lg ${isBlackGold ? 'bg-[#1B1B1B] border border-white/10' : 'bg-gray-50 border border-gray-200'}`}>
+                <h4 className={`font-semibold mb-2 ${theme.primary}`}>Preparation & Service Notes</h4>
+                {/* Use whitespace-pre-wrap to respect line breaks from the textarea input */}
+                <p className={`text-sm whitespace-pre-wrap ${isBlackGold ? 'text-gray-300' : 'text-gray-700'}`}>{details.preparationNotes}</p>
+              </div>
+            )}
 
-        {/* Accept Your Quote Section (Matching design) */}
-        <div className={`mt-8 p-6 rounded-lg text-center border-2 ${themeClasses.acceptBoxBorder}`}>
-          <h2 className={`text-2xl font-extrabold mb-6 ${themeClasses.text}`}>Accept Your Quote</h2>
-          
-          {/* Optional Add-Ons Section */}
+            {/* Compulsory Total */}
+            <div className="flex justify-end pt-4">
+              <div className={`w-full md:w-1/2 p-4 rounded-lg ${isBlackGold ? 'bg-[#1B1B1B]' : 'bg-gray-100'}`}>
+                <div className="flex justify-between font-semibold">
+                  <p>Subtotal (Compulsory)</p>
+                  <p>{formatCurrency(compulsoryTotal, details.currencySymbol)}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Add-Ons Section */}
           {details.addOns.length > 0 && (
-            <div className="space-y-4 pt-4">
-              <h3 className={`text-xl font-extrabold text-center ${themeClasses.text}`}>Optional Add-Ons</h3>
-              {details.addOns.map((item, index) => (
-                <div key={index} className="pb-3">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1 pr-4 text-left">
-                      <p className={`font-bold ${themeClasses.text}`}>{item.name}:</p>
-                      {item.description && <p className={`text-xs italic ${themeClasses.secondary}`}>Unit Cost: {formatCurrency(item.price)}</p>}
-                      {item.description && <p className={`text-sm italic ${themeClasses.secondary}`}>{item.description}</p>}
-                    </div>
-                    <div className="flex items-center space-x-4">
-                      {/* Placeholder for quantity controls (since this is just a display component) */}
-                      <div className="flex items-center border rounded-md">
-                        <button className="px-2 py-1 text-gray-400">-</button>
-                        <span className="px-3 py-1 border-l border-r text-sm">{item.quantity}</span>
-                        <button className="px-2 py-1 text-gray-400">+</button>
-                      </div>
-                      <p className={`font-semibold ${themeClasses.primary}`}>{formatCurrency(calculateItemTotal(item))}</p>
-                    </div>
+            <div className="space-y-4 pt-6">
+              <h3 className={`text-xl font-bold border-b pb-2 ${theme.primary}`}>Optional Add-Ons</h3>
+              
+              {/* Table Header */}
+              <div className={`grid grid-cols-12 font-bold uppercase text-sm pb-2 ${isBlackGold ? 'text-gray-300' : 'text-gray-500'}`}>
+                <p className="col-span-7">Add-On / Item</p>
+                <p className="col-span-2 text-right">Qty</p>
+                <p className="col-span-3 text-right">Amount</p>
+              </div>
+
+              {/* Items */}
+              {details.addOns.map(item => renderItemRow(item))}
+
+              {/* Add-On Total */}
+              <div className="flex justify-end pt-4">
+                <div className={`w-full md:w-1/2 p-4 rounded-lg ${isBlackGold ? 'bg-[#1B1B1B]' : 'bg-gray-100'}`}>
+                  <div className="flex justify-between font-semibold">
+                    <p>Subtotal (Add-Ons)</p>
+                    <p>{formatCurrency(addOnTotal, details.currencySymbol)}</p>
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
           )}
-          
-          {/* Placeholder for Acceptance Button */}
-          <div className="mt-8">
-            <button className={`px-6 py-3 rounded-lg font-bold text-white ${isLivePianoTheme ? 'bg-amber-400 text-gray-900' : 'bg-pink-600'}`}>
-              Accept Quote (Preview)
-            </button>
-          </div>
-        </div>
 
-        <footer className="mt-10 text-center text-xs italic">
-          <p className={themeClasses.secondary}>This is a preview. The final quote will include acceptance options.</p>
-        </footer>
+          <Separator className={theme.separator} />
+
+          {/* Summary and Payment */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            {/* Payment Terms */}
+            <div className="space-y-4">
+              <h3 className={`text-xl font-bold ${theme.primary}`}>Payment Terms</h3>
+              <p className={`whitespace-pre-wrap ${isBlackGold ? 'text-gray-300' : 'text-gray-700'}`}>{details.paymentTerms}</p>
+              
+              <div className={`p-4 rounded-lg ${isBlackGold ? 'bg-[#1B1B1B] border border-white/10' : 'bg-gray-100'}`}>
+                <h4 className={`font-semibold mb-2 ${theme.primary}`}>Bank Details</h4>
+                <p className="text-sm">BSB: <span className="font-mono">{details.bankDetails.bsb}</span></p>
+                <p className="text-sm">ACC: <span className="font-mono">{details.bankDetails.acc}</span></p>
+              </div>
+            </div>
+
+            {/* Totals */}
+            <div className="space-y-3">
+              <div className={`p-4 rounded-lg ${isBlackGold ? 'bg-[#1B1B1B]' : 'bg-gray-100'}`}>
+                <div className="flex justify-between text-lg font-bold">
+                  <p>Total Subtotal</p>
+                  <p>{formatCurrency(subtotal, details.currencySymbol)}</p>
+                </div>
+              </div>
+
+              <div className="flex justify-between text-lg">
+                <p>Deposit Required ({details.depositPercentage}%)</p>
+                <p className={theme.primary}>{formatCurrency(depositAmount, details.currencySymbol)}</p>
+              </div>
+
+              <Separator className={theme.separator} />
+
+              <div className="flex justify-between text-2xl font-extrabold">
+                <p>Balance Due</p>
+                <p className={theme.primary}>{formatCurrency(balanceDue, details.currencySymbol)}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons (Only visible in preview/admin context, not client view) */}
+          {/* In a real client view, this would be replaced by Accept/Reject buttons */}
+          <div className="pt-8 text-center">
+            <p className={`text-sm ${isBlackGold ? 'text-gray-500' : 'text-gray-400'}`}>
+              This is a preview. Client actions (Accept/Reject) are not available here.
+            </p>
+          </div>
+
+        </div>
       </div>
     </div>
   );

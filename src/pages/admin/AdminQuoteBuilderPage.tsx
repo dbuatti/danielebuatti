@@ -24,15 +24,16 @@ const defaultFormValues: Partial<QuoteFormValues> = {
   eventTitle: '',
   eventDate: new Date().toISOString().split('T')[0],
   eventLocation: '',
-  preparedBy: 'Admin',
+  preparedBy: 'Daniele Buatti', // Updated default
   currencySymbol: '$',
   depositPercentage: 50,
   paymentTerms: 'Payment due within 7 days.',
   bankBSB: '923100', // Default BSB
   bankACC: '301110875', // Default ACC
   // New defaults
-  theme: 'default', // Default theme
+  theme: 'black-gold', // Default theme set to the new Black/Gold theme
   headerImageUrl: '', // Placeholder image URL
+  preparationNotes: 'This fee covers 7 hours of commitment, including the performance call, soundcheck, and all essential preparation required for a seamless, high-energy performance.\n\nThis fee secures a premium, seamless musical experience for your event.', // New default preparation notes
   // Updated item structure (using 'name' and 'description' now)
   compulsoryItems: [{ name: 'Service Fee', description: 'Standard service charge.', amount: 1000 }],
   addOns: [],
@@ -157,15 +158,17 @@ const AdminQuoteBuilderPage: React.FC = () => {
       // Update form fields with AI extracted content
       form.setValue('clientName', extractedContent.clientName);
       form.setValue('clientEmail', extractedContent.clientEmail);
-      form.setValue('invoiceType', extractedContent.invoiceType);
+      
+      // Error 3 fix: Ensure extracted type is valid or default to 'Quote'
+      const invoiceType = extractedContent.invoiceType === 'Invoice' ? 'Invoice' : 'Quote';
+      form.setValue('invoiceType', invoiceType);
+      
       form.setValue('eventTitle', extractedContent.eventTitle);
       form.setValue('eventDate', extractedContent.eventDate);
       form.setValue('eventTime', extractedContent.eventTime);
       form.setValue('eventLocation', extractedContent.eventLocation);
       
       // --- AI Extraction Mapping Update ---
-      // Assuming the AI returns the old structure where 'description' holds the item title.
-      // We map this to the new 'name' field, leaving the new 'description' field empty.
       form.setValue('compulsoryItems', extractedContent.compulsoryItems.map(item => ({
         id: Math.random().toString(36).substring(2, 11),
         name: item.description, // Map old description (title) to new name
@@ -197,10 +200,10 @@ const AdminQuoteBuilderPage: React.FC = () => {
     const toastId = showLoading('Creating new quote...');
 
     try {
-      // Calculate total amount based on compulsory items and add-ons
-      const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + item.amount, 0);
-      const addOnTotal = values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => 
-        sum + (addOn.cost * addOn.quantity), 0) || 0;
+      // Errors 4, 5, 6 fix: Use nullish coalescing (?? 0) for optional number fields in calculations
+      const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.amount ?? 0), 0);
+      const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
+        sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
       const totalAmount = compulsoryTotal + addOnTotal;
 
       // Generate a base slug
@@ -213,14 +216,14 @@ const AdminQuoteBuilderPage: React.FC = () => {
           id: item.id || Math.random().toString(36).substring(2, 11),
           name: item.name, // Use new name field
           description: item.description || '', // Use new description field
-          amount: item.amount,
+          amount: item.amount ?? 0, // Ensure amount is a number
         })),
         addOns: values.addOns?.map(addOn => ({
           id: addOn.id || Math.random().toString(36).substring(2, 11),
           name: addOn.name, // Use new name field
           description: addOn.description || '', // Use new description field
-          cost: addOn.cost,
-          quantity: addOn.quantity,
+          cost: addOn.cost ?? 0, // Ensure cost is a number
+          quantity: addOn.quantity ?? 1, // Ensure quantity is a number
         })) || [],
         depositPercentage: values.depositPercentage,
         bankDetails: {
@@ -232,6 +235,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         paymentTerms: values.paymentTerms,
         theme: values.theme, // Include new theme
         headerImageUrl: values.headerImageUrl, // Include new header image URL
+        preparationNotes: values.preparationNotes || '', // Include new preparation notes
       };
 
       // Invoke the Edge Function to create the quote
@@ -281,9 +285,10 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
   // Transform form values into Quote interface structure for preview
   const getPreviewData = (values: QuoteFormValues): Quote => {
-    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + item.amount, 0);
-    const addOnTotal = values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => 
-      sum + (addOn.cost * addOn.quantity), 0) || 0;
+    // Errors 7, 8, 9 fix: Use nullish coalescing (?? 0) for optional number fields in calculations
+    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.amount ?? 0), 0);
+    const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
+      sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
     const totalAmount = compulsoryTotal + addOnTotal;
 
     // Helper function to map form item to QuoteItem structure
@@ -327,6 +332,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         eventTime: values.eventTime,
         theme: values.theme, // Pass theme
         headerImageUrl: values.headerImageUrl, // Pass image URL
+        preparationNotes: values.preparationNotes || '', // Pass preparation notes
       },
     };
   };

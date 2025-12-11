@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
@@ -9,7 +9,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Quote, QuoteItem, QuoteDetails } from '@/types/quote';
+import { Quote, QuoteItem } from '@/types/quote';
+import { useAuth } from '@/hooks/useAuth';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
@@ -17,8 +18,8 @@ import { Loader2 } from 'lucide-react';
 const AdminEditQuotePage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [quoteId, setQuoteId] = useState<string | null>(null);
+  const [quote, setQuote] = useState<Quote | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState<QuoteFormValues | null>(null);
@@ -28,127 +29,145 @@ const AdminEditQuotePage: React.FC = () => {
     mode: 'onChange',
   });
 
-  useEffect(() => {
-    if (!slug) {
-      showError('Quote slug is missing.');
-      setLoading(false);
-      return;
+  const fetchQuote = useCallback(async () => {
+    if (!slug) return;
+
+    setIsLoading(true);
+    const toastId = showLoading('Loading quote for editing...');
+
+    try {
+      const { data, error } = await supabase
+        .from('invoices')
+        .select('*')
+        .eq('slug', slug)
+        .single();
+
+      if (error) throw error;
+
+      const fetchedQuote: Quote = {
+        id: data.id,
+        slug: data.slug,
+        client_name: data.client_name,
+        client_email: data.client_email,
+        event_title: data.event_title,
+        invoice_type: data.invoice_type,
+        event_date: data.event_date,
+        event_location: data.event_location,
+        prepared_by: data.prepared_by,
+        total_amount: data.total_amount,
+        accepted_at: data.accepted_at,
+        rejected_at: data.rejected_at,
+        created_at: data.created_at,
+        details: data.details,
+      };
+
+      setQuote(fetchedQuote);
+
+      const details = fetchedQuote.details;
+
+      // Map Quote data to Form values
+      const defaultValues: QuoteFormValues = {
+        clientName: fetchedQuote.client_name,
+        clientEmail: fetchedQuote.client_email,
+        invoiceType: fetchedQuote.invoice_type,
+        eventTitle: fetchedQuote.event_title,
+        eventDate: fetchedQuote.event_date,
+        eventTime: details.eventTime || '',
+        eventLocation: fetchedQuote.event_location,
+        preparedBy: fetchedQuote.prepared_by,
+        currencySymbol: details.currencySymbol,
+        depositPercentage: details.depositPercentage,
+        paymentTerms: details.paymentTerms,
+        bankBSB: details.bankDetails.bsb,
+        bankACC: details.bankDetails.acc,
+        theme: details.theme,
+        headerImageUrl: details.headerImageUrl || '',
+        preparationNotes: details.preparationNotes || '',
+        compulsoryItems: details.compulsoryItems.map(item => ({
+          id: item.id,
+          name: item.name,
+          description: item.description,
+          amount: item.price, // Use price as amount for compulsory items
+        })),
+        addOns: details.addOns.map(item => ({
+          id: item.id,
+          name: item.name,
+          description: item.description,
+          cost: item.price, // Use price as cost for add-ons
+          quantity: item.quantity,
+        })),
+      };
+
+      form.reset(defaultValues);
+      showSuccess('Quote loaded.', { id: toastId });
+    } catch (error: any) {
+      console.error('Error fetching quote:', error);
+      showError(`Failed to load quote: ${error.message || 'Unknown error occurred'}`, { id: toastId });
+      setQuote(null);
+    } finally {
+      setIsLoading(false);
+      dismissToast(toastId);
     }
-
-    const fetchQuote = async () => {
-      setLoading(true);
-      const toastId = showLoading('Loading quote for editing...');
-      try {
-        const { data, error } = await supabase
-          .from('invoices')
-          .select('*')
-          .eq('slug', slug)
-          .single();
-
-        if (error) throw error;
-
-        if (data) {
-          const details = data.details as QuoteDetails;
-          setQuoteId(data.id);
-
-          // Map database structure to QuoteFormValues
-          const mappedData: QuoteFormValues = {
-            clientName: data.client_name,
-            clientEmail: data.client_email,
-            invoiceType: data.invoice_type,
-            eventTitle: data.event_title,
-            eventDate: data.event_date,
-            eventLocation: data.event_location,
-            preparedBy: data.prepared_by,
-            currencySymbol: details.currencySymbol,
-            depositPercentage: details.depositPercentage,
-            paymentTerms: details.paymentTerms,
-            bankBSB: details.bankDetails.bsb,
-            bankACC: details.bankDetails.acc,
-            eventTime: details.eventTime,
-            theme: details.theme,
-            headerImageUrl: details.headerImageUrl,
-            compulsoryItems: details.compulsoryItems.map(item => ({
-              id: item.id,
-              name: item.name,
-              description: item.description,
-              amount: item.price, // Map QuoteItem.price to CompulsoryItem.amount
-            })),
-            addOns: details.addOns.map(item => ({
-              id: item.id,
-              name: item.name,
-              description: item.description,
-              cost: item.price, // Map QuoteItem.price to AddOn.cost
-              quantity: item.quantity,
-            })),
-          };
-
-          form.reset(mappedData);
-        } else {
-          showError('Quote not found.');
-        }
-      } catch (err: any) {
-        console.error('Error fetching quote:', err);
-        showError(`Failed to load quote: ${err.message || 'Unknown error'}`);
-      } finally {
-        setLoading(false);
-        dismissToast(toastId);
-      }
-    };
-
-    fetchQuote();
   }, [slug, form]);
+
+  useEffect(() => {
+    fetchQuote();
+  }, [fetchQuote]);
 
   const handlePreviewQuote = (values: QuoteFormValues) => {
     setPreviewData(values);
     setIsPreviewOpen(true);
   };
 
+  const handleSaveDraft = async () => { // Removed unused 'values' parameter
+    // Draft saving logic is not typically used on an Edit page, but we keep the function signature
+    showError('Draft saving is not supported on the Edit page. Use "Update Quote" instead.');
+  };
+
   const handleUpdateQuote = async (values: QuoteFormValues) => {
-    if (!quoteId) return;
+    if (!quote) return;
 
     setIsSubmitting(true);
     const toastId = showLoading('Updating quote...');
 
     try {
       // Calculate total amount based on compulsory items and add-ons
-      const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + item.amount, 0);
-      const addOnTotal = values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => 
-        sum + (addOn.cost * addOn.quantity), 0) || 0;
+      const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.amount ?? 0), 0);
+      const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
+        sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
       const totalAmount = compulsoryTotal + addOnTotal;
 
       // Prepare details for JSONB column
-      const details: QuoteDetails = {
+      const details = {
+        compulsoryItems: values.compulsoryItems.map(item => ({
+          id: item.id || Math.random().toString(36).substring(2, 11),
+          name: item.name,
+          description: item.description || '',
+          price: item.amount ?? 0, // Use amount as price
+          quantity: 1, // Compulsory items always have quantity 1 in QuoteItem structure
+        })),
+        addOns: values.addOns?.map(addOn => ({
+          id: addOn.id || Math.random().toString(36).substring(2, 11),
+          name: addOn.name,
+          description: addOn.description || '',
+          price: addOn.cost ?? 0, // Use cost as price
+          quantity: addOn.quantity ?? 1, // Ensure quantity is defined
+        })) || [],
         depositPercentage: values.depositPercentage,
-        paymentTerms: values.paymentTerms,
         bankDetails: {
           bsb: values.bankBSB ?? '',
           acc: values.bankACC ?? '',
         },
         eventTime: values.eventTime,
         currencySymbol: values.currencySymbol,
+        paymentTerms: values.paymentTerms,
         theme: values.theme,
         headerImageUrl: values.headerImageUrl,
-        
-        // Map form items back to QuoteItem structure
-        compulsoryItems: values.compulsoryItems.map(item => ({
-          id: item.id || Math.random().toString(36).substring(2, 11),
-          name: item.name,
-          description: item.description || '',
-          quantity: 1, // Compulsory items are quantity 1
-          price: item.amount, // Map amount to price
-        })),
-        addOns: values.addOns?.map(addOn => ({
-          id: addOn.id || Math.random().toString(36).substring(2, 11),
-          name: addOn.name,
-          description: addOn.description || '',
-          quantity: addOn.quantity,
-          price: addOn.cost, // Map cost to price
-        })) || [],
+        preparationNotes: values.preparationNotes || '',
       };
 
       // Update the invoice record
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('invoices')
         .update({
           client_name: values.clientName,
@@ -160,13 +179,24 @@ const AdminEditQuotePage: React.FC = () => {
           prepared_by: values.preparedBy,
           total_amount: totalAmount,
           details: details,
+          // Slug remains unchanged
         })
-        .eq('id', quoteId);
+        .eq('id', quote.id)
+        .select('slug')
+        .single();
 
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
 
       showSuccess('Quote updated successfully!', { id: toastId });
-      navigate(`/admin/quotes/${slug}`);
+
+      // Refresh data and navigate back to details page
+      if (data && data.slug) {
+        navigate(`/admin/quotes/${data.slug}`);
+      } else {
+        navigate('/admin/quotes');
+      }
     } catch (error: any) {
       console.error('Error updating quote:', error);
       showError(`Failed to update quote: ${error.message || 'Unknown error occurred'}`, { id: toastId });
@@ -178,9 +208,9 @@ const AdminEditQuotePage: React.FC = () => {
 
   // Transform form values into Quote interface structure for preview
   const getPreviewData = (values: QuoteFormValues): Quote => {
-    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + item.amount, 0);
-    const addOnTotal = values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => 
-      sum + (addOn.cost * addOn.quantity), 0) || 0;
+    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.amount ?? 0), 0);
+    const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
+      sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
     const totalAmount = compulsoryTotal + addOnTotal;
 
     // Helper function to map form item to QuoteItem structure
@@ -198,8 +228,8 @@ const AdminEditQuotePage: React.FC = () => {
     };
 
     return {
-      id: quoteId || Math.random().toString(36).substring(2, 11),
-      slug: slug || 'preview-slug', // Required for Quote interface
+      id: quote?.id || Math.random().toString(36).substring(2, 11),
+      slug: quote?.slug || 'preview-slug',
       client_name: values.clientName,
       client_email: values.clientEmail,
       event_title: values.eventTitle,
@@ -208,9 +238,9 @@ const AdminEditQuotePage: React.FC = () => {
       event_location: values.eventLocation,
       prepared_by: values.preparedBy,
       total_amount: totalAmount,
-      accepted_at: null,
-      rejected_at: null,
-      created_at: new Date().toISOString(),
+      accepted_at: quote?.accepted_at || null,
+      rejected_at: quote?.rejected_at || null,
+      created_at: quote?.created_at || new Date().toISOString(),
       details: {
         depositPercentage: values.depositPercentage,
         paymentTerms: values.paymentTerms,
@@ -224,11 +254,12 @@ const AdminEditQuotePage: React.FC = () => {
         eventTime: values.eventTime,
         theme: values.theme,
         headerImageUrl: values.headerImageUrl,
+        preparationNotes: values.preparationNotes || '',
       },
     };
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
         <Loader2 className="h-8 w-8 animate-spin text-brand-primary" />
@@ -236,9 +267,18 @@ const AdminEditQuotePage: React.FC = () => {
     );
   }
 
+  if (!quote) {
+    return (
+      <div className="p-8 text-center">
+        <h3 className="text-xl font-semibold">Quote Not Found</h3>
+        <p className="text-gray-500">Could not load quote details for editing.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
-      <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Edit Quote: {form.getValues('eventTitle') || slug}</h2>
+      <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Edit Quote: {quote.event_title}</h2>
       <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
         Modify the details of this existing quote.
       </p>
@@ -253,7 +293,7 @@ const AdminEditQuotePage: React.FC = () => {
             onSubmit={handleUpdateQuote} 
             isSubmitting={isSubmitting} 
             onPreview={handlePreviewQuote} 
-            onSaveDraft={async () => showError("Cannot save draft on a finalized quote.")}
+            onSaveDraft={handleSaveDraft} // Placeholder, not used for editing
           />
         </CardContent>
       </Card>

@@ -1,32 +1,36 @@
-export interface QuoteItem {
+export type QuoteItem = {
   id: string;
-  name: string; // Short title/name of the item
-  description?: string; // Detailed description (new field)
+  name: string;
+  description: string;
   quantity: number;
-  price: number; // Cost per unit
-}
+  price: number;
+};
 
-export interface QuoteDetails {
+export type BankDetails = {
+  bsb: string;
+  acc: string;
+};
+
+export type QuoteDetails = {
+  compulsoryItems: QuoteItem[];
+  addOns: QuoteItem[];
   depositPercentage: number;
   paymentTerms: string;
-  bankDetails: {
-    bsb: string;
-    acc: string;
-  };
-  addOns: QuoteItem[];
-  compulsoryItems: QuoteItem[];
-  currencySymbol: string;
+  bankDetails: BankDetails;
   eventTime?: string;
-  theme: 'default' | 'livePiano'; // New field for theme selection
-  headerImageUrl?: string; // New field for header image
-}
+  currencySymbol: string;
+  theme: 'default' | 'black-gold'; // Added black-gold theme
+  headerImageUrl?: string;
+  preparationNotes?: string; // Added new field
+};
 
-export interface Quote {
+export type Quote = {
   id: string;
+  slug: string;
   client_name: string;
   client_email: string;
   event_title: string;
-  invoice_type: string;
+  invoice_type: 'Quote' | 'Invoice';
   event_date: string;
   event_location: string;
   prepared_by: string;
@@ -34,6 +38,5 @@ export interface Quote {
   accepted_at: string | null;
   rejected_at: string | null;
   created_at: string;
-  slug: string; // Added slug (Fix Error 6)
   details: QuoteDetails;
-}
+};
