@@ -203,19 +203,25 @@ const DynamicQuotePage: React.FC = () => {
         headerText: 'text-gray-100',
         acceptButton: 'bg-amber-400 text-gray-900 hover:bg-amber-500',
         rejectButton: 'bg-gray-700 text-gray-100 hover:bg-gray-600',
+        totalBoxBg: 'bg-gray-700',
+        totalBoxText: 'text-amber-400',
+        acceptBoxBorder: 'border-amber-400/50',
       }
     : {
         // White/Pink Theme (Default)
         bg: 'bg-gray-50',
         cardBg: 'bg-white',
         text: 'text-gray-800',
-        primary: 'text-fuchsia-600', // Proper vibrant pink
+        primary: 'text-pink-600', // Corrected pink color
         secondary: 'text-gray-500',
-        border: 'border-fuchsia-600/50',
-        separator: 'bg-fuchsia-600 h-0.5',
+        border: 'border-pink-600/50',
+        separator: 'bg-pink-600 h-0.5',
         headerText: 'text-gray-800',
-        acceptButton: 'bg-fuchsia-600 text-white hover:bg-fuchsia-700',
+        acceptButton: 'bg-pink-600 text-white hover:bg-pink-700',
         rejectButton: 'bg-red-600 text-white hover:bg-red-700',
+        totalBoxBg: 'bg-pink-50', // Light pink background
+        totalBoxText: 'text-pink-600',
+        acceptBoxBorder: 'border-pink-600/50',
       };
       
   const eventDateFormatted = quote.event_date ? format(new Date(quote.event_date), 'EEEE dd MMMM yyyy') : 'TBD';
@@ -251,8 +257,7 @@ const DynamicQuotePage: React.FC = () => {
             
             <div className="space-y-1 pt-4">
               {/* Metadata matching design structure */}
-              <p className={`text-lg ${themeClasses.headerText}`}>Prepared for: <span className={`font-semibold ${isLivePianoTheme ? themeClasses.primary : themeClasses.headerText}`}>{quote.prepared_by}</span></p>
-              <p className={`text-lg ${themeClasses.headerText}`}>Client Email: <span className={`font-semibold ${isLivePianoTheme ? themeClasses.primary : themeClasses.headerText}`}>{quote.client_email}</span></p>
+              <p className={`text-lg ${themeClasses.headerText}`}>Client Email: <span className={`font-semibold ${themeClasses.primary}`}>{quote.client_email}</span></p>
               <p className={`text-lg ${themeClasses.headerText}`}>Date of Event: <span className="font-semibold">{eventDateFormatted}</span></p>
               {eventTime && <p className={`text-lg ${themeClasses.headerText}`}>Time: <span className="font-semibold">{eventTime}</span></p>}
               <p className={`text-lg ${themeClasses.headerText}`}>Location: <span className="font-semibold">{quote.event_location}</span></p>
@@ -313,40 +318,11 @@ const DynamicQuotePage: React.FC = () => {
                   </div>
                 </div>
               )}
-
-              {/* Optional Add-Ons */}
-              {optionalAddOns.length > 0 && (
-                <div className="space-y-4 pt-8 border-t border-dashed">
-                  <h3 className={`text-xl font-semibold text-center ${themeClasses.text}`}>Optional Add-Ons (Select to include)</h3>
-                  {optionalAddOns.map((item) => (
-                    <div key={item.id} className="flex items-center justify-between p-3 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                      <div className="flex items-center space-x-3 flex-1">
-                        <Checkbox
-                          id={`addon-${item.id}`}
-                          checked={selectedAddOns.includes(item.id)}
-                          onCheckedChange={(checked) => handleAddOnChange(item.id, !!checked)}
-                          disabled={isFinalized}
-                          className={isLivePianoTheme ? 'border-amber-400 data-[state=checked]:bg-amber-400 data-[state=checked]:text-gray-900' : 'border-fuchsia-600 data-[state=checked]:bg-fuchsia-600 data-[state=checked]:text-white'}
-                        />
-                        <Label htmlFor={`addon-${item.id}`} className="cursor-pointer flex-1">
-                          <p className={`${themeClasses.text} flex items-start`}>
-                            <span className={`mr-2 ${themeClasses.primary} text-lg leading-none`}>&bull;</span>
-                            <span className="font-bold">{item.name}:</span>
-                            {item.description && <span className={`text-sm ml-1 ${themeClasses.secondary}`}>{item.description}</span>}
-                          </p>
-                          <p className={`text-xs ml-4 ${themeClasses.secondary}`}>{formatCurrency(item.price)} x {item.quantity}</p>
-                        </Label>
-                      </div>
-                      <p className={`font-semibold ${themeClasses.primary}`}>{formatCurrency(calculateItemTotal(item))}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
             </section>
 
             {/* Important Booking Details Section */}
-            <section className={`mt-12 p-6 rounded-lg ${isLivePianoTheme ? 'bg-gray-700' : 'bg-gray-100'}`}>
-              <h2 className={`text-2xl font-bold text-center mb-4 ${themeClasses.headerText}`}>Important Booking Details</h2>
+            <section className={`mt-12 p-6 rounded-lg ${isLivePianoTheme ? 'bg-gray-700' : 'bg-white border border-gray-200'}`}>
+              <h2 className={`text-2xl font-extrabold text-center mb-4 ${themeClasses.headerText}`}>Important Booking Details</h2>
               
               <ul className={`space-y-3 text-sm ${themeClasses.headerText}`}>
                 <li>
@@ -363,34 +339,85 @@ const DynamicQuotePage: React.FC = () => {
                 </li>
               </ul>
             </section>
+            
+            {/* Final Total Cost Box (Matching design) */}
+            <div className={`mt-8 p-6 rounded-lg text-center ${themeClasses.totalBoxBg}`}>
+              <h3 className={`text-3xl font-extrabold ${themeClasses.totalBoxText}`}>
+                Final Total Cost: {formatCurrency(subtotal)}
+              </h3>
+              <p className={`text-sm ${isLivePianoTheme ? themeClasses.secondary : themeClasses.text}`}>
+                This includes your selected add-ons and the base quote amount.
+              </p>
+            </div>
+
+            {/* Accept Your Quote Section (Matching design) */}
+            <div className={`mt-8 p-6 rounded-lg text-center border-2 ${themeClasses.acceptBoxBorder}`}>
+              <h2 className={`text-2xl font-extrabold mb-6 ${themeClasses.text}`}>Accept Your Quote</h2>
+              
+              {/* Optional Add-Ons Section */}
+              {optionalAddOns.length > 0 && (
+                <div className="space-y-4 pt-4">
+                  <h3 className={`text-xl font-extrabold text-center ${themeClasses.text}`}>Optional Add-Ons</h3>
+                  {optionalAddOns.map((item) => (
+                    <div key={item.id} className="flex items-center justify-between p-3 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                      <div className="flex items-center space-x-3 flex-1">
+                        <Checkbox
+                          id={`addon-${item.id}`}
+                          checked={selectedAddOns.includes(item.id)}
+                          onCheckedChange={(checked) => handleAddOnChange(item.id, !!checked)}
+                          disabled={isFinalized}
+                          className={isLivePianoTheme ? 'border-amber-400 data-[state=checked]:bg-amber-400 data-[state=checked]:text-gray-900' : 'border-pink-600 data-[state=checked]:bg-pink-600 data-[state=checked]:text-white'}
+                        />
+                        <Label htmlFor={`addon-${item.id}`} className="cursor-pointer flex-1 text-left">
+                          <p className={`${themeClasses.text} flex items-start`}>
+                            <span className={`mr-2 ${themeClasses.primary} text-lg leading-none`}>&bull;</span>
+                            <span className="font-bold">{item.name}:</span>
+                            {item.description && <span className={`text-sm ml-1 ${themeClasses.secondary}`}>{item.description}</span>}
+                          </p>
+                          <p className={`text-xs ml-4 ${themeClasses.secondary}`}>Unit Cost: {formatCurrency(item.price)}</p>
+                        </Label>
+                      </div>
+                      <p className={`font-semibold ${themeClasses.primary}`}>{formatCurrency(calculateItemTotal(item))}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {/* Acceptance Buttons */}
+              <div className="mt-8 flex justify-center space-x-4">
+                {!isFinalized ? (
+                  <>
+                    <Button 
+                      variant="destructive" 
+                      onClick={handleRejectQuote} 
+                      disabled={isAccepting}
+                      className={themeClasses.rejectButton}
+                    >
+                      Reject Quote
+                    </Button>
+                    <Button 
+                      onClick={handleAcceptQuote} 
+                      disabled={isAccepting}
+                      className={themeClasses.acceptButton}
+                    >
+                      {isAccepting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
+                      Accept Quote
+                    </Button>
+                  </>
+                ) : (
+                  <Button onClick={() => navigate('/')}>
+                    Back to Home
+                  </Button>
+                )}
+              </div>
+            </div>
 
           </CardContent>
 
-          <CardFooter className="flex justify-end space-x-4 pt-6 border-t">
-            {!isFinalized ? (
-              <>
-                <Button 
-                  variant="destructive" 
-                  onClick={handleRejectQuote} 
-                  disabled={isAccepting}
-                  className={themeClasses.rejectButton}
-                >
-                  Reject Quote
-                </Button>
-                <Button 
-                  onClick={handleAcceptQuote} 
-                  disabled={isAccepting}
-                  className={themeClasses.acceptButton}
-                >
-                  {isAccepting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
-                  Accept Quote
-                </Button>
-              </>
-            ) : (
-              <Button onClick={() => navigate('/')}>
-                Back to Home
-              </Button>
-            )}
+          <CardFooter className="flex justify-center pt-6 border-t">
+            <p className="text-xs italic text-gray-500">
+              Quote prepared by {quote.prepared_by} on {format(new Date(quote.created_at), 'PPP')}.
+            </p>
           </CardFooter>
         </Card>
       </div>

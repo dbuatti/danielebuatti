@@ -24,17 +24,23 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
         border: 'border-amber-400/50',
         separator: 'bg-amber-400 h-0.5',
         headerText: 'text-gray-100',
+        totalBoxBg: 'bg-gray-700',
+        totalBoxText: 'text-amber-400',
+        acceptBoxBorder: 'border-amber-400/50',
       }
     : {
         // White/Pink Theme (Default)
         bg: 'bg-white',
         cardBg: 'bg-white',
         text: 'text-gray-800',
-        primary: 'text-fuchsia-600', // Proper vibrant pink
+        primary: 'text-pink-600', // Corrected pink color
         secondary: 'text-gray-500',
-        border: 'border-fuchsia-600/50',
-        separator: 'bg-fuchsia-600 h-0.5',
+        border: 'border-pink-600/50',
+        separator: 'bg-pink-600 h-0.5',
         headerText: 'text-gray-800',
+        totalBoxBg: 'bg-pink-50', // Light pink background
+        totalBoxText: 'text-pink-600',
+        acceptBoxBorder: 'border-pink-600/50',
       };
 
   const formatCurrency = (amount: number) => {
@@ -80,8 +86,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
           <h1 className={`text-4xl font-extrabold mb-4 ${themeClasses.primary}`}>{quote.event_title}</h1>
           
           {/* Metadata matching design structure */}
-          <p className={`text-lg ${themeClasses.headerText}`}>Prepared for: <span className={`font-semibold ${isLivePianoTheme ? themeClasses.primary : themeClasses.headerText}`}>{quote.prepared_by}</span></p>
-          <p className={`text-lg ${themeClasses.headerText}`}>Client Email: <span className={`font-semibold ${isLivePianoTheme ? themeClasses.primary : themeClasses.headerText}`}>{quote.client_email}</span></p>
+          <p className={`text-lg ${themeClasses.headerText}`}>Client Email: <span className={`font-semibold ${themeClasses.primary}`}>{quote.client_email}</span></p>
           <p className={`text-lg ${themeClasses.headerText}`}>Date of Event: <span className="font-semibold">{eventDateFormatted}</span></p>
           {details.eventTime && <p className={`text-lg ${themeClasses.headerText}`}>Time: <span className="font-semibold">{details.eventTime}</span></p>}
           <p className={`text-lg ${themeClasses.headerText}`}>Location: <span className="font-semibold">{quote.event_location}</span></p>
@@ -103,62 +108,9 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
           </p>
         </section>
 
-        {/* Items Section */}
-        <section className="mt-8 space-y-6">
-          <h2 className={`text-xl font-bold text-center ${themeClasses.primary}`}>Service Components</h2>
-
-          {/* Compulsory Items */}
-          {details.compulsoryItems.length > 0 && (
-            <div className="space-y-4">
-              {details.compulsoryItems.map((item, index) => (
-                <div key={index} className="pb-3">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1 pr-4">
-                      <p className={`${themeClasses.text} flex items-start`}>
-                        <span className={`mr-2 ${themeClasses.primary} text-lg leading-none`}>&bull;</span>
-                        <span className="font-bold">{item.name}:</span>
-                        {item.description && <span className={`text-sm ml-1 ${themeClasses.secondary}`}>{item.description}</span>}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              
-              {/* All-Inclusive Total (Based on design) */}
-              <div className="text-center pt-4">
-                <p className={`text-2xl font-extrabold ${themeClasses.primary}`}>
-                  All-Inclusive Engagement Fee: {formatCurrency(compulsoryTotal)}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Add-Ons (If any, displayed separately) */}
-          {details.addOns.length > 0 && (
-            <div className="space-y-4 pt-8 border-t border-dashed">
-              <h3 className={`text-xl font-semibold text-center ${themeClasses.text}`}>Optional Add-Ons</h3>
-              {details.addOns.map((item, index) => (
-                <div key={index} className="pb-3">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1 pr-4">
-                      <p className={`${themeClasses.text} flex items-start`}>
-                        <span className={`mr-2 ${themeClasses.primary} text-lg leading-none`}>&bull;</span>
-                        <span className="font-bold">{item.name}:</span>
-                        {item.description && <span className={`text-sm ml-1 ${themeClasses.secondary}`}>{item.description}</span>}
-                      </p>
-                      <p className={`text-xs ml-4 ${themeClasses.secondary}`}>{formatCurrency(item.price)} x {item.quantity}</p>
-                    </div>
-                    <p className={`font-semibold ${themeClasses.primary}`}>{formatCurrency(calculateItemTotal(item))}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-
         {/* Important Booking Details Section */}
-        <section className={`mt-12 p-6 rounded-lg ${isLivePianoTheme ? 'bg-gray-700' : 'bg-gray-100'}`}>
-          <h2 className={`text-2xl font-bold text-center mb-4 ${themeClasses.headerText}`}>Important Booking Details</h2>
+        <section className={`mt-12 p-6 rounded-lg ${isLivePianoTheme ? 'bg-gray-700' : 'bg-white border border-gray-200'}`}>
+          <h2 className={`text-2xl font-extrabold text-center mb-4 ${themeClasses.headerText}`}>Important Booking Details</h2>
           
           <ul className={`space-y-3 text-sm ${themeClasses.headerText}`}>
             <li>
@@ -175,6 +127,55 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
             </li>
           </ul>
         </section>
+        
+        {/* Final Total Cost Box (Matching design) */}
+        <div className={`mt-8 p-6 rounded-lg text-center ${themeClasses.totalBoxBg}`}>
+          <h3 className={`text-3xl font-extrabold ${themeClasses.totalBoxText}`}>
+            Final Total Cost: {formatCurrency(subtotal)}
+          </h3>
+          <p className={`text-sm ${isLivePianoTheme ? themeClasses.secondary : themeClasses.text}`}>
+            This includes your selected add-ons and the base quote amount.
+          </p>
+        </div>
+
+        {/* Accept Your Quote Section (Matching design) */}
+        <div className={`mt-8 p-6 rounded-lg text-center border-2 ${themeClasses.acceptBoxBorder}`}>
+          <h2 className={`text-2xl font-extrabold mb-6 ${themeClasses.text}`}>Accept Your Quote</h2>
+          
+          {/* Optional Add-Ons Section */}
+          {details.addOns.length > 0 && (
+            <div className="space-y-4 pt-4">
+              <h3 className={`text-xl font-extrabold text-center ${themeClasses.text}`}>Optional Add-Ons</h3>
+              {details.addOns.map((item, index) => (
+                <div key={index} className="pb-3">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1 pr-4 text-left">
+                      <p className={`font-bold ${themeClasses.text}`}>{item.name}:</p>
+                      {item.description && <p className={`text-xs italic ${themeClasses.secondary}`}>Unit Cost: {formatCurrency(item.price)}</p>}
+                      {item.description && <p className={`text-sm italic ${themeClasses.secondary}`}>{item.description}</p>}
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      {/* Placeholder for quantity controls (since this is just a display component) */}
+                      <div className="flex items-center border rounded-md">
+                        <button className="px-2 py-1 text-gray-400">-</button>
+                        <span className="px-3 py-1 border-l border-r text-sm">{item.quantity}</span>
+                        <button className="px-2 py-1 text-gray-400">+</button>
+                      </div>
+                      <p className={`font-semibold ${themeClasses.primary}`}>{formatCurrency(calculateItemTotal(item))}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          
+          {/* Placeholder for Acceptance Button */}
+          <div className="mt-8">
+            <button className={`px-6 py-3 rounded-lg font-bold text-white ${isLivePianoTheme ? 'bg-amber-400 text-gray-900' : 'bg-pink-600'}`}>
+              Accept Quote (Preview)
+            </button>
+          </div>
+        </div>
 
         <footer className="mt-10 text-center text-xs italic">
           <p className={themeClasses.secondary}>This is a preview. The final quote will include acceptance options.</p>
