@@ -159,7 +159,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       form.setValue('clientName', extractedContent.clientName);
       form.setValue('clientEmail', extractedContent.clientEmail);
       
-      // Error 3 fix: Ensure extracted type is valid or default to 'Quote'
+      // Ensure extracted type is valid or default to 'Quote'
       const invoiceType = extractedContent.invoiceType === 'Invoice' ? 'Invoice' : 'Quote';
       form.setValue('invoiceType', invoiceType);
       
@@ -168,21 +168,22 @@ const AdminQuoteBuilderPage: React.FC = () => {
       form.setValue('eventTime', extractedContent.eventTime);
       form.setValue('eventLocation', extractedContent.eventLocation);
       
-      // --- AI Extraction Mapping Update ---
+      // --- AI Extraction Mapping Update: Use new 'name' and 'description' fields ---
       form.setValue('compulsoryItems', extractedContent.compulsoryItems.map(item => ({
         id: Math.random().toString(36).substring(2, 11),
-        name: item.description, // Map old description (title) to new name
-        description: '', // Detailed description is left empty
+        name: item.name, // Use the new 'name' field from AI
+        description: item.description || '', // Use the new 'description' field from AI
         amount: item.amount,
       })));
       form.setValue('addOns', extractedContent.addOns.map(item => ({
         id: Math.random().toString(36).substring(2, 11),
-        name: item.description, // Map old description (title) to new name
-        description: '', // Detailed description is left empty
+        name: item.name, // Use the new 'name' field from AI
+        description: item.description || '', // Use the new 'description' field from AI
         cost: item.cost,
         quantity: item.quantity,
       })));
       form.setValue('paymentTerms', extractedContent.paymentTerms);
+      form.setValue('preparationNotes', extractedContent.preparationNotes);
 
       showSuccess('Quote details extracted and applied!', { id: toastId });
 

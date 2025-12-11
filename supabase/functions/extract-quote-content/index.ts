@@ -1,5 +1,6 @@
+/// <reference types="https://deno.land/std@0.190.0/http/server.ts" />
+/// <reference lib="deno.ns" />
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
 
 // Ensure you have VITE_GEMINI_API_KEY set as a secret in Supabase
 const GEMINI_API_KEY = Deno.env.get('VITE_GEMINI_API_KEY');
@@ -30,10 +31,11 @@ const JSON_SCHEMA = {
       items: {
         type: "object",
         properties: {
-          description: { type: "string", description: "The name or title of the compulsory service." },
+          name: { type: "string", description: "The concise name or title of the compulsory service (e.g., 'Minimum Performance Fee')." },
+          description: { type: "string", description: "The detailed description or explanation of the service." },
           amount: { type: "number", description: "The fixed cost of the service." },
         },
-        required: ["description", "amount"]
+        required: ["name", "description", "amount"]
       }
     },
     addOns: {
@@ -42,18 +44,19 @@ const JSON_SCHEMA = {
       items: {
         type: "object",
         properties: {
-          description: { type: "string", description: "The name or title of the optional add-on." },
+          name: { type: "string", description: "The concise name or title of the optional add-on (e.g., 'Overtime')." },
+          description: { type: "string", description: "The detailed description or explanation of the add-on." },
           cost: { type: "number", description: "The unit cost of the add-on." },
           quantity: { type: "number", description: "The quantity requested, default to 1 if not specified." },
         },
-        required: ["description", "cost", "quantity"]
+        required: ["name", "description", "cost", "quantity"]
       }
     }
   },
   required: ["clientName", "clientEmail", "invoiceType", "eventTitle", "eventDate", "eventLocation", "paymentTerms", "compulsoryItems", "addOns", "preparationNotes"]
 };
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -75,14 +78,14 @@ serve(async (req) => {
       });
     }
 
-    const prompt = `Analyze the following client email content and extract all relevant details for generating a professional quote. Pay special attention to identifying the client, event details, requested services (compulsory items), optional services (add-ons), and any specific notes regarding service commitment or preparation.
+    const prompt = `Analyze the following client email content and extract all relevant details for generating a professional quote. Pay special attention to separating the item's concise title (name) from its detailed explanation (description) for all services and add-ons, especially when presented in a table format.
 
 Client Email Content:
 ---
 ${emailContent}
 ---
 
-Please output the result strictly as a single JSON object conforming to the provided schema. Ensure all numeric fields are numbers and all required fields are present. If a field is not explicitly mentioned, use a reasonable default or leave it empty if optional, but ensure the structure is maintained.`;
+Please output the result strictly as a single JSON object conforming to the provided schema. Ensure all numeric fields are numbers and all required fields are present.`;
 
     const response = await fetch(GEMINI_ENDPOINT, {
       method: 'POST',
@@ -128,7 +131,8 @@ Please output the result strictly as a single JSON object conforming to the prov
 
   } catch (error) {
     console.error('Edge Function Error:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    return new Response(JSON.stringify({ error: errorMessage }), {
       headers: corsHeaders,
       status: 500,
     });
