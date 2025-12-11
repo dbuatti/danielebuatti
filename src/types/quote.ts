@@ -22,6 +22,7 @@ export interface QuoteDetails {
   theme: QuoteTheme; // Updated to use specific theme type
   headerImageUrl: string;
   preparationNotes: string;
+  client_selected_add_ons?: QuoteItem[]; // Added missing property
 }
 
 export interface Quote {

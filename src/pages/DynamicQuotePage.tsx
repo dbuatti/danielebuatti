@@ -25,9 +25,11 @@ interface QuoteData extends Omit<Quote, 'details'> {
     addOns: QuoteItem[];
     compulsoryItems: QuoteItem[];
     currencySymbol: string;
-    eventTime?: string;
-    theme: 'default' | 'livePiano';
-    headerImageUrl?: string;
+    eventTime: string;
+    theme: 'default' | 'black-gold';
+    headerImageUrl: string;
+    preparationNotes: string;
+    client_selected_add_ons?: QuoteItem[];
   };
 }
 
@@ -68,7 +70,10 @@ const DynamicQuotePage: React.FC = () => {
           };
           setQuote(quoteData);
           
-          // If the quote is already accepted, we should load the accepted items.
+          // If already accepted, initialize selectedAddOns from client_selected_add_ons
+          if (quoteData.accepted_at && quoteData.details.client_selected_add_ons) {
+            setSelectedAddOns(quoteData.details.client_selected_add_ons.map(item => item.id));
+          }
         } else {
           setError('Quote not found.');
         }
@@ -98,26 +103,26 @@ const DynamicQuotePage: React.FC = () => {
       const addOnTotal = finalAddOns.reduce((sum, item) => sum + item.price * item.quantity, 0);
       const finalTotal = compulsoryTotal + addOnTotal;
 
-      // 2. Update the invoice record in Supabase
-      const { error } = await supabase
-        .from('invoices')
-        .update({
-          accepted_at: new Date().toISOString(),
-          rejected_at: null,
-          total_amount: finalTotal,
-          // Store the client's selected add-ons in the details JSONB
-          details: {
-            ...quote.details,
-            client_selected_add_ons: finalAddOns,
-          }
-        })
-        .eq('id', quote.id);
+      // 2. Prepare data for Edge Function
+      const acceptancePayload = {
+        quoteId: quote.id,
+        clientName: quote.client_name,
+        clientEmail: quote.client_email,
+        finalTotal: finalTotal,
+        finalSelectedAddOns: finalAddOns,
+      };
 
-      if (error) throw error;
+      // 3. Invoke the Edge Function to update the database and send notification
+      const { error: invokeError } = await supabase.functions.invoke('submit-generic-quote-acceptance', {
+        body: acceptancePayload,
+      });
+
+      if (invokeError) throw invokeError;
 
       showSuccess('Quote accepted successfully! Redirecting...', { id: toastId });
-      // Refresh data or redirect to a confirmation page
-      setQuote(prev => prev ? { ...prev, accepted_at: new Date().toISOString(), total_amount: finalTotal } : null);
+      
+      // Redirect to a confirmation page after successful acceptance
+      navigate('/live-piano-services/quote-confirmation');
       
     } catch (err: any) {
       console.error('Error accepting quote:', err);
@@ -169,7 +174,7 @@ const DynamicQuotePage: React.FC = () => {
   }
 
   const { details, accepted_at, rejected_at } = quote;
-  const { compulsoryItems, addOns: optionalAddOns, currencySymbol, depositPercentage, paymentTerms, bankDetails, eventTime, theme, headerImageUrl } = details;
+  const { compulsoryItems, addOns: optionalAddOns, currencySymbol, depositPercentage, paymentTerms, bankDetails, eventTime, theme, headerImageUrl, preparationNotes } = details;
   
   const isAccepted = !!accepted_at;
   const isRejected = !!rejected_at;
@@ -177,20 +182,30 @@ const DynamicQuotePage: React.FC = () => {
   
   const symbol = currencySymbol || '$';
 
-  // Calculate totals based on current selections
-  const selectedAddOnsData = optionalAddOns.filter(item => selectedAddOns.includes(item.id));
+  // Calculate totals based on current selections (or accepted total if finalized)
+  let selectedAddOnsData: QuoteItem[];
+  let subtotal: number;
   
-  const compulsoryTotal = compulsoryItems?.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0;
-  const addOnTotal = selectedAddOnsData.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const subtotal = compulsoryTotal + addOnTotal;
+  if (isAccepted && details.client_selected_add_ons) {
+    // Use the finalized data if accepted
+    selectedAddOnsData = details.client_selected_add_ons;
+    subtotal = quote.total_amount;
+  } else {
+    // Calculate based on current selection if pending or rejected
+    selectedAddOnsData = optionalAddOns.filter(item => selectedAddOns.includes(item.id));
+    const compulsoryTotal = compulsoryItems?.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0;
+    const addOnTotal = selectedAddOnsData.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    subtotal = compulsoryTotal + addOnTotal;
+  }
+
   const depositAmount = subtotal * (depositPercentage / 100);
   
   const formatCurrency = (amount: number) => `${symbol}${amount.toFixed(2)}`;
   const calculateItemTotal = (item: QuoteItem) => item.price * item.quantity;
 
   // Theme setup
-  const isLivePianoTheme = theme === 'livePiano';
-  const themeClasses = isLivePianoTheme
+  const isBlackGoldTheme = theme === 'black-gold';
+  const themeClasses = isBlackGoldTheme
     ? {
         // Gold/Black Theme (Live Piano)
         bg: 'bg-gray-900',
@@ -248,7 +263,7 @@ const DynamicQuotePage: React.FC = () => {
           <div className="text-center mb-8">
             {/* Placeholder for logo/branding */}
             <div className={`text-4xl font-serif font-bold ${themeClasses.primary}`}>
-              {isLivePianoTheme ? 'Live Piano Services' : 'Daniele Buatti'}
+              {isBlackGoldTheme ? 'Live Piano Services' : 'Daniele Buatti'}
             </div>
           </div>
 
@@ -279,15 +294,14 @@ const DynamicQuotePage: React.FC = () => {
 
           <CardContent className="space-y-8">
             
-            {/* Main Content / Description Block (Mimicking large bold text from design) */}
-            <section className="text-center mb-10">
-              <p className={`text-xl font-extrabold ${themeClasses.text} max-w-3xl mx-auto`}>
-                This fee covers 7 hours of commitment, including the performance call, soundcheck, and all essential preparation required for a seamless, high-energy performance.
-              </p>
-              <p className={`text-sm ${themeClasses.secondary} mt-4`}>
-                This fee secures a premium, seamless musical experience for your event.
-              </p>
-            </section>
+            {/* Main Content / Description Block (Using preparationNotes) */}
+            {preparationNotes && (
+              <section className="text-center mb-10">
+                <p className={`text-xl font-extrabold ${themeClasses.text} max-w-3xl mx-auto whitespace-pre-wrap`}>
+                  {preparationNotes}
+                </p>
+              </section>
+            )}
 
             {/* Quote Breakdown */}
             <section className="space-y-6">
@@ -320,13 +334,53 @@ const DynamicQuotePage: React.FC = () => {
               )}
             </section>
 
+            {/* Optional Add-Ons Section (Only show if pending or if accepted and add-ons were selected) */}
+            {optionalAddOns.length > 0 && (!isFinalized || (isAccepted && selectedAddOnsData.length > 0)) && (
+              <div className={`mt-8 p-6 rounded-lg text-center border-2 ${themeClasses.acceptBoxBorder}`}>
+                <h2 className={`text-2xl font-extrabold mb-6 ${themeClasses.text}`}>Optional Add-Ons</h2>
+                
+                <div className="space-y-4 pt-4">
+                  {optionalAddOns.map((item) => {
+                    // Determine if this item was selected (either now, or when accepted)
+                    const isSelected = selectedAddOns.includes(item.id);
+                    
+                    // If finalized and not selected, skip rendering unless we want to show all options
+                    if (isFinalized && !isSelected) return null;
+
+                    return (
+                      <div key={item.id} className="flex items-center justify-between p-3 rounded-md transition-colors">
+                        <div className="flex items-center space-x-3 flex-1">
+                          <Checkbox
+                            id={`addon-${item.id}`}
+                            checked={isSelected}
+                            onCheckedChange={(checked) => handleAddOnChange(item.id, !!checked)}
+                            disabled={isFinalized}
+                            className={isBlackGoldTheme ? 'border-amber-400 data-[state=checked]:bg-amber-400 data-[state=checked]:text-gray-900' : 'border-pink-600 data-[state=checked]:bg-pink-600 data-[state=checked]:text-white'}
+                          />
+                          <Label htmlFor={`addon-${item.id}`} className="cursor-pointer flex-1 text-left">
+                            <p className={`${themeClasses.text} flex items-start`}>
+                              <span className={`mr-2 ${themeClasses.primary} text-lg leading-none`}>&bull;</span>
+                              <span className="font-bold">{item.name}:</span>
+                              {item.description && <span className={`text-sm ml-1 ${themeClasses.secondary}`}>{item.description}</span>}
+                            </p>
+                            <p className={`text-xs ml-4 ${themeClasses.secondary}`}>Unit Cost: {formatCurrency(item.price)}</p>
+                          </Label>
+                        </div>
+                        <p className={`font-semibold ${themeClasses.primary}`}>{formatCurrency(calculateItemTotal(item))}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Important Booking Details Section */}
-            <section className={`mt-12 p-6 rounded-lg ${isLivePianoTheme ? 'bg-gray-700' : 'bg-white border border-gray-200'}`}>
+            <section className={`mt-12 p-6 rounded-lg ${isBlackGoldTheme ? 'bg-gray-700' : 'bg-white border border-gray-200'}`}>
               <h2 className={`text-2xl font-extrabold text-center mb-4 ${themeClasses.headerText}`}>Important Booking Details</h2>
               
               <ul className={`space-y-3 text-sm ${themeClasses.headerText}`}>
                 <li>
-                  <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> A non-refundable <span className="font-bold">{details.depositPercentage}% deposit ({formatCurrency(depositAmount)})</span> is required immediately to formally secure {isLivePianoTheme ? `the ${eventDateShort} date` : 'the booking'}.
+                  <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> A non-refundable <span className="font-bold">{depositPercentage}% deposit ({formatCurrency(depositAmount)})</span> is required immediately to formally secure {isBlackGoldTheme ? `the ${eventDateShort} date` : 'the booking'}.
                 </li>
                 <li>
                   <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> The remaining balance is due 7 days prior to the event.
@@ -340,50 +394,20 @@ const DynamicQuotePage: React.FC = () => {
               </ul>
             </section>
             
-            {/* Final Total Cost Box (Matching design) */}
+            {/* Final Total Cost Box */}
             <div className={`mt-8 p-6 rounded-lg text-center ${themeClasses.totalBoxBg}`}>
               <h3 className={`text-3xl font-extrabold ${themeClasses.totalBoxText}`}>
                 Final Total Cost: {formatCurrency(subtotal)}
               </h3>
-              <p className={`text-sm ${isLivePianoTheme ? themeClasses.secondary : themeClasses.text}`}>
+              <p className={`text-sm ${isBlackGoldTheme ? themeClasses.secondary : themeClasses.text}`}>
                 This includes your selected add-ons and the base quote amount.
               </p>
             </div>
 
-            {/* Accept Your Quote Section (Matching design) */}
+            {/* Acceptance Buttons */}
             <div className={`mt-8 p-6 rounded-lg text-center border-2 ${themeClasses.acceptBoxBorder}`}>
               <h2 className={`text-2xl font-extrabold mb-6 ${themeClasses.text}`}>Accept Your Quote</h2>
               
-              {/* Optional Add-Ons Section */}
-              {optionalAddOns.length > 0 && (
-                <div className="space-y-4 pt-4">
-                  <h3 className={`text-xl font-extrabold text-center ${themeClasses.text}`}>Optional Add-Ons</h3>
-                  {optionalAddOns.map((item) => (
-                    <div key={item.id} className="flex items-center justify-between p-3 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                      <div className="flex items-center space-x-3 flex-1">
-                        <Checkbox
-                          id={`addon-${item.id}`}
-                          checked={selectedAddOns.includes(item.id)}
-                          onCheckedChange={(checked) => handleAddOnChange(item.id, !!checked)}
-                          disabled={isFinalized}
-                          className={isLivePianoTheme ? 'border-amber-400 data-[state=checked]:bg-amber-400 data-[state=checked]:text-gray-900' : 'border-pink-600 data-[state=checked]:bg-pink-600 data-[state=checked]:text-white'}
-                        />
-                        <Label htmlFor={`addon-${item.id}`} className="cursor-pointer flex-1 text-left">
-                          <p className={`${themeClasses.text} flex items-start`}>
-                            <span className={`mr-2 ${themeClasses.primary} text-lg leading-none`}>&bull;</span>
-                            <span className="font-bold">{item.name}:</span>
-                            {item.description && <span className={`text-sm ml-1 ${themeClasses.secondary}`}>{item.description}</span>}
-                          </p>
-                          <p className={`text-xs ml-4 ${themeClasses.secondary}`}>Unit Cost: {formatCurrency(item.price)}</p>
-                        </Label>
-                      </div>
-                      <p className={`font-semibold ${themeClasses.primary}`}>{formatCurrency(calculateItemTotal(item))}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-              
-              {/* Acceptance Buttons */}
               <div className="mt-8 flex justify-center space-x-4">
                 {!isFinalized ? (
                   <>

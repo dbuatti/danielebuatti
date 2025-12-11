@@ -18,19 +18,19 @@ interface QuoteDisplayProps {
 }
 
 // Helper component for rendering a single item row
-const QuoteItemRow: React.FC<{ item: QuoteItem; currencySymbol: string; isOptional: boolean }> = ({
+const QuoteItemRow: React.FC<{ item: QuoteItem; currencySymbol: string; isOptional: boolean; isSelected?: boolean }> = ({
   item,
   currencySymbol,
   isOptional,
+  isSelected = true, // Default to true unless explicitly set to false (for unselected optional items)
 }) => {
   const totalAmount = item.price * item.quantity;
   
-  // Logic to display unit cost for optional items with quantity 0
+  // Logic to display unit cost for optional items that were NOT selected (quantity 0)
   const displayAmount = () => {
-    if (isOptional && item.quantity === 0) {
-      // If optional and quantity is 0, show the unit price with a strikethrough 
-      // in the unit price column (which is always shown), and indicate 'Unselected' 
-      // in the Amount column.
+    if (isOptional && !isSelected) {
+      // If optional and not selected, show the unit price with a strikethrough 
+      // in the unit price column, and indicate 'Unselected' in the Amount column.
       return (
         <div className="text-right">
           <span className="text-sm text-muted-foreground line-through">
@@ -46,7 +46,7 @@ const QuoteItemRow: React.FC<{ item: QuoteItem; currencySymbol: string; isOption
   };
 
   return (
-    <TableRow className={isOptional && item.quantity === 0 ? 'opacity-60' : ''}>
+    <TableRow className={isOptional && !isSelected ? 'opacity-60' : ''}>
       <TableCell className="font-medium">
         {item.name}
         {item.description && (
@@ -65,17 +65,38 @@ const QuoteItemRow: React.FC<{ item: QuoteItem; currencySymbol: string; isOption
 };
 
 const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
-  const { details, total_amount } = quote;
+  const { details, total_amount, accepted_at } = quote;
   const currencySymbol = details.currencySymbol || '$';
+  
+  // Determine which list of add-ons to display
+  const isAccepted = !!accepted_at;
+  
+  // If accepted, use the client_selected_add_ons from details if available, otherwise fall back to original addOns
+  const finalAddOns = isAccepted && details.client_selected_add_ons 
+    ? details.client_selected_add_ons 
+    : details.addOns;
 
-  const subtotal = total_amount; // Assuming no tax/discount applied here for simplicity
+  // Calculate totals based on the items displayed
+  const compulsoryTotal = details.compulsoryItems.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
+  const addOnTotal = finalAddOns.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
+  
+  // If accepted, the total_amount from the DB is the final total. Otherwise, calculate based on proposal.
+  const subtotal = isAccepted ? total_amount : (compulsoryTotal + addOnTotal); 
 
   // Calculate deposit amount
   const depositAmount = subtotal * (details.depositPercentage / 100);
   const remainingBalance = subtotal - depositAmount;
 
+  // Theme classes (simplified for display component)
+  const isBlackGoldTheme = details.theme === 'black-gold';
+  const bgClass = isBlackGoldTheme ? 'bg-gray-900 text-white' : 'bg-white text-gray-900';
+  const tableHeaderClass = isBlackGoldTheme ? 'bg-gray-800 hover:bg-gray-800 text-white' : 'bg-gray-100 hover:bg-gray-100 text-gray-900';
+  const separatorClass = isBlackGoldTheme ? 'bg-gray-700' : 'bg-gray-300';
+  const primaryColor = isBlackGoldTheme ? 'text-amber-400' : 'text-pink-600';
+  const secondaryColor = isBlackGoldTheme ? 'text-gray-400' : 'text-gray-500';
+
   return (
-    <div className={`p-8 max-w-4xl mx-auto space-y-8 ${details.theme === 'black-gold' ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
+    <div className={`p-8 max-w-4xl mx-auto space-y-8 ${bgClass}`}>
       
       {/* Header Image */}
       {details.headerImageUrl && (
@@ -91,7 +112,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
       {/* Quote/Invoice Details */}
       <div className="flex justify-between items-start border-b pb-4 border-gray-700">
         <div>
-          <h1 className="text-4xl font-extrabold text-brand-primary">{quote.invoice_type}</h1>
+          <h1 className={`text-4xl font-extrabold ${primaryColor}`}>{quote.invoice_type}</h1>
           <p className="text-lg mt-2">Prepared By: {quote.prepared_by}</p>
         </div>
         <div className="text-right">
@@ -113,11 +134,11 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
         <h3 className="text-xl font-semibold mb-4">Items Included</h3>
         <Table className="border border-gray-700">
           <TableHeader>
-            <TableRow className="bg-gray-800 hover:bg-gray-800">
-              <TableHead className="text-white">Description</TableHead>
-              <TableHead className="text-center text-white w-[100px]">Qty</TableHead>
-              <TableHead className="text-right text-white w-[120px]">Unit Price</TableHead>
-              <TableHead className="text-right text-white w-[120px]">Amount</TableHead>
+            <TableRow className={tableHeaderClass}>
+              <TableHead className="text-current">Description</TableHead>
+              <TableHead className="text-center text-current w-[100px]">Qty</TableHead>
+              <TableHead className="text-right text-current w-[120px]">Unit Price</TableHead>
+              <TableHead className="text-right text-current w-[120px]">Amount</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -134,17 +155,30 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
             {/* Add-Ons (Optional Items) */}
             {details.addOns.length > 0 && (
               <TableRow className="bg-gray-700/50 hover:bg-gray-700/50">
-                <TableCell colSpan={4} className="font-bold text-brand-secondary">Optional Add-Ons</TableCell>
+                <TableCell colSpan={4} className={`font-bold ${primaryColor}`}>
+                  Optional Add-Ons {isAccepted && `(Client Selected: ${finalAddOns.length} of ${details.addOns.length})`}
+                </TableCell>
               </TableRow>
             )}
-            {details.addOns.map((item) => (
-              <QuoteItemRow 
-                key={item.id} 
-                item={item} 
-                currencySymbol={currencySymbol} 
-                isOptional={true} 
-              />
-            ))}
+            
+            {/* Display all original add-ons, marking unselected ones if pending/rejected */}
+            {details.addOns.map((item) => {
+              const isSelected = finalAddOns.some((finalItem: QuoteItem) => finalItem.id === item.id);
+              
+              // If accepted, only show selected items from the original list
+              if (isAccepted && !isSelected) return null;
+
+              // If pending/rejected, show all, marking unselected ones
+              return (
+                <QuoteItemRow 
+                  key={item.id} 
+                  item={item} 
+                  currencySymbol={currencySymbol} 
+                  isOptional={true} 
+                  isSelected={isSelected}
+                />
+              );
+            })}
           </TableBody>
         </Table>
       </div>
@@ -157,14 +191,14 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
             <span>{formatCurrency(subtotal, currencySymbol)}</span>
           </div>
           
-          <Separator className="bg-gray-700" />
+          <Separator className={separatorClass} />
 
           <div className="flex justify-between font-bold text-xl">
             <span>Total:</span>
             <span>{formatCurrency(subtotal, currencySymbol)}</span>
           </div>
 
-          <Separator className="bg-gray-700" />
+          <Separator className={separatorClass} />
 
           {/* Deposit Section */}
           <div className="pt-4 space-y-2">
@@ -184,15 +218,15 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
       {details.preparationNotes && (
         <div className="pt-4 border-t border-gray-700">
           <h3 className="text-xl font-semibold mb-2">Preparation Notes</h3>
-          <p className="whitespace-pre-wrap text-sm text-muted-foreground">{details.preparationNotes}</p>
+          <p className={`whitespace-pre-wrap text-sm ${secondaryColor}`}>{details.preparationNotes}</p>
         </div>
       )}
 
       {/* Payment Terms */}
       <div className="pt-4 border-t border-gray-700">
         <h3 className="text-xl font-semibold mb-2">Payment Terms</h3>
-        <p className="text-sm text-muted-foreground">{details.paymentTerms}</p>
-        <p className="text-sm text-muted-foreground mt-2">
+        <p className={`text-sm ${secondaryColor}`}>{details.paymentTerms}</p>
+        <p className={`text-sm ${secondaryColor} mt-2`}>
           Bank Details: BSB {details.bankDetails.bsb}, ACC {details.bankDetails.acc}
         </p>
       </div>
