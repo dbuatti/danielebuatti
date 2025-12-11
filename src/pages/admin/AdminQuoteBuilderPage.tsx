@@ -259,7 +259,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
     };
   };
 
-  const handleSaveCreateQuote = async (values: QuoteFormValues, status: 'Draft' | 'Created') => {
+  const handleSaveCreateQuote = async (values: QuoteFormValues, status: 'Draft' | 'Created'): Promise<Quote | null> => {
     setIsSubmitting(true);
     const toastId = showLoading(status === 'Draft' ? 'Saving draft...' : 'Creating quote...');
 
@@ -333,7 +333,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
     }
   };
   
-  const handleQuoteSent = (slug: string) => {
+  const handleQuoteSent = (_slug: string) => { // Fixed: Added underscore to slug to mark as unused
     // Navigate to the admin details page after successful send
     if (currentQuote) {
       navigate(`/admin/quotes/${currentQuote.id}`);
@@ -380,7 +380,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
             onCreateAndSend={handleCreateAndSend}
             isSubmitting={isSubmitting} 
             onPreview={handlePreviewQuote} 
-            onSaveDraft={(values) => handleSaveCreateQuote(values, 'Draft')} // Save Draft now uses the new function
+            onSaveDraft={(values) => { handleSaveCreateQuote(values, 'Draft'); }} {/* Fixed: Wrapped call to discard return value */}
             isQuoteCreated={!!currentQuote} // Pass state to enable 'Send' button logic
           />
         </CardContent>
