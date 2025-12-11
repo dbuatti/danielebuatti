@@ -99,7 +99,7 @@ const DynamicQuotePage: React.FC = () => {
       // 1. Calculate final total based on selected add-ons
       const finalAddOns = quote.details.addOns.filter(item => selectedAddOns.includes(item.id));
       
-      const compulsoryTotal = quote.details.compulsoryItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const compulsoryTotal = quote.details.compulsoryItems.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0;
       const addOnTotal = finalAddOns.reduce((sum, item) => sum + item.price * item.quantity, 0);
       const finalTotal = compulsoryTotal + addOnTotal;
 
@@ -182,6 +182,9 @@ const DynamicQuotePage: React.FC = () => {
   
   const symbol = currencySymbol || '$';
 
+  // Calculate compulsory total once
+  const compulsoryTotal = compulsoryItems?.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0;
+
   // Calculate totals based on current selections (or accepted total if finalized)
   let selectedAddOnsData: QuoteItem[];
   let subtotal: number;
@@ -193,7 +196,6 @@ const DynamicQuotePage: React.FC = () => {
   } else {
     // Calculate based on current selection if pending or rejected
     selectedAddOnsData = optionalAddOns.filter(item => selectedAddOns.includes(item.id));
-    const compulsoryTotal = compulsoryItems?.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0;
     const addOnTotal = selectedAddOnsData.reduce((sum, item) => sum + item.price * item.quantity, 0);
     subtotal = compulsoryTotal + addOnTotal;
   }
