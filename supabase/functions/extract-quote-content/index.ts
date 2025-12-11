@@ -1,140 +1,56 @@
-/// <reference types="https://deno.land/std@0.190.0/http/server.ts" />
-/// <reference lib="deno.ns" />
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-
-// Ensure you have VITE_GEMINI_API_KEY set as a secret in Supabase
-const GEMINI_API_KEY = Deno.env.get('VITE_GEMINI_API_KEY');
-const GEMINI_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Content-Type': 'application/json',
+}
+
+// Mock data structure matching ExtractedQuoteContent type
+const mockExtractedContent = {
+  clientName: "Mock Client Name",
+  clientEmail: "mock.client@example.com",
+  invoiceType: "Quote",
+  eventTitle: "Mock Event Title",
+  eventDate: new Date().toISOString().split('T')[0],
+  eventTime: "19:00",
+  eventLocation: "Mock Venue, Mock City",
+  paymentTerms: "Payment due within 7 days.",
+  preparationNotes: "Mock preparation notes extracted by AI.",
+  compulsoryItems: [
+    { name: "Mock Service Fee", description: "Standard service charge.", amount: 1200 },
+  ],
+  addOns: [
+    { name: "Mock Add-On 1", description: "Extra hour of performance.", cost: 300, quantity: 1 },
+  ],
 };
 
-// Define the expected JSON output structure for the AI
-const JSON_SCHEMA = {
-  type: "object",
-  properties: {
-    clientName: { type: "string", description: "The full name of the client or contact person." },
-    clientEmail: { type: "string", description: "The client's email address." },
-    invoiceType: { type: "string", enum: ["Quote", "Invoice"], description: "The type of document requested, default to 'Quote'." },
-    eventTitle: { type: "string", description: "A concise title for the event." },
-    eventDate: { type: "string", description: "The date of the event in YYYY-MM-DD format." },
-    eventTime: { type: "string", description: "The time of the event (e.g., '7:00 PM'). Optional." },
-    eventLocation: { type: "string", description: "The location or venue of the event." },
-    paymentTerms: { type: "string", description: "Any specific payment terms mentioned by the client." },
-    preparationNotes: { type: "string", description: "Any detailed notes or requirements regarding preparation, service, or commitment hours mentioned in the email. Combine related points into a single text block." },
-    compulsoryItems: {
-      type: "array",
-      description: "A list of mandatory services or items requested, including their cost.",
-      items: {
-        type: "object",
-        properties: {
-          name: { type: "string", description: "The concise name or title of the compulsory service (e.g., 'Minimum Performance Fee')." },
-          description: { type: "string", description: "The detailed description or explanation of the service." },
-          amount: { type: "number", description: "The fixed cost of the service." },
-        },
-        required: ["name", "description", "amount"]
-      }
-    },
-    addOns: {
-      type: "array",
-      description: "A list of optional add-ons or items requested, including their unit cost and quantity.",
-      items: {
-        type: "object",
-        properties: {
-          name: { type: "string", description: "The concise name or title of the optional add-on (e.g., 'Overtime')." },
-          description: { type: "string", description: "The detailed description or explanation of the add-on." },
-          cost: { type: "number", description: "The unit cost of the add-on." },
-          quantity: { type: "number", description: "The quantity requested, default to 1 if not specified." },
-        },
-        required: ["name", "description", "cost", "quantity"]
-      }
-    }
-  },
-  required: ["clientName", "clientEmail", "invoiceType", "eventTitle", "eventDate", "eventLocation", "paymentTerms", "compulsoryItems", "addOns", "preparationNotes"]
-};
-
-serve(async (req: Request) => {
+serve(async (req) => {
+  // Handle CORS preflight request
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: corsHeaders })
   }
-
-  if (!GEMINI_API_KEY) {
-    return new Response(JSON.stringify({ error: 'GEMINI_API_KEY not set' }), {
-      status: 500,
-      headers: corsHeaders,
-    });
-  }
-
+  
   try {
-    const { emailContent } = await req.json();
-
-    if (!emailContent) {
-      return new Response(JSON.stringify({ error: 'Missing emailContent in request body' }), {
-        status: 400,
-        headers: corsHeaders,
-      });
-    }
-
-    const prompt = `Analyze the following client email content and extract all relevant details for generating a professional quote. Pay special attention to separating the item's concise title (name) from its detailed explanation (description) for all services and add-ons, especially when presented in a table format.
-
-Client Email Content:
----
-${emailContent}
----
-
-Please output the result strictly as a single JSON object conforming to the provided schema. Ensure all numeric fields are numbers and all required fields are present.`;
-
-    const response = await fetch(GEMINI_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': GEMINI_API_KEY,
-      },
-      body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text: prompt }] }],
-        config: {
-          responseMimeType: "application/json",
-          responseSchema: JSON_SCHEMA,
-        },
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Gemini API Error:', errorText);
-      throw new Error(`Gemini API failed with status ${response.status}: ${errorText}`);
-    }
-
-    const geminiData = await response.json();
+    // In a real scenario, you would process the request body (emailContent) here
+    // and call the Gemini API or similar service.
     
-    // The response structure from Gemini is usually { candidates: [{ content: { parts: [{ text: JSON_STRING }] } }] }
-    const jsonString = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (!jsonString) {
-      throw new Error("AI response was empty or malformed.");
-    }
-
-    const extractedData = JSON.parse(jsonString);
-
-    // Basic validation to ensure required fields are present before returning
-    if (!extractedData.clientName || !extractedData.eventTitle) {
-        throw new Error("AI failed to extract core client or event details.");
-    }
-
-    return new Response(JSON.stringify(extractedData), {
-      headers: corsHeaders,
-      status: 200,
-    });
-
+    // For now, we return mock data to ensure the client-side flow works.
+    return new Response(
+      JSON.stringify(mockExtractedContent),
+      {
+        headers: corsHeaders,
+        status: 200,
+      },
+    )
   } catch (error) {
-    console.error('Edge Function Error:', error);
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-    return new Response(JSON.stringify({ error: errorMessage }), {
-      headers: corsHeaders,
-      status: 500,
-    });
+    console.error("Edge Function Error:", error.message);
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      {
+        headers: corsHeaders,
+        status: 500,
+      },
+    )
   }
-});
+})
