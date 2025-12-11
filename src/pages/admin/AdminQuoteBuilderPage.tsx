@@ -23,6 +23,32 @@ const AdminQuoteBuilderPage: React.FC = () => {
     setIsPreviewOpen(true);
   };
 
+  // Generate a unique slug with a maximum number of attempts to prevent infinite loops
+  const generateUniqueSlug = async (baseSlug: string): Promise<string> => {
+    let uniqueSlug = baseSlug;
+    let counter = 0;
+    const maxAttempts = 100; // Prevent infinite loops
+
+    while (counter < maxAttempts) {
+      const { data: existingSlugs, error: slugCheckError } = await supabase
+        .from('invoices')
+        .select('slug')
+        .eq('slug', uniqueSlug);
+
+      if (slugCheckError) throw slugCheckError;
+
+      if (existingSlugs && existingSlugs.length === 0) {
+        return uniqueSlug; // Slug is unique
+      }
+
+      counter++;
+      uniqueSlug = `${baseSlug}-${counter}`;
+    }
+
+    // If we've reached max attempts, generate a random suffix
+    return `${baseSlug}-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+  };
+
   const handleCreateQuote = async (values: QuoteFormValues) => {
     setIsSubmitting(true);
     const toastId = showLoading('Creating new quote...');
@@ -30,30 +56,13 @@ const AdminQuoteBuilderPage: React.FC = () => {
     try {
       // Calculate total amount based on compulsory items and add-ons
       const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + item.amount, 0);
-      const addOnTotal = values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => sum + (addOn.cost * addOn.quantity), 0) || 0;
+      const addOnTotal = values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => 
+        sum + (addOn.cost * addOn.quantity), 0) || 0;
       const totalAmount = compulsoryTotal + addOnTotal;
 
       // Generate a base slug
       const baseSlug = createSlug(`${values.eventTitle}-${values.clientName}-${values.eventDate}`);
-      let uniqueSlug = baseSlug;
-      let counter = 0;
-
-      // Ensure slug uniqueness
-      while (true) {
-        const { data: existingSlugs, error: slugCheckError } = await supabase
-          .from('invoices')
-          .select('slug')
-          .eq('slug', uniqueSlug);
-
-        if (slugCheckError) throw slugCheckError;
-
-        if (existingSlugs && existingSlugs.length === 0) {
-          break; // Slug is unique
-        }
-
-        counter++;
-        uniqueSlug = `${baseSlug}-${counter}`;
-      }
+      const uniqueSlug = await generateUniqueSlug(baseSlug);
 
       // Prepare details for JSONB column
       const details = {
@@ -96,6 +105,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       }
 
       showSuccess('Quote created successfully!', { id: toastId });
+
       // Redirect to the newly created quote's public page or admin details page
       if (data && data.slug) {
         navigate(`/quotes/${data.slug}`);
@@ -104,7 +114,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       }
     } catch (error: any) {
       console.error('Error creating quote:', error);
-      showError(`Failed to create quote: ${error.message}`, { id: toastId });
+      showError(`Failed to create quote: ${error.message || 'Unknown error occurred'}`, { id: toastId });
     } finally {
       setIsSubmitting(false);
       dismissToast(toastId);
@@ -114,7 +124,8 @@ const AdminQuoteBuilderPage: React.FC = () => {
   // Transform form values into Quote interface structure for preview
   const getPreviewData = (values: QuoteFormValues): Quote => {
     const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + item.amount, 0);
-    const addOnTotal = values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => sum + (addOn.cost * addOn.quantity), 0) || 0;
+    const addOnTotal = values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => 
+      sum + (addOn.cost * addOn.quantity), 0) || 0;
     const totalAmount = compulsoryTotal + addOnTotal;
 
     return {
@@ -157,7 +168,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
         Use this form to generate a new client-facing quote page. The slug will be automatically generated but can be customized in the QuoteForm if needed.
       </p>
-
+      
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
         <CardHeader>
           <CardTitle className="text-xl text-brand-primary">Quote Details</CardTitle>
@@ -166,7 +177,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
           <QuoteForm 
             onSubmit={handleCreateQuote} 
             isSubmitting={isSubmitting} 
-            onPreview={handlePreviewQuote}
+            onPreview={handlePreviewQuote} 
           />
         </CardContent>
       </Card>
@@ -179,9 +190,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
           <ScrollArea className="h-[calc(90vh-70px)]">
             {previewData ? (
               <QuoteDisplay 
-                quote={getPreviewData(previewData)}
-                isLivePianoTheme={previewData.invoiceType.toLowerCase().includes('live piano')}
-                isErinKennedyQuote={previewData.invoiceType === 'Erin Kennedy Quote'}
+                quote={getPreviewData(previewData)} 
+                isLivePianoTheme={previewData.invoiceType.toLowerCase().includes('live piano')} 
+                isErinKennedyQuote={previewData.invoiceType === 'Erin Kennedy Quote'} 
               />
             ) : (
               <div className="p-8 text-center">No preview data available.</div>
