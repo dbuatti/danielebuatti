@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { showError, showSuccess, showLoading } from '@/utils/toast';
+import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import QuoteForm, { QuoteFormValues, QuoteFormSchema } from '@/components/admin/QuoteForm';
 import { supabase } from '@/integrations/supabase/client';
 import { createSlug } from '@/lib/utils';
@@ -16,6 +16,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ExtractedQuoteContent } from '@/types/ai';
 import AIQuoteExtractor from '@/components/admin/AIQuoteExtractor';
+import { Draft } from '@/types/draft'; // Import Draft type
+import { Loader2 } from 'lucide-react'; // Added Loader2 import
 
 const defaultFormValues: Partial<QuoteFormValues> = {
   clientName: '',
@@ -42,17 +44,61 @@ const defaultFormValues: Partial<QuoteFormValues> = {
 
 const AdminQuoteBuilderPage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState<QuoteFormValues | null>(null);
   const [currentDraftId, setCurrentDraftId] = useState<string | undefined>(undefined);
+  const [isLoadingDraft, setIsLoadingDraft] = useState(false);
 
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(QuoteFormSchema),
     defaultValues: defaultFormValues as QuoteFormValues,
     mode: 'onChange',
   });
+
+  // Function to fetch and load a draft
+  const loadDraft = useCallback(async (draftId: string) => {
+    setIsLoadingDraft(true);
+    const toastId = showLoading('Loading draft...');
+    try {
+      const { data, error } = await supabase
+        .from('quote_drafts')
+        .select('*')
+        .eq('id', draftId)
+        .single();
+
+      if (error) throw error;
+
+      const draft = data as Draft;
+      form.reset(draft.data);
+      setCurrentDraftId(draft.id);
+      showSuccess('Draft loaded successfully!', { id: toastId });
+    } catch (error: any) {
+      console.error('Error loading draft:', error);
+      showError(`Failed to load draft: ${error.message || 'Unknown error occurred'}`, { id: toastId });
+      setCurrentDraftId(undefined);
+    } finally {
+      setIsLoadingDraft(false);
+      dismissToast(toastId);
+    }
+  }, [form]);
+
+  // Effect to check for draftId in location state on mount
+  useEffect(() => {
+    const state = location.state as { draftId?: string } | null;
+    if (state?.draftId) {
+      loadDraft(state.draftId);
+      // Clear state so refreshing the page doesn't try to load the draft again
+      navigate(location.pathname, { replace: true, state: {} });
+    } else {
+      // If no draft ID, ensure we start with default values and no current draft ID
+      form.reset(defaultFormValues as QuoteFormValues);
+      setCurrentDraftId(undefined);
+    }
+  }, [location.state, location.pathname, navigate, loadDraft, form]);
+
 
   const handlePreviewQuote = (values: QuoteFormValues) => {
     setPreviewData(values);
@@ -139,10 +185,6 @@ const AdminQuoteBuilderPage: React.FC = () => {
       const errorMessage = error.message || error.details || 'Unknown error occurred during draft save.';
       // Show error message using the same toast ID
       showError(`Failed to save draft: ${errorMessage}`, { id: toastId });
-    } finally {
-      // We don't dismiss the toast here if we use showSuccess/showError with the ID, 
-      // as they automatically replace the loading state and dismiss themselves after a timeout.
-      // Removing dismissToast(toastId) here to ensure the success/error message is visible.
     }
   };
 
@@ -346,6 +388,15 @@ const AdminQuoteBuilderPage: React.FC = () => {
       },
     };
   };
+
+  if (isLoadingDraft) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-brand-primary" />
+        <span className="ml-2 text-gray-500">Loading draft...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">

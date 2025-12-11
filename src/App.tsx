@@ -1,105 +1,38 @@
 "use client";
 
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import LandingPageV3 from './pages/LandingPageV3';
-import LivePianoServicesPage from './pages/LivePianoServicesPage';
-import VoicePianoServicesPage from './pages/VoicePianoServicesPage';
-import VoicePianoBookingPage from './pages/VoicePianoBookingPage';
-import EmbodimentSomaticBookingPage from './pages/EmbodimentSomaticBookingPage';
-import AmebAccompanyingPage from './pages/AmebAccompanyingPage';
-import CoachingPage from './pages/CoachingPage';
-import QuoteConfirmationPage from './pages/QuoteConfirmationPage';
-import ProjectsResourcesPage from './pages/ProjectsResourcesPage';
-import PresenceCommunicationBookingPage from './pages/PresenceCommunicationBookingPage';
-import ArchivePage from './pages/ArchivePage';
-import MusicDirectorPianistPage from './pages/MusicDirectorPianistPage';
-import DynamicQuotePage from './pages/DynamicQuotePage';
-import Login from './pages/Login';
-import AdminLayout from './pages/admin/AdminLayout';
-import AdminDashboardPage from './pages/admin/AdminDashboardPage';
-import AdminQuotesPage from './pages/admin/AdminQuotesPage';
-import AdminQuoteDetailsPage from './pages/admin/AdminQuoteDetailsPage';
-import AdminAmebBookingsPage from './pages/admin/AdminAmebBookingsPage';
-import AdminAmebBookingDetailsPage from './pages/admin/AdminAmebBookingDetailsPage';
-import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import IndexPage from './pages/Index';
 import AdminQuoteBuilderPage from './pages/admin/AdminQuoteBuilderPage';
-import AdminEditQuotePage from './pages/admin/AdminEditQuotePage'; // Import new page
-import AboutPage from './pages/AboutPage';
-import NotFound from './pages/NotFound';
-import RootLayout from './layouts/RootLayout';
-import ScrollToTop from './components/ScrollToTop';
-import { SessionContextProvider } from "./components/SessionContextProvider.tsx";
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: (
-      <>
-        <ScrollToTop />
-        <SessionContextProvider>
-          <RootLayout />
-        </SessionContextProvider>
-      </>
-    ),
-    errorElement: <NotFound />,
-    children: [
-      { index: true, element: <LandingPageV3 /> },
-      { path: "coaching", element: <CoachingPage /> },
-      { path: "projects-resources", element: <ProjectsResourcesPage /> },
-      { path: "live-piano-services", element: <LivePianoServicesPage /> },
-      { path: "voice-piano-services", element: <VoicePianoServicesPage /> },
-      { path: "book-voice-piano", element: <VoicePianoBookingPage /> },
-      { path: "book-embodiment-somatic", element: <EmbodimentSomaticBookingPage /> },
-      { path: "book-presence-communication", element: <PresenceCommunicationBookingPage /> },
-      { path: "ameb-accompanying", element: <AmebAccompanyingPage /> },
-      { path: "live-piano-services/quote-confirmation", element: <QuoteConfirmationPage /> },
-      { path: "archive", element: <ArchivePage /> },
-      { path: "music-director-pianist", element: <MusicDirectorPianistPage /> },
-      { path: "quotes/:slug", element: <DynamicQuotePage /> },
-      { path: "about", element: <AboutPage /> },
-      { path: "*", element: <NotFound /> },
-    ],
-  },
-  {
-    path: "/login",
-    element: (
-      <>
-        <ScrollToTop />
-        <SessionContextProvider>
-          <Login />
-        </SessionContextProvider>
-      </>
-    ),
-  },
-  {
-    path: "/admin",
-    element: (
-      <>
-        <ScrollToTop />
-        <SessionContextProvider>
-          <AdminLayout />
-        </SessionContextProvider>
-      </>
-    ),
-    children: [
-      { index: true, element: <AdminDashboardPage /> },
-      { path: "quotes", element: <AdminQuotesPage /> },
-      { path: "quotes/:id", element: <AdminQuoteDetailsPage /> },
-      { path: "quotes/edit/:id", element: <AdminEditQuotePage /> }, // New route for editing quotes
-      { path: "ameb-bookings", element: <AdminAmebBookingsPage /> },
-      { path: "ameb-bookings/:id", element: <AdminAmebBookingDetailsPage /> },
-      { path: "email-templates", element: <AdminEmailTemplatesPage /> },
-      { path: "create-quote", element: <AdminQuoteBuilderPage /> },
-    ],
-  },
-], {
-  // Removed 'future' property to resolve TypeScript error TS2353,
-  // as the current type definitions do not recognize the v7 flags.
-});
+import AdminEditQuotePage from './pages/admin/AdminEditQuotePage';
+import AdminDraftsPage from './pages/admin/AdminDraftsPage';
+import { SessionContextProvider } from '@/components/auth/SessionContextProvider';
+import { Toaster } from 'react-hot-toast';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import QuotePublicPage from './pages/QuotePublicPage';
+import AdminQuotesPage from './pages/admin/AdminQuotesPage';
+import AdminLayout from '@/components/layout/AdminLayout';
 
 function App() {
   return (
-    <RouterProvider router={router} />
+    <SessionContextProvider>
+      <Router>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<IndexPage />} />
+          <Route path="/quotes/:slug" element={<QuotePublicPage />} />
+
+          {/* Admin Routes (Protected) */}
+          <Route path="/admin" element={<ProtectedRoute element={<AdminLayout />} />}>
+            <Route index element={<AdminQuotesPage />} />
+            <Route path="quotes" element={<AdminQuotesPage />} />
+            <Route path="quotes/:slug" element={<AdminEditQuotePage />} />
+            <Route path="quote-builder" element={<AdminQuoteBuilderPage />} />
+            <Route path="drafts" element={<AdminDraftsPage />} />
+          </Route>
+        </Routes>
+      </Router>
+      <Toaster />
+    </SessionContextProvider>
   );
 }
 
