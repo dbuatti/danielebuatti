@@ -219,6 +219,7 @@ const DynamicQuotePage: React.FC = () => {
       };
       
   const eventDateFormatted = quote.event_date ? format(new Date(quote.event_date), 'EEEE dd MMMM yyyy') : 'TBD';
+  const eventDateShort = quote.event_date ? format(new Date(quote.event_date), 'EEEE dd MMMM yyyy') : 'the event date';
 
 
   return (
@@ -249,8 +250,9 @@ const DynamicQuotePage: React.FC = () => {
             <CardTitle className={`text-4xl font-extrabold ${themeClasses.primary}`}>{quote.event_title}</CardTitle>
             
             <div className="space-y-1 pt-4">
-              <p className={`text-lg ${themeClasses.headerText}`}>Prepared for: <span className="font-semibold">{quote.prepared_by}</span></p>
-              <p className={`text-lg ${themeClasses.headerText}`}>Client Email: <span className="font-semibold">{quote.client_email}</span></p>
+              {/* Metadata matching design structure */}
+              <p className={`text-lg ${themeClasses.headerText}`}>Prepared for: <span className={`font-semibold ${isLivePianoTheme ? themeClasses.primary : themeClasses.headerText}`}>{quote.prepared_by}</span></p>
+              <p className={`text-lg ${themeClasses.headerText}`}>Client Email: <span className={`font-semibold ${isLivePianoTheme ? themeClasses.primary : themeClasses.headerText}`}>{quote.client_email}</span></p>
               <p className={`text-lg ${themeClasses.headerText}`}>Date of Event: <span className="font-semibold">{eventDateFormatted}</span></p>
               {eventTime && <p className={`text-lg ${themeClasses.headerText}`}>Time: <span className="font-semibold">{eventTime}</span></p>}
               <p className={`text-lg ${themeClasses.headerText}`}>Location: <span className="font-semibold">{quote.event_location}</span></p>
@@ -272,19 +274,19 @@ const DynamicQuotePage: React.FC = () => {
 
           <CardContent className="space-y-8">
             
-            {/* Main Content / Description Block (Placeholder) */}
+            {/* Main Content / Description Block (Mimicking large bold text from design) */}
             <section className="text-center mb-10">
-              <p className={`text-lg font-semibold ${themeClasses.headerText}`}>
-                {quote.invoice_type} Details
+              <p className={`text-xl font-extrabold ${themeClasses.text} max-w-3xl mx-auto`}>
+                This fee covers 7 hours of commitment, including the performance call, soundcheck, and all essential preparation required for a seamless, high-energy performance.
               </p>
-              <p className={`text-sm ${themeClasses.secondary} mt-2`}>
+              <p className={`text-sm ${themeClasses.secondary} mt-4`}>
                 This fee secures a premium, seamless musical experience for your event.
               </p>
             </section>
 
             {/* Quote Breakdown */}
             <section className="space-y-6">
-              <h2 className={`text-2xl font-bold text-center ${themeClasses.primary}`}>Service Components</h2>
+              <h2 className={`text-xl font-bold text-center ${themeClasses.primary}`}>Service Components</h2>
 
               {/* Compulsory Items */}
               {compulsoryItems.length > 0 && (
@@ -293,11 +295,11 @@ const DynamicQuotePage: React.FC = () => {
                     <div key={index} className="pb-3">
                       <div className="flex justify-between items-start">
                         <div className="flex-1 pr-4">
-                          <p className={`font-medium ${themeClasses.text} flex items-center`}>
-                            <span className={`mr-2 ${themeClasses.primary}`}>&bull;</span>
-                            {item.name}
+                          <p className={`${themeClasses.text} flex items-start`}>
+                            <span className={`mr-2 ${themeClasses.primary} text-lg leading-none`}>&bull;</span>
+                            <span className="font-bold">{item.name}:</span>
+                            {item.description && <span className={`text-sm ml-1 ${themeClasses.secondary}`}>{item.description}</span>}
                           </p>
-                          {item.description && <p className={`text-sm italic ml-4 ${themeClasses.secondary}`}>{item.description}</p>}
                         </div>
                       </div>
                     </div>
@@ -327,9 +329,12 @@ const DynamicQuotePage: React.FC = () => {
                           className={isLivePianoTheme ? 'border-amber-400 data-[state=checked]:bg-amber-400 data-[state=checked]:text-gray-900' : 'border-fuchsia-600 data-[state=checked]:bg-fuchsia-600 data-[state=checked]:text-white'}
                         />
                         <Label htmlFor={`addon-${item.id}`} className="cursor-pointer flex-1">
-                          <p className={`font-medium ${themeClasses.text}`}>{item.name}</p>
-                          {item.description && <p className={`text-sm italic ${themeClasses.secondary}`}>{item.description}</p>}
-                          <p className={`text-xs ${themeClasses.secondary}`}>{formatCurrency(item.price)} x {item.quantity}</p>
+                          <p className={`${themeClasses.text} flex items-start`}>
+                            <span className={`mr-2 ${themeClasses.primary} text-lg leading-none`}>&bull;</span>
+                            <span className="font-bold">{item.name}:</span>
+                            {item.description && <span className={`text-sm ml-1 ${themeClasses.secondary}`}>{item.description}</span>}
+                          </p>
+                          <p className={`text-xs ml-4 ${themeClasses.secondary}`}>{formatCurrency(item.price)} x {item.quantity}</p>
                         </Label>
                       </div>
                       <p className={`font-semibold ${themeClasses.primary}`}>{formatCurrency(calculateItemTotal(item))}</p>
@@ -345,7 +350,7 @@ const DynamicQuotePage: React.FC = () => {
               
               <ul className={`space-y-3 text-sm ${themeClasses.headerText}`}>
                 <li>
-                  <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> A non-refundable <span className="font-bold">{details.depositPercentage}% deposit ({formatCurrency(depositAmount)})</span> is required immediately to formally secure the booking.
+                  <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> A non-refundable <span className="font-bold">{details.depositPercentage}% deposit ({formatCurrency(depositAmount)})</span> is required immediately to formally secure {isLivePianoTheme ? `the ${eventDateShort} date` : 'the booking'}.
                 </li>
                 <li>
                   <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> The remaining balance is due 7 days prior to the event.

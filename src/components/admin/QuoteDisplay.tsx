@@ -51,6 +51,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
   const depositAmount = subtotal * (details.depositPercentage / 100);
   
   const eventDateFormatted = quote.event_date ? format(new Date(quote.event_date), 'EEEE dd MMMM yyyy') : 'TBD';
+  const eventDateShort = quote.event_date ? format(new Date(quote.event_date), 'EEEE dd MMMM yyyy') : 'the event date'; // For use in terms
 
   return (
     <div className={`min-h-screen p-4 sm:p-8 ${themeClasses.bg}`}>
@@ -78,8 +79,9 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
         <header className="mb-8 text-center space-y-1">
           <h1 className={`text-4xl font-extrabold mb-4 ${themeClasses.primary}`}>{quote.event_title}</h1>
           
-          <p className={`text-lg ${themeClasses.headerText}`}>Prepared for: <span className="font-semibold">{quote.prepared_by}</span></p>
-          <p className={`text-lg ${themeClasses.headerText}`}>Client Email: <span className="font-semibold">{quote.client_email}</span></p>
+          {/* Metadata matching design structure */}
+          <p className={`text-lg ${themeClasses.headerText}`}>Prepared for: <span className={`font-semibold ${isLivePianoTheme ? themeClasses.primary : themeClasses.headerText}`}>{quote.prepared_by}</span></p>
+          <p className={`text-lg ${themeClasses.headerText}`}>Client Email: <span className={`font-semibold ${isLivePianoTheme ? themeClasses.primary : themeClasses.headerText}`}>{quote.client_email}</span></p>
           <p className={`text-lg ${themeClasses.headerText}`}>Date of Event: <span className="font-semibold">{eventDateFormatted}</span></p>
           {details.eventTime && <p className={`text-lg ${themeClasses.headerText}`}>Time: <span className="font-semibold">{details.eventTime}</span></p>}
           <p className={`text-lg ${themeClasses.headerText}`}>Location: <span className="font-semibold">{quote.event_location}</span></p>
@@ -91,21 +93,19 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
           </div>
         </header>
 
-        {/* Main Content / Description Block (Based on design images) */}
+        {/* Main Content / Description Block (Mimicking large bold text from design) */}
         <section className="text-center mb-10">
-          {/* This is where the main descriptive text from the design would go, 
-              but since we don't have a field for it, we'll use a placeholder based on the quote type. */}
-          <p className={`text-lg font-semibold ${themeClasses.headerText}`}>
-            {quote.invoice_type} Details
+          <p className={`text-xl font-extrabold ${themeClasses.text} max-w-3xl mx-auto`}>
+            This fee covers 7 hours of commitment, including the performance call, soundcheck, and all essential preparation required for a seamless, high-energy performance.
           </p>
-          <p className={`text-sm ${themeClasses.secondary} mt-2`}>
+          <p className={`text-sm ${themeClasses.secondary} mt-4`}>
             This fee secures a premium, seamless musical experience for your event.
           </p>
         </section>
 
         {/* Items Section */}
         <section className="mt-8 space-y-6">
-          <h2 className={`text-2xl font-bold text-center ${themeClasses.primary}`}>Service Components</h2>
+          <h2 className={`text-xl font-bold text-center ${themeClasses.primary}`}>Service Components</h2>
 
           {/* Compulsory Items */}
           {details.compulsoryItems.length > 0 && (
@@ -114,13 +114,12 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
                 <div key={index} className="pb-3">
                   <div className="flex justify-between items-start">
                     <div className="flex-1 pr-4">
-                      <p className={`font-medium ${themeClasses.text} flex items-center`}>
-                        <span className={`mr-2 ${themeClasses.primary}`}>&bull;</span>
-                        {item.name}
+                      <p className={`${themeClasses.text} flex items-start`}>
+                        <span className={`mr-2 ${themeClasses.primary} text-lg leading-none`}>&bull;</span>
+                        <span className="font-bold">{item.name}:</span>
+                        {item.description && <span className={`text-sm ml-1 ${themeClasses.secondary}`}>{item.description}</span>}
                       </p>
-                      {item.description && <p className={`text-sm italic ml-4 ${themeClasses.secondary}`}>{item.description}</p>}
                     </div>
-                    {/* Only show price if it's a fixed item, otherwise show total below */}
                   </div>
                 </div>
               ))}
@@ -142,11 +141,11 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
                 <div key={index} className="pb-3">
                   <div className="flex justify-between items-start">
                     <div className="flex-1 pr-4">
-                      <p className={`font-medium ${themeClasses.text} flex items-center`}>
-                        <span className={`mr-2 ${themeClasses.primary}`}>&bull;</span>
-                        {item.name}
+                      <p className={`${themeClasses.text} flex items-start`}>
+                        <span className={`mr-2 ${themeClasses.primary} text-lg leading-none`}>&bull;</span>
+                        <span className="font-bold">{item.name}:</span>
+                        {item.description && <span className={`text-sm ml-1 ${themeClasses.secondary}`}>{item.description}</span>}
                       </p>
-                      {item.description && <p className={`text-sm italic ml-4 ${themeClasses.secondary}`}>{item.description}</p>}
                       <p className={`text-xs ml-4 ${themeClasses.secondary}`}>{formatCurrency(item.price)} x {item.quantity}</p>
                     </div>
                     <p className={`font-semibold ${themeClasses.primary}`}>{formatCurrency(calculateItemTotal(item))}</p>
@@ -163,7 +162,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
           
           <ul className={`space-y-3 text-sm ${themeClasses.headerText}`}>
             <li>
-              <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> A non-refundable <span className="font-bold">{details.depositPercentage}% deposit ({formatCurrency(depositAmount)})</span> is required immediately to formally secure the booking.
+              <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> A non-refundable <span className="font-bold">{details.depositPercentage}% deposit ({formatCurrency(depositAmount)})</span> is required immediately to formally secure {isLivePianoTheme ? `the ${eventDateShort} date` : 'the booking'}.
             </li>
             <li>
               <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> The remaining balance is due 7 days prior to the event.
