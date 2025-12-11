@@ -292,12 +292,13 @@ const AdminQuoteBuilderPage: React.FC = () => {
       const newQuoteId = data.id;
       
       // Update currentQuote state with the newly saved/created data
-      setCurrentQuote({
+      const updatedQuote: Quote = {
         ...quoteData,
         id: newQuoteId,
         slug: data.slug,
         status: data.status,
-      });
+      };
+      setCurrentQuote(updatedQuote);
 
       // If successful, delete the draft if one exists
       if (currentDraftId) {
@@ -310,7 +311,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       }
 
       showSuccess(`Quote successfully ${status === 'Draft' ? 'saved as draft' : 'created'}!`, { id: toastId });
-      return newQuoteId;
+      return updatedQuote;
 
     } catch (error: any) {
       console.error('Error saving/creating quote:', error);
@@ -324,17 +325,21 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
   const handleCreateAndSend = async (values: QuoteFormValues) => {
     // 1. Save/Create the quote first, setting status to 'Created'
-    const quoteId = await handleSaveCreateQuote(values, 'Created');
+    const createdQuote = await handleSaveCreateQuote(values, 'Created');
 
-    if (quoteId && currentQuote) {
-      // 2. Open the sending modal
+    if (createdQuote) {
+      // 2. Open the sending modal immediately
       setIsSendingModal(true);
     }
   };
   
-  const handleQuoteSent = () => {
+  const handleQuoteSent = (slug: string) => {
     // Navigate to the admin details page after successful send
-    navigate(`/admin/quotes`);
+    if (currentQuote) {
+      navigate(`/admin/quotes/${currentQuote.id}`);
+    } else {
+      navigate('/admin/quotes');
+    }
   };
   
   const handleExtractAI = async (emailContent: string) => {
