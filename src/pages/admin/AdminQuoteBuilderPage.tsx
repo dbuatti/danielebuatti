@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import QuoteForm, { QuoteFormValues, QuoteFormSchema } from '@/components/admin/QuoteForm';
@@ -10,93 +10,49 @@ import { createSlug } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Quote, QuoteItem, QuoteTheme } from '@/types/quote';
+import { Quote, QuoteItem } from '@/types/quote';
 import { useAuth } from '@/hooks/useAuth';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ExtractedQuoteContent } from '@/types/ai';
 import AIQuoteExtractor from '@/components/admin/AIQuoteExtractor';
-import { Draft } from '@/types/draft';
-import { Loader2 } from 'lucide-react';
 
-// Define default form values
 const defaultFormValues: Partial<QuoteFormValues> = {
   clientName: '',
   clientEmail: '',
   invoiceType: 'Quote',
   eventTitle: '',
   eventDate: new Date().toISOString().split('T')[0],
-  eventTime: '',
+  eventTime: '', // Added explicit default value
   eventLocation: '',
-  preparedBy: 'Daniele Buatti',
+  preparedBy: 'Daniele Buatti', // Updated default
   currencySymbol: '$',
   depositPercentage: 50,
   paymentTerms: 'Payment due within 7 days.',
-  bankBSB: '923100',
-  bankACC: '301110875',
-  theme: 'black-gold',
-  headerImageUrl: '',
-  preparationNotes: 'This fee covers 7 hours of commitment, including the performance call, soundcheck, and all essential preparation required for a seamless, high-energy performance.\n\nThis fee secures a premium, seamless musical experience for your event.',
+  bankBSB: '923100', // Default BSB
+  bankACC: '301110875', // Default ACC
+  // New defaults
+  theme: 'black-gold', // Default theme set to the new Black/Gold theme
+  headerImageUrl: '', // Placeholder image URL
+  preparationNotes: 'This fee covers 7 hours of commitment, including the performance call, soundcheck, and all essential preparation required for a seamless, high-energy performance.\n\nThis fee secures a premium, seamless musical experience for your event.', // New default preparation notes
+  // Updated item structure (using 'name' and 'description' now)
   compulsoryItems: [{ name: 'Service Fee', description: 'Standard service charge.', amount: 1000 }],
   addOns: [],
 };
 
 const AdminQuoteBuilderPage: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState<QuoteFormValues | null>(null);
   const [currentDraftId, setCurrentDraftId] = useState<string | undefined>(undefined);
-  const [isLoadingDraft, setIsLoadingDraft] = useState(false);
 
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(QuoteFormSchema),
     defaultValues: defaultFormValues as QuoteFormValues,
     mode: 'onChange',
   });
-
-  // Function to fetch and load a draft
-  const loadDraft = useCallback(async (draftId: string) => {
-    setIsLoadingDraft(true);
-    const toastId = showLoading('Loading draft...');
-    try {
-      const { data, error } = await supabase
-        .from('quote_drafts')
-        .select('*')
-        .eq('id', draftId)
-        .single();
-
-      if (error) throw error;
-
-      const draft = data as Draft;
-      form.reset(draft.data);
-      setCurrentDraftId(draft.id);
-      showSuccess('Draft loaded successfully!', { id: toastId });
-    } catch (error: any) {
-      console.error('Error loading draft:', error);
-      showError(`Failed to load draft: ${error.message || 'Unknown error occurred'}`, { id: toastId });
-      setCurrentDraftId(undefined);
-    } finally {
-      setIsLoadingDraft(false);
-      dismissToast(toastId);
-    }
-  }, [form]);
-
-  // Effect to check for draftId in location state on mount
-  useEffect(() => {
-    const state = location.state as { draftId?: string } | null;
-    if (state?.draftId) {
-      loadDraft(state.draftId);
-      // Clear state so refreshing the page doesn't try to load the draft again
-      navigate(location.pathname, { replace: true, state: {} });
-    } else {
-      // If no draft ID, ensure we start with default values and no current draft ID
-      form.reset(defaultFormValues as QuoteFormValues);
-      setCurrentDraftId(undefined);
-    }
-  }, [location.state, location.pathname, navigate, loadDraft, form]);
 
   const handlePreviewQuote = (values: QuoteFormValues) => {
     setPreviewData(values);
@@ -111,7 +67,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
     while (counter < maxAttempts) {
       const { data: existingSlugs, error: slugCheckError } = await supabase
-        .from('quotes')
+        .from('invoices')
         .select('slug')
         .eq('slug', uniqueSlug);
 
@@ -135,8 +91,8 @@ const AdminQuoteBuilderPage: React.FC = () => {
       return;
     }
 
-    // Use a persistent toast ID for loading state
     const toastId = showLoading(currentDraftId ? 'Updating draft...' : 'Saving draft...');
+
     try {
       const draftData = {
         user_id: user.id, // Ensure user_id is explicitly included
@@ -146,6 +102,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       };
 
       let result;
+      
       if (currentDraftId) {
         // Update existing draft
         result = await supabase
@@ -171,21 +128,23 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
       const savedDraftId = result.data.id;
       setCurrentDraftId(savedDraftId);
-
-      // Show success message using the same toast ID
+      
       showSuccess('Draft saved successfully!', { id: toastId });
+
     } catch (error: any) {
       console.error('Error saving draft:', error);
       // Extract specific Supabase error message if available
       const errorMessage = error.message || error.details || 'Unknown error occurred during draft save.';
-      // Show error message using the same toast ID
       showError(`Failed to save draft: ${errorMessage}`, { id: toastId });
+    } finally {
+      dismissToast(toastId);
     }
   };
 
   const handleExtractAI = async (emailContent: string) => {
     setIsSubmitting(true);
     const toastId = showLoading('Extracting quote details from email...');
+
     try {
       const { data, error } = await supabase.functions.invoke('extract-quote-content', {
         body: { emailContent },
@@ -200,15 +159,16 @@ const AdminQuoteBuilderPage: React.FC = () => {
       // Update form fields with AI extracted content
       form.setValue('clientName', extractedContent.clientName);
       form.setValue('clientEmail', extractedContent.clientEmail);
-
+      
       // Ensure extracted type is valid or default to 'Quote'
       const invoiceType = extractedContent.invoiceType === 'Invoice' ? 'Invoice' : 'Quote';
       form.setValue('invoiceType', invoiceType);
+      
       form.setValue('eventTitle', extractedContent.eventTitle);
       form.setValue('eventDate', extractedContent.eventDate);
       form.setValue('eventTime', extractedContent.eventTime);
       form.setValue('eventLocation', extractedContent.eventLocation);
-
+      
       // --- AI Extraction Mapping Update: Use new 'name' and 'description' fields ---
       form.setValue('compulsoryItems', extractedContent.compulsoryItems.map(item => ({
         id: Math.random().toString(36).substring(2, 11),
@@ -216,7 +176,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         description: item.description || '', // Use the new 'description' field from AI
         amount: item.amount,
       })));
-
+      
       // Set quantity to 0 for optional add-ons upon extraction, as requested
       form.setValue('addOns', extractedContent.addOns.map(item => ({
         id: Math.random().toString(36).substring(2, 11),
@@ -225,27 +185,30 @@ const AdminQuoteBuilderPage: React.FC = () => {
         cost: item.cost,
         quantity: 0, // Defaulting quantity to 0 for optional add-ons
       })));
-
+      
       form.setValue('paymentTerms', extractedContent.paymentTerms);
       form.setValue('preparationNotes', extractedContent.preparationNotes);
 
       showSuccess('Quote details extracted and applied!', { id: toastId });
+
     } catch (error: any) {
       console.error('Error extracting AI content:', error);
       showError(`AI extraction failed: ${error.message || 'Unknown error occurred'}`, { id: toastId });
     } finally {
       setIsSubmitting(false);
-      // Removed dismissToast(toastId) here as showSuccess/showError handles dismissal
+      dismissToast(toastId);
     }
   };
 
   const handleCreateQuote = async (values: QuoteFormValues) => {
     setIsSubmitting(true);
     const toastId = showLoading('Creating new quote...');
+
     try {
       // Errors 4, 5, 6 fix: Use nullish coalescing (?? 0) for optional number fields in calculations
       const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.amount ?? 0), 0);
-      const addOnTotal = values.addOns?.reduce((sum: number, addOn) => sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
+      const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
+        sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
       const totalAmount = compulsoryTotal + addOnTotal;
 
       // Generate a base slug
@@ -256,28 +219,28 @@ const AdminQuoteBuilderPage: React.FC = () => {
       const details = {
         compulsoryItems: values.compulsoryItems.map(item => ({
           id: item.id || Math.random().toString(36).substring(2, 11),
-          name: item.name,
-          description: item.description || '',
-          amount: item.amount ?? 0,
+          name: item.name, // Use new name field
+          description: item.description || '', // Use new description field
+          amount: item.amount ?? 0, // Ensure amount is a number
         })),
         addOns: values.addOns?.map(addOn => ({
           id: addOn.id || Math.random().toString(36).substring(2, 11),
-          name: addOn.name,
-          description: addOn.description || '',
-          cost: addOn.cost ?? 0,
-          quantity: addOn.quantity ?? 1,
+          name: addOn.name, // Use new name field
+          description: addOn.description || '', // Use new description field
+          cost: addOn.cost ?? 0, // Ensure cost is a number
+          quantity: addOn.quantity ?? 1, // Ensure quantity is a number
         })) || [],
         depositPercentage: values.depositPercentage,
         bankDetails: {
           bsb: values.bankBSB ?? '',
           acc: values.bankACC ?? '',
         },
-        eventTime: values.eventTime ?? '',
+        eventTime: values.eventTime ?? '', // Ensure eventTime is a string
         currencySymbol: values.currencySymbol,
         paymentTerms: values.paymentTerms,
-        theme: values.theme || 'black-gold',
-        headerImageUrl: values.headerImageUrl || '',
-        preparationNotes: values.preparationNotes || '',
+        theme: values.theme, // Include new theme
+        headerImageUrl: values.headerImageUrl, // Include new header image URL
+        preparationNotes: values.preparationNotes || '', // Include new preparation notes
       };
 
       // Invoke the Edge Function to create the quote
@@ -321,7 +284,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       showError(`Failed to create quote: ${error.message || 'Unknown error occurred'}`, { id: toastId });
     } finally {
       setIsSubmitting(false);
-      // Removed dismissToast(toastId) here as showSuccess/showError handles dismissal
+      dismissToast(toastId);
     }
   };
 
@@ -329,13 +292,15 @@ const AdminQuoteBuilderPage: React.FC = () => {
   const getPreviewData = (values: QuoteFormValues): Quote => {
     // Errors 7, 8, 9 fix: Use nullish coalescing (?? 0) for optional number fields in calculations
     const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.amount ?? 0), 0);
-    const addOnTotal = values.addOns?.reduce((sum: number, addOn) => sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
+    const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
+      sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
     const totalAmount = compulsoryTotal + addOnTotal;
 
     // Helper function to map form item to QuoteItem structure
     const mapFormItemToQuoteItem = (item: { id?: string, name: string, description?: string, amount?: number, cost?: number, quantity?: number }): QuoteItem => {
       const quantity = item.quantity ?? 1;
       const price = item.amount ?? item.cost ?? 0;
+      
       return {
         id: item.id || Math.random().toString(36).substring(2, 11),
         name: item.name,
@@ -369,48 +334,37 @@ const AdminQuoteBuilderPage: React.FC = () => {
         addOns: values.addOns?.map(item => mapFormItemToQuoteItem(item)) || [],
         compulsoryItems: values.compulsoryItems.map(item => mapFormItemToQuoteItem(item)),
         currencySymbol: values.currencySymbol,
-        eventTime: values.eventTime ?? '',
-        theme: (values.theme as QuoteTheme) || 'black-gold',
-        headerImageUrl: values.headerImageUrl || '',
-        preparationNotes: values.preparationNotes || '',
+        eventTime: values.eventTime ?? '', // Ensure eventTime is a string for QuoteDetails
+        theme: values.theme, // Pass theme
+        headerImageUrl: values.headerImageUrl, // Pass image URL
+        preparationNotes: values.preparationNotes || '', // Pass preparation notes
       },
     };
   };
 
-  if (isLoadingDraft) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-brand-primary" />
-        <span className="ml-2 text-gray-500">Loading draft...</span>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Create New Quote</h2>
-        <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
-          Use this form to generate a new client-facing quote page. The slug will be automatically generated but can be customized in the QuoteForm if needed.
-        </p>
-      </div>
-
-      <AIQuoteExtractor onExtract={handleExtractAI} isSubmitting={isSubmitting} />
+      <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Create New Quote</h2>
+      <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
+        Use this form to generate a new client-facing quote page. The slug will be automatically generated but can be customized in the QuoteForm if needed.
+      </p>
+      
+      <AIQuoteExtractor 
+        onExtract={handleExtractAI}
+        isSubmitting={isSubmitting}
+      />
 
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
         <CardHeader>
-          <CardTitle className="text-xl text-brand-primary">
-            Quote Details
-            {currentDraftId && <span className="text-sm text-gray-500">(Draft ID: {currentDraftId.substring(0, 8)}...)</span>}
-          </CardTitle>
+          <CardTitle className="text-xl text-brand-primary">Quote Details {currentDraftId && <span className="text-sm text-gray-500">(Draft ID: {currentDraftId.substring(0, 8)}...)</span>}</CardTitle>
         </CardHeader>
         <CardContent>
           <QuoteForm 
-            form={form} 
+            form={form}
             onSubmit={handleCreateQuote} 
             isSubmitting={isSubmitting} 
             onPreview={handlePreviewQuote} 
-            onSaveDraft={handleSaveDraft} 
+            onSaveDraft={handleSaveDraft}
           />
         </CardContent>
       </Card>
@@ -422,7 +376,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
           </DialogHeader>
           <ScrollArea className="h-[calc(90vh-70px)]">
             {previewData ? (
-              <QuoteDisplay quote={getPreviewData(previewData)} />
+              <QuoteDisplay 
+                quote={getPreviewData(previewData)} 
+              />
             ) : (
               <div className="p-8 text-center">No preview data available.</div>
             )}

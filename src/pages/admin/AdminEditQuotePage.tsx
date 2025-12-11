@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
@@ -9,7 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Quote, QuoteItem, QuoteTheme } from '@/types/quote';
+import { Quote, QuoteItem } from '@/types/quote';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
@@ -30,11 +30,13 @@ const AdminEditQuotePage: React.FC = () => {
 
   const fetchQuote = useCallback(async () => {
     if (!slug) return;
+
     setIsLoading(true);
     const toastId = showLoading('Loading quote for editing...');
+
     try {
       const { data, error } = await supabase
-        .from('quotes')
+        .from('invoices')
         .select('*')
         .eq('slug', slug)
         .single();
@@ -59,6 +61,7 @@ const AdminEditQuotePage: React.FC = () => {
       };
 
       setQuote(fetchedQuote);
+
       const details = fetchedQuote.details;
 
       // Map Quote data to Form values
@@ -115,20 +118,22 @@ const AdminEditQuotePage: React.FC = () => {
     setIsPreviewOpen(true);
   };
 
-  const handleSaveDraft = async () => {
-    // Removed unused 'values' parameter
+  const handleSaveDraft = async () => { // Removed unused 'values' parameter
     // Draft saving logic is not typically used on an Edit page, but we keep the function signature
     showError('Draft saving is not supported on the Edit page. Use "Update Quote" instead.');
   };
 
   const handleUpdateQuote = async (values: QuoteFormValues) => {
     if (!quote) return;
+
     setIsSubmitting(true);
     const toastId = showLoading('Updating quote...');
+
     try {
       // Calculate total amount based on compulsory items and add-ons
       const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.amount ?? 0), 0);
-      const addOnTotal = values.addOns?.reduce((sum: number, addOn) => sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
+      const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
+        sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
       const totalAmount = compulsoryTotal + addOnTotal;
 
       // Prepare details for JSONB column
@@ -155,14 +160,14 @@ const AdminEditQuotePage: React.FC = () => {
         eventTime: values.eventTime ?? '', // FIX: Ensure eventTime is a string
         currencySymbol: values.currencySymbol,
         paymentTerms: values.paymentTerms,
-        theme: values.theme || 'black-gold',
-        headerImageUrl: values.headerImageUrl || '',
+        theme: values.theme,
+        headerImageUrl: values.headerImageUrl,
         preparationNotes: values.preparationNotes || '',
       };
 
-      // Update the quote record
+      // Update the invoice record
       const { data, error } = await supabase
-        .from('quotes')
+        .from('invoices')
         .update({
           client_name: values.clientName,
           client_email: values.clientEmail,
@@ -203,13 +208,15 @@ const AdminEditQuotePage: React.FC = () => {
   // Transform form values into Quote interface structure for preview
   const getPreviewData = (values: QuoteFormValues): Quote => {
     const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.amount ?? 0), 0);
-    const addOnTotal = values.addOns?.reduce((sum: number, addOn) => sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
+    const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
+      sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
     const totalAmount = compulsoryTotal + addOnTotal;
 
     // Helper function to map form item to QuoteItem structure
     const mapFormItemToQuoteItem = (item: { id?: string, name: string, description?: string, amount?: number, cost?: number, quantity?: number }): QuoteItem => {
       const quantity = item.quantity ?? 1;
       const price = item.amount ?? item.cost ?? 0;
+      
       return {
         id: item.id || Math.random().toString(36).substring(2, 11),
         name: item.name,
@@ -244,8 +251,8 @@ const AdminEditQuotePage: React.FC = () => {
         compulsoryItems: values.compulsoryItems.map(item => mapFormItemToQuoteItem(item)),
         currencySymbol: values.currencySymbol,
         eventTime: values.eventTime ?? '', // FIX: Ensure eventTime is a string
-        theme: (values.theme as QuoteTheme) || 'black-gold',
-        headerImageUrl: values.headerImageUrl || '',
+        theme: values.theme,
+        headerImageUrl: values.headerImageUrl,
         preparationNotes: values.preparationNotes || '',
       },
     };
@@ -274,18 +281,18 @@ const AdminEditQuotePage: React.FC = () => {
       <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
         Modify the details of this existing quote.
       </p>
-
+      
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
         <CardHeader>
           <CardTitle className="text-xl text-brand-primary">Quote Details</CardTitle>
         </CardHeader>
         <CardContent>
           <QuoteForm 
-            form={form} 
+            form={form}
             onSubmit={handleUpdateQuote} 
             isSubmitting={isSubmitting} 
             onPreview={handlePreviewQuote} 
-            onSaveDraft={handleSaveDraft} 
+            onSaveDraft={handleSaveDraft} // Placeholder, not used for editing
           />
         </CardContent>
       </Card>
@@ -297,7 +304,9 @@ const AdminEditQuotePage: React.FC = () => {
           </DialogHeader>
           <ScrollArea className="h-[calc(90vh-70px)]">
             {previewData ? (
-              <QuoteDisplay quote={getPreviewData(previewData)} />
+              <QuoteDisplay 
+                quote={getPreviewData(previewData)} 
+              />
             ) : (
               <div className="p-8 text-center">No preview data available.</div>
             )}

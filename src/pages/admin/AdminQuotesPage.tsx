@@ -1,157 +1,143 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Loader2, Eye, Edit, PlusCircle } from 'lucide-react';
+import { format } from 'date-fns';
+import { Loader2, ExternalLink, Trash2, PlusCircle } from 'lucide-react';
 import { showError } from '@/utils/toast';
-
-// Define a type for the data fetched from the 'invoices' table
-interface InvoiceRow {
-  id: string;
-  slug: string;
-  event_title: string;
-  client_name: string;
-  total_amount: number;
-  invoice_type: string;
-  created_at: string;
-  accepted_at: string | null;
-}
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import { Quote } from '@/types/quote'; // Import Quote interface
 
 const AdminQuotesPage: React.FC = () => {
-  const navigate = useNavigate();
-  const [invoices, setInvoices] = useState<InvoiceRow[]>([]);
+  const [quotes, setQuotes] = useState<Quote[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchInvoices = async () => {
+    const fetchQuotes = async () => {
       setIsLoading(true);
-      try {
-        // Fetch necessary fields from the 'invoices' table, ordered by creation date
-        const { data, error } = await supabase
-          .from('invoices')
-          .select('id, slug, event_title, client_name, total_amount, invoice_type, created_at, accepted_at')
-          .order('created_at', { ascending: false });
+      const { data, error } = await supabase
+        .from('invoices')
+        .select('*')
+        .order('created_at', { ascending: false }); // Order by creation date to see all recent activity
 
-        if (error) throw error;
-
-        const mappedData: InvoiceRow[] = data.map(item => ({
-          id: item.id,
-          slug: item.slug,
-          event_title: item.event_title,
-          client_name: item.client_name,
-          total_amount: item.total_amount,
-          invoice_type: item.invoice_type,
-          created_at: item.created_at,
-          accepted_at: item.accepted_at,
-        }));
-
-        setInvoices(mappedData);
-      } catch (error: any) {
-        console.error('Error fetching invoices:', error);
-        showError(`Failed to load quotes: ${error.message || 'Unknown error occurred'}`);
-      } finally {
-        setIsLoading(false);
+      if (error) {
+        console.error('Error fetching quotes:', error);
+        showError('Failed to load quotes.');
+      } else {
+        setQuotes(data || []);
       }
+      setIsLoading(false);
     };
 
-    fetchInvoices();
+    fetchQuotes();
   }, []);
 
-  const formatCurrency = (amount: number) => {
-    // Assuming AUD based on default BSB/ACC in builder page
-    return new Intl.NumberFormat('en-AU', {
-      style: 'currency',
-      currency: 'AUD', 
-      minimumFractionDigits: 2,
-    }).format(amount);
+  const handleDeleteQuote = async (quoteId: string) => {
+    toast.promise(
+      async () => {
+        const { error } = await supabase
+          .from('invoices')
+          .delete()
+          .eq('id', quoteId);
+
+        if (error) throw error;
+        
+        // Optimistically update the UI
+        setQuotes(prevQuotes => prevQuotes.filter(quote => quote.id !== quoteId));
+        return 'Quote deleted successfully!';
+      },
+      {
+        loading: 'Deleting quote...',
+        success: (message) => message,
+        error: (err) => {
+          console.error('Error deleting quote:', err);
+          return 'Failed to delete quote.';
+        },
+        action: {
+          label: 'Confirm Delete',
+          onClick: () => { /* The promise handles the actual deletion */ },
+        },
+        description: 'Are you sure you want to delete this quote? This action cannot be undone.',
+      }
+    );
   };
 
-  const getStatusBadge = (acceptedAt: string | null) => {
-    if (acceptedAt) {
-      return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">Accepted</span>;
-    }
-    return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">Pending</span>;
+  const getQuoteStatus = (quote: Quote) => {
+    if (quote.accepted_at) return 'Accepted';
+    if (quote.rejected_at) return 'Rejected';
+    return 'Pending';
   };
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-brand-primary" />
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-10 w-10 animate-spin text-brand-primary" />
+        <span className="sr-only">Loading quotes...</span>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8 p-4 md:p-8">
-      <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Finalized Quotes & Invoices</h2>
-        <Button onClick={() => navigate('/admin/quote-builder')} className="bg-brand-primary hover:bg-brand-primary/90 text-white">
-          <PlusCircle className="mr-2 h-4 w-4" /> New Quote
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Manage Quotes</h2>
+        <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+          <Link to="/admin/create-quote">
+            <PlusCircle className="mr-2 h-4 w-4" /> Create New Quote
+          </Link>
         </Button>
       </div>
-      
       <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
-        This page lists all finalized quotes (invoices) that have been sent to clients.
+        View and manage all quote proposals submitted through your website, regardless of their acceptance status.
       </p>
 
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
         <CardHeader>
-          <CardTitle className="text-xl text-brand-primary">Quote List ({invoices.length})</CardTitle>
+          <CardTitle className="text-xl text-brand-primary">All Quote Proposals</CardTitle>
         </CardHeader>
-        <CardContent className="p-0">
-          {invoices.length === 0 ? (
-            <div className="p-6 text-center text-gray-500">No finalized quotes found. Start by creating a new quote.</div>
+        <CardContent>
+          {quotes.length === 0 ? (
+            <p className="text-center text-brand-dark/70 dark:text-brand-light/70">No quote proposals found yet.</p>
           ) : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-gray-50 dark:bg-gray-800">
-                    <TableHead className="w-[150px]">Date</TableHead>
-                    <TableHead>Client</TableHead>
-                    <TableHead>Event Title</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead className="text-right">Amount</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right w-[120px]">Actions</TableHead>
+                  <TableRow className="bg-brand-secondary/10 dark:bg-brand-dark/50">
+                    <TableHead className="text-brand-primary">Client Name</TableHead>
+                    <TableHead className="text-brand-primary">Quote Type</TableHead>
+                    <TableHead className="text-brand-primary">Event Date</TableHead>
+                    <TableHead className="text-brand-primary text-right">Total Amount</TableHead>
+                    <TableHead className="text-brand-primary">Status</TableHead>
+                    <TableHead className="text-brand-primary">Created On</TableHead>
+                    <TableHead className="text-brand-primary text-center">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {invoices.map((invoice) => (
-                    <TableRow key={invoice.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/50">
-                      <TableCell className="font-medium text-sm">
-                        {new Date(invoice.created_at).toLocaleDateString()}
+                  {quotes.map((quote) => (
+                    <TableRow key={quote.id} className="hover:bg-brand-secondary/5 dark:hover:bg-brand-dark/30">
+                      <TableCell className="font-medium text-brand-dark dark:text-brand-light">{quote.client_name}</TableCell>
+                      <TableCell className="text-brand-dark/80 dark:text-brand-light/80">{quote.invoice_type}</TableCell>
+                      <TableCell className="text-brand-dark/80 dark:text-brand-light/80">{quote.event_date && format(new Date(quote.event_date), 'EEEE d MMMM yyyy') || 'N/A'}</TableCell>
+                      <TableCell className="text-right font-semibold text-brand-primary">A${quote.total_amount.toFixed(2)}</TableCell>
+                      <TableCell className="text-brand-dark/80 dark:text-brand-light/80">
+                        {getQuoteStatus(quote)}
                       </TableCell>
-                      <TableCell className="text-sm">{invoice.client_name}</TableCell>
-                      <TableCell className="text-sm">{invoice.event_title}</TableCell>
-                      <TableCell className="text-sm">{invoice.invoice_type}</TableCell>
-                      <TableCell className="text-right font-semibold text-sm">
-                        {formatCurrency(invoice.total_amount)}
-                      </TableCell>
-                      <TableCell>
-                        {getStatusBadge(invoice.accepted_at)}
-                      </TableCell>
-                      <TableCell className="text-right space-x-2">
-                        <Button 
-                          variant="outline" 
-                          size="icon" 
-                          onClick={() => navigate(`/quotes/${invoice.slug}`)}
-                          title="View Public Quote"
-                          className="h-8 w-8"
+                      <TableCell className="text-brand-dark/70 dark:text-brand-light/70">{format(new Date(quote.created_at), 'PPP p')}</TableCell>
+                      <TableCell className="text-center flex gap-2 justify-center">
+                        <Link to={`/admin/quotes/${quote.id}`} className="text-brand-primary hover:underline flex items-center justify-center">
+                          View Details <ExternalLink className="ml-1 h-4 w-4" />
+                        </Link>
+                        <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDeleteQuote(quote.id)}
+                            className="bg-red-600 hover:bg-red-700 text-white"
                         >
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="icon" 
-                          onClick={() => navigate(`/admin/quotes/edit/${invoice.slug}`)}
-                          title="Edit Quote"
-                          className="h-8 w-8"
-                        >
-                          <Edit className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4" />
                         </Button>
                       </TableCell>
                     </TableRow>
