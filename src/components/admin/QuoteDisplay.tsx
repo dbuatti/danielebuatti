@@ -6,7 +6,7 @@ import { Phone, Mail } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
-import { AddOnItem, Quote } from '@/types/quote'; // Import centralized interfaces
+import { AddOnItem, Quote, CompulsoryItem } from '@/types/quote'; // Import CompulsoryItem
 
 interface QuoteDisplayProps {
   quote: Quote;
@@ -26,16 +26,18 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isLivePianoTheme, is
     details, // Access details from the quote object
   } = quote;
 
-  const { baseService, currencySymbol, depositPercentage, bankDetails, eventTime, paymentTerms, addOns: quoteAddOns, client_selected_add_ons } = details || {};
+  const { compulsoryItems, currencySymbol, depositPercentage, bankDetails, eventTime, paymentTerms, addOns: quoteAddOns, client_selected_add_ons } = details || {};
   const symbol = currencySymbol || '$';
-  const baseAmount = baseService?.amount || 0;
+  
   const addOns = client_selected_add_ons && client_selected_add_ons.length > 0 ? client_selected_add_ons : quoteAddOns;
 
   const erinKennedyBaseInvoice = 400.00; // Hardcoded for Erin Kennedy quote type
 
+  const compulsoryTotal = compulsoryItems?.reduce((sum, item) => sum + item.amount, 0) || 0;
+
   const calculatedTotal = isErinKennedyQuote
     ? erinKennedyBaseInvoice
-    : baseAmount + (addOns?.reduce((sum: number, item: AddOnItem) => sum + (item.cost * item.quantity), 0) || 0);
+    : compulsoryTotal + (addOns?.reduce((sum: number, item: AddOnItem) => sum + (item.cost * item.quantity), 0) || 0);
   
   const requiredDeposit = calculatedTotal * ((depositPercentage || 0) / 100);
 
@@ -151,7 +153,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isLivePianoTheme, is
           renderErinKennedyQuote()
         ) : (
           <>
-            {baseService && (
+            {compulsoryItems && compulsoryItems.length > 0 && (
               <section className={cn(
                 "p-8 rounded-xl border space-y-6 overflow-hidden",
                 isLivePianoTheme ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
@@ -160,39 +162,40 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isLivePianoTheme, is
                   "text-3xl font-bold mb-6 text-center",
                   isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
                 )}>
-                  {baseService.description || "Base Engagement Fee"}
+                  Compulsory Services
                 </h3>
-                <p className={cn(
-                  "text-xl text-center max-w-3xl mx-auto",
-                  isLivePianoTheme ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
-                )}>
-                  This fee secures a premium, seamless musical experience for your event.
-                </p>
-                <div className={cn(
-                  "space-y-4 max-w-3xl mx-auto",
-                  isLivePianoTheme ? "text-livePiano-light/80" : "text-brand-dark/80 dark:text-brand-light/80"
-                )}>
-                  <h4 className={cn(
-                    "text-2xl font-semibold text-center mb-4",
+                
+                {compulsoryItems.map((item: CompulsoryItem, index: number) => (
+                  <div key={index} className="space-y-4 max-w-3xl mx-auto border-b border-current/20 pb-4 last:border-b-0">
+                    <h4 className={cn(
+                      "text-2xl font-semibold text-center mb-4",
+                      isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
+                    )}>
+                      {item.name}
+                    </h4>
+                    <p className={cn(
+                      "text-xl text-center max-w-3xl mx-auto",
+                      isLivePianoTheme ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
+                    )}>
+                      {item.description || "Base service fee."}
+                    </p>
+                    <p className={cn(
+                      "text-3xl font-bold text-center mt-4",
+                      isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
+                    )}>
+                      Investment: <strong className={isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{formatCurrency(item.amount, symbol)}</strong>
+                    </p>
+                  </div>
+                ))}
+                
+                {compulsoryItems.length > 1 && (
+                  <p className={cn(
+                    "text-3xl font-bold text-center pt-4",
                     isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
                   )}>
-                    Service Components
-                  </h4>
-                  <ul className={cn(
-                    "list-disc list-inside space-y-2",
-                    isLivePianoTheme ? "[&>li]:marker:text-livePiano-primary [&>li]:marker:text-xl" : ""
-                  )}>
-                    <li><strong>Performance:</strong> {baseService.description}</li>
-                    <li><strong>All-Inclusive Logistics:</strong> Covers all sheet music preparation, travel, and setup required for the evening.</li>
-                    {invoice_type?.toLowerCase().includes('live piano') && <li><strong>Flexible Timing:</strong> Performance timing is flexible to dynamically respond to the needs of guests (the "on-call buffer").</li>}
-                  </ul>
-                </div>
-                <p className={cn(
-                  "text-4xl font-bold text-center mt-8", // Changed to text-4xl font-bold
-                  isLivePianoTheme ? "text-livePiano-primary" : "text-brand-primary"
-                )}>
-                  All-Inclusive Engagement Fee: <strong className={isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{currencySymbol}{baseAmount.toFixed(2)}</strong>
-                </p>
+                    Compulsory Subtotal: <strong className={isLivePianoTheme ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{formatCurrency(compulsoryTotal, symbol)}</strong>
+                  </p>
+                )}
               </section>
             )}
           </>

@@ -25,7 +25,7 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns'; // Ensure format is imported
-import { AddOnItem, Quote } from '@/types/quote'; // Import centralized interfaces
+import { AddOnItem, Quote, CompulsoryItem } from '@/types/quote'; // Import centralized interfaces
 
 // Zod schema for generic quote acceptance
 const genericQuoteAcceptanceSchema = z.object({
@@ -110,12 +110,14 @@ const DynamicQuotePage: React.FC = () => {
 
   const watchedAddOns = form.watch('selectedAddOns');
   
-  const { baseService, currencySymbol, depositPercentage, bankDetails, eventTime, paymentTerms } = quote?.details || {};
-  const baseAmount = parseFloat(String(baseService?.amount)) || 0;
+  const { compulsoryItems, currencySymbol, depositPercentage, bankDetails, eventTime, paymentTerms } = quote?.details || {};
   const symbol = currencySymbol || 'A$';
 
   const isErinKennedyQuote = quote?.invoice_type === "Erin Kennedy Quote";
   const erinKennedyBaseInvoice = 400.00; // Hardcoded for Erin Kennedy quote type
+
+  // Define compulsoryTotal here so it's available in JSX
+  const compulsoryTotal = compulsoryItems?.reduce((sum, item) => sum + item.amount, 0) || 0;
 
   const calculatedTotal = useMemo(() => {
     if (!quote) return 0;
@@ -124,7 +126,7 @@ const DynamicQuotePage: React.FC = () => {
       return erinKennedyBaseInvoice;
     }
 
-    let total = baseAmount;
+    let total = compulsoryTotal;
     
     watchedAddOns?.forEach(addOn => {
       const quantity = parseFloat(String(addOn.quantity)) || 0;
@@ -132,7 +134,7 @@ const DynamicQuotePage: React.FC = () => {
       total += cost * quantity;
     });
     return total;
-  }, [watchedAddOns, baseAmount, quote, isErinKennedyQuote]);
+  }, [watchedAddOns, compulsoryItems, quote, isErinKennedyQuote, compulsoryTotal]);
 
   const requiredDeposit = calculatedTotal * ((depositPercentage || 0) / 100);
 
@@ -165,111 +167,6 @@ const DynamicQuotePage: React.FC = () => {
   const isActionTaken = isAccepted || isRejected;
 
   const isLivePianoQuote = quote.invoice_type.toLowerCase().includes("live piano");
-
-  async function onSubmitGeneric(values: QuoteFormValues) {
-    const loadingToastId = toast.loading("Submitting your acceptance...");
-    
-    const finalSelectedAddOns = values.selectedAddOns?.filter(a => (parseFloat(String(a.quantity)) || 0) > 0) || [];
-
-    try {
-      const { error: updateError } = await supabase
-        .from('invoices')
-        .update({
-          accepted_at: new Date().toISOString(),
-          client_name: values.clientName,
-          client_email: values.clientEmail,
-          total_amount: calculatedTotal,
-          details: {
-            ...quote!.details,
-            final_total_amount: calculatedTotal,
-            client_selected_add_ons: finalSelectedAddOns,
-          }
-        })
-        .eq('id', quote!.id);
-
-      if (updateError) throw updateError;
-
-      const EMAIL_SERVICE_API_KEY = import.meta.env.VITE_EMAIL_SERVICE_API_KEY;
-      const CONTACT_FORM_RECIPIENT_EMAIL = import.meta.env.VITE_CONTACT_FORM_RECIPIENT_EMAIL;
-      const EMAIL_SERVICE_ENDPOINT = import.meta.env.VITE_EMAIL_SERVICE_ENDPOINT;
-
-      if (EMAIL_SERVICE_API_KEY && CONTACT_FORM_RECIPIENT_EMAIL && EMAIL_SERVICE_ENDPOINT) {
-        const adminQuoteLink = `${window.location.origin}/admin/quotes/${quote!.id}`;
-        const subject = `🎉 Quote Accepted: ${quote!.event_title || quote!.invoice_type} from ${values.clientName}`;
-        
-        const addOnList = finalSelectedAddOns.length > 0 
-          ? finalSelectedAddOns.map(a => `<li>${a.name} (Qty: ${a.quantity}, Cost: ${symbol}${(a.cost * a.quantity).toFixed(2)})</li>`).join('')
-          : '<li>None selected.</li>';
-
-        const emailHtml = `
-          <div style="font-family: 'Outfit', sans-serif; color: #1b1b1b; background-color: #F8F8F8; padding: 20px; border-radius: 8px;">
-            <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-              <h2 style="color: #fdb813; text-align: center; margin-bottom: 20px;">Quote Accepted!</h2>
-              <p style="font-size: 16px; line-height: 1.6;">A client has accepted your quote proposal:</p>
-              <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Client Name:</td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${values.clientName}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Client Email:</td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;"><a href="mailto:${values.clientEmail}" style="color: #fdb813; text-decoration: none;">${values.clientEmail}</a></td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Quote Title:</td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${quote!.event_title || quote!.invoice_type}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Base Amount:</td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${symbol}${baseAmount.toFixed(2)}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Selected Add-Ons:</td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;"><ul>${addOnList}</ul></td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">FINAL TOTAL:</td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${symbol}${calculatedTotal.toFixed(2)}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Accepted On:</td>
-                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;">${new Date().toLocaleString()}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Admin Link:</td>
-                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;"><a href="${adminQuoteLink}" style="color: #fdb813; text-decoration: none;">View in Admin Panel</a></td>
-                </tr>
-              </table>
-              <p style="font-size: 14px; color: #666666; text-align: center; margin-top: 30px;">
-                This notification was sent from your website.
-              </p>
-            </div>
-          </div>
-        `;
-
-        await fetch(EMAIL_SERVICE_ENDPOINT, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${EMAIL_SERVICE_API_KEY}`,
-          },
-          body: JSON.stringify({
-            from: 'info@danielebuatti.com',
-            to: CONTACT_FORM_RECIPIENT_EMAIL,
-            subject: subject,
-            html: emailHtml,
-          }),
-        });
-      }
-
-      toast.success("Quote accepted successfully!", { id: loadingToastId });
-      form.reset();
-      navigate('/live-piano-services/quote-confirmation');
-    } catch (error: any) {
-      console.error("Error submitting quote acceptance:", error);
-      toast.error(`Failed to submit quote acceptance: ${error.message}`, { id: loadingToastId });
-    }
-  }
 
   const renderErinKennedyQuote = () => {
     const onSitePerformanceCost = 300.00;
@@ -345,6 +242,112 @@ const DynamicQuotePage: React.FC = () => {
     );
   };
 
+  async function onSubmitGeneric(values: QuoteFormValues) {
+    const loadingToastId = toast.loading("Submitting your acceptance...");
+    
+    const finalSelectedAddOns = values.selectedAddOns?.filter(a => (parseFloat(String(a.quantity)) || 0) > 0) || [];
+
+    try {
+      const { error: updateError } = await supabase
+        .from('invoices')
+        .update({
+          accepted_at: new Date().toISOString(),
+          client_name: values.clientName,
+          client_email: values.clientEmail,
+          total_amount: calculatedTotal,
+          details: {
+            ...quote!.details,
+            final_total_amount: calculatedTotal,
+            client_selected_add_ons: finalSelectedAddOns,
+          }
+        })
+        .eq('id', quote!.id);
+
+      if (updateError) throw updateError;
+
+      const EMAIL_SERVICE_API_KEY = import.meta.env.VITE_EMAIL_SERVICE_API_KEY;
+      const CONTACT_FORM_RECIPIENT_EMAIL = import.meta.env.VITE_CONTACT_FORM_RECIPIENT_EMAIL;
+      const EMAIL_SERVICE_ENDPOINT = import.meta.env.VITE_EMAIL_SERVICE_ENDPOINT;
+
+      if (EMAIL_SERVICE_API_KEY && CONTACT_FORM_RECIPIENT_EMAIL && EMAIL_SERVICE_ENDPOINT) {
+        const adminQuoteLink = `${window.location.origin}/admin/quotes/${quote!.id}`;
+        const subject = `🎉 Quote Accepted: ${quote!.event_title || quote!.invoice_type} from ${values.clientName}`;
+        
+        const compulsoryList = compulsoryItems?.map((item: CompulsoryItem) => `<li>${item.name}: ${symbol}${item.amount.toFixed(2)}</li>`).join('') || '<li>N/A</li>';
+        const addOnList = finalSelectedAddOns.length > 0 
+          ? finalSelectedAddOns.map(a => `<li>${a.name} (Qty: ${a.quantity}, Cost: ${symbol}${(a.cost * a.quantity).toFixed(2)})</li>`).join('')
+          : '<li>None selected.</li>';
+
+        const emailHtml = `
+          <div style="font-family: 'Outfit', sans-serif; color: #1b1b1b; background-color: #F8F8F8; padding: 20px; border-radius: 8px;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+              <h2 style="color: #fdb813; text-align: center; margin-bottom: 20px;">Quote Accepted!</h2>
+              <p style="font-size: 16px; line-height: 1.6;">A client has accepted your quote proposal:</p>
+              <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Client Name:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${values.clientName}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Client Email:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;"><a href="mailto:${values.clientEmail}" style="color: #fdb813; text-decoration: none;">${values.clientEmail}</a></td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Quote Title:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${quote!.event_title || quote!.invoice_type}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Compulsory Items:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;"><ul>${compulsoryList}</ul></td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Selected Add-Ons:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;"><ul>${addOnList}</ul></td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">FINAL TOTAL:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${symbol}${calculatedTotal.toFixed(2)}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Accepted On:</td>
+                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;">${new Date().toLocaleString()}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Admin Link:</td>
+                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;"><a href="${adminQuoteLink}" style="color: #fdb813; text-decoration: none;">View in Admin Panel</a></td>
+                </tr>
+              </table>
+              <p style="font-size: 14px; color: #666666; text-align: center; margin-top: 30px;">
+                This notification was sent from your website.
+              </p>
+            </div>
+          </div>
+        `;
+
+        await fetch(EMAIL_SERVICE_ENDPOINT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${EMAIL_SERVICE_API_KEY}`,
+          },
+          body: JSON.stringify({
+            from: 'info@danielebuatti.com',
+            to: CONTACT_FORM_RECIPIENT_EMAIL,
+            subject: subject,
+            html: emailHtml,
+          }),
+        });
+      }
+
+      toast.success("Quote accepted successfully!", { id: loadingToastId });
+      form.reset();
+      navigate('/live-piano-services/quote-confirmation');
+    } catch (error: any) {
+      console.error("Error submitting quote acceptance:", error);
+      toast.error(`Failed to submit quote acceptance: ${error.message}`, { id: loadingToastId });
+    }
+  }
+
   return (
     <div className={cn(
       "min-h-screen flex flex-col",
@@ -397,7 +400,7 @@ const DynamicQuotePage: React.FC = () => {
             isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
           )}>
             <p>Prepared for: <strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>{quote.client_name}</strong></p>
-            <p>Client Email: <strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>{quote.client_email}</strong></p> {/* Added client_email here */}
+            <p>Client Email: <strong className={isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"}>{quote.client_email}</strong></p>
             <p>Date of Event: {quote.event_date && format(new Date(quote.event_date), 'EEEE d MMMM yyyy') || 'N/A'}</p>
             {isErinKennedyQuote ? <p>Time: 3:00 PM – 6:00 PM</p> : eventTime && <p>Time: {eventTime}</p>}
             <p>Location: {quote.event_location || 'N/A'}</p>
@@ -413,7 +416,7 @@ const DynamicQuotePage: React.FC = () => {
           renderErinKennedyQuote()
         ) : (
           <>
-            {baseService && (
+            {compulsoryItems && compulsoryItems.length > 0 && (
               <section className={cn(
                 "p-8 rounded-xl border space-y-6 overflow-hidden",
                 isLivePianoQuote ? "bg-livePiano-darker border-livePiano-border/30" : "bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/30"
@@ -422,39 +425,40 @@ const DynamicQuotePage: React.FC = () => {
                   "text-3xl font-bold mb-6 text-center",
                   isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
                 )}>
-                  {baseService.description || "Base Engagement Fee"}
+                  Compulsory Services
                 </h3>
-                <p className={cn(
-                  "text-xl text-center max-w-3xl mx-auto",
-                  isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
-                )}>
-                  This fee secures a premium, seamless musical experience for your event.
-                </p>
-                <div className={cn(
-                  "space-y-4 max-w-3xl mx-auto",
-                  isLivePianoQuote ? "text-livePiano-light/80" : "text-brand-dark/80 dark:text-brand-light/80"
-                )}>
-                  <h4 className={cn(
-                    "text-2xl font-semibold text-center mb-4",
+                
+                {compulsoryItems.map((item: CompulsoryItem, index: number) => (
+                  <div key={index} className="space-y-4 max-w-3xl mx-auto border-b border-current/20 pb-4 last:border-b-0">
+                    <h4 className={cn(
+                      "text-2xl font-semibold text-center mb-4",
+                      isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
+                    )}>
+                      {item.name}
+                    </h4>
+                    <p className={cn(
+                      "text-xl text-center max-w-3xl mx-auto",
+                      isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
+                    )}>
+                      {item.description || "Base service fee."}
+                    </p>
+                    <p className={cn(
+                      "text-3xl font-bold text-center mt-4",
+                      isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
+                    )}>
+                      Investment: <strong className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{formatCurrency(item.amount, symbol)}</strong>
+                    </p>
+                  </div>
+                ))}
+                
+                {compulsoryItems.length > 1 && (
+                  <p className={cn(
+                    "text-3xl font-bold text-center pt-4",
                     isLivePianoQuote ? "text-livePiano-primary" : "text-brand-primary"
                   )}>
-                    Service Components
-                  </h4>
-                  <ul className={cn(
-                    "list-disc list-inside space-y-2",
-                    isLivePianoQuote ? "[&>li]:marker:text-livePiano-primary [&>li]:marker:text-xl" : ""
-                  )}>
-                    <li><strong>Performance:</strong> {baseService.description}</li>
-                    <li><strong>All-Inclusive Logistics:</strong> Covers all sheet music preparation, travel, and setup required for the evening.</li>
-                    {quote.invoice_type?.toLowerCase().includes('live piano') && <li><strong>Flexible Timing:</strong> Performance timing is flexible to dynamically respond to the needs of guests (the "on-call buffer").</li>}
-                  </ul>
-                </div>
-                <p className={cn(
-                  "text-3xl font-semibold text-center mt-8",
-                  isLivePianoQuote ? "text-livePiano-primary" : "text-brand-dark dark:text-brand-light"
-                )}>
-                  All-Inclusive Engagement Fee: <strong className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{currencySymbol}{baseAmount.toFixed(2)}</strong>
-                </p>
+                    Compulsory Subtotal: <strong className={isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"}>{formatCurrency(compulsoryTotal, symbol)}</strong>
+                  </p>
+                )}
               </section>
             )}
           </>
@@ -469,7 +473,7 @@ const DynamicQuotePage: React.FC = () => {
             isLivePianoQuote ? "text-livePiano-light" : "text-brand-dark dark:text-brand-light"
           )}>Important Booking Details</h3>
           <ul className={cn(
-            "list-disc list-inside text-lg space-y-3", // Changed space-y-2 to space-y-3
+            "list-disc list-inside text-lg space-y-3",
             isLivePianoQuote ? "text-livePiano-light/90" : "text-brand-dark/90 dark:text-brand-light/90"
           )}>
             {isErinKennedyQuote ? (

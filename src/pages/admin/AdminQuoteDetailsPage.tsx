@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { formatCurrency } from '@/lib/utils';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { AddOnItem, Quote } from '@/types/quote';
+import { AddOnItem, Quote, CompulsoryItem } from '@/types/quote';
 
 const AdminQuoteDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -142,17 +142,19 @@ const AdminQuoteDetailsPage: React.FC = () => {
     slug,
   } = quote;
 
-  const { baseService, currencySymbol, depositPercentage, bankDetails, eventTime, paymentTerms, addOns: quoteAddOns, client_selected_add_ons } = details || {};
+  const { compulsoryItems, currencySymbol, depositPercentage, bankDetails, eventTime, paymentTerms, addOns: quoteAddOns, client_selected_add_ons } = details || {};
   const symbol = currencySymbol || 'A$';
-  const baseAmount = baseService?.amount || 0;
+  
   const addOns = client_selected_add_ons && client_selected_add_ons.length > 0 ? client_selected_add_ons : quoteAddOns;
 
   const isErinKennedyQuote = invoice_type === "Erin Kennedy Quote";
   const erinKennedyBaseInvoice = 400.00; // Hardcoded for Erin Kennedy quote type
 
+  const compulsoryTotal = compulsoryItems?.reduce((sum, item) => sum + item.amount, 0) || 0;
+
   const calculatedTotal = isErinKennedyQuote
     ? erinKennedyBaseInvoice
-    : baseAmount + (addOns?.reduce((sum: number, item: AddOnItem) => sum + (item.cost * item.quantity), 0) || 0);
+    : compulsoryTotal + (addOns?.reduce((sum: number, item: AddOnItem) => sum + (item.cost * item.quantity), 0) || 0);
   
   const requiredDeposit = calculatedTotal * ((depositPercentage || 0) / 100);
 
@@ -167,7 +169,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
           </Button>
           <div className="flex space-x-2">
             <Button asChild variant="outline" className="text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
-              <Link to={`/admin/quotes/edit/${id}`}> {/* Updated link here */}
+              <Link to={`/admin/quotes/edit/${id}`}>
                 <Edit className="h-4 w-4 mr-2" /> Edit
               </Link>
             </Button>
@@ -265,19 +267,34 @@ const AdminQuoteDetailsPage: React.FC = () => {
                 </>
               ) : (
                 <>
-                  {baseService && (
-                    <TableRow className="border-b border-gray-200 dark:border-gray-700">
-                      <TableCell className="py-3 px-4 font-medium">{baseService.description}</TableCell>
-                      <TableCell className="py-3 px-4 text-right">1</TableCell>
-                      <TableCell className="py-3 px-4 text-right">{formatCurrency(baseService.amount, symbol)}</TableCell>
-                      <TableCell className="py-3 px-4 text-right font-semibold">{formatCurrency(baseService.amount, symbol)}</TableCell>
-                    </TableRow>
+                  {/* Compulsory Items */}
+                  {compulsoryItems && compulsoryItems.length > 0 && (
+                    <>
+                      <TableRow className="bg-gray-50 dark:bg-gray-700">
+                        <TableCell colSpan={4} className="py-2 px-4 text-left text-sm font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                          Compulsory Services
+                        </TableCell>
+                      </TableRow>
+                      {compulsoryItems.map((item: CompulsoryItem, index: number) => (
+                        <TableRow key={index} className="border-b border-gray-200 dark:border-gray-700">
+                          <TableCell className="py-3 px-4 font-medium">
+                            {item.name}
+                            {item.description && <span className="text-gray-500 dark:text-gray-400 text-sm block">{item.description}</span>}
+                          </TableCell>
+                          <TableCell className="py-3 px-4 text-right">1</TableCell>
+                          <TableCell className="py-3 px-4 text-right">{formatCurrency(item.amount, symbol)}</TableCell>
+                          <TableCell className="py-3 px-4 text-right font-semibold">{formatCurrency(item.amount, symbol)}</TableCell>
+                        </TableRow>
+                      ))}
+                    </>
                   )}
+                  
+                  {/* Existing Add-Ons */}
                   {addOns && addOns.length > 0 && (
                     <>
                       <TableRow className="bg-gray-50 dark:bg-gray-700">
                         <TableCell colSpan={4} className="py-2 px-4 text-left text-sm font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
-                          Selected Add-Ons
+                          Selected Optional Add-Ons
                         </TableCell>
                       </TableRow>
                       {addOns.map((item: AddOnItem, index: number) => (

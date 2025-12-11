@@ -42,18 +42,33 @@ const AdminEditQuotePage: React.FC = () => {
         showError('Failed to load quote for editing.');
         navigate('/admin/quotes');
       } else {
+        // Handle legacy baseService structure if compulsoryItems is missing
+        let compulsoryItems = data.details?.compulsoryItems;
+        if (!compulsoryItems && data.details?.baseService) {
+            compulsoryItems = [{
+                id: Math.random().toString(36).substring(2, 11),
+                name: data.event_title || 'Base Service',
+                description: data.details.baseService.description,
+                amount: data.details.baseService.amount,
+            }];
+        }
+
         const mappedData: QuoteFormValues = {
           emailContent: '',
           clientName: data.client_name,
           clientEmail: data.client_email,
-          invoiceType: data.invoice_type, // Fixed: use invoice_type from database
+          invoiceType: data.invoice_type,
           eventTitle: data.event_title || '',
           eventDate: data.event_date || '',
           eventTime: data.details?.eventTime || '',
           eventLocation: data.event_location || '',
           preparedBy: data.prepared_by || 'Daniele Buatti',
-          baseServiceDescription: data.details?.baseService?.description || '',
-          baseServiceAmount: data.details?.baseService?.amount || 0,
+          compulsoryItems: compulsoryItems?.map((item: any) => ({
+            id: item.id || Math.random().toString(36).substring(2, 11),
+            name: item.name,
+            description: item.description,
+            amount: item.amount,
+          })) || [{ id: Math.random().toString(36).substring(2, 11), name: 'Base Service', description: '', amount: 0.01 }],
           addOns: data.details?.addOns?.map((addOn: any) => ({
             id: addOn.id || Math.random().toString(36).substring(2, 11),
             name: addOn.name,
@@ -90,13 +105,16 @@ const AdminEditQuotePage: React.FC = () => {
     const toastId = showLoading('Updating quote...');
 
     try {
-      const totalAmount = values.baseServiceAmount + (values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => sum + (addOn.cost * addOn.quantity), 0) || 0);
+      // Calculate total amount based on compulsory items and add-ons
+      const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + item.amount, 0);
+      const addOnTotal = values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => sum + (addOn.cost * addOn.quantity), 0) || 0;
+      const totalAmount = compulsoryTotal + addOnTotal;
 
       const details = {
-        baseService: {
-          description: values.baseServiceDescription,
-          amount: values.baseServiceAmount,
-        },
+        compulsoryItems: values.compulsoryItems.map(item => ({
+          ...item,
+          id: item.id || Math.random().toString(36).substring(2, 11),
+        })),
         addOns: values.addOns?.map(addOn => ({
           ...addOn,
           id: addOn.id || Math.random().toString(36).substring(2, 11),
@@ -116,7 +134,7 @@ const AdminEditQuotePage: React.FC = () => {
         .update({
           client_name: values.clientName,
           client_email: values.clientEmail,
-          invoice_type: values.invoiceType, // Fixed: use invoice_type for database column
+          invoice_type: values.invoiceType,
           event_title: values.eventTitle,
           event_date: values.eventDate,
           event_location: values.eventLocation,
@@ -142,7 +160,9 @@ const AdminEditQuotePage: React.FC = () => {
   };
 
   const getPreviewData = (values: QuoteFormValues): Quote => {
-    const totalAmount = values.baseServiceAmount + (values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => sum + (addOn.cost * addOn.quantity), 0) || 0);
+    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + item.amount, 0);
+    const addOnTotal = values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => sum + (addOn.cost * addOn.quantity), 0) || 0;
+    const totalAmount = compulsoryTotal + addOnTotal;
 
     return {
       id: id || '',
@@ -168,11 +188,11 @@ const AdminEditQuotePage: React.FC = () => {
           ...addOn,
           id: addOn.id || Math.random().toString(36).substring(2, 11),
         })) || [],
+        compulsoryItems: values.compulsoryItems.map(item => ({
+          ...item,
+          id: item.id || Math.random().toString(36).substring(2, 11),
+        })),
         currencySymbol: values.currencySymbol,
-        baseService: {
-          description: values.baseServiceDescription,
-          amount: values.baseServiceAmount,
-        },
         eventTime: values.eventTime,
       },
     };

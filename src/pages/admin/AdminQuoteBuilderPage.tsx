@@ -28,7 +28,10 @@ const AdminQuoteBuilderPage: React.FC = () => {
     const toastId = showLoading('Creating new quote...');
 
     try {
-      const totalAmount = values.baseServiceAmount + (values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => sum + (addOn.cost * addOn.quantity), 0) || 0);
+      // Calculate total amount based on compulsory items and add-ons
+      const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + item.amount, 0);
+      const addOnTotal = values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => sum + (addOn.cost * addOn.quantity), 0) || 0;
+      const totalAmount = compulsoryTotal + addOnTotal;
 
       // Generate a base slug
       const baseSlug = createSlug(`${values.eventTitle}-${values.clientName}-${values.eventDate}`);
@@ -54,10 +57,10 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
       // Prepare details for JSONB column
       const details = {
-        baseService: {
-          description: values.baseServiceDescription,
-          amount: values.baseServiceAmount,
-        },
+        compulsoryItems: values.compulsoryItems.map(item => ({
+          ...item,
+          id: item.id || Math.random().toString(36).substring(2, 11),
+        })),
         addOns: values.addOns?.map(addOn => ({
           ...addOn,
           id: addOn.id || Math.random().toString(36).substring(2, 11),
@@ -110,7 +113,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
   // Transform form values into Quote interface structure for preview
   const getPreviewData = (values: QuoteFormValues): Quote => {
-    const totalAmount = values.baseServiceAmount + (values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => sum + (addOn.cost * addOn.quantity), 0) || 0);
+    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + item.amount, 0);
+    const addOnTotal = values.addOns?.reduce((sum: number, addOn: { cost: number, quantity: number }) => sum + (addOn.cost * addOn.quantity), 0) || 0;
+    const totalAmount = compulsoryTotal + addOnTotal;
 
     return {
       id: Math.random().toString(36).substring(2, 11),
@@ -136,11 +141,11 @@ const AdminQuoteBuilderPage: React.FC = () => {
           ...addOn,
           id: addOn.id || Math.random().toString(36).substring(2, 11),
         })) || [],
+        compulsoryItems: values.compulsoryItems.map(item => ({
+          ...item,
+          id: item.id || Math.random().toString(36).substring(2, 11),
+        })),
         currencySymbol: values.currencySymbol,
-        baseService: {
-          description: values.baseServiceDescription,
-          amount: values.baseServiceAmount,
-        },
         eventTime: values.eventTime,
       },
     };

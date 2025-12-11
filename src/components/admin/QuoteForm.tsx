@@ -20,6 +20,7 @@ import { Loader2, PlusCircle, Trash2, Wand2, Eye, Copy } from 'lucide-react';
 import { useGeminiQuoteGenerator } from '@/hooks/use-gemini-quote-generator';
 import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { AddOnItem } from '@/types/quote'; // Import AddOnItem for typing
 
 // Zod schema for the quote form
 const quoteFormSchema = z.object({
@@ -32,14 +33,21 @@ const quoteFormSchema = z.object({
   eventTime: z.string().optional(), // e.g., "6:00 PM - 9:00 PM"
   eventLocation: z.string().min(1, { message: "Event location is required." }),
   preparedBy: z.string().min(1, { message: "Prepared by name is required." }).default("Daniele Buatti"),
-  baseServiceDescription: z.string().min(1, { message: "Base service description is required." }),
-  baseServiceAmount: z.coerce.number().min(0, { message: "Base service amount must be a positive number." }),
+  
+  // NEW: Compulsory Items Array
+  compulsoryItems: z.array(z.object({
+    id: z.string().optional(),
+    name: z.string().min(1, { message: "Item name is required." }),
+    description: z.string().optional(),
+    amount: z.coerce.number().min(0.01, { message: "Amount must be greater than zero." }),
+  })).min(1, { message: "At least one compulsory item is required." }), // Must have at least one item
+
   addOns: z.array(z.object({
-    id: z.string().optional(), // Added optional ID for new add-ons
+    id: z.string().optional(),
     name: z.string().min(1, { message: "Add-on name is required." }),
     description: z.string().optional(),
     cost: z.coerce.number().min(0, { message: "Add-on cost must be a positive number." }),
-    quantity: z.coerce.number().min(1, { message: "Quantity must be at least 1." }).default(1),
+    quantity: z.coerce.number().min(0).default(1), // Changed min to 0 for optional add-ons
   })).optional(),
   depositPercentage: z.coerce.number().min(0).max(100).default(50),
   bankBSB: z.string().min(1, { message: "Bank BSB is required." }).default("923100"),
@@ -72,8 +80,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
       eventTime: '',
       eventLocation: '',
       preparedBy: 'Daniele Buatti',
-      baseServiceDescription: '',
-      baseServiceAmount: 0,
+      // Initialize compulsoryItems
+      compulsoryItems: [{ id: Math.random().toString(36).substring(2, 11), name: 'Base Service', description: '', amount: 0.01 }],
       addOns: [],
       depositPercentage: 50,
       bankBSB: '923100',
@@ -83,7 +91,12 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
     },
   });
 
-  const { fields, append, remove, replace } = useFieldArray({
+  const { fields: compulsoryFields, append: appendCompulsory, remove: removeCompulsory, replace: replaceCompulsory } = useFieldArray({
+    control: form.control,
+    name: "compulsoryItems",
+  });
+
+  const { fields: addOnFields, append: appendAddOn, remove: removeAddOn, replace: replaceAddOn } = useFieldArray({
     control: form.control,
     name: "addOns",
   });
@@ -93,20 +106,16 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
   
   const totalAmount = React.useMemo(() => {
     // Use watchedFormValues to access the latest state
-    const baseServiceAmount = watchedFormValues.baseServiceAmount;
-    const addOns = watchedFormValues.addOns;
+    const compulsoryTotal = watchedFormValues.compulsoryItems?.reduce((sum, item) => sum + (typeof item.amount === 'number' ? item.amount : parseFloat(String(item.amount)) || 0), 0) || 0;
     
-    // Ensure baseServiceAmount is treated as a number, defaulting to 0 if invalid
-    const base = typeof baseServiceAmount === 'number' ? baseServiceAmount : parseFloat(String(baseServiceAmount)) || 0;
-    
-    let total = base;
-    addOns?.forEach((addOn: { cost: number, quantity: number }) => {
-      // Ensure cost and quantity are treated as numbers, defaulting quantity to 1 if invalid
+    let addOnTotal = 0;
+    watchedFormValues.addOns?.forEach((addOn: { cost: number, quantity: number }) => {
+      // Ensure cost and quantity are treated as numbers, defaulting quantity to 0 if invalid
       const cost = typeof addOn.cost === 'number' ? addOn.cost : parseFloat(String(addOn.cost)) || 0;
-      const quantity = typeof addOn.quantity === 'number' ? addOn.quantity : parseFloat(String(addOn.quantity)) || 1;
-      total += cost * quantity;
+      const quantity = typeof addOn.quantity === 'number' ? addOn.quantity : parseFloat(String(addOn.quantity)) || 0;
+      addOnTotal += cost * quantity;
     });
-    return total;
+    return compulsoryTotal + addOnTotal;
   }, [watchedFormValues]); // Depend on the entire watched object
 
   const depositPercentage = watchedFormValues.depositPercentage;
@@ -138,18 +147,25 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
       form.setValue('eventDate', result.eventDate, { shouldValidate: true });
       form.setValue('eventTime', result.eventTime, { shouldValidate: true });
       form.setValue('eventLocation', result.eventLocation, { shouldValidate: true });
-      form.setValue('baseServiceDescription', result.baseServiceDescription, { shouldValidate: true });
-      form.setValue('baseServiceAmount', result.baseServiceAmount, { shouldValidate: true });
       form.setValue('currencySymbol', result.currencySymbol || 'A$', { shouldValidate: true });
       form.setValue('paymentTerms', result.paymentTerms || 'The remaining balance is due 7 days prior to the event.', { shouldValidate: true });
       
+      // NEW: Map base service to compulsoryItems
+      const generatedCompulsoryItems = [{
+        id: Math.random().toString(36).substring(2, 11),
+        name: result.eventTitle, // Use event title as item name
+        description: result.baseServiceDescription,
+        amount: result.baseServiceAmount,
+      }];
+      replaceCompulsory(generatedCompulsoryItems);
+      
       // Ensure generated add-ons have a default quantity of 0 for optional items
-      const generatedAddOnsWithQuantity = result.addOns.map(a => ({ 
+      const generatedAddOnsWithQuantity = result.addOns.map((a: Omit<AddOnItem, 'id' | 'quantity'>) => ({ 
         ...a, 
         id: Math.random().toString(36).substring(2, 11), // Generate a temporary ID
         quantity: 0 
       })); 
-      replace(generatedAddOnsWithQuantity); // Replace existing add-ons with generated ones
+      replaceAddOn(generatedAddOnsWithQuantity); // Replace existing add-ons with generated ones
       
       toast.success("Quote details auto-populated successfully!");
     }
@@ -157,9 +173,9 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
 
   const handlePreviewClick = () => {
     // Validate only the fields necessary for a basic preview
-    const { clientName, eventTitle, eventDate, eventLocation, baseServiceDescription, baseServiceAmount } = form.getValues();
-    if (!clientName || !eventTitle || !eventDate || !eventLocation || !baseServiceDescription || baseServiceAmount === 0) {
-      toast.warning("Please fill out the required Client & Event Details and Base Service fields before previewing.");
+    const { clientName, eventTitle, eventDate, eventLocation, compulsoryItems } = form.getValues();
+    if (!clientName || !eventTitle || !eventDate || !eventLocation || compulsoryItems.length === 0) {
+      toast.warning("Please fill out the required Client & Event Details and Compulsory Items before previewing.");
       form.trigger(); // Trigger validation to show errors
       return;
     }
@@ -169,7 +185,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
   const handleDuplicateAddOn = (index: number) => {
     const addOnToDuplicate = form.getValues('addOns')?.[index];
     if (addOnToDuplicate) {
-      append({
+      appendAddOn({
         ...addOnToDuplicate,
         id: Math.random().toString(36).substring(2, 11), // Generate a new unique ID for the duplicate
         name: `${addOnToDuplicate.name} (Copy)`,
@@ -336,41 +352,78 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
           />
         </div>
 
-        <h3 className="text-xl font-semibold text-brand-primary mt-8">Quote Line Items</h3>
-        
-        <h4 className="text-lg font-medium text-brand-dark dark:text-brand-light">Base Service</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="baseServiceDescription"
-            render={({ field }) => (
-              <FormItem className="md:col-span-1">
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="e.g., 3 hours of dedicated on-site presence" rows={3} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="baseServiceAmount"
-            render={({ field }) => (
-              <FormItem className="md:col-span-1">
-                <FormLabel>Amount ({watchedFormValues.currencySymbol})</FormLabel>
-                <FormControl>
-                  <Input type="number" step="0.01" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <h3 className="text-xl font-semibold text-brand-primary mt-8">Compulsory Line Items</h3>
+        <h4 className="text-lg font-medium text-brand-dark dark:text-brand-light">Base Services (Required)</h4>
+        <div className="space-y-4">
+          {compulsoryFields.map((item, index) => (
+            <div key={item.id} className="flex flex-col gap-4 p-4 border rounded-md bg-brand-secondary/10 dark:bg-brand-dark/30">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name={`compulsoryItems.${index}.name`}
+                  render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                      <FormLabel>Item Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., 3 Hour Live Piano Performance" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`compulsoryItems.${index}.amount`}
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>Amount ({watchedFormValues.currencySymbol})</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name={`compulsoryItems.${index}.description`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description (Optional)</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="e.g., This covers all preparation, travel, and 3 hours of performance time." rows={2} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => removeCompulsory(index)}
+                  disabled={compulsoryFields.length === 1} // Prevent deleting the last item
+                >
+                  <Trash2 className="h-4 w-4 mr-2" /> Remove Item
+                </Button>
+              </div>
+            </div>
+          ))}
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => appendCompulsory({ id: Math.random().toString(36).substring(2, 11), name: '', description: '', amount: 0.01 })}
+            className="w-full border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50"
+          >
+            <PlusCircle className="mr-2 h-4 w-4" /> Add Compulsory Item
+          </Button>
         </div>
 
         <h4 className="text-lg font-medium text-brand-dark dark:text-brand-light mt-8">Optional Add-Ons</h4>
         <div className="space-y-4">
-          {fields.map((item, index) => (
+          {addOnFields.map((item, index) => (
             <div key={item.id} className="flex flex-col gap-4 p-4 border rounded-md bg-brand-secondary/10 dark:bg-brand-dark/30">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <FormField
@@ -406,7 +459,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
                     <FormItem className="w-full">
                       <FormLabel>Quantity</FormLabel>
                       <FormControl>
-                        <Input type="number" step="1" min="1" {...field} />
+                        <Input type="number" step="1" min="0" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -440,7 +493,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
                   type="button"
                   variant="destructive"
                   size="sm"
-                  onClick={() => remove(index)}
+                  onClick={() => removeAddOn(index)}
                 >
                   <Trash2 className="h-4 w-4 mr-2" /> Remove
                 </Button>
@@ -450,10 +503,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ initialData, onSubmit, isSubmitti
           <Button
             type="button"
             variant="outline"
-            onClick={() => append({ id: Math.random().toString(36).substring(2, 11), name: '', description: '', cost: 0, quantity: 1 })}
+            onClick={() => appendAddOn({ id: Math.random().toString(36).substring(2, 11), name: '', description: '', cost: 0, quantity: 1 })}
             className="w-full border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50"
           >
-            <PlusCircle className="mr-2 h-4 w-4" /> Add Add-on
+            <PlusCircle className="mr-2 h-4 w-4" /> Add Optional Add-on
           </Button>
         </div>
 

@@ -6,11 +6,15 @@ export interface AddOnItem {
   quantity: number;
 }
 
+export interface CompulsoryItem {
+  id: string;
+  name: string;
+  description?: string;
+  amount: number;
+}
+
 export interface QuoteDetails {
-  baseService?: {
-    description: string;
-    amount: number;
-  };
+  compulsoryItems?: CompulsoryItem[];
   currencySymbol?: string;
   depositPercentage?: number;
   bankDetails?: { bsb: string; acc: string };

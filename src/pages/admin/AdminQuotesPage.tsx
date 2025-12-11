@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns';
-import { Loader2, ExternalLink, Trash2 } from 'lucide-react';
+import { Loader2, ExternalLink, Trash2, PlusCircle } from 'lucide-react';
 import { showError } from '@/utils/toast';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -83,7 +83,14 @@ const AdminQuotesPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Manage Quotes</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Manage Quotes</h2>
+        <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+          <Link to="/admin/create-quote">
+            <PlusCircle className="mr-2 h-4 w-4" /> Create New Quote
+          </Link>
+        </Button>
+      </div>
       <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
         View and manage all quote proposals submitted through your website, regardless of their acceptance status.
       </p>
