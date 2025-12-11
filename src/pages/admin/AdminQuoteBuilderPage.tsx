@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
-import QuoteForm, { QuoteFormValues } from '@/components/admin/QuoteForm';
+import QuoteForm, { QuoteFormValues, QuoteFormSchema } from '@/components/admin/QuoteForm';
 import { supabase } from '@/integrations/supabase/client';
 import { createSlug } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -12,6 +12,26 @@ import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Quote } from '@/types/quote';
 import { useAuth } from '@/hooks/useAuth';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { AIQuoteContent } from '@/types/ai';
+
+const defaultFormValues: Partial<QuoteFormValues> = {
+  clientName: '',
+  clientEmail: '',
+  invoiceType: 'Quote',
+  eventTitle: '',
+  eventDate: new Date().toISOString().split('T')[0],
+  eventLocation: '',
+  preparedBy: 'Admin',
+  currencySymbol: '$',
+  depositPercentage: 50,
+  paymentTerms: 'Payment due within 7 days.',
+  bankBSB: '',
+  bankACC: '',
+  compulsoryItems: [{ description: 'Service Fee', amount: 1000 }],
+  addOns: [],
+};
 
 const AdminQuoteBuilderPage: React.FC = () => {
   const navigate = useNavigate();
@@ -20,6 +40,12 @@ const AdminQuoteBuilderPage: React.FC = () => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState<QuoteFormValues | null>(null);
   const [currentDraftId, setCurrentDraftId] = useState<string | undefined>(undefined);
+
+  const form = useForm<QuoteFormValues>({
+    resolver: zodResolver(QuoteFormSchema),
+    defaultValues: defaultFormValues as QuoteFormValues,
+    mode: 'onChange',
+  });
 
   const handlePreviewQuote = (values: QuoteFormValues) => {
     setPreviewData(values);
@@ -104,6 +130,47 @@ const AdminQuoteBuilderPage: React.FC = () => {
     }
   };
 
+  const handleGenerateAI = async (values: QuoteFormValues) => {
+    setIsSubmitting(true);
+    const toastId = showLoading('Generating content with AI...');
+
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-quote-content', {
+        body: {
+          clientName: values.clientName,
+          eventTitle: values.eventTitle,
+          invoiceType: values.invoiceType,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      const aiContent = data as AIQuoteContent;
+
+      // Update form fields with AI generated content
+      form.setValue('compulsoryItems', aiContent.compulsoryItems.map(item => ({
+        ...item,
+        id: Math.random().toString(36).substring(2, 11), // Add temporary ID
+      })));
+      form.setValue('addOns', aiContent.addOns.map(item => ({
+        ...item,
+        id: Math.random().toString(36).substring(2, 11), // Add temporary ID
+      })));
+      form.setValue('paymentTerms', aiContent.paymentTerms);
+
+      showSuccess('AI content generated and applied!', { id: toastId });
+
+    } catch (error: any) {
+      console.error('Error generating AI content:', error);
+      showError(`AI generation failed: ${error.message || 'Unknown error occurred'}`, { id: toastId });
+    } finally {
+      setIsSubmitting(false);
+      dismissToast(toastId);
+    }
+  };
+
   const handleCreateQuote = async (values: QuoteFormValues) => {
     setIsSubmitting(true);
     const toastId = showLoading('Creating new quote...');
@@ -124,17 +191,17 @@ const AdminQuoteBuilderPage: React.FC = () => {
         compulsoryItems: values.compulsoryItems.map(item => ({
           ...item,
           id: item.id || Math.random().toString(36).substring(2, 11),
-          name: item.description, // Fix Error 4
+          name: item.description,
         })),
         addOns: values.addOns?.map(addOn => ({
           ...addOn,
           id: addOn.id || Math.random().toString(36).substring(2, 11),
-          name: addOn.description, // Fix Error 3
+          name: addOn.description,
         })) || [],
         depositPercentage: values.depositPercentage,
         bankDetails: {
-          bsb: values.bankBSB ?? '', // Fix Error 1
-          acc: values.bankACC ?? '', // Fix Error 2
+          bsb: values.bankBSB ?? '',
+          acc: values.bankACC ?? '',
         },
         eventTime: values.eventTime,
         currencySymbol: values.currencySymbol,
@@ -210,18 +277,18 @@ const AdminQuoteBuilderPage: React.FC = () => {
         depositPercentage: values.depositPercentage,
         paymentTerms: values.paymentTerms,
         bankDetails: {
-          bsb: values.bankBSB ?? '', // Fix Error 1 (in preview data)
-          acc: values.bankACC ?? '', // Fix Error 2 (in preview data)
+          bsb: values.bankBSB ?? '',
+          acc: values.bankACC ?? '',
         },
         addOns: values.addOns?.map(addOn => ({
           ...addOn,
           id: addOn.id || Math.random().toString(36).substring(2, 11),
-          name: addOn.description, // Fix Error 3 (in preview data)
+          name: addOn.description,
         })) || [],
         compulsoryItems: values.compulsoryItems.map(item => ({
           ...item,
           id: item.id || Math.random().toString(36).substring(2, 11),
-          name: item.description, // Fix Error 4 (in preview data)
+          name: item.description,
         })),
         currencySymbol: values.currencySymbol,
         eventTime: values.eventTime,
@@ -242,10 +309,12 @@ const AdminQuoteBuilderPage: React.FC = () => {
         </CardHeader>
         <CardContent>
           <QuoteForm 
+            form={form}
             onSubmit={handleCreateQuote} 
             isSubmitting={isSubmitting} 
             onPreview={handlePreviewQuote} 
             onSaveDraft={handleSaveDraft}
+            onGenerateAI={handleGenerateAI}
           />
         </CardContent>
       </Card>
