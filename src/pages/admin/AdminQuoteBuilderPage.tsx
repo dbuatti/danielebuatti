@@ -35,6 +35,8 @@ const defaultFormValues: Partial<QuoteFormValues> = {
   // New defaults
   theme: 'black-gold', // Default theme set to the new Black/Gold theme
   headerImageUrl: '/blacktie.avif', // Default image URL
+  contentImageUrl1: '/quote-option-2.jpeg', // Default content image 1
+  contentImageUrl2: '/quote-option-3.jpeg', // Default content image 2
   preparationNotes: 'This fee covers 7 hours of commitment, including the performance call, soundcheck, and all essential preparation required for a seamless, high-energy performance.\n\nThis fee secures a premium, seamless musical experience for your event.', // New default preparation notes
   // Updated item structure (using 'name' and 'description' now)
   compulsoryItems: [{ name: 'Live Piano Performance Fee', description: '3 hours of performance time.', amount: 1000 }], // Updated default item
@@ -316,6 +318,8 @@ const AdminQuoteBuilderPage: React.FC = () => {
         paymentTerms: values.paymentTerms,
         theme: values.theme, // Include new theme
         headerImageUrl: values.headerImageUrl, // Include new header image URL
+        contentImageUrl1: values.contentImageUrl1 || '', // Include new content image 1 URL
+        contentImageUrl2: values.contentImageUrl2 || '', // Include new content image 2 URL
         preparationNotes: values.preparationNotes || '', // Include new preparation notes
       };
 
@@ -414,6 +418,8 @@ const AdminQuoteBuilderPage: React.FC = () => {
         eventTime: values.eventTime ?? '', // Ensure eventTime is a string for QuoteDetails
         theme: values.theme, // Pass theme
         headerImageUrl: values.headerImageUrl, // Pass image URL
+        contentImageUrl1: values.contentImageUrl1 || '', // Pass content image 1 URL
+        contentImageUrl2: values.contentImageUrl2 || '', // Pass content image 2 URL
         preparationNotes: values.preparationNotes || '', // Pass preparation notes
       },
     };

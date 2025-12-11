@@ -81,6 +81,8 @@ const AdminEditQuotePage: React.FC = () => {
         bankACC: details.bankDetails.acc,
         theme: details.theme,
         headerImageUrl: details.headerImageUrl || '',
+        contentImageUrl1: details.contentImageUrl1 || '', // New field
+        contentImageUrl2: details.contentImageUrl2 || '', // New field
         preparationNotes: details.preparationNotes || '',
         compulsoryItems: details.compulsoryItems.map(item => ({
           id: item.id,
@@ -162,6 +164,8 @@ const AdminEditQuotePage: React.FC = () => {
         paymentTerms: values.paymentTerms,
         theme: values.theme,
         headerImageUrl: values.headerImageUrl,
+        contentImageUrl1: values.contentImageUrl1 || '', // New field
+        contentImageUrl2: values.contentImageUrl2 || '', // New field
         preparationNotes: values.preparationNotes || '',
       };
 
@@ -251,8 +255,10 @@ const AdminEditQuotePage: React.FC = () => {
         compulsoryItems: values.compulsoryItems.map(item => mapFormItemToQuoteItem(item)),
         currencySymbol: values.currencySymbol,
         eventTime: values.eventTime ?? '', // FIX: Ensure eventTime is a string
-        theme: values.theme,
+        theme: values.theme, // Pass theme
         headerImageUrl: values.headerImageUrl,
+        contentImageUrl1: values.contentImageUrl1 || '', // Pass content image 1 URL
+        contentImageUrl2: values.contentImageUrl2 || '', // Pass content image 2 URL
         preparationNotes: values.preparationNotes || '',
       },
     };
