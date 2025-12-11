@@ -1,21 +1,25 @@
-export type ExtractedQuoteItem = {
-  name: string; // The concise title of the item (e.g., 'Minimum Performance Fee')
-  description: string; // The detailed explanation of the item
-  amount?: number; // Used for compulsory items
-  cost?: number; // Used for add-ons
-  quantity?: number; // Used for add-ons
-};
+export interface ExtractedQuoteItem {
+  name: string;
+  description?: string;
+  amount: number; // Used for compulsory items
+}
 
-export type ExtractedQuoteContent = {
+export interface ExtractedAddOnItem {
+  name: string;
+  description?: string;
+  cost: number; // Used for add-ons
+}
+
+export interface ExtractedQuoteContent {
   clientName: string;
   clientEmail: string;
   invoiceType: 'Quote' | 'Invoice';
   eventTitle: string;
-  eventDate: string;
-  eventTime?: string;
+  eventDate: string; // YYYY-MM-DD (e.g., 2025-12-11)
+  eventTime: string; // HH:MM (e.g., 18:00)
   eventLocation: string;
   paymentTerms: string;
   preparationNotes: string;
   compulsoryItems: ExtractedQuoteItem[];
-  addOns: ExtractedQuoteItem[];
-};
+  addOns: ExtractedAddOnItem[];
+}
