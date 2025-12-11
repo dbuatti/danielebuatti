@@ -1,484 +1,454 @@
 "use client";
 
-import React, { useState } from 'react';
-import { useForm, FormProvider, useFieldArray, Controller } from 'react-hook-form';
+import React from 'react';
+import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/card';
-import { Plus, Trash2, Save, Eye } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Plus, Trash2, Eye, Save, Send } from 'lucide-react';
 
-// Define the schema for form validation
-const quoteFormSchema = z.object({
-  clientName: z.string().min(1, 'Client name is required'),
-  clientEmail: z.string().email('Invalid email address'),
-  invoiceType: z.string().min(1, 'Invoice type is required'),
-  eventTitle: z.string().min(1, 'Event title is required'),
-  eventDate: z.string().min(1, 'Event date is required'),
-  eventTime: z.string().optional(),
-  eventLocation: z.string().min(1, 'Event location is required'),
-  preparedBy: z.string().min(1, 'Prepared by is required'),
-  depositPercentage: z.number().min(0).max(100),
-  paymentTerms: z.string().min(1, 'Payment terms are required'),
-  bankBSB: z.string().optional(),
-  bankACC: z.string().optional(),
-  currencySymbol: z.string().min(1, 'Currency symbol is required'),
-  compulsoryItems: z.array(z.object({
-    id: z.string().optional(),
-    description: z.string().min(1, 'Description is required'),
-    amount: z.number().min(0, 'Amount must be positive'),
-  })).min(1, 'At least one compulsory item is required'),
-  addOns: z.array(z.object({
-    id: z.string().optional(),
-    description: z.string().min(1, 'Description is required'),
-    cost: z.number().min(0, 'Cost must be positive'),
-    quantity: z.number().min(1, 'Quantity must be at least 1'),
-  })).optional(),
+// --- Schemas and Types ---
+
+const CompulsoryItemSchema = z.object({
+  id: z.string().optional(),
+  description: z.string().min(1, 'Description is required'),
+  amount: z.coerce.number().min(0, 'Amount must be non-negative'),
 });
 
-export type QuoteFormValues = z.infer<typeof quoteFormSchema>;
+const AddOnSchema = z.object({
+  id: z.string().optional(),
+  description: z.string().min(1, 'Description is required'),
+  cost: z.coerce.number().min(0, 'Cost must be non-negative'),
+  quantity: z.coerce.number().min(1, 'Quantity must be at least 1'),
+});
+
+export const QuoteFormSchema = z.object({
+  // Client & Event Details
+  clientName: z.string().min(1, 'Client Name is required'),
+  clientEmail: z.string().email('Invalid email format'),
+  invoiceType: z.string().min(1, 'Invoice Type is required'),
+  eventTitle: z.string().min(1, 'Event Title is required'),
+  eventDate: z.string().min(1, 'Event Date is required'),
+  eventTime: z.string().optional(),
+  eventLocation: z.string().min(1, 'Event Location is required'),
+  preparedBy: z.string().min(1, 'Prepared By is required'),
+
+  // Financial Details
+  currencySymbol: z.string().default('$'),
+  depositPercentage: z.coerce.number().min(0).max(100).default(0),
+  paymentTerms: z.string().optional(),
+  bankBSB: z.string().optional(),
+  bankACC: z.string().optional(),
+
+  // Items
+  compulsoryItems: z.array(CompulsoryItemSchema).min(1, 'At least one compulsory item is required'),
+  addOns: z.array(AddOnSchema).optional().default([]),
+});
+
+export type QuoteFormValues = z.infer<typeof QuoteFormSchema>;
+
+// --- Component ---
 
 interface QuoteFormProps {
   onSubmit: (values: QuoteFormValues) => void;
-  onPreview?: (values: QuoteFormValues) => void;
-  onSaveDraft?: (values: QuoteFormValues) => void;
-  isSubmitting?: boolean;
-  initialValues?: QuoteFormValues | null;
+  onSaveDraft: (values: QuoteFormValues) => void; // Prop for saving draft
+  onPreview: (values: QuoteFormValues) => void;
+  isSubmitting: boolean;
+  defaultValues?: QuoteFormValues; // Changed from initialData to defaultValues
 }
+
+const defaultFormValues: Partial<QuoteFormValues> = {
+  clientName: '',
+  clientEmail: '',
+  invoiceType: 'Quote',
+  eventTitle: '',
+  eventDate: new Date().toISOString().split('T')[0],
+  eventLocation: '',
+  preparedBy: 'Admin',
+  currencySymbol: '$',
+  depositPercentage: 50,
+  paymentTerms: 'Payment due within 7 days.',
+  bankBSB: '',
+  bankACC: '',
+  compulsoryItems: [{ description: 'Service Fee', amount: 1000 }],
+  addOns: [],
+};
 
 const QuoteForm: React.FC<QuoteFormProps> = ({ 
   onSubmit, 
+  onSaveDraft, 
   onPreview, 
-  onSaveDraft,
-  isSubmitting = false,
-  initialValues 
+  isSubmitting, 
+  defaultValues 
 }) => {
-  const [isSavingDraft, setIsSavingDraft] = useState(false);
-  
   const form = useForm<QuoteFormValues>({
-    resolver: zodResolver(quoteFormSchema),
-    defaultValues: {
-      clientName: '',
-      clientEmail: '',
-      invoiceType: 'Standard Quote',
-      eventTitle: '',
-      eventDate: '',
-      eventTime: '',
-      eventLocation: '',
-      preparedBy: '',
-      depositPercentage: 50,
-      paymentTerms: 'Payment due within 14 days',
-      bankBSB: '',
-      bankACC: '',
-      currencySymbol: '$',
-      compulsoryItems: [{ description: '', amount: 0 }],
-      addOns: [],
-      ...initialValues
-    },
+    resolver: zodResolver(QuoteFormSchema),
+    defaultValues: defaultValues || defaultFormValues,
+    mode: 'onChange',
   });
 
-  const { register, control, handleSubmit, formState: { errors }, watch } = form;
-  
   const { fields: compulsoryFields, append: appendCompulsory, remove: removeCompulsory } = useFieldArray({
-    control,
-    name: "compulsoryItems"
+    control: form.control,
+    name: 'compulsoryItems',
   });
-  
+
   const { fields: addOnFields, append: appendAddOn, remove: removeAddOn } = useFieldArray({
-    control,
-    name: "addOns"
+    control: form.control,
+    name: 'addOns',
   });
 
-  const watchedCompulsoryItems = watch("compulsoryItems");
-  const watchedAddOns = watch("addOns");
-  
-  const compulsoryTotal = watchedCompulsoryItems?.reduce((sum, item) => sum + (item.amount || 0), 0) || 0;
-  const addOnsTotal = watchedAddOns?.reduce((sum, addOn) => sum + ((addOn.cost || 0) * (addOn.quantity || 1)), 0) || 0;
-  const totalAmount = compulsoryTotal + addOnsTotal;
-
-  const handleSaveDraft = async (data: QuoteFormValues) => {
-    if (!onSaveDraft) return;
-    
-    setIsSavingDraft(true);
-    try {
-      await onSaveDraft(data);
-    } finally {
-      setIsSavingDraft(false);
-    }
+  const handleSave = () => {
+    // We save the current values regardless of full validation status
+    onSaveDraft(form.getValues());
   };
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-brand-primary">Client Information</h3>
-            
-            <div>
-              <Label htmlFor="clientName">Client Name *</Label>
-              <Input 
-                id="clientName" 
-                {...register("clientName")} 
-                placeholder="Enter client name"
-              />
-              {errors.clientName && <p className="text-red-500 text-sm mt-1">{errors.clientName.message}</p>}
-            </div>
-            
-            <div>
-              <Label htmlFor="clientEmail">Client Email *</Label>
-              <Input 
-                id="clientEmail" 
-                type="email" 
-                {...register("clientEmail")} 
-                placeholder="Enter client email"
-              />
-              {errors.clientEmail && <p className="text-red-500 text-sm mt-1">{errors.clientEmail.message}</p>}
-            </div>
-          </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-brand-primary">Event Details</h3>
-            
-            <div>
-              <Label htmlFor="invoiceType">Invoice Type *</Label>
-              <Controller
-                name="invoiceType"
-                control={control}
-                render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select invoice type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Standard Quote">Standard Quote</SelectItem>
-                      <SelectItem value="Live Piano Quote">Live Piano Quote</SelectItem>
-                      <SelectItem value="Erin Kennedy Quote">Erin Kennedy Quote</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              {errors.invoiceType && <p className="text-red-500 text-sm mt-1">{errors.invoiceType.message}</p>}
-            </div>
-            
-            <div>
-              <Label htmlFor="eventTitle">Event Title *</Label>
-              <Input 
-                id="eventTitle" 
-                {...register("eventTitle")} 
-                placeholder="Enter event title"
-              />
-              {errors.eventTitle && <p className="text-red-500 text-sm mt-1">{errors.eventTitle.message}</p>}
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="eventDate">Event Date *</Label>
-                <Input 
-                  id="eventDate" 
-                  type="date" 
-                  {...register("eventDate")} 
-                />
-                {errors.eventDate && <p className="text-red-500 text-sm mt-1">{errors.eventDate.message}</p>}
-              </div>
-              
-              <div>
-                <Label htmlFor="eventTime">Event Time</Label>
-                <Input 
-                  id="eventTime" 
-                  type="time" 
-                  {...register("eventTime")} 
-                />
-              </div>
-            </div>
-            
-            <div>
-              <Label htmlFor="eventLocation">Event Location *</Label>
-              <Input 
-                id="eventLocation" 
-                {...register("eventLocation")} 
-                placeholder="Enter event location"
-              />
-              {errors.eventLocation && <p className="text-red-500 text-sm mt-1">{errors.eventLocation.message}</p>}
-            </div>
-            
-            <div>
-              <Label htmlFor="preparedBy">Prepared By *</Label>
-              <Input 
-                id="preparedBy" 
-                {...register("preparedBy")} 
-                placeholder="Enter preparer name"
-              />
-              {errors.preparedBy && <p className="text-red-500 text-sm mt-1">{errors.preparedBy.message}</p>}
-            </div>
+          {/* Client & Event Details */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="clientName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Client Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="John Doe" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="clientEmail"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Client Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="john@example.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="invoiceType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Invoice Type / Theme</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Live Piano Quote" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="eventTitle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Event Title</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Wedding Ceremony" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="eventDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Event Date</FormLabel>
+                  <FormControl>
+                    <Input type="date" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="eventTime"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Event Time (Optional)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="7:00 PM" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="eventLocation"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Event Location</FormLabel>
+                  <FormControl>
+                    <Input placeholder="The Grand Ballroom" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="preparedBy"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Prepared By</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Admin Name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-brand-primary">Payment Details</h3>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="depositPercentage">Deposit Percentage (%)</Label>
-                <Input 
-                  id="depositPercentage" 
-                  type="number" 
-                  {...register("depositPercentage", { valueAsNumber: true })} 
-                  min="0" 
-                  max="100"
+
+          {/* Compulsory Items */}
+          <h3 className="text-lg font-semibold mt-6">Compulsory Items</h3>
+          <div className="space-y-3">
+            {compulsoryFields.map((field, index) => (
+              <div key={field.id} className="flex items-end space-x-2">
+                <FormField
+                  control={form.control}
+                  name={`compulsoryItems.${index}.description`}
+                  render={({ field }) => (
+                    <FormItem className="flex-grow">
+                      <FormLabel className={index > 0 ? 'sr-only' : undefined}>Description</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Item description" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                {errors.depositPercentage && <p className="text-red-500 text-sm mt-1">{errors.depositPercentage.message}</p>}
-              </div>
-              
-              <div>
-                <Label htmlFor="currencySymbol">Currency Symbol *</Label>
-                <Input 
-                  id="currencySymbol" 
-                  {...register("currencySymbol")} 
-                  placeholder="$"
-                />
-                {errors.currencySymbol && <p className="text-red-500 text-sm mt-1">{errors.currencySymbol.message}</p>}
-              </div>
-            </div>
-            
-            <div>
-              <Label htmlFor="paymentTerms">Payment Terms *</Label>
-              <Textarea 
-                id="paymentTerms" 
-                {...register("paymentTerms")} 
-                placeholder="Enter payment terms"
-              />
-              {errors.paymentTerms && <p className="text-red-500 text-sm mt-1">{errors.paymentTerms.message}</p>}
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="bankBSB">Bank BSB</Label>
-                <Input 
-                  id="bankBSB" 
-                  {...register("bankBSB")} 
-                  placeholder="Enter BSB"
-                />
-              </div>
-              
-              <div>
-                <Label htmlFor="bankACC">Bank Account</Label>
-                <Input 
-                  id="bankACC" 
-                  {...register("bankACC")} 
-                  placeholder="Enter account number"
-                />
-              </div>
-            </div>
-          </div>
-          
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-brand-primary">Compulsory Items *</h3>
-              <Button 
-                type="button" 
-                variant="outline" 
-                size="sm"
-                onClick={() => appendCompulsory({ description: '', amount: 0 })}
-                className="flex items-center gap-1"
-              >
-                <Plus className="h-4 w-4" />
-                Add Item
-              </Button>
-            </div>
-            
-            <div className="space-y-3">
-              {compulsoryFields.map((field, index) => (
-                <Card key={field.id} className="bg-brand-light/50 dark:bg-brand-dark/50">
-                  <CardContent className="p-4">
-                    <div className="flex gap-3">
-                      <div className="flex-1">
-                        <Input 
-                          placeholder="Item description" 
-                          {...register(`compulsoryItems.${index}.description` as const)}
-                        />
-                        {errors.compulsoryItems?.[index]?.description && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {errors.compulsoryItems?.[index]?.description?.message}
-                          </p>
-                        )}
-                      </div>
-                      <div className="w-32">
+                <FormField
+                  control={form.control}
+                  name={`compulsoryItems.${index}.amount`}
+                  render={({ field }) => (
+                    <FormItem className="w-32">
+                      <FormLabel className={index > 0 ? 'sr-only' : undefined}>Amount ({form.watch('currencySymbol')})</FormLabel>
+                      <FormControl>
                         <Input 
                           type="number" 
-                          step="0.01"
                           placeholder="Amount" 
-                          {...register(`compulsoryItems.${index}.amount` as const, { valueAsNumber: true })}
+                          {...field} 
+                          onChange={e => field.onChange(e.target.value === '' ? 0 : parseFloat(e.target.value))} 
                         />
-                        {errors.compulsoryItems?.[index]?.amount && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {errors.compulsoryItems?.[index]?.amount?.message}
-                          </p>
-                        )}
-                      </div>
-                      <Button 
-                        type="button" 
-                        variant="ghost" 
-                        size="icon"
-                        onClick={() => removeCompulsory(index)}
-                        disabled={compulsoryFields.length <= 1}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            
-            <div className="pt-2">
-              <p className="text-right font-medium">
-                Subtotal: {watch("currencySymbol")}{compulsoryTotal.toFixed(2)}
-              </p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold text-brand-primary">Add-Ons</h3>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button 
+                  type="button" 
+                  variant="destructive" 
+                  size="icon" 
+                  onClick={() => removeCompulsory(index)}
+                  disabled={compulsoryFields.length === 1}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
             <Button 
               type="button" 
               variant="outline" 
-              size="sm"
-              onClick={() => appendAddOn({ description: '', cost: 0, quantity: 1 })}
-              className="flex items-center gap-1"
+              onClick={() => appendCompulsory({ description: '', amount: 0 })}
+              className="w-full"
             >
-              <Plus className="h-4 w-4" />
-              Add Add-On
+              <Plus className="h-4 w-4 mr-2" /> Add Compulsory Item
             </Button>
           </div>
-          
+
+          {/* Add-Ons */}
+          <h3 className="text-lg font-semibold mt-6">Add-Ons (Optional)</h3>
           <div className="space-y-3">
-            {addOnFields.length > 0 ? (
-              addOnFields.map((field, index) => (
-                <Card key={field.id} className="bg-brand-light/50 dark:bg-brand-dark/50">
-                  <CardContent className="p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-                      <div className="md:col-span-5">
-                        <Input 
-                          placeholder="Add-on description" 
-                          {...register(`addOns.${index}.description` as const)}
-                        />
-                        {errors.addOns?.[index]?.description && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {errors.addOns?.[index]?.description?.message}
-                          </p>
-                        )}
-                      </div>
-                      <div className="md:col-span-2">
+            {addOnFields.map((field, index) => (
+              <div key={field.id} className="flex items-end space-x-2">
+                <FormField
+                  control={form.control}
+                  name={`addOns.${index}.description`}
+                  render={({ field }) => (
+                    <FormItem className="flex-grow">
+                      <FormLabel className={index > 0 ? 'sr-only' : undefined}>Description</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Add-on description" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`addOns.${index}.cost`}
+                  render={({ field }) => (
+                    <FormItem className="w-24">
+                      <FormLabel className={index > 0 ? 'sr-only' : undefined}>Cost</FormLabel>
+                      <FormControl>
                         <Input 
                           type="number" 
-                          step="0.01"
                           placeholder="Cost" 
-                          {...register(`addOns.${index}.cost` as const, { valueAsNumber: true })}
+                          {...field} 
+                          onChange={e => field.onChange(e.target.value === '' ? 0 : parseFloat(e.target.value))} 
                         />
-                        {errors.addOns?.[index]?.cost && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {errors.addOns?.[index]?.cost?.message}
-                          </p>
-                        )}
-                      </div>
-                      <div className="md:col-span-2">
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`addOns.${index}.quantity`}
+                  render={({ field }) => (
+                    <FormItem className="w-24">
+                      <FormLabel className={index > 0 ? 'sr-only' : undefined}>Qty</FormLabel>
+                      <FormControl>
                         <Input 
                           type="number" 
-                          placeholder="Quantity" 
-                          {...register(`addOns.${index}.quantity` as const, { valueAsNumber: true })}
+                          placeholder="Qty" 
+                          {...field} 
+                          onChange={e => field.onChange(e.target.value === '' ? 1 : parseInt(e.target.value))} 
                         />
-                        {errors.addOns?.[index]?.quantity && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {errors.addOns?.[index]?.quantity?.message}
-                          </p>
-                        )}
-                      </div>
-                      <div className="md:col-span-2">
-                        <p className="font-medium">
-                          {watch("currencySymbol")}
-                          {((watch(`addOns.${index}.cost`) || 0) * (watch(`addOns.${index}.quantity`) || 1)).toFixed(2)}
-                        </p>
-                      </div>
-                      <div className="md:col-span-1">
-                        <Button 
-                          type="button" 
-                          variant="ghost" 
-                          size="icon"
-                          onClick={() => removeAddOn(index)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <p className="text-muted-foreground text-center py-4">No add-ons added yet</p>
-            )}
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button 
+                  type="button" 
+                  variant="destructive" 
+                  size="icon" 
+                  onClick={() => removeAddOn(index)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => appendAddOn({ description: '', cost: 0, quantity: 1 })}
+              className="w-full"
+            >
+              <Plus className="h-4 w-4 mr-2" /> Add Optional Add-On
+            </Button>
+          </div>
+
+          {/* Financial & Terms */}
+          <h3 className="text-lg font-semibold mt-6">Financial & Payment Terms</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <FormField
+              control={form.control}
+              name="currencySymbol"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Currency Symbol</FormLabel>
+                  <FormControl>
+                    <Input placeholder="$" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="depositPercentage"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Deposit Percentage (%)</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number" 
+                      placeholder="50" 
+                      {...field} 
+                      onChange={e => field.onChange(e.target.value === '' ? 0 : parseFloat(e.target.value))} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="bankBSB"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bank BSB (Optional)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="000-000" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="bankACC"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bank Account (Optional)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="123456789" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           
-          <div className="pt-2">
-            <p className="text-right font-medium">
-              Add-Ons Total: {watch("currencySymbol")}{addOnsTotal.toFixed(2)}
-            </p>
+          <FormField
+            control={form.control}
+            name="paymentTerms"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Payment Terms (Optional)</FormLabel>
+                <FormControl>
+                  <Textarea rows={4} placeholder="Payment due within 7 days of acceptance." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Actions */}
+          <div className="flex justify-end space-x-2 pt-4">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => onPreview(form.getValues())}
+              disabled={isSubmitting}
+            >
+              <Eye className="h-4 w-4 mr-2" /> Preview
+            </Button>
+            <Button 
+              type="button" 
+              variant="secondary" 
+              onClick={handleSave}
+              disabled={isSubmitting}
+            >
+              <Save className="h-4 w-4 mr-2" /> Save Draft
+            </Button>
+            <Button type="submit" disabled={isSubmitting}>
+              <Send className="h-4 w-4 mr-2" /> {isSubmitting ? 'Creating...' : 'Create Quote'}
+            </Button>
           </div>
-        </div>
-        
-        <div className="border-t pt-4">
-          <div className="flex justify-between items-center">
-            <div>
-              <h3 className="text-xl font-bold text-brand-primary">Total Amount</h3>
-              <p className="text-2xl font-bold">
-                {watch("currencySymbol")}{totalAmount.toFixed(2)}
-              </p>
-            </div>
-            
-            <div className="flex gap-3">
-              {onSaveDraft && (
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={handleSubmit(handleSaveDraft)}
-                  disabled={isSavingDraft || isSubmitting}
-                  className="flex items-center gap-2"
-                >
-                  <Save className="h-4 w-4" />
-                  {isSavingDraft ? 'Saving...' : 'Save Draft'}
-                </Button>
-              )}
-              
-              {onPreview && (
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={handleSubmit(onPreview)}
-                  disabled={isSubmitting}
-                  className="flex items-center gap-2"
-                >
-                  <Eye className="h-4 w-4" />
-                  Preview
-                </Button>
-              )}
-              
-              <Button 
-                type="submit" 
-                disabled={isSubmitting}
-                className="flex items-center gap-2"
-              >
-                {isSubmitting ? 'Creating...' : 'Create Quote'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </form>
+        </form>
+      </Form>
     </FormProvider>
   );
 };
