@@ -10,8 +10,6 @@ import { format } from 'date-fns';
 import { Quote, QuoteItem } from '@/types/quote';
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
 import DynamicImage from '@/components/DynamicImage'; // Import DynamicImage
 
 // Define the structure for the data fetched from Supabase (which includes the JSONB details)
@@ -23,14 +21,14 @@ interface QuoteData extends Omit<Quote, 'details'> {
       bsb: string;
       acc: string;
     };
-    addOns: QuoteItem[];
+    addOns: QuoteItem[]; // Original optional items list
     compulsoryItems: QuoteItem[];
     currencySymbol: string;
     eventTime: string;
     theme: 'default' | 'black-gold';
     headerImageUrl: string;
     preparationNotes: string;
-    client_selected_add_ons?: QuoteItem[];
+    client_selected_add_ons?: QuoteItem[]; // Final selected items list
   };
 }
 
@@ -41,7 +39,8 @@ const DynamicQuotePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAccepting, setIsAccepting] = useState(false);
-  const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
+  // State to hold the mutable quantities for optional add-ons (only used if not finalized)
+  const [currentOptionalAddOns, setCurrentOptionalAddOns] = useState<QuoteItem[]>([]); 
 
   useEffect(() => {
     if (!slug) {
@@ -63,7 +62,6 @@ const DynamicQuotePage: React.FC = () => {
         if (error) throw error;
 
         if (data) {
-          // Map the database structure to the client-side QuoteData interface
           const quoteData: QuoteData = {
             ...data,
             total_amount: parseFloat(data.total_amount),
@@ -71,9 +69,16 @@ const DynamicQuotePage: React.FC = () => {
           };
           setQuote(quoteData);
           
-          // If already accepted, initialize selectedAddOns from client_selected_add_ons
+          // Initialize mutable state for quantity controls
           if (quoteData.accepted_at && quoteData.details.client_selected_add_ons) {
-            setSelectedAddOns(quoteData.details.client_selected_add_ons.map(item => item.id));
+            // If accepted, use the final selected list for display (though controls will be disabled)
+            setCurrentOptionalAddOns(quoteData.details.client_selected_add_ons);
+          } else {
+            // If pending/rejected, use the original optional list, ensuring quantity is initialized
+            setCurrentOptionalAddOns(quoteData.details.addOns.map(item => ({
+                ...item,
+                quantity: item.quantity || 0 // Default to 0 if not set
+            })));
           }
         } else {
           setError('Quote not found.');
@@ -90,6 +95,20 @@ const DynamicQuotePage: React.FC = () => {
     fetchQuote();
   }, [slug]);
 
+  const handleQuantityChange = (itemId: string, delta: number) => {
+    if (isFinalized) return;
+
+    setCurrentOptionalAddOns(prev => 
+        prev.map(item => {
+            if (item.id === itemId) {
+                const newQuantity = Math.max(0, item.quantity + delta);
+                return { ...item, quantity: newQuantity };
+            }
+            return item;
+        })
+    );
+  };
+
   const handleAcceptQuote = async () => {
     if (!quote) return;
 
@@ -98,7 +117,7 @@ const DynamicQuotePage: React.FC = () => {
 
     try {
       // 1. Calculate final total based on selected add-ons
-      const finalAddOns = quote.details.addOns.filter(item => selectedAddOns.includes(item.id));
+      const finalAddOns = currentOptionalAddOns.filter(item => item.quantity > 0);
       
       // Ensure compulsoryTotal is calculated here for the payload
       const compulsoryTotal = quote.details.compulsoryItems.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0) || 0;
@@ -161,12 +180,6 @@ const DynamicQuotePage: React.FC = () => {
     }
   };
 
-  const handleAddOnChange = (itemId: string, checked: boolean) => {
-    setSelectedAddOns(prev => 
-      checked ? [...prev, itemId] : prev.filter(id => id !== itemId)
-    );
-  };
-
   if (loading) {
     return <div className="flex justify-center items-center h-screen text-xl">
       <Loader2 className="h-8 w-8 animate-spin text-brand-primary" />
@@ -189,18 +202,18 @@ const DynamicQuotePage: React.FC = () => {
   // Calculate compulsory total once
   const compulsoryTotal = compulsoryItems?.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0) || 0;
 
-  // Calculate totals based on current selections (or accepted total if finalized)
-  let selectedAddOnsData: QuoteItem[];
+  // Determine which list of add-ons to display and calculate subtotal
+  let displayAddOns: QuoteItem[];
   let subtotal: number;
   
-  if (isAccepted && details.client_selected_add_ons) {
-    // Use the finalized data if accepted
-    selectedAddOnsData = details.client_selected_add_ons;
+  if (isAccepted && quote.details.client_selected_add_ons) {
+    // If accepted, use the finalized data
+    displayAddOns = quote.details.client_selected_add_ons;
     subtotal = quote.total_amount;
   } else {
-    // Calculate based on current selection if pending or rejected
-    selectedAddOnsData = optionalAddOns.filter(item => selectedAddOns.includes(item.id));
-    const addOnTotal = selectedAddOnsData.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
+    // If pending/rejected, use the mutable state for calculation and display
+    displayAddOns = currentOptionalAddOns;
+    const addOnTotal = displayAddOns.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
     subtotal = compulsoryTotal + addOnTotal;
   }
 
@@ -306,8 +319,6 @@ const DynamicQuotePage: React.FC = () => {
               </section>
             )}
             
-            {/* Removed Content Images Section */}
-
             {/* Quote Breakdown */}
             <section className="space-y-6">
               <h2 className={`text-2xl font-bold text-center ${themeClasses.primary}`}>Service Components</h2>
@@ -338,38 +349,66 @@ const DynamicQuotePage: React.FC = () => {
               )}
             </section>
 
-            {/* Optional Add-Ons Section (Only show if pending or if accepted and add-ons were selected) */}
-            {optionalAddOns.length > 0 && (!isFinalized || (isAccepted && selectedAddOnsData.length > 0)) && (
+            {/* Optional Add-Ons Section */}
+            {optionalAddOns.length > 0 && (
               <div className={`mt-8 p-6 rounded-lg text-center border-2 ${themeClasses.acceptBoxBorder}`}>
                 <h2 className={`text-2xl font-extrabold mb-6 ${themeClasses.text}`}>Optional Add-Ons</h2>
                 
                 <div className="space-y-4 pt-4">
-                  {optionalAddOns.map((item) => {
-                    // Determine if this item was selected (either now, or when accepted)
-                    const isSelected = selectedAddOns.includes(item.id);
-                    
-                    // If finalized and not selected, skip rendering unless we want to show all options
-                    if (isFinalized && !isSelected) return null;
+                  {displayAddOns.map((item) => {
+                    // If finalized, we only show items with quantity > 0
+                    if (isFinalized && item.quantity === 0) return null;
+
+                    const itemTotal = calculateItemTotal(item);
 
                     return (
-                      <div key={item.id} className="flex items-center justify-between p-3 rounded-md transition-colors hover:bg-current/5">
-                        <div className="flex items-center space-x-3 flex-1">
-                          <Checkbox
-                            id={`addon-${item.id}`}
-                            checked={isSelected}
-                            onCheckedChange={(checked) => handleAddOnChange(item.id, !!checked)}
-                            disabled={isFinalized}
-                            className={themeClasses.checkbox}
-                          />
-                          <Label htmlFor={`addon-${item.id}`} className="cursor-pointer flex-1 text-left">
+                      <div key={item.id} className="flex flex-col sm:flex-row items-center justify-between p-3 rounded-md transition-colors hover:bg-current/5">
+                        <div className="flex-1 text-left space-y-1 sm:space-y-0">
                             <p className={`${themeClasses.text} flex items-start text-lg`}>
-                              <span className="font-bold">{item.name}:</span>
-                              {item.description && <span className={`text-base ml-2 ${themeClasses.secondary}`}>{item.description}</span>}
+                                <span className="font-bold">{item.name}:</span>
+                                {item.description && <span className={`text-base ml-2 ${themeClasses.secondary}`}>{item.description}</span>}
                             </p>
                             <p className={`text-sm ml-0 ${themeClasses.secondary}`}>Unit Cost: {formatCurrency(item.price)}</p>
-                          </Label>
                         </div>
-                        <p className={`font-semibold ${themeClasses.primary}`}>{formatCurrency(calculateItemTotal(item))}</p>
+                        
+                        <div className="flex items-center space-x-4 mt-2 sm:mt-0">
+                            {/* Quantity Controls */}
+                            {!isFinalized ? (
+                                <div className="flex items-center border rounded-md border-current/30">
+                                    <Button 
+                                        type="button" 
+                                        variant="ghost" 
+                                        size="icon" 
+                                        onClick={() => handleQuantityChange(item.id, -1)}
+                                        disabled={item.quantity <= 0}
+                                        className={`h-8 w-8 ${themeClasses.text} hover:bg-current/10`}
+                                    >
+                                        -
+                                    </Button>
+                                    <span className={`w-8 text-center font-semibold ${themeClasses.text}`}>
+                                        {item.quantity}
+                                    </span>
+                                    <Button 
+                                        type="button" 
+                                        variant="ghost" 
+                                        size="icon" 
+                                        onClick={() => handleQuantityChange(item.id, 1)}
+                                        className={`h-8 w-8 ${themeClasses.text} hover:bg-current/10`}
+                                    >
+                                        +
+                                    </Button>
+                                </div>
+                            ) : (
+                                <span className={`w-8 text-center font-semibold ${themeClasses.text}`}>
+                                    Qty: {item.quantity}
+                                </span>
+                            )}
+                            
+                            {/* Total Amount */}
+                            <p className={`font-semibold text-lg w-24 text-right ${themeClasses.primary}`}>
+                                {formatCurrency(itemTotal)}
+                            </p>
+                        </div>
                       </div>
                     );
                   })}
@@ -403,7 +442,7 @@ const DynamicQuotePage: React.FC = () => {
                 Final Total Cost: {formatCurrency(subtotal)}
               </h3>
               <p className={`text-sm ${themeClasses.secondary}`}>
-                This includes your selected add-ons and the base quote amount.
+                This includes the All-Inclusive Engagement Fee and your selected optional add-ons.
               </p>
             </div>
 

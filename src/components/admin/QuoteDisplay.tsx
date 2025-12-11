@@ -19,23 +19,22 @@ interface QuoteDisplayProps {
 }
 
 // Helper component for rendering a single item row
-const QuoteItemRow: React.FC<{ item: QuoteItem; currencySymbol: string; isOptional: boolean; isSelected?: boolean; themeClasses: any }> = ({
+const QuoteItemRow: React.FC<{ item: QuoteItem; currencySymbol: string; isOptional: boolean; themeClasses: any }> = ({
   item,
   currencySymbol,
   isOptional,
-  isSelected = true, // Default to true unless explicitly set to false (for unselected optional items)
   themeClasses,
 }) => {
+  const isSelected = item.quantity > 0;
   const totalAmount = item.price * item.quantity;
   
   // Logic to display unit cost for optional items that were NOT selected (quantity 0)
   const displayAmount = () => {
     if (isOptional && !isSelected) {
-      // If optional and not selected, show the unit price with a strikethrough 
-      // in the unit price column, and indicate 'Unselected' in the Amount column.
+      // If optional and not selected (quantity 0), show 'Unselected'
       return (
         <div className="text-right">
-          <span className="text-sm text-muted-foreground line-through">
+          <span className="text-sm text-muted-foreground">
             {formatCurrency(item.price, currencySymbol)}
           </span>
           <p className="text-xs text-red-500">Unselected</p>
@@ -46,6 +45,13 @@ const QuoteItemRow: React.FC<{ item: QuoteItem; currencySymbol: string; isOption
     // Otherwise, show the calculated total amount
     return formatCurrency(totalAmount, currencySymbol);
   };
+  
+  const displayQuantity = () => {
+    if (isOptional && !isSelected) {
+        return <span className="text-muted-foreground">0</span>;
+    }
+    return item.quantity;
+  }
 
   return (
     <TableRow className={isOptional && !isSelected ? 'opacity-60' : 'hover:bg-current/5'}>
@@ -55,7 +61,7 @@ const QuoteItemRow: React.FC<{ item: QuoteItem; currencySymbol: string; isOption
           <p className={`text-sm ${themeClasses.secondary} mt-1`}>{item.description}</p>
         )}
       </TableCell>
-      <TableCell className="text-center w-[100px] border-r border-current/10">{item.quantity}</TableCell>
+      <TableCell className="text-center w-[100px] border-r border-current/10">{displayQuantity()}</TableCell>
       <TableCell className="text-right w-[120px] border-r border-current/10">
         {formatCurrency(item.price, currencySymbol)}
       </TableCell>
@@ -73,14 +79,17 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
   // Determine which list of add-ons to display
   const isAccepted = !!accepted_at;
   
-  // If accepted, use the client_selected_add_ons from details if available, otherwise fall back to original addOns
-  const finalAddOns = isAccepted && details.client_selected_add_ons 
+  // If accepted, use the client_selected_add_ons (which only contains items with quantity > 0)
+  // If pending/rejected, use the original addOns list (which contains all optional items, with admin-set quantities, usually 0)
+  const optionalItemsToDisplay = isAccepted && details.client_selected_add_ons 
     ? details.client_selected_add_ons 
     : details.addOns;
 
   // Calculate totals based on the items displayed
   const compulsoryTotal = details.compulsoryItems.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
-  const addOnTotal = finalAddOns.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
+  
+  // Calculate addOnTotal based on the list being displayed (which already has the correct quantities)
+  const addOnTotal = optionalItemsToDisplay.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
   
   // If accepted, the total_amount from the DB is the final total. Otherwise, calculate based on proposal.
   const subtotal = isAccepted ? total_amount : (compulsoryTotal + addOnTotal); 
@@ -158,8 +167,6 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
         <p>{quote.client_email}</p>
       </div>
       
-      {/* Removed Content Images Section */}
-
       {/* Items Table */}
       <div className="pt-4">
         <h3 className={`text-xl font-semibold mb-4 ${themeClasses.primary}`}>Items Included</h3>
@@ -188,30 +195,21 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
             {details.addOns.length > 0 && (
               <TableRow className={`${themeClasses.tableHeaderBg} hover:${themeClasses.tableHeaderBg}`}>
                 <TableCell colSpan={4} className={`font-bold ${themeClasses.primary}`}>
-                  Optional Add-Ons {isAccepted && `(Client Selected: ${finalAddOns.length} of ${details.addOns.length})`}
+                  Optional Add-Ons {isAccepted && `(Client Selected: ${optionalItemsToDisplay.filter(i => i.quantity > 0).length} of ${details.addOns.length})`}
                 </TableCell>
               </TableRow>
             )}
             
-            {/* Display all original add-ons, marking unselected ones if pending/rejected */}
-            {details.addOns.map((item) => {
-              const isSelected = finalAddOns.some((finalItem: QuoteItem) => finalItem.id === item.id);
-              
-              // If accepted, only show selected items from the original list
-              if (isAccepted && !isSelected) return null;
-
-              // If pending/rejected, show all, marking unselected ones
-              return (
-                <QuoteItemRow 
-                  key={item.id} 
-                  item={item} 
-                  currencySymbol={currencySymbol} 
-                  isOptional={true} 
-                  isSelected={isSelected}
-                  themeClasses={themeClasses}
-                />
-              );
-            })}
+            {/* Display all optional items */}
+            {optionalItemsToDisplay.map((item) => (
+              <QuoteItemRow 
+                key={item.id} 
+                item={item} 
+                currencySymbol={currencySymbol} 
+                isOptional={true} 
+                themeClasses={themeClasses}
+              />
+            ))}
           </TableBody>
         </Table>
       </div>
