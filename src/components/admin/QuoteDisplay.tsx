@@ -72,7 +72,7 @@ const QuoteItemRow: React.FC<{
                     size="icon" 
                     onClick={() => onQuantityChange(item.id, -1)}
                     disabled={item.quantity <= 0}
-                    className={`h-7 w-7 ${themeClasses.text} hover:bg-current/10 p-0 rounded-full`}
+                    className={`h-7 w-7 ${themeClasses.primaryText} ${themeClasses.primaryHoverBg} p-0 rounded-full`}
                 >
                     -
                 </Button>
@@ -84,7 +84,7 @@ const QuoteItemRow: React.FC<{
                     variant="ghost" 
                     size="icon" 
                     onClick={() => onQuantityChange(item.id, 1)}
-                    className={`h-7 w-7 ${themeClasses.text} hover:bg-current/10 p-0 rounded-full`}
+                    className={`h-7 w-7 ${themeClasses.primaryText} ${themeClasses.primaryHoverBg} p-0 rounded-full`}
                 >
                     +
                 </Button>
@@ -170,6 +170,8 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         tableText: 'text-brand-light',
         contentImageBorder: 'border-brand-yellow/50',
         inputBg: 'bg-brand-dark-alt', // Added input background
+        primaryText: 'text-brand-yellow', // Added for interactive elements
+        primaryHoverBg: 'hover:bg-brand-yellow/20', // Added for interactive elements
       }
     : {
         // Default Theme (Premium Light/Pink)
@@ -185,6 +187,8 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         tableText: 'text-brand-dark',
         contentImageBorder: 'border-brand-primary/50',
         inputBg: 'bg-brand-light', // Added input background
+        primaryText: 'text-brand-primary', // Added for interactive elements
+        primaryHoverBg: 'hover:bg-brand-primary/10', // Added for interactive elements
       };
       
   const headerImagePositionClass = details.headerImagePosition || 'object-center';
