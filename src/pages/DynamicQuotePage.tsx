@@ -12,6 +12,7 @@ import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import DynamicImage from '@/components/DynamicImage'; // Import DynamicImage
 
 // Define the structure for the data fetched from Supabase (which includes the JSONB details)
 interface QuoteData extends Omit<Quote, 'details'> {
@@ -167,7 +168,9 @@ const DynamicQuotePage: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-screen text-xl">Loading...</div>;
+    return <div className="flex justify-center items-center h-screen text-xl">
+      <Loader2 className="h-8 w-8 animate-spin text-brand-primary" />
+    </div>;
   }
 
   if (error || !quote) {
@@ -183,7 +186,7 @@ const DynamicQuotePage: React.FC = () => {
   
   const symbol = currencySymbol || '$';
 
-  // Calculate compulsory total once (FIX: Moved here to ensure scope availability for JSX)
+  // Calculate compulsory total once
   const compulsoryTotal = compulsoryItems?.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0) || 0;
 
   // Calculate totals based on current selections (or accepted total if finalized)
@@ -210,36 +213,38 @@ const DynamicQuotePage: React.FC = () => {
   const isBlackGoldTheme = theme === 'black-gold';
   const themeClasses = isBlackGoldTheme
     ? {
-        // Gold/Black Theme (Live Piano)
-        bg: 'bg-gray-900',
-        cardBg: 'bg-gray-800',
-        text: 'text-gray-100',
-        primary: 'text-amber-400', // Gold color
-        secondary: 'text-gray-400',
-        border: 'border-amber-400/50',
-        separator: 'bg-amber-400 h-0.5',
-        headerText: 'text-gray-100',
-        acceptButton: 'bg-amber-400 text-gray-900 hover:bg-amber-500',
-        rejectButton: 'bg-gray-700 text-gray-100 hover:bg-gray-600',
-        totalBoxBg: 'bg-gray-700',
-        totalBoxText: 'text-amber-400',
-        acceptBoxBorder: 'border-amber-400/50',
+        // Black & Gold Theme (Premium Dark)
+        bg: 'bg-brand-dark',
+        cardBg: 'bg-brand-dark-alt',
+        text: 'text-brand-light',
+        primary: 'text-brand-yellow', // Gold
+        secondary: 'text-brand-light/70',
+        border: 'border-brand-yellow/50',
+        separator: 'bg-brand-yellow',
+        headerText: 'text-brand-light',
+        acceptButton: 'bg-brand-yellow text-brand-dark hover:bg-brand-yellow/90',
+        rejectButton: 'bg-red-600 text-white hover:bg-red-700',
+        totalBoxBg: 'bg-brand-dark',
+        totalBoxText: 'text-brand-yellow',
+        acceptBoxBorder: 'border-brand-yellow/50',
+        checkbox: 'border-brand-yellow data-[state=checked]:bg-brand-yellow data-[state=checked]:text-brand-dark',
       }
     : {
-        // White/Pink Theme (Default)
-        bg: 'bg-gray-50',
+        // Default Theme (Premium Light/Pink)
+        bg: 'bg-brand-light',
         cardBg: 'bg-white',
-        text: 'text-gray-800',
-        primary: 'text-pink-600', // Corrected pink color
-        secondary: 'text-gray-500',
-        border: 'border-pink-600/50',
-        separator: 'bg-pink-600 h-0.5',
-        headerText: 'text-gray-800',
-        acceptButton: 'bg-pink-600 text-white hover:bg-pink-700',
+        text: 'text-brand-dark',
+        primary: 'text-brand-primary', // Pink
+        secondary: 'text-brand-dark/70',
+        border: 'border-brand-primary/50',
+        separator: 'bg-brand-primary',
+        headerText: 'text-brand-dark',
+        acceptButton: 'bg-brand-primary text-white hover:bg-brand-primary/90',
         rejectButton: 'bg-red-600 text-white hover:bg-red-700',
-        totalBoxBg: 'bg-pink-50', // Light pink background
-        totalBoxText: 'text-pink-600',
-        acceptBoxBorder: 'border-pink-600/50',
+        totalBoxBg: 'bg-brand-secondary/20',
+        totalBoxText: 'text-brand-primary',
+        acceptBoxBorder: 'border-brand-primary/50',
+        checkbox: 'border-brand-primary data-[state=checked]:bg-brand-primary data-[state=checked]:text-white',
       };
       
   const eventDateFormatted = quote.event_date ? format(new Date(quote.event_date), 'EEEE dd MMMM yyyy') : 'TBD';
@@ -254,48 +259,41 @@ const DynamicQuotePage: React.FC = () => {
           {/* Header Image */}
           {headerImageUrl && (
             <div className="mb-6">
-              <img 
+              <DynamicImage 
                 src={headerImageUrl} 
                 alt="Quote Header" 
                 className="w-full h-64 object-cover rounded-t-lg shadow-md"
+                width={800}
+                height={256}
               />
             </div>
           )}
 
-          {/* Logo Placeholder (Based on design images) */}
-          <div className="text-center mb-8">
-            {/* Placeholder for logo/branding */}
-            <div className={`text-4xl font-serif font-bold ${themeClasses.primary}`}>
-              {isBlackGoldTheme ? 'Live Piano Services' : 'Daniele Buatti'}
-            </div>
-          </div>
-
-          <CardHeader className="pb-4 text-center">
-            <CardTitle className={`text-4xl font-extrabold ${themeClasses.primary}`}>{quote.event_title}</CardTitle>
+          <CardHeader className="pb-4 text-center px-6">
+            <CardTitle className={`text-5xl font-extrabold ${themeClasses.primary} leading-tight`}>{quote.event_title}</CardTitle>
             
-            <div className="space-y-1 pt-4">
-              {/* Metadata matching design structure */}
-              <p className={`text-lg ${themeClasses.headerText}`}>Client Email: <span className={`font-semibold ${themeClasses.primary}`}>{quote.client_email}</span></p>
-              <p className={`text-lg ${themeClasses.headerText}`}>Date of Event: <span className="font-semibold">{eventDateFormatted}</span></p>
-              {eventTime && <p className={`text-lg ${themeClasses.headerText}`}>Time: <span className="font-semibold">{eventTime}</span></p>}
-              <p className={`text-lg ${themeClasses.headerText}`}>Location: <span className="font-semibold">{quote.event_location}</span></p>
-              <p className={`text-lg ${themeClasses.headerText}`}>Prepared by: <span className="font-semibold">{quote.prepared_by}</span></p>
+            <div className="space-y-1 pt-4 text-lg">
+              <p className={`${themeClasses.headerText}`}>Prepared for: <span className={`font-semibold ${themeClasses.primary}`}>{quote.client_name}</span></p>
+              <p className={`${themeClasses.headerText}`}>Date of Event: <span className="font-semibold">{eventDateFormatted}</span></p>
+              {eventTime && <p className={`${themeClasses.headerText}`}>Time: <span className="font-semibold">{eventTime}</span></p>}
+              <p className={`${themeClasses.headerText}`}>Location: <span className="font-semibold">{quote.event_location}</span></p>
+              <p className={`${themeClasses.headerText}`}>Prepared by: <span className="font-semibold">{quote.prepared_by}</span></p>
             </div>
 
             {/* Custom Separator Line */}
             <div className="flex justify-center pt-4">
-              <div className={`w-1/3 ${themeClasses.separator}`}></div>
+              <div className={`w-1/3 h-0.5 ${themeClasses.separator}`}></div>
             </div>
             
             {isFinalized && (
-              <div className={`mt-4 p-3 rounded-md font-semibold flex items-center justify-center space-x-2 ${isAccepted ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+              <div className={`mt-4 p-3 rounded-md font-semibold flex items-center justify-center space-x-2 ${isAccepted ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'}`}>
                 {isAccepted ? <CheckCircle className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
                 <span>This quote was {isAccepted ? 'ACCEPTED' : 'REJECTED'} on {format(new Date(accepted_at || rejected_at!), 'PPP')}.</span>
               </div>
             )}
           </CardHeader>
 
-          <CardContent className="space-y-8">
+          <CardContent className="space-y-8 px-6">
             
             {/* Main Content / Description Block (Using preparationNotes) */}
             {preparationNotes && (
@@ -308,28 +306,27 @@ const DynamicQuotePage: React.FC = () => {
 
             {/* Quote Breakdown */}
             <section className="space-y-6">
-              <h2 className={`text-xl font-bold text-center ${themeClasses.primary}`}>Service Components</h2>
+              <h2 className={`text-2xl font-bold text-center ${themeClasses.primary}`}>Service Components</h2>
 
               {/* Compulsory Items */}
               {compulsoryItems.length > 0 && (
-                <div className="space-y-4">
+                <div className="space-y-4 border-b border-current/20 pb-4">
                   {compulsoryItems.map((item, index) => (
-                    <div key={index} className="pb-3">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1 pr-4">
-                          <p className={`${themeClasses.text} flex items-start`}>
-                            <span className={`mr-2 ${themeClasses.primary} text-lg leading-none`}>&bull;</span>
-                            <span className="font-bold">{item.name}:</span>
-                            {item.description && <span className={`text-sm ml-1 ${themeClasses.secondary}`}>{item.description}</span>}
-                          </p>
-                        </div>
+                    <div key={index} className="flex justify-between items-start">
+                      <div className="flex-1 pr-4">
+                        <p className={`${themeClasses.text} flex items-start text-lg`}>
+                          <span className={`mr-2 ${themeClasses.primary} text-xl leading-none`}>&bull;</span>
+                          <span className="font-bold">{item.name}:</span>
+                          {item.description && <span className={`text-base ml-2 ${themeClasses.secondary}`}>{item.description}</span>}
+                        </p>
                       </div>
+                      <p className={`font-bold text-lg ${themeClasses.primary}`}>{formatCurrency(calculateItemTotal(item))}</p>
                     </div>
                   ))}
                   
                   {/* All-Inclusive Total (Based on design) */}
                   <div className="text-center pt-4">
-                    <p className={`text-2xl font-extrabold ${themeClasses.primary}`}>
+                    <p className={`text-3xl font-extrabold ${themeClasses.primary}`}>
                       All-Inclusive Engagement Fee: {formatCurrency(compulsoryTotal)}
                     </p>
                   </div>
@@ -351,22 +348,21 @@ const DynamicQuotePage: React.FC = () => {
                     if (isFinalized && !isSelected) return null;
 
                     return (
-                      <div key={item.id} className="flex items-center justify-between p-3 rounded-md transition-colors">
+                      <div key={item.id} className="flex items-center justify-between p-3 rounded-md transition-colors hover:bg-current/5">
                         <div className="flex items-center space-x-3 flex-1">
                           <Checkbox
                             id={`addon-${item.id}`}
                             checked={isSelected}
                             onCheckedChange={(checked) => handleAddOnChange(item.id, !!checked)}
                             disabled={isFinalized}
-                            className={isBlackGoldTheme ? 'border-amber-400 data-[state=checked]:bg-amber-400 data-[state=checked]:text-gray-900' : 'border-pink-600 data-[state=checked]:bg-pink-600 data-[state=checked]:text-white'}
+                            className={themeClasses.checkbox}
                           />
                           <Label htmlFor={`addon-${item.id}`} className="cursor-pointer flex-1 text-left">
-                            <p className={`${themeClasses.text} flex items-start`}>
-                              <span className={`mr-2 ${themeClasses.primary} text-lg leading-none`}>&bull;</span>
+                            <p className={`${themeClasses.text} flex items-start text-lg`}>
                               <span className="font-bold">{item.name}:</span>
-                              {item.description && <span className={`text-sm ml-1 ${themeClasses.secondary}`}>{item.description}</span>}
+                              {item.description && <span className={`text-base ml-2 ${themeClasses.secondary}`}>{item.description}</span>}
                             </p>
-                            <p className={`text-xs ml-4 ${themeClasses.secondary}`}>Unit Cost: {formatCurrency(item.price)}</p>
+                            <p className={`text-sm ml-0 ${themeClasses.secondary}`}>Unit Cost: {formatCurrency(item.price)}</p>
                           </Label>
                         </div>
                         <p className={`font-semibold ${themeClasses.primary}`}>{formatCurrency(calculateItemTotal(item))}</p>
@@ -378,31 +374,31 @@ const DynamicQuotePage: React.FC = () => {
             )}
 
             {/* Important Booking Details Section */}
-            <section className={`mt-12 p-6 rounded-lg ${isBlackGoldTheme ? 'bg-gray-700' : 'bg-white border border-gray-200'}`}>
-              <h2 className={`text-2xl font-extrabold text-center mb-4 ${themeClasses.headerText}`}>Important Booking Details</h2>
+            <section className={`mt-12 p-6 rounded-lg ${isBlackGoldTheme ? 'bg-brand-dark' : 'bg-brand-secondary/10'} border border-current/20`}>
+              <h2 className={`text-2xl font-extrabold text-center mb-4 ${themeClasses.primary}`}>Important Booking Details</h2>
               
-              <ul className={`space-y-3 text-sm ${themeClasses.headerText}`}>
+              <ul className={`space-y-3 text-base ${themeClasses.text} list-disc list-inside pl-4`}>
                 <li>
-                  <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> A non-refundable <span className="font-bold">{depositPercentage}% deposit ({formatCurrency(depositAmount)})</span> is required immediately to formally secure {isBlackGoldTheme ? `the ${eventDateShort} date` : 'the booking'}.
+                  <span className={`font-bold ${themeClasses.primary}`}>Deposit:</span> A non-refundable <span className="font-bold">{depositPercentage}% deposit ({formatCurrency(depositAmount)})</span> is required immediately to formally secure {eventDateShort}.
                 </li>
                 <li>
-                  <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> The remaining balance is due 7 days prior to the event.
+                  <span className={`font-bold ${themeClasses.primary}`}>Balance:</span> The remaining balance is due 7 days prior to the event.
                 </li>
                 <li>
-                  <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> Bank Details for Payment: BSB: {bankDetails.bsb}, ACC: {bankDetails.acc}
+                  <span className={`font-bold ${themeClasses.primary}`}>Payment:</span> Bank Details: BSB: {bankDetails.bsb}, ACC: {bankDetails.acc}
                 </li>
                 <li>
-                  <span className={`font-bold ${themeClasses.primary}`}>&bull;</span> Terms: {paymentTerms}
+                  <span className={`font-bold ${themeClasses.primary}`}>Terms:</span> {paymentTerms}
                 </li>
               </ul>
             </section>
             
             {/* Final Total Cost Box */}
-            <div className={`mt-8 p-6 rounded-lg text-center ${themeClasses.totalBoxBg}`}>
-              <h3 className={`text-3xl font-extrabold ${themeClasses.totalBoxText}`}>
+            <div className={`mt-8 p-6 rounded-lg text-center ${themeClasses.totalBoxBg} border-2 ${themeClasses.acceptBoxBorder}`}>
+              <h3 className={`text-4xl font-extrabold ${themeClasses.totalBoxText}`}>
                 Final Total Cost: {formatCurrency(subtotal)}
               </h3>
-              <p className={`text-sm ${isBlackGoldTheme ? themeClasses.secondary : themeClasses.text}`}>
+              <p className={`text-sm ${themeClasses.secondary}`}>
                 This includes your selected add-ons and the base quote amount.
               </p>
             </div>
@@ -432,7 +428,7 @@ const DynamicQuotePage: React.FC = () => {
                     </Button>
                   </>
                 ) : (
-                  <Button onClick={() => navigate('/')}>
+                  <Button onClick={() => navigate('/')} className={themeClasses.acceptButton}>
                     Back to Home
                   </Button>
                 )}
@@ -441,8 +437,8 @@ const DynamicQuotePage: React.FC = () => {
 
           </CardContent>
 
-          <CardFooter className="flex justify-center pt-6 border-t">
-            <p className="text-xs italic text-gray-500">
+          <CardFooter className="flex justify-center pt-6 border-t border-current/20">
+            <p className={`text-xs italic ${themeClasses.secondary}`}>
               Quote prepared by {quote.prepared_by} on {format(new Date(quote.created_at), 'PPP')}.
             </p>
           </CardFooter>

@@ -12,17 +12,19 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
+import DynamicImage from '../DynamicImage'; // Import DynamicImage
 
 interface QuoteDisplayProps {
   quote: Quote;
 }
 
 // Helper component for rendering a single item row
-const QuoteItemRow: React.FC<{ item: QuoteItem; currencySymbol: string; isOptional: boolean; isSelected?: boolean }> = ({
+const QuoteItemRow: React.FC<{ item: QuoteItem; currencySymbol: string; isOptional: boolean; isSelected?: boolean; themeClasses: any }> = ({
   item,
   currencySymbol,
   isOptional,
   isSelected = true, // Default to true unless explicitly set to false (for unselected optional items)
+  themeClasses,
 }) => {
   const totalAmount = item.price * item.quantity;
   
@@ -46,15 +48,15 @@ const QuoteItemRow: React.FC<{ item: QuoteItem; currencySymbol: string; isOption
   };
 
   return (
-    <TableRow className={isOptional && !isSelected ? 'opacity-60' : ''}>
-      <TableCell className="font-medium">
+    <TableRow className={isOptional && !isSelected ? 'opacity-60' : 'hover:bg-current/5'}>
+      <TableCell className="font-medium border-r border-current/10">
         {item.name}
         {item.description && (
-          <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
+          <p className={`text-sm ${themeClasses.secondary} mt-1`}>{item.description}</p>
         )}
       </TableCell>
-      <TableCell className="text-center w-[100px]">{item.quantity}</TableCell>
-      <TableCell className="text-right w-[120px]">
+      <TableCell className="text-center w-[100px] border-r border-current/10">{item.quantity}</TableCell>
+      <TableCell className="text-right w-[120px] border-r border-current/10">
         {formatCurrency(item.price, currencySymbol)}
       </TableCell>
       <TableCell className="text-right font-semibold w-[120px]">
@@ -87,58 +89,83 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
   const depositAmount = subtotal * (details.depositPercentage / 100);
   const remainingBalance = subtotal - depositAmount;
 
-  // Theme classes (simplified for display component)
+  // Theme setup
   const isBlackGoldTheme = details.theme === 'black-gold';
-  const bgClass = isBlackGoldTheme ? 'bg-gray-900 text-white' : 'bg-white text-gray-900';
-  const tableHeaderClass = isBlackGoldTheme ? 'bg-gray-800 hover:bg-gray-800 text-white' : 'bg-gray-100 hover:bg-gray-100 text-gray-900';
-  const separatorClass = isBlackGoldTheme ? 'bg-gray-700' : 'bg-gray-300';
-  const primaryColor = isBlackGoldTheme ? 'text-amber-400' : 'text-pink-600';
-  const secondaryColor = isBlackGoldTheme ? 'text-gray-400' : 'text-gray-500';
+  
+  const themeClasses = isBlackGoldTheme
+    ? {
+        // Black & Gold Theme (Premium Dark)
+        bg: 'bg-brand-dark',
+        text: 'text-brand-light',
+        primary: 'text-brand-yellow', // Gold
+        secondary: 'text-brand-light/70',
+        tableHeaderBg: 'bg-brand-dark-alt',
+        tableBorder: 'border-brand-dark-alt',
+        separator: 'bg-brand-yellow',
+        totalBoxBg: 'bg-brand-dark-alt',
+        totalBoxText: 'text-brand-yellow',
+        tableText: 'text-brand-light',
+      }
+    : {
+        // Default Theme (Premium Light/Pink)
+        bg: 'bg-brand-light',
+        text: 'text-brand-dark',
+        primary: 'text-brand-primary', // Pink
+        secondary: 'text-brand-dark/70',
+        tableHeaderBg: 'bg-brand-secondary/30',
+        tableBorder: 'border-brand-secondary',
+        separator: 'bg-brand-primary',
+        totalBoxBg: 'bg-brand-secondary/20',
+        totalBoxText: 'text-brand-primary',
+        tableText: 'text-brand-dark',
+      };
 
   return (
-    <div className={`p-8 max-w-4xl mx-auto space-y-8 ${bgClass}`}>
+    <div className={`p-8 max-w-4xl mx-auto space-y-8 ${themeClasses.bg} ${themeClasses.text}`}>
       
       {/* Header Image */}
       {details.headerImageUrl && (
         <div className="mb-8">
-          <img 
+          <DynamicImage 
             src={details.headerImageUrl} 
             alt="Quote Header" 
-            className="w-full h-48 object-cover rounded-lg shadow-md"
+            className="w-full h-48 object-cover rounded-lg shadow-xl"
+            width={800}
+            height={192}
           />
         </div>
       )}
 
       {/* Quote/Invoice Details */}
-      <div className="flex justify-between items-start border-b pb-4 border-gray-700">
+      <div className={`flex justify-between items-start border-b pb-4 border-current/20`}>
         <div>
-          <h1 className={`text-4xl font-extrabold ${primaryColor}`}>{quote.invoice_type}</h1>
+          <h1 className={`text-5xl font-extrabold ${themeClasses.primary}`}>{quote.invoice_type}</h1>
           <p className="text-lg mt-2">Prepared By: {quote.prepared_by}</p>
         </div>
         <div className="text-right">
           <h2 className="text-2xl font-semibold">{quote.event_title}</h2>
-          <p className="mt-1">{quote.event_date} {details.eventTime}</p>
-          <p>{quote.event_location}</p>
+          <p className="mt-1 text-sm">{quote.event_date} {details.eventTime}</p>
+          <p className="text-sm">{quote.event_location}</p>
         </div>
       </div>
 
       {/* Client Details */}
       <div className="pt-4">
-        <h3 className="text-xl font-semibold mb-2">Client:</h3>
+        <h3 className={`text-xl font-semibold mb-2 ${themeClasses.primary}`}>Client:</h3>
         <p>{quote.client_name}</p>
         <p>{quote.client_email}</p>
       </div>
 
       {/* Items Table */}
       <div className="pt-4">
-        <h3 className="text-xl font-semibold mb-4">Items Included</h3>
-        <Table className="border border-gray-700">
+        <h3 className={`text-xl font-semibold mb-4 ${themeClasses.primary}`}>Items Included</h3>
+        <Table className={`border ${themeClasses.tableBorder} ${themeClasses.tableText}`}>
           <TableHeader>
-            <TableRow className={tableHeaderClass}>
-              <TableHead className="text-current">Description</TableHead>
-              <TableHead className="text-center text-current w-[100px]">Qty</TableHead>
-              <TableHead className="text-right text-current w-[120px]">Unit Price</TableHead>
-              <TableHead className="text-right text-current w-[120px]">Amount</TableHead>
+            <TableRow className={themeClasses.tableHeaderBg}>
+              <TableHead className={`font-bold ${themeClasses.primary} border-r border-current/10`}>Description</TableHead>
+              <TableHead className={`text-center font-bold ${themeClasses.primary} w-[100px] border-r border-current/10`}>Qty</TableHead>
+              <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px] border-r border-current/10`}>Unit Price</TableHead>
+              <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px]`}>Amount</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -149,13 +176,14 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
                 item={item} 
                 currencySymbol={currencySymbol} 
                 isOptional={false} 
+                themeClasses={themeClasses}
               />
             ))}
 
             {/* Add-Ons (Optional Items) */}
             {details.addOns.length > 0 && (
-              <TableRow className="bg-gray-700/50 hover:bg-gray-700/50">
-                <TableCell colSpan={4} className={`font-bold ${primaryColor}`}>
+              <TableRow className={`${themeClasses.tableHeaderBg} hover:${themeClasses.tableHeaderBg}`}>
+                <TableCell colSpan={4} className={`font-bold ${themeClasses.primary}`}>
                   Optional Add-Ons {isAccepted && `(Client Selected: ${finalAddOns.length} of ${details.addOns.length})`}
                 </TableCell>
               </TableRow>
@@ -176,6 +204,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
                   currencySymbol={currencySymbol} 
                   isOptional={true} 
                   isSelected={isSelected}
+                  themeClasses={themeClasses}
                 />
               );
             })}
@@ -191,24 +220,24 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
             <span>{formatCurrency(subtotal, currencySymbol)}</span>
           </div>
           
-          <Separator className={separatorClass} />
+          <Separator className={themeClasses.separator} />
 
-          <div className="flex justify-between font-bold text-xl">
-            <span>Total:</span>
-            <span>{formatCurrency(subtotal, currencySymbol)}</span>
+          <div className={`flex justify-between font-bold text-xl p-2 ${themeClasses.totalBoxBg} rounded-md`}>
+            <span className={themeClasses.totalBoxText}>Total:</span>
+            <span className={themeClasses.totalBoxText}>{formatCurrency(subtotal, currencySymbol)}</span>
           </div>
 
-          <Separator className={separatorClass} />
+          <Separator className={themeClasses.separator} />
 
           {/* Deposit Section */}
           <div className="pt-4 space-y-2">
             <div className="flex justify-between text-lg font-semibold">
-              <span>Deposit Required ({details.depositPercentage}%):</span>
-              <span>{formatCurrency(depositAmount, currencySymbol)}</span>
+              <span className={themeClasses.primary}>Deposit Required ({details.depositPercentage}%):</span>
+              <span className={themeClasses.primary}>{formatCurrency(depositAmount, currencySymbol)}</span>
             </div>
-            <div className="flex justify-between text-lg font-semibold text-brand-secondary">
-              <span>Remaining Balance:</span>
-              <span>{formatCurrency(remainingBalance, currencySymbol)}</span>
+            <div className="flex justify-between text-lg font-semibold">
+              <span className={themeClasses.secondary}>Remaining Balance:</span>
+              <span className={themeClasses.secondary}>{formatCurrency(remainingBalance, currencySymbol)}</span>
             </div>
           </div>
         </div>
@@ -216,17 +245,17 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote }) => {
 
       {/* Preparation Notes */}
       {details.preparationNotes && (
-        <div className="pt-4 border-t border-gray-700">
-          <h3 className="text-xl font-semibold mb-2">Preparation Notes</h3>
-          <p className={`whitespace-pre-wrap text-sm ${secondaryColor}`}>{details.preparationNotes}</p>
+        <div className={`pt-4 border-t border-current/20`}>
+          <h3 className={`text-xl font-semibold mb-2 ${themeClasses.primary}`}>Preparation & Service Notes</h3>
+          <p className={`whitespace-pre-wrap text-sm ${themeClasses.secondary}`}>{details.preparationNotes}</p>
         </div>
       )}
 
       {/* Payment Terms */}
-      <div className="pt-4 border-t border-gray-700">
-        <h3 className="text-xl font-semibold mb-2">Payment Terms</h3>
-        <p className={`text-sm ${secondaryColor}`}>{details.paymentTerms}</p>
-        <p className={`text-sm ${secondaryColor} mt-2`}>
+      <div className={`pt-4 border-t border-current/20`}>
+        <h3 className={`text-xl font-semibold mb-2 ${themeClasses.primary}`}>Payment Terms</h3>
+        <p className={`text-sm ${themeClasses.secondary}`}>{details.paymentTerms}</p>
+        <p className={`text-sm ${themeClasses.secondary} mt-2`}>
           Bank Details: BSB {details.bankDetails.bsb}, ACC {details.bankDetails.acc}
         </p>
       </div>

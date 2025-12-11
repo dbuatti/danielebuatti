@@ -73,6 +73,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onSubmit, isSubmitting, onP
   };
 
   const handleSave = () => {
+    // Manually trigger validation before saving draft if needed, 
+    // but for drafts, we often allow partial data. We rely on the parent component's handler.
     onSaveDraft(getValues());
   };
 
@@ -214,7 +216,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onSubmit, isSubmitting, onP
               <FormItem>
                 <FormLabel>Currency Symbol</FormLabel>
                 <FormControl>
-                  <Input placeholder="$" {...field} />
+                  <Input placeholder="A$" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -237,7 +239,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onSubmit, isSubmitting, onP
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="default">Default (Light/Pink)</SelectItem>
+                    <SelectItem value="default">Default (White/Pink)</SelectItem>
                     <SelectItem value="black-gold">Black & Gold</SelectItem>
                   </SelectContent>
                 </Select>

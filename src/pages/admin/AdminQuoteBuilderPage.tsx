@@ -27,17 +27,17 @@ const defaultFormValues: Partial<QuoteFormValues> = {
   eventTime: '', // Added explicit default value
   eventLocation: '',
   preparedBy: 'Daniele Buatti', // Updated default
-  currencySymbol: '$',
+  currencySymbol: 'A$', // Changed default currency to A$
   depositPercentage: 50,
   paymentTerms: 'Payment due within 7 days.',
   bankBSB: '923100', // Default BSB
   bankACC: '301110875', // Default ACC
   // New defaults
   theme: 'black-gold', // Default theme set to the new Black/Gold theme
-  headerImageUrl: '', // Placeholder image URL
+  headerImageUrl: '/blacktie.avif', // Default image URL
   preparationNotes: 'This fee covers 7 hours of commitment, including the performance call, soundcheck, and all essential preparation required for a seamless, high-energy performance.\n\nThis fee secures a premium, seamless musical experience for your event.', // New default preparation notes
   // Updated item structure (using 'name' and 'description' now)
-  compulsoryItems: [{ name: 'Service Fee', description: 'Standard service charge.', amount: 1000 }],
+  compulsoryItems: [{ name: 'Live Piano Performance Fee', description: '3 hours of performance time.', amount: 1000 }], // Updated default item
   addOns: [],
 };
 
@@ -296,13 +296,14 @@ const AdminQuoteBuilderPage: React.FC = () => {
           id: item.id || Math.random().toString(36).substring(2, 11),
           name: item.name, // Use new name field
           description: item.description || '', // Use new description field
-          amount: item.amount ?? 0, // Ensure amount is a number
+          price: item.amount ?? 0, // Use amount as price for compulsory items
+          quantity: 1, // Compulsory items always have quantity 1 in QuoteItem structure
         })),
         addOns: values.addOns?.map(addOn => ({
           id: addOn.id || Math.random().toString(36).substring(2, 11),
           name: addOn.name, // Use new name field
           description: addOn.description || '', // Use new description field
-          cost: addOn.cost ?? 0, // Ensure cost is a number
+          price: addOn.cost ?? 0, // Use cost as price for add-ons
           quantity: addOn.quantity ?? 1, // Ensure quantity is a number
         })) || [],
         depositPercentage: values.depositPercentage,
