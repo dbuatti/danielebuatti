@@ -176,13 +176,16 @@ const AdminQuoteBuilderPage: React.FC = () => {
         description: item.description || '', // Use the new 'description' field from AI
         amount: item.amount,
       })));
+      
+      // Set quantity to 0 for optional add-ons upon extraction, as requested
       form.setValue('addOns', extractedContent.addOns.map(item => ({
         id: Math.random().toString(36).substring(2, 11),
         name: item.name, // Use the new 'name' field from AI
         description: item.description || '', // Use the new 'description' field from AI
         cost: item.cost,
-        quantity: item.quantity,
+        quantity: 0, // Defaulting quantity to 0 for optional add-ons
       })));
+      
       form.setValue('paymentTerms', extractedContent.paymentTerms);
       form.setValue('preparationNotes', extractedContent.preparationNotes);
 
