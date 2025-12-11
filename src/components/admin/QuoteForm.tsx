@@ -36,9 +36,9 @@ export const QuoteFormSchema = z.object({
   bankBSB: z.string().min(1, 'BSB is required.'),
   bankACC: z.string().min(1, 'Account Number is required.'),
   theme: z.enum(['default', 'black-gold']), // Added 'black-gold' theme
-  headerImageUrl: z.string().url('Must be a valid URL').or(z.literal('')),
-  contentImageUrl1: z.string().url('Must be a valid URL').or(z.literal('')), // New field
-  contentImageUrl2: z.string().url('Must be a valid URL').or(z.literal('')), // New field
+  headerImageUrl: z.string(), // Simplified validation
+  contentImageUrl1: z.string(), // Simplified validation
+  contentImageUrl2: z.string(), // Simplified validation
   
   // New field for detailed notes
   preparationNotes: z.string().optional(), 
