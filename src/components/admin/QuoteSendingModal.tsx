@@ -91,7 +91,7 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
           <p style="font-size: 16px; line-height: 1.6; color: ${themeConfig.secondaryColor};">Please find attached your <strong style="color: ${themeConfig.primaryColor};">personalised</strong> quote proposal for <strong>${quote.event_title}</strong> on ${quote.event_date}.</p>
           
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${quoteUrl}" style="background-color: ${themeConfig.primaryColor}; color: #FFFFFF; padding: 12px 24px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; display: inline-block;">
+            <a href="${quoteUrl}" style="background-color: ${themeConfig.primaryColor}; color: ${themeConfig.cardBg}; padding: 12px 24px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; display: inline-block;">
               View & Accept Quote
             </a>
           </div>
