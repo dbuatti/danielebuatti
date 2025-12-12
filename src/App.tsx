@@ -6,7 +6,7 @@ import RootLayout from './layouts/RootLayout';
 import AdminLayout from './pages/admin/AdminLayout';
 import { SessionContextProvider } from './components/SessionContextProvider';
 import ScrollToTop from './components/ScrollToTop';
-import DynamicSeo from './components/DynamicSeo'; // NEW: Import DynamicSeo
+import FaviconManager from './components/FaviconManager'; // Import FaviconManager
 
 // Public Pages
 import LandingPageV3 from './pages/LandingPageV3';
@@ -35,15 +35,13 @@ import AdminEditQuotePage from './pages/admin/AdminEditQuotePage';
 import AdminAmebBookingsPage from './pages/admin/AdminAmebBookingsPage';
 import AdminAmebBookingDetailsPage from './pages/admin/AdminAmebBookingDetailsPage';
 import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage';
-import SeoStructuredData from './components/SeoStructuredData';
 
 
 function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <DynamicSeo />
-      <SeoStructuredData />
+      <FaviconManager />
       <SessionContextProvider>
         <Routes>
           <Route path="/" element={<RootLayout />}>
