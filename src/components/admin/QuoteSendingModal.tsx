@@ -12,7 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2, Send, Eye, Copy } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase }
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import { Quote, QuoteTheme } from '@/types/quote';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -69,7 +69,7 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
     
     const footerHtml = `
       <div style="text-align: center; padding: 20px 0; border-top: 1px solid ${themeConfig.secondaryColor}33; margin-top: 20px;">
-        <img src="${themeConfig.logo}" alt="${themeConfig.logoAlt}" style="height: 40px; margin-bottom: 10px;" />
+        <img src="${themeConfig.logo}" alt="${themeConfig.logoAlt}" style="height: 40px; width: 40px; margin-bottom: 10px;" />
         <p style="font-size: 14px; color: ${themeConfig.secondaryColor}CC; margin: 5px 0;">
           Embodied Coaching for Performers & Communicators
         </p>
