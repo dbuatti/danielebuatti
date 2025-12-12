@@ -24,6 +24,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+// Define favicon paths
+const BRAND_FAVICON_PATH = '/blue-pink-ontrans.png?v=1';
+const GOLD_FAVICON_PATH = '/gold-36.png';
+
 // Define the structure for the data fetched from Supabase (which includes the JSONB details)
 interface QuoteData extends Omit<Quote, 'details'> {
   details: {
@@ -69,6 +73,33 @@ const DynamicQuotePage: React.FC = () => {
         clientEmail: '',
     },
   });
+
+  // --- Favicon Management ---
+  useEffect(() => {
+    if (!quote) return;
+
+    const isBlackGoldTheme = quote.details.theme === 'black-gold';
+    const faviconPath = isBlackGoldTheme ? GOLD_FAVICON_PATH : BRAND_FAVICON_PATH;
+
+    const updateFavicon = (rel: string, path: string) => {
+      let link: HTMLLinkElement | null = document.querySelector(`link[rel*='${rel}']`) as HTMLLinkElement;
+      
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = rel;
+        document.getElementsByTagName('head')[0].appendChild(link);
+      }
+      
+      // Only update if the path is different to avoid unnecessary DOM manipulation
+      if (link.getAttribute('href') !== path) {
+          link.href = path;
+      }
+    };
+
+    updateFavicon('icon', faviconPath);
+    updateFavicon('shortcut icon', faviconPath);
+    
+  }, [quote]);
 
   useEffect(() => {
     if (!slug) {
