@@ -65,18 +65,18 @@ const QuoteItemRow: React.FC<{
     if (isOptional && isClientView && !isFinalized && onQuantityChange) {
         // Interactive controls for client view (pending state)
         return (
-            <div className={`flex items-center justify-center border rounded-full border-current/30 mx-auto w-24 h-8 ${themeClasses.inputBg}`}>
+            <div className={`flex items-center justify-center border rounded-full border-current/30 mx-auto w-full h-7 ${themeClasses.inputBg}`}>
                 <Button 
                     type="button" 
                     variant="ghost" 
                     size="icon" 
                     onClick={() => onQuantityChange(item.id, -1)}
                     disabled={item.quantity <= 0}
-                    className={`h-7 w-7 ${themeClasses.primaryText} ${themeClasses.primaryHoverBg} p-0 rounded-full`}
+                    className={`h-6 w-6 ${themeClasses.primaryText} ${themeClasses.primaryHoverBg} p-0 rounded-full`} // Reduced size
                 >
                     -
                 </Button>
-                <span className={`w-8 text-center font-semibold text-sm ${themeClasses.text}`}>
+                <span className={`w-6 text-center font-semibold text-sm ${themeClasses.text}`}> // Reduced width
                     {item.quantity}
                 </span>
                 <Button 
@@ -84,7 +84,7 @@ const QuoteItemRow: React.FC<{
                     variant="ghost" 
                     size="icon" 
                     onClick={() => onQuantityChange(item.id, 1)}
-                    className={`h-7 w-7 ${themeClasses.primaryText} ${themeClasses.primaryHoverBg} p-0 rounded-full`}
+                    className={`h-6 w-6 ${themeClasses.primaryText} ${themeClasses.primaryHoverBg} p-0 rounded-full`} // Reduced size
                 >
                     +
                 </Button>
@@ -107,11 +107,11 @@ const QuoteItemRow: React.FC<{
           <p className={`text-sm ${themeClasses.secondary} mt-1`}>{item.description}</p>
         )}
       </TableCell>
-      <TableCell className="text-center w-[100px] border-r border-current/10 py-3">{displayQuantity()}</TableCell>
-      <TableCell className="text-right w-[120px] border-r border-current/10 py-3">
+      <TableCell className="text-center w-[60px] sm:w-[100px] border-r border-current/10 py-3">{displayQuantity()}</TableCell>
+      <TableCell className="text-right w-[80px] sm:w-[120px] border-r border-current/10 py-3">
         {formatCurrency(item.price, currencySymbol)}
       </TableCell>
-      <TableCell className="text-right font-semibold w-[120px] py-3">
+      <TableCell className="text-right font-semibold w-[80px] sm:w-[120px] py-3">
         {displayAmount()}
       </TableCell>
     </TableRow>
@@ -241,9 +241,9 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
           <TableHeader>
             <TableRow className={themeClasses.tableHeaderBg}>
               <TableHead className={`font-bold ${themeClasses.primary} border-r border-current/10 py-3`}>Description</TableHead>
-              <TableHead className={`text-center font-bold ${themeClasses.primary} w-[100px] border-r border-current/10 py-3`}>Qty</TableHead>
-              <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px] border-r border-current/10 py-3`}>Unit Price</TableHead>
-              <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px] py-3`}>Amount</TableHead>
+              <TableHead className={`text-center font-bold ${themeClasses.primary} w-[60px] sm:w-[100px] border-r border-current/10 py-3`}>Qty</TableHead>
+              <TableHead className={`text-right font-bold ${themeClasses.primary} w-[80px] sm:w-[120px] border-r border-current/10 py-3`}>Unit Price</TableHead>
+              <TableHead className={`text-right font-bold ${themeClasses.primary} w-[80px] sm:w-[120px] py-3`}>Amount</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
