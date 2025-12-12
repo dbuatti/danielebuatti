@@ -23,6 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import SeoMetadata from '@/components/SeoMetadata'; // Import SeoMetadata
 
 // Define favicon paths
 const BRAND_FAVICON_PATH = '/blue-pink-ontrans.png?v=1';
@@ -298,9 +299,21 @@ const DynamicQuotePage: React.FC = () => {
         statusRejectedBg: 'bg-red-100',
         statusRejectedText: 'text-red-700',
       };
+      
+  // SEO Metadata for Quote Page
+  const quoteTitle = `${quote.invoice_type} for ${quote.client_name} - ${quote.event_title}`;
+  const quoteDescription = `Review your personalized quote proposal for ${quote.event_title} on ${quote.event_date}. Total: ${quote.details.currencySymbol}${quote.total_amount.toFixed(2)}.`;
+  const quoteImage = isBlackGoldTheme ? `${window.location.origin}/blackgoldquoteimage1.jpg` : `${window.location.origin}/whitepinkquoteimage1.jpeg`;
+  const quoteUrl = `${window.location.origin}/quotes/${quote.slug}`;
 
   return (
     <ScrollArea className={`min-h-screen ${themeClasses.bg}`}>
+      <SeoMetadata 
+        title={quoteTitle}
+        description={quoteDescription}
+        image={quoteImage}
+        url={quoteUrl}
+      />
       <div className={`max-w-6xl mx-auto p-4 sm:p-8`}>
         <Card className={`shadow-2xl rounded-lg ${themeClasses.cardBg} ${themeClasses.text} border-2 ${themeClasses.border} p-0`}>
           
