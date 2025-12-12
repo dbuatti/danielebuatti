@@ -13,7 +13,6 @@ import {
 } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
 import DynamicImage from '../DynamicImage';
-import { Button } from '../ui/button';
 import QuoteItemMobileList from './QuoteItemMobileList'; // Import the new component
 
 interface QuoteDisplayProps {
