@@ -29,7 +29,7 @@ const defaultQuoteValues: QuoteFormValues = {
   eventTime: '18:00',
   eventLocation: '',
   preparedBy: 'Daniele Buatti',
-  currencySymbol: '£',
+  currencySymbol: 'A$',
   depositPercentage: 50,
   paymentTerms: 'Payment due within 7 days of acceptance.',
   bankBSB: '923100',
