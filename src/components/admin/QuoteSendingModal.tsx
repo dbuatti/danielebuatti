@@ -12,7 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2, Send, Eye, Copy } from 'lucide-react';
-import { supabase }
+import { supabase } from '@/integrations/supabase/client';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import { Quote, QuoteTheme } from '@/types/quote';
 import { ScrollArea } from '@/components/ui/scroll-area';
