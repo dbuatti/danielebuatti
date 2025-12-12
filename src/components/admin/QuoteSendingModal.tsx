@@ -69,7 +69,7 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
     
     const footerHtml = `
       <div style="text-align: center; padding: 20px 0; border-top: 1px solid ${themeConfig.secondaryColor}33; margin-top: 20px;">
-        <img src="${themeConfig.logo}" alt="${themeConfig.logoAlt}" style="height: 40px; width: auto; margin-bottom: 10px; max-width: 100%;" />
+        <img src="${themeConfig.logo}" alt="${themeConfig.logoAlt}" style="height: 40px; width: auto; margin-bottom: 10px; max-width: 100%; display: block; margin: 0 auto 10px auto;" />
         <p style="font-size: 14px; color: ${themeConfig.secondaryColor}CC; margin: 5px 0;">
           Embodied Coaching for Performers & Communicators
         </p>
