@@ -171,6 +171,8 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         inputBg: 'bg-brand-dark-alt',
         primaryText: 'text-brand-yellow',
         primaryHoverBg: 'hover:bg-brand-yellow/20',
+        image1: '/blackgoldquoteimage1.jpg',
+        image2: '/blackgoldquoteimage2.jpg',
       }
     : {
         // Default Theme (Premium Light/Pink)
@@ -188,6 +190,8 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         inputBg: 'bg-brand-light',
         primaryText: 'text-brand-primary',
         primaryHoverBg: 'hover:bg-brand-primary/10',
+        image1: '/whitepinkquoteimage1.jpeg',
+        image2: '/whitepinkquoteimage2.jpeg',
       };
       
   const headerImagePositionClass = details.headerImagePosition || 'object-center';
@@ -292,14 +296,34 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       {isBlackGoldTheme && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
           <DynamicImage 
-            src="/blackgoldquoteimage1.jpg" 
+            src={themeClasses.image1} 
             alt="Daniele Buatti playing piano" 
             className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
             width={400}
             height={256}
           />
           <DynamicImage 
-            src="/blackgoldquoteimage2.jpg" 
+            src={themeClasses.image2} 
+            alt="Daniele Buatti performing live" 
+            className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
+            width={400}
+            height={256}
+          />
+        </div>
+      )}
+      
+      {/* NEW: Image Section for Default Theme */}
+      {!isBlackGoldTheme && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+          <DynamicImage 
+            src={themeClasses.image1} 
+            alt="Daniele Buatti playing piano" 
+            className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
+            width={400}
+            height={256}
+          />
+          <DynamicImage 
+            src={themeClasses.image2} 
             alt="Daniele Buatti performing live" 
             className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
             width={400}

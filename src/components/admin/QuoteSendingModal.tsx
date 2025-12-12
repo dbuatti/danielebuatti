@@ -14,10 +14,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Loader2, Send, Eye, Copy } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
-import { Quote } from '@/types/quote';
+import { Quote, QuoteTheme } from '@/types/quote';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface QuoteSendingModalProps {
   isOpen: boolean;
@@ -25,6 +26,26 @@ interface QuoteSendingModalProps {
   quote: Quote;
   onQuoteSent: (slug: string) => void;
 }
+
+// Theme configuration for email HTML generation
+const emailThemes = {
+  default: {
+    primaryColor: '#DB4CA3', // Pink
+    secondaryColor: '#00022D', // Dark Blue
+    bgColor: '#F8F8F8',
+    cardBg: '#FFFFFF',
+    logo: `${window.location.origin}/logo-pinkwhite.png`,
+    logoAlt: 'Daniele Buatti Logo (Pink/White)',
+  },
+  'black-gold': {
+    primaryColor: '#fdb813', // Gold
+    secondaryColor: '#FFFFFF', // White
+    bgColor: '#00022D', // Dark Blue
+    cardBg: '#1b1b1b', // Darker Grey
+    logo: `${window.location.origin}/gold-36.png`,
+    logoAlt: 'Daniele Buatti Logo (Gold)',
+  },
+};
 
 const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
   isOpen,
@@ -35,36 +56,53 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
   const [isSending, setIsSending] = useState(false);
   const [recipientEmail, setRecipientEmail] = useState(quote.client_email);
   const [emailSubject, setEmailSubject] = useState(`Quote Proposal: ${quote.event_title}`);
+  const [emailTheme, setEmailTheme] = useState<QuoteTheme>(quote.details.theme);
   const [htmlBody, setHtmlBody] = useState('');
   const [isHtmlLoading, setIsHtmlLoading] = useState(true);
   const [isFullPreviewOpen, setIsFullPreviewOpen] = useState(false);
-  const [, copy] = useCopyToClipboard(); // Fix 1: Removed unused copiedText
+  const [, copy] = useCopyToClipboard();
 
-  // Function to generate the HTML body (simplified client-side rendering)
-  const generateHtmlBody = useCallback(() => {
-    // Since we cannot render React components to a string easily on the client,
-    // we provide a simple HTML wrapper that links to the public quote page.
-    // The full QuoteDisplay component is shown in the modal's preview tab.
+  // Function to generate the HTML body based on the selected theme
+  const generateHtmlBody = useCallback((theme: QuoteTheme) => {
+    const themeConfig = emailThemes[theme];
     const quoteUrl = `${window.location.origin}/quotes/${quote.slug}`;
     
+    const footerHtml = `
+      <div style="text-align: center; padding: 20px 0; border-top: 1px solid ${themeConfig.secondaryColor}33; margin-top: 20px;">
+        <img src="${themeConfig.logo}" alt="${themeConfig.logoAlt}" style="height: 40px; margin-bottom: 10px;" />
+        <p style="font-size: 14px; color: ${themeConfig.secondaryColor}CC; margin: 5px 0;">
+          Embodied Coaching for Performers & Communicators
+        </p>
+        <p style="font-size: 14px; color: ${themeConfig.secondaryColor}CC; margin: 5px 0;">
+          <a href="mailto:info@danielebuatti.com" style="color: ${themeConfig.primaryColor}; text-decoration: none;">info@danielebuatti.com</a> | 
+          <a href="https://wa.me/61424174067" style="color: ${themeConfig.primaryColor}; text-decoration: none;">+61 424 174 067</a>
+        </p>
+        <p style="font-size: 12px; color: ${themeConfig.secondaryColor}99; margin-top: 10px;">
+          &copy; ${new Date().getFullYear()} Daniele Buatti. All rights reserved.
+        </p>
+      </div>
+    `;
+
     const html = `
-      <div style="font-family: 'Outfit', sans-serif; color: #1b1b1b; background-color: #F8F8F8; padding: 20px; border-radius: 8px;">
-        <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-          <h2 style="color: #DB4CA3; text-align: center; margin-bottom: 20px;">Your Quote Proposal is Ready!</h2>
-          <p style="font-size: 16px; line-height: 1.6;">Dear ${quote.client_name},</p>
-          <p style="font-size: 16px; line-height: 1.6;">Please find attached your personalized quote proposal for <strong>${quote.event_title}</strong> on ${quote.event_date}.</p>
+      <div style="font-family: 'Outfit', sans-serif; color: ${themeConfig.secondaryColor}; background-color: ${themeConfig.bgColor}; padding: 20px; border-radius: 8px;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: ${themeConfig.cardBg}; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+          <h2 style="color: ${themeConfig.primaryColor}; text-align: center; margin-bottom: 20px;">Your Quote Proposal is Ready!</h2>
+          <p style="font-size: 16px; line-height: 1.6; color: ${themeConfig.secondaryColor};">Dear ${quote.client_name},</p>
+          <p style="font-size: 16px; line-height: 1.6; color: ${themeConfig.secondaryColor};">Please find attached your <strong style="color: ${themeConfig.primaryColor};">personalised</strong> quote proposal for <strong>${quote.event_title}</strong> on ${quote.event_date}.</p>
           
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${quoteUrl}" style="background-color: #DB4CA3; color: #FFFFFF; padding: 12px 24px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; display: inline-block;">
+            <a href="${quoteUrl}" style="background-color: ${themeConfig.primaryColor}; color: #FFFFFF; padding: 12px 24px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; display: inline-block;">
               View & Accept Quote
             </a>
           </div>
           
-          <p style="font-size: 16px; line-height: 1.6;">The total proposed amount is <strong>${quote.details.currencySymbol}${quote.total_amount.toFixed(2)}</strong>. You can review the full details and select any optional add-ons directly on the quote page.</p>
+          <p style="font-size: 16px; line-height: 1.6; color: ${themeConfig.secondaryColor};">The total proposed amount is <strong>${quote.details.currencySymbol}${quote.total_amount.toFixed(2)}</strong>. You can review the full details and select any optional add-ons directly on the quote page.</p>
           
-          <p style="font-size: 14px; color: #666666; text-align: center; margin-top: 30px;">
+          <p style="font-size: 14px; color: ${themeConfig.secondaryColor}99; text-align: center; margin-top: 30px;">
             If you have any questions, please reply to this email.
           </p>
+          
+          ${footerHtml}
         </div>
       </div>
     `;
@@ -77,9 +115,17 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
     if (isOpen) {
       setRecipientEmail(quote.client_email);
       setEmailSubject(`Quote Proposal: ${quote.event_title}`);
-      generateHtmlBody();
+      setEmailTheme(quote.details.theme); // Set initial theme from quote details
+      generateHtmlBody(quote.details.theme);
     }
   }, [isOpen, quote, generateHtmlBody]);
+  
+  // Re-generate HTML whenever the selected email theme changes
+  useEffect(() => {
+    if (isOpen) {
+        generateHtmlBody(emailTheme);
+    }
+  }, [emailTheme, isOpen, generateHtmlBody]);
 
   const handleSendQuote = async () => {
     if (!recipientEmail || !emailSubject || !htmlBody) {
@@ -152,6 +198,19 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
             </div>
             
             <div className="space-y-2">
+              <h3 className="font-semibold text-lg text-brand-primary">Email Theme</h3>
+              <Select onValueChange={(value: QuoteTheme) => setEmailTheme(value)} value={emailTheme}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select email theme" />
+                </SelectTrigger>
+                <SelectContent className="bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50">
+                  <SelectItem value="default">Default (White/Pink)</SelectItem>
+                  <SelectItem value="black-gold">Black & Gold</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
               <h3 className="font-semibold text-lg text-brand-primary">Quote Link</h3>
               <div className="flex gap-2">
                 <Input
@@ -207,7 +266,8 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
                   <Loader2 className="h-8 w-8 animate-spin text-brand-primary" />
                 </div>
               ) : (
-                <QuoteDisplay quote={quote} isClientView={false} />
+                // Pass the selected email theme to QuoteDisplay for accurate preview styling
+                <QuoteDisplay quote={{ ...quote, details: { ...quote.details, theme: emailTheme } }} isClientView={false} />
               )}
             </ScrollArea>
           </div>
@@ -221,7 +281,8 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
             <DialogTitle className="text-brand-primary text-2xl">Full Screen Quote Preview</DialogTitle>
           </DialogHeader>
           <ScrollArea className="h-[calc(95vh-70px)]">
-            <QuoteDisplay quote={quote} isClientView={false} />
+            {/* Pass the selected email theme to QuoteDisplay for accurate preview styling */}
+            <QuoteDisplay quote={{ ...quote, details: { ...quote.details, theme: emailTheme } }} isClientView={false} />
           </ScrollArea>
         </DialogContent>
       </Dialog>
