@@ -12,14 +12,14 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
-import DynamicImage from '../DynamicImage'; // Import DynamicImage
-import { Button } from '../ui/button'; // Import Button for interactive controls
+import DynamicImage from '../DynamicImage';
+import { Button } from '../ui/button';
 
 interface QuoteDisplayProps {
   quote: Quote;
-  isClientView?: boolean; // New prop: true if rendered on the client-facing page
-  onQuantityChange?: (itemId: string, delta: number) => void; // New prop: handler for quantity change
-  mutableAddOns?: QuoteItem[]; // New prop: used for pending client view to show current selections
+  isClientView?: boolean;
+  onQuantityChange?: (itemId: string, delta: number) => void;
+  mutableAddOns?: QuoteItem[];
 }
 
 // Helper component for rendering a single item row
@@ -45,8 +45,8 @@ const QuoteItemRow: React.FC<{
   
   // Logic to display unit cost for optional items that were NOT selected (quantity 0)
   const displayAmount = () => {
-    if (isOptional && !isSelected && !isFinalized) {
-      // If optional and not selected (quantity 0) in pending view, show unit price and 'Unselected'
+    if (isOptional && !isSelected && !isFinalized && isClientView) {
+      // If optional and not selected (quantity 0) in pending client view, show unit price and 'Unselected'
       return (
         <div className="text-right">
           <span className="text-sm text-muted-foreground">
@@ -93,14 +93,14 @@ const QuoteItemRow: React.FC<{
     }
     
     // Static quantity display (Admin view or Finalized Client view)
-    if (isOptional && !isSelected && !isFinalized) {
+    if (isOptional && !isSelected && !isFinalized && isClientView) {
         return <span className="text-muted-foreground">0</span>;
     }
     return item.quantity;
   }
 
   return (
-    <TableRow className={isOptional && !isSelected && !isFinalized ? 'opacity-60' : 'hover:bg-current/5'}>
+    <TableRow className={isOptional && !isSelected && !isFinalized && isClientView ? 'opacity-60' : 'hover:bg-current/5'}>
       <TableCell className="font-medium border-r border-current/10 py-3">
         {item.name}
         {item.description && (
@@ -120,7 +120,7 @@ const QuoteItemRow: React.FC<{
 
 const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false, onQuantityChange, mutableAddOns }) => {
   const { details, total_amount, accepted_at, rejected_at, event_title, event_date, event_location, prepared_by } = quote;
-  const currencySymbol = details.currencySymbol || '$';
+  const currencySymbol = details.currencySymbol || '£';
   
   const isAccepted = !!accepted_at;
   const isRejected = !!rejected_at;
@@ -128,7 +128,6 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
   
   // Determine which list of add-ons to display and calculate totals
   let optionalItemsToDisplay: QuoteItem[];
-  let subtotal: number;
   
   if (isClientView && !isFinalized && mutableAddOns) {
       // Client view, pending: use mutable state for display and calculation
@@ -146,7 +145,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
   const addOnTotal = optionalItemsToDisplay.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
   
   // If accepted, the total_amount from the DB is the final total. Otherwise, calculate based on current proposal/selection.
-  subtotal = isAccepted ? total_amount : (compulsoryTotal + addOnTotal); 
+  const subtotal = isAccepted ? total_amount : (compulsoryTotal + addOnTotal); 
 
   // Calculate deposit amount
   const depositAmount = subtotal * (details.depositPercentage / 100);
@@ -169,9 +168,9 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         totalBoxText: 'text-brand-yellow',
         tableText: 'text-brand-light',
         contentImageBorder: 'border-brand-yellow/50',
-        inputBg: 'bg-brand-dark-alt', // Added input background
-        primaryText: 'text-brand-yellow', // Added for interactive elements
-        primaryHoverBg: 'hover:bg-brand-yellow/20', // Added for interactive elements
+        inputBg: 'bg-brand-dark-alt',
+        primaryText: 'text-brand-yellow',
+        primaryHoverBg: 'hover:bg-brand-yellow/20',
       }
     : {
         // Default Theme (Premium Light/Pink)
@@ -186,9 +185,9 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         totalBoxText: 'text-brand-primary',
         tableText: 'text-brand-dark',
         contentImageBorder: 'border-brand-primary/50',
-        inputBg: 'bg-brand-light', // Added input background
-        primaryText: 'text-brand-primary', // Added for interactive elements
-        primaryHoverBg: 'hover:bg-brand-primary/10', // Added for interactive elements
+        inputBg: 'bg-brand-light',
+        primaryText: 'text-brand-primary',
+        primaryHoverBg: 'hover:bg-brand-primary/10',
       };
       
   const headerImagePositionClass = details.headerImagePosition || 'object-center';
@@ -313,14 +312,14 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       <div className="flex justify-end">
         <div className="w-full max-w-sm space-y-2">
           <div className="flex justify-between font-medium">
-            <span>Subtotal:</span>
+            <span>Compulsory Subtotal:</span>
             <span>{formatCurrency(compulsoryTotal, currencySymbol)}</span>
           </div>
           
           {/* Display Add-on total if applicable */}
           {details.addOns.length > 0 && (
             <div className="flex justify-between font-medium text-sm">
-              <span>Selected Add-ons:</span>
+              <span>Selected Add-ons Total:</span>
               <span>{formatCurrency(addOnTotal, currencySymbol)}</span>
             </div>
           )}
@@ -328,7 +327,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
           <Separator className={themeClasses.separator} />
 
           <div className={`flex justify-between font-bold text-xl p-2 ${themeClasses.totalBoxBg} rounded-md`}>
-            <span className={themeClasses.totalBoxText}>Total:</span>
+            <span className={themeClasses.totalBoxText}>Total Quote:</span>
             <span className={themeClasses.totalBoxText}>{formatCurrency(subtotal, currencySymbol)}</span>
           </div>
 

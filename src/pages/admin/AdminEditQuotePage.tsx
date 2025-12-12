@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Quote, QuoteItem } from '@/types/quote';
-import { useForm } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 
@@ -58,7 +58,7 @@ const AdminEditQuotePage: React.FC = () => {
         rejected_at: data.rejected_at,
         created_at: data.created_at,
         details: data.details,
-        status: data.status || 'Created', // Ensure status is included
+        status: data.status || 'Created',
       };
 
       setQuote(fetchedQuote);
@@ -82,19 +82,20 @@ const AdminEditQuotePage: React.FC = () => {
         bankACC: details.bankDetails.acc,
         theme: details.theme,
         headerImageUrl: details.headerImageUrl || '',
-        headerImagePosition: details.headerImagePosition || 'object-[50%_10%]', // NEW: Use the new default position
+        headerImagePosition: details.headerImagePosition || 'object-center',
         preparationNotes: details.preparationNotes || '',
         compulsoryItems: details.compulsoryItems.map(item => ({
           id: item.id,
           name: item.name,
           description: item.description,
-          amount: item.price, // Use price as amount for compulsory items
+          price: item.price, // Use price
+          quantity: item.quantity, // Include quantity for consistency
         })),
         addOns: details.addOns.map(item => ({
           id: item.id,
           name: item.name,
           description: item.description,
-          cost: item.price, // Use price as cost for add-ons
+          price: item.price, // Use price
           quantity: item.quantity,
         })),
       };
@@ -128,9 +129,9 @@ const AdminEditQuotePage: React.FC = () => {
 
     try {
       // Calculate total amount based on compulsory items and add-ons
-      const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.amount ?? 0), 0);
+      const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0), 0);
       const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
-        sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
+        sum + ((addOn.price ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
       const totalAmount = compulsoryTotal + addOnTotal;
 
       // Prepare details for JSONB column
@@ -139,27 +140,27 @@ const AdminEditQuotePage: React.FC = () => {
           id: item.id || Math.random().toString(36).substring(2, 11),
           name: item.name,
           description: item.description || '',
-          price: item.amount ?? 0, // Use amount as price
-          quantity: 1, // Compulsory items always have quantity 1 in QuoteItem structure
+          price: item.price ?? 0,
+          quantity: item.quantity ?? 1,
         })),
         addOns: values.addOns?.map(addOn => ({
           id: addOn.id || Math.random().toString(36).substring(2, 11),
           name: addOn.name,
           description: addOn.description || '',
-          price: addOn.cost ?? 0, // Use cost as price
-          quantity: addOn.quantity ?? 1, // Ensure quantity is defined
+          price: addOn.price ?? 0,
+          quantity: addOn.quantity ?? 1,
         })) || [],
         depositPercentage: values.depositPercentage,
         bankDetails: {
           bsb: values.bankBSB ?? '',
           acc: values.bankACC ?? '',
         },
-        eventTime: values.eventTime ?? '', // FIX: Ensure eventTime is a string
+        eventTime: values.eventTime ?? '',
         currencySymbol: values.currencySymbol,
         paymentTerms: values.paymentTerms,
         theme: values.theme,
         headerImageUrl: values.headerImageUrl,
-        headerImagePosition: values.headerImagePosition || 'object-centre', // NEW: Updated to British English
+        headerImagePosition: values.headerImagePosition || 'object-center',
         preparationNotes: values.preparationNotes || '',
       };
 
@@ -205,15 +206,15 @@ const AdminEditQuotePage: React.FC = () => {
 
   // Transform form values into Quote interface structure for preview
   const getPreviewData = (values: QuoteFormValues): Quote => {
-    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.amount ?? 0), 0);
+    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0), 0);
     const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
-      sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
+      sum + ((addOn.price ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
     const totalAmount = compulsoryTotal + addOnTotal;
 
     // Helper function to map form item to QuoteItem structure
-    const mapFormItemToQuoteItem = (item: { id?: string, name: string, description?: string, amount?: number, cost?: number, quantity?: number }): QuoteItem => {
+    const mapFormItemToQuoteItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number }): QuoteItem => {
       const quantity = item.quantity ?? 1;
-      const price = item.amount ?? item.cost ?? 0;
+      const price = item.price ?? 0;
       
       return {
         id: item.id || Math.random().toString(36).substring(2, 11),
@@ -248,13 +249,13 @@ const AdminEditQuotePage: React.FC = () => {
         addOns: values.addOns?.map(item => mapFormItemToQuoteItem(item)) || [],
         compulsoryItems: values.compulsoryItems.map(item => mapFormItemToQuoteItem(item)),
         currencySymbol: values.currencySymbol,
-        eventTime: values.eventTime ?? '', // FIX: Ensure eventTime is a string
-        theme: values.theme, // Pass theme
+        eventTime: values.eventTime ?? '',
+        theme: values.theme,
         headerImageUrl: values.headerImageUrl,
-        headerImagePosition: values.headerImagePosition || 'object-centre', // NEW: Updated to British English
+        headerImagePosition: values.headerImagePosition || 'object-center',
         preparationNotes: values.preparationNotes || '',
       },
-      status: quote?.status || 'Created', // Ensure status is included
+      status: quote?.status || 'Created',
     };
   };
 
@@ -287,14 +288,15 @@ const AdminEditQuotePage: React.FC = () => {
           <CardTitle className="text-xl text-brand-primary">Quote Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <QuoteForm 
-            form={form}
-            onCreateAndSend={handleUpdateQuote}
-            isSubmitting={isSubmitting} 
-            onPreview={handlePreviewQuote} 
-            // Removed onSaveDraft as it's not supported here
-            isQuoteCreated={true} // Explicitly set to true for editing context
-          />
+          <FormProvider {...form}>
+            <QuoteForm 
+              form={form}
+              onCreateAndSend={handleUpdateQuote}
+              isSubmitting={isSubmitting} 
+              onPreview={handlePreviewQuote} 
+              isQuoteCreated={true}
+            />
+          </FormProvider>
         </CardContent>
       </Card>
 

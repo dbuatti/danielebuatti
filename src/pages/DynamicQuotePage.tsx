@@ -10,7 +10,7 @@ import { format } from 'date-fns';
 import { Quote, QuoteItem } from '@/types/quote';
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import QuoteDisplay from '@/components/admin/QuoteDisplay'; // Use the reusable component
+import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";

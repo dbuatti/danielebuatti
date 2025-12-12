@@ -5,7 +5,7 @@ export interface QuoteItem {
   name: string;
   description: string;
   quantity: number;
-  price: number; // Unit price/cost
+  price: number; // Unit price/cost (replaces 'amount' and 'cost' from form context)
 }
 
 export interface QuoteDetails {

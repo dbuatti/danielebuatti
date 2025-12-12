@@ -8,7 +8,7 @@ import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, CheckCircle, XCircle, Download, Edit, Trash2, Copy, Clock, Eye, Send } from 'lucide-react';
+import { Loader2, Download, Edit, Trash2, Copy, Clock, Eye, Send } from 'lucide-react';
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -16,7 +16,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
-import QuoteSendingModal from '@/components/admin/QuoteSendingModal'; // Import the new modal
+import QuoteSendingModal from '@/components/admin/QuoteSendingModal';
+import { Badge } from '@/components/ui/badge';
 
 // Extend Quote interface locally to include the new status field
 interface QuoteWithStatus extends Quote {
@@ -32,7 +33,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [isSendingModalOpen, setIsSendingModalOpen] = useState(false); // New state for sending modal
+  const [isSendingModalOpen, setIsSendingModalOpen] = useState(false);
   const [, copy] = useCopyToClipboard();
 
   const fetchQuote = useCallback(async () => {
@@ -44,7 +45,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('invoices')
-        .select('*') // Changed from '*, status' to '*'
+        .select('*')
         .eq('id', id)
         .single();
 
@@ -66,7 +67,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
         rejected_at: data.rejected_at,
         created_at: data.created_at,
         details: data.details,
-        status: data.status || 'Pending', // Use the new status field
+        status: data.status || 'Pending',
       };
 
       setQuote(fetchedQuote);
@@ -130,7 +131,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
         .update({
           accepted_at: null,
           rejected_at: null,
-          status: 'Created', // Reset to 'Created' status
+          status: 'Created',
         })
         .eq('id', quote.id);
 
@@ -159,6 +160,23 @@ const AdminQuoteDetailsPage: React.FC = () => {
     // Update status locally after successful send
     setQuote(prev => prev ? { ...prev, status: 'Sent' } : null);
   };
+  
+  const getStatusBadgeVariant = (status: string) => {
+    switch (status) {
+      case 'Accepted':
+        return 'default';
+      case 'Rejected':
+        return 'destructive';
+      case 'Sent':
+        return 'secondary';
+      case 'Created':
+        return 'outline';
+      case 'Draft':
+        return 'outline';
+      default:
+        return 'outline';
+    }
+  };
 
   if (isLoading) {
     return (
@@ -177,10 +195,11 @@ const AdminQuoteDetailsPage: React.FC = () => {
     );
   }
 
-  const { details, accepted_at, rejected_at, status } = quote;
+  const { details, accepted_at, rejected_at } = quote;
   const theme = details.theme;
   const isFinalized = !!accepted_at || !!rejected_at;
-  const isSendable = !isFinalized; // Can send if not accepted or rejected
+  const currentStatus = accepted_at ? 'Accepted' : rejected_at ? 'Rejected' : quote.status;
+  const isSendable = !isFinalized;
 
   return (
     <div className="space-y-8">
@@ -212,34 +231,27 @@ const AdminQuoteDetailsPage: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Status Card */}
-        <Card className="lg:col-span-1">
+        <Card className="lg:col-span-1 bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
           <CardHeader>
             <CardTitle className="text-xl text-brand-primary">Status & Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center space-x-2">
-              {accepted_at ? (
-                <CheckCircle className="h-6 w-6 text-green-500" />
-              ) : rejected_at ? (
-                <XCircle className="h-6 w-6 text-red-500" />
-              ) : (
-                <Clock className="h-6 w-6 text-yellow-500" />
-              )}
-              <div>
-                <p className="font-bold">
-                  {accepted_at ? 'Accepted' : rejected_at ? 'Rejected' : status}
-                </p>
-                <p className="text-sm text-gray-500">
-                  {accepted_at ? `on ${format(new Date(accepted_at), 'PPP')}` : rejected_at ? `on ${format(new Date(rejected_at), 'PPP')}` : 'Awaiting client response'}
-                </p>
-              </div>
+            <div className="flex flex-col space-y-2">
+              <Badge variant={getStatusBadgeVariant(currentStatus)} className="text-lg px-3 py-1 justify-center">
+                {currentStatus}
+              </Badge>
+              <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
+                {accepted_at ? `Accepted on ${format(new Date(accepted_at), 'PPP')}` : 
+                 rejected_at ? `Rejected on ${format(new Date(rejected_at), 'PPP')}` : 
+                 'Awaiting client response'}
+              </p>
             </div>
             
             <Separator />
 
             {isSendable && (
-              <Button onClick={() => setIsSendingModalOpen(true)} className="w-full bg-green-600 hover:bg-green-700 text-white">
-                <Send className="h-4 w-4 mr-2" /> {status === 'Sent' ? 'Resend Quote' : 'Send Quote'}
+              <Button onClick={() => setIsSendingModalOpen(true)} className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+                <Send className="h-4 w-4 mr-2" /> {currentStatus === 'Sent' ? 'Resend Quote' : 'Send Quote'}
               </Button>
             )}
             
@@ -253,7 +265,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
         </Card>
 
         {/* Details Card */}
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
           <CardHeader>
             <CardTitle className="text-xl text-brand-primary">Quote Information</CardTitle>
           </CardHeader>
@@ -287,7 +299,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
       </div>
 
       {/* Preview Section */}
-      <Card>
+      <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-xl text-brand-primary">Live Preview</CardTitle>
           <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>

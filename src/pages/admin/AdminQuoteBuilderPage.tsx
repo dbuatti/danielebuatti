@@ -17,7 +17,7 @@ import { useGeminiQuoteGenerator } from '@/hooks/use-gemini-quote-generator';
 import DraftLoader from '@/components/admin/DraftLoader';
 import QuoteSendingModal from '@/components/admin/QuoteSendingModal';
 import { createSlug } from '@/lib/utils';
-import { Loader2 } from 'lucide-react'; // Added missing import
+import { Loader2 } from 'lucide-react';
 
 // Default values for a new quote
 const defaultQuoteValues: QuoteFormValues = {
@@ -39,10 +39,10 @@ const defaultQuoteValues: QuoteFormValues = {
   headerImagePosition: 'object-center',
   preparationNotes: 'This fee covers 7 hours of commitment, including preparation, travel, setup, performance, and pack down.',
   compulsoryItems: [
-    { id: 'base-fee', name: 'Base Performance Fee', description: '3 hours of live piano performance.', amount: 1000, quantity: 1 },
+    { id: 'base-fee', name: 'Base Performance Fee', description: '3 hours of live piano performance.', price: 1000, quantity: 1 },
   ],
   addOns: [
-    { id: 'extra-hour', name: 'Extra Hour of Performance', description: 'Additional hour of live piano music.', cost: 200, quantity: 0 },
+    { id: 'extra-hour', name: 'Extra Hour of Performance', description: 'Additional hour of live piano music.', price: 200, quantity: 0 },
   ],
 };
 
@@ -92,21 +92,31 @@ const AdminQuoteBuilderPage: React.FC = () => {
   useEffect(() => {
     fetchDrafts();
   }, [fetchDrafts]);
+  
+  const handleClearForm = () => {
+    if (window.confirm('Are you sure you want to clear the current form data?')) {
+      form.reset(defaultQuoteValues);
+      setCurrentDraftId(undefined);
+      setCurrentQuoteId(undefined);
+      setCurrentQuote(null);
+      showSuccess('Form cleared.');
+    }
+  };
 
   // --- Handlers ---
 
   const mapFormValuesToQuote = (values: QuoteFormValues, id?: string, slug?: string, status: Quote['status'] = 'Created'): Quote => {
-    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.amount ?? 0), 0);
+    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0), 0);
     const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
-      sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
+      sum + ((addOn.price ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
     const totalAmount = compulsoryTotal + addOnTotal;
 
-    const mapItem = (item: { id?: string, name: string, description?: string, amount?: number, cost?: number, quantity?: number }): QuoteItem => ({
+    const mapItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number }): QuoteItem => ({
       id: item.id || Math.random().toString(36).substring(2, 11),
       name: item.name,
       description: item.description || '',
       quantity: item.quantity ?? 1,
-      price: item.amount ?? item.cost ?? 0,
+      price: item.price ?? 0,
     });
 
     return {
@@ -209,7 +219,6 @@ const AdminQuoteBuilderPage: React.FC = () => {
         if (invokeError) throw invokeError;
         
         const newQuoteId = invokeData.id;
-        // const newQuoteSlug = invokeData.slug; // Removed unused variable
         
         // Fetch the newly created/updated quote to set currentQuote state
         const { data: fetchedQuote, error: fetchError } = await supabase
@@ -246,7 +255,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       return null;
     } finally {
       setIsSubmitting(false);
-      if (toastId) dismissToast(toastId); // Fixed TS2345
+      if (toastId) dismissToast(toastId);
     }
   };
 
@@ -284,7 +293,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       console.error('Error deleting draft:', error);
       if (showToast) showError(`Failed to delete draft: ${error.message}`, { id: toastId });
     } finally {
-      if (toastId) dismissToast(toastId); // Fixed TS2345
+      if (toastId) dismissToast(toastId);
     }
   };
 
@@ -293,7 +302,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
     setIsPreviewOpen(true);
   };
   
-  const handleExtractQuote = async (emailContent: string) => { // Added async to return Promise<void>
+  const handleExtractQuote = async (emailContent: string) => {
     await extractQuote(emailContent);
   };
   
@@ -304,7 +313,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         id: Math.random().toString(36).substring(2, 11),
         name: item.name,
         description: item.description || '',
-        amount: item.amount,
+        price: item.amount, // Use 'amount' as 'price' for compulsory items
         quantity: 1,
       }));
       
@@ -312,7 +321,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         id: Math.random().toString(36).substring(2, 11),
         name: item.name,
         description: item.description || '',
-        cost: item.cost,
+        price: item.cost, // Use 'cost' as 'price' for add-ons
         quantity: 0, // Default to 0 quantity for add-ons
       }));
       
@@ -348,22 +357,22 @@ const AdminQuoteBuilderPage: React.FC = () => {
     }
   };
   
-  const handleQuoteSent = (/* slug: string */) => { // Removed unused slug parameter
+  const handleQuoteSent = () => {
     // Navigate to the details page after successful send
     navigate(`/admin/quotes/${currentQuoteId}`);
   };
 
   // Transform form values into Quote interface structure for preview
   const getPreviewData = (values: QuoteFormValues): Quote => {
-    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.amount ?? 0), 0);
+    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0), 0);
     const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
-      sum + ((addOn.cost ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
+      sum + ((addOn.price ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
     const totalAmount = compulsoryTotal + addOnTotal;
 
     // Helper function to map form item to QuoteItem structure
-    const mapFormItemToQuoteItem = (item: { id?: string, name: string, description?: string, amount?: number, cost?: number, quantity?: number }): QuoteItem => {
+    const mapFormItemToQuoteItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number }): QuoteItem => {
       const quantity = item.quantity ?? 1;
-      const price = item.amount ?? item.cost ?? 0;
+      const price = item.price ?? 0;
       
       return {
         id: item.id || Math.random().toString(36).substring(2, 11),
@@ -448,6 +457,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
               onPreview={handlePreviewQuote} 
               onSaveDraft={async (values: QuoteFormValues) => { await handleSaveCreateQuote(values, 'Draft'); }}
               isQuoteCreated={!!currentQuoteId}
+              onClearForm={handleClearForm}
             />
           </FormProvider>
         </CardContent>
