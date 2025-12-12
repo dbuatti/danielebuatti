@@ -14,6 +14,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import DynamicImage from '../DynamicImage';
 import { Button } from '../ui/button';
+import QuoteItemMobileList from './QuoteItemMobileList'; // Import the new component
 
 interface QuoteDisplayProps {
   quote: Quote;
@@ -22,7 +23,7 @@ interface QuoteDisplayProps {
   mutableAddOns?: QuoteItem[];
 }
 
-// Helper component for rendering a single item row
+// Helper component for rendering a single item row (used only for desktop table view)
 const QuoteItemRow: React.FC<{ 
   item: QuoteItem; 
   currencySymbol: string; 
@@ -38,7 +39,7 @@ const QuoteItemRow: React.FC<{
   themeClasses,
   isClientView,
   isFinalized,
-  onQuantityChange,
+  // onQuantityChange is not used here as the table view is static/non-interactive
 }) => {
   const isSelected = item.quantity > 0;
   const totalAmount = item.price * item.quantity;
@@ -62,36 +63,6 @@ const QuoteItemRow: React.FC<{
   };
   
   const displayQuantity = () => {
-    if (isOptional && isClientView && !isFinalized && onQuantityChange) {
-        // Interactive controls for client view (pending state)
-        return (
-            <div className={`flex items-center justify-center border rounded-full border-current/30 mx-auto w-full h-7 ${themeClasses.inputBg}`}>
-                <Button 
-                    type="button" 
-                    variant="ghost" 
-                    size="icon" 
-                    onClick={() => onQuantityChange(item.id, -1)}
-                    disabled={item.quantity <= 0}
-                    className={`h-6 w-6 ${themeClasses.primaryText} ${themeClasses.primaryHoverBg} p-0 rounded-full`} // Reduced size
-                >
-                    -
-                </Button>
-                <span className={`w-6 text-center font-semibold text-sm ${themeClasses.text}`}> // Reduced width
-                    {item.quantity}
-                </span>
-                <Button 
-                    type="button" 
-                    variant="ghost" 
-                    size="icon" 
-                    onClick={() => onQuantityChange(item.id, 1)}
-                    className={`h-6 w-6 ${themeClasses.primaryText} ${themeClasses.primaryHoverBg} p-0 rounded-full`} // Reduced size
-                >
-                    +
-                </Button>
-            </div>
-        );
-    }
-    
     // Static quantity display (Admin view or Finalized Client view)
     if (isOptional && !isSelected && !isFinalized && isClientView) {
         return <span className="text-muted-foreground">0</span>;
@@ -107,11 +78,11 @@ const QuoteItemRow: React.FC<{
           <p className={`text-sm ${themeClasses.secondary} mt-1`}>{item.description}</p>
         )}
       </TableCell>
-      <TableCell className="text-center w-[60px] sm:w-[100px] border-r border-current/10 py-3">{displayQuantity()}</TableCell>
-      <TableCell className="text-right w-[80px] sm:w-[120px] border-r border-current/10 py-3">
+      <TableCell className="text-center w-[100px] border-r border-current/10 py-3">{displayQuantity()}</TableCell>
+      <TableCell className="text-right w-[120px] border-r border-current/10 py-3">
         {formatCurrency(item.price, currencySymbol)}
       </TableCell>
-      <TableCell className="text-right font-semibold w-[80px] sm:w-[120px] py-3">
+      <TableCell className="text-right font-semibold w-[120px] py-3">
         {displayAmount()}
       </TableCell>
     </TableRow>
@@ -234,62 +205,93 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         </div>
       )}
       
-      {/* Items Table */}
-      <div className="pt-4 overflow-x-auto">
+      {/* Items Section */}
+      <div className="pt-4">
         <h3 className={`text-xl font-semibold mb-4 ${themeClasses.primary}`}>Items Included</h3>
-        <Table className={`min-w-full border ${themeClasses.tableBorder} ${themeClasses.tableText}`}>
-          <TableHeader>
-            <TableRow className={themeClasses.tableHeaderBg}>
-              <TableHead className={`font-bold ${themeClasses.primary} border-r border-current/10 py-3`}>Description</TableHead>
-              <TableHead className={`text-center font-bold ${themeClasses.primary} w-[60px] sm:w-[100px] border-r border-current/10 py-3`}>Qty</TableHead>
-              <TableHead className={`text-right font-bold ${themeClasses.primary} w-[80px] sm:w-[120px] border-r border-current/10 py-3`}>Unit Price</TableHead>
-              <TableHead className={`text-right font-bold ${themeClasses.primary} w-[80px] sm:w-[120px] py-3`}>Amount</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {/* Compulsory Items */}
-            {details.compulsoryItems.map((item) => (
-              <QuoteItemRow 
-                key={item.id} 
-                item={item} 
-                currencySymbol={currencySymbol} 
-                isOptional={false} 
+        
+        {/* Mobile List View (Hidden on md and up) */}
+        <div className="md:hidden space-y-6">
+            <QuoteItemMobileList
+                items={details.compulsoryItems}
+                currencySymbol={currencySymbol}
                 themeClasses={themeClasses}
                 isClientView={isClientView}
                 isFinalized={isFinalized}
-              />
-            ))}
-
-            {/* Add-Ons (Optional Items) */}
-            {details.addOns.length > 0 && (
-              <TableRow className={`${themeClasses.tableHeaderBg} hover:${themeClasses.tableHeaderBg}`}>
-                <TableCell colSpan={4} className={`font-bold ${themeClasses.primary} py-3`}>
-                  Optional Add-Ons {isClientView && !isFinalized && <span className="text-sm font-normal"> (Select Quantity Below)</span>}
-                  {isAccepted && `(Client Selected: ${optionalItemsToDisplay.filter(i => i.quantity > 0).length} of ${details.addOns.length})`}
-                </TableCell>
-              </TableRow>
-            )}
+                isOptionalSection={false}
+            />
             
-            {/* Display all optional items */}
-            {optionalItemsToDisplay.map((item) => {
-                // If finalized and client view, only show selected items
-                if (isClientView && isFinalized && item.quantity === 0) return null;
-                
-                return (
-                    <QuoteItemRow 
-                        key={item.id} 
-                        item={item} 
-                        currencySymbol={currencySymbol} 
-                        isOptional={true} 
+            {details.addOns.length > 0 && (
+                <>
+                    <h4 className={`text-lg font-bold ${themeClasses.primary} pt-4`}>Optional Add-Ons</h4>
+                    <QuoteItemMobileList
+                        items={optionalItemsToDisplay}
+                        currencySymbol={currencySymbol}
                         themeClasses={themeClasses}
                         isClientView={isClientView}
                         isFinalized={isFinalized}
+                        isOptionalSection={true}
                         onQuantityChange={onQuantityChange}
                     />
-                );
-            })}
-          </TableBody>
-        </Table>
+                </>
+            )}
+        </div>
+
+        {/* Desktop Table View (Hidden below md) */}
+        <div className="hidden md:block overflow-x-auto">
+          <Table className={`min-w-full border ${themeClasses.tableBorder} ${themeClasses.tableText}`}>
+            <TableHeader>
+              <TableRow className={themeClasses.tableHeaderBg}>
+                <TableHead className={`font-bold ${themeClasses.primary} border-r border-current/10 py-3`}>Description</TableHead>
+                <TableHead className={`text-center font-bold ${themeClasses.primary} w-[100px] border-r border-current/10 py-3`}>Qty</TableHead>
+                <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px] border-r border-current/10 py-3`}>Unit Price</TableHead>
+                <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px] py-3`}>Amount</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {/* Compulsory Items */}
+              {details.compulsoryItems.map((item) => (
+                <QuoteItemRow 
+                  key={item.id} 
+                  item={item} 
+                  currencySymbol={currencySymbol} 
+                  isOptional={false} 
+                  themeClasses={themeClasses}
+                  isClientView={isClientView}
+                  isFinalized={isFinalized}
+                />
+              ))}
+
+              {/* Add-Ons (Optional Items) */}
+              {details.addOns.length > 0 && (
+                <TableRow className={`${themeClasses.tableHeaderBg} hover:${themeClasses.tableHeaderBg}`}>
+                  <TableCell colSpan={4} className={`font-bold ${themeClasses.primary} py-3`}>
+                    Optional Add-Ons {isClientView && !isFinalized && <span className="text-sm font-normal"> (Select Quantity Below)</span>}
+                    {isAccepted && `(Client Selected: ${optionalItemsToDisplay.filter(i => i.quantity > 0).length} of ${details.addOns.length})`}
+                  </TableCell>
+                </TableRow>
+              )}
+              
+              {/* Display all optional items */}
+              {optionalItemsToDisplay.map((item) => {
+                  // If finalized and client view, only show selected items
+                  if (isClientView && isFinalized && item.quantity === 0) return null;
+                  
+                  return (
+                      <QuoteItemRow 
+                          key={item.id} 
+                          item={item} 
+                          currencySymbol={currencySymbol} 
+                          isOptional={true} 
+                          themeClasses={themeClasses}
+                          isClientView={isClientView}
+                          isFinalized={isFinalized}
+                          onQuantityChange={onQuantityChange}
+                      />
+                  );
+              })}
+            </TableBody>
+          </Table>
+        </div>
       </div>
       
       {/* NEW: Image Section for Black & Gold Theme */}
