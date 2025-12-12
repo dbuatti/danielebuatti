@@ -5,7 +5,6 @@ import { Separator } from "@/components/ui/separator";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
-import SeoStructuredData from "@/components/SeoStructuredData";
 import { Card, CardContent } from "@/components/ui/card";
 import SectionHeading from "@/components/SectionHeading";
 import { Button } from "@/components/ui/button";
@@ -26,7 +25,6 @@ const LandingPageV3: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
-      <SeoStructuredData />
       <Navbar />
       <main className="mx-auto px-4">
         <HeroSection />
