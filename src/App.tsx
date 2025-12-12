@@ -6,6 +6,7 @@ import RootLayout from './layouts/RootLayout';
 import AdminLayout from './pages/admin/AdminLayout';
 import { SessionContextProvider } from './components/SessionContextProvider';
 import ScrollToTop from './components/ScrollToTop';
+import FaviconManager from './components/FaviconManager'; // Import FaviconManager
 
 // Public Pages
 import LandingPageV3 from './pages/LandingPageV3';
@@ -40,6 +41,7 @@ function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <FaviconManager />
       <SessionContextProvider>
         <Routes>
           <Route path="/" element={<RootLayout />}>
