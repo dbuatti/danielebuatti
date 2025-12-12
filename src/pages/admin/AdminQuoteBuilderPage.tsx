@@ -36,7 +36,7 @@ const defaultQuoteValues: QuoteFormValues = {
   bankACC: '301110875',
   theme: 'default',
   headerImageUrl: '/whitepinkquoteimage1.jpeg',
-  headerImagePosition: 'object-center',
+  headerImagePosition: 'object-top',
   preparationNotes: 'This fee covers 7 hours of commitment, including preparation, travel, setup, performance, and pack down.',
   compulsoryItems: [
     { id: 'base-fee', name: 'Base Performance Fee', description: '3 hours of live piano performance.', price: 1000, quantity: 1 },
