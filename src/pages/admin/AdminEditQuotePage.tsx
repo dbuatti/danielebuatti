@@ -27,6 +27,28 @@ const AdminEditQuotePage: React.FC = () => {
     resolver: zodResolver(QuoteFormSchema),
     mode: 'onChange',
   });
+  
+  const watchedTheme = form.watch('theme');
+
+  // Update header image URL based on theme selection
+  useEffect(() => {
+    // Only run this if the form is initialized and the theme changes
+    if (!isLoading) {
+      const currentImageUrl = form.getValues('headerImageUrl');
+      let newImageUrl = currentImageUrl;
+
+      if (watchedTheme === 'black-gold' && currentImageUrl !== '/blackgoldquoteimage1.jpg') {
+        newImageUrl = '/blackgoldquoteimage1.jpg';
+      } else if (watchedTheme === 'default' && currentImageUrl !== '/whitepinkquoteimage1.jpeg') {
+        newImageUrl = '/whitepinkquoteimage1.jpeg';
+      }
+      
+      if (newImageUrl !== currentImageUrl) {
+          form.setValue('headerImageUrl', newImageUrl, { shouldDirty: true });
+      }
+    }
+  }, [watchedTheme, form, isLoading]);
+
 
   const fetchQuote = useCallback(async () => {
     if (!id) return;

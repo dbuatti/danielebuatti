@@ -72,6 +72,24 @@ const AdminQuoteBuilderPage: React.FC = () => {
     mode: 'onChange',
     defaultValues: defaultQuoteValues,
   });
+  
+  const watchedTheme = form.watch('theme');
+
+  // Update header image URL based on theme selection
+  useEffect(() => {
+    const currentImageUrl = form.getValues('headerImageUrl');
+    let newImageUrl = currentImageUrl;
+
+    if (watchedTheme === 'black-gold' && currentImageUrl !== '/blackgoldquoteimage1.jpg') {
+      newImageUrl = '/blackgoldquoteimage1.jpg';
+    } else if (watchedTheme === 'default' && currentImageUrl !== '/whitepinkquoteimage1.jpeg') {
+      newImageUrl = '/whitepinkquoteimage1.jpeg';
+    }
+    
+    if (newImageUrl !== currentImageUrl) {
+        form.setValue('headerImageUrl', newImageUrl, { shouldDirty: true });
+    }
+  }, [watchedTheme, form]);
 
   // --- Data Fetching ---
   const fetchDrafts = useCallback(async () => {
