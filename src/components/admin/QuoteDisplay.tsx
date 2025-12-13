@@ -142,14 +142,14 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       optionalItemsToDisplay = mutableAddOns;
   } else if (isAccepted && details.client_selected_add_ons) {
       // Finalized (Accepted): use the final selected list
-      optionalItemsToDisplay = details.client_selected_add_ons;
+      optionalItemsToDisplay = details.client_selected_add_ons || []; // Defensive check
   } else {
       // Admin preview or Rejected: use original addOns list
-      optionalItemsToDisplay = details.addOns;
+      optionalItemsToDisplay = details.addOns || []; // Defensive check
   }
   
   // Calculate totals based on the items being displayed/calculated
-  const compulsoryTotal = details.compulsoryItems.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
+  const compulsoryTotal = (details.compulsoryItems || []).reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
   const addOnTotal = optionalItemsToDisplay.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
   
   // If accepted, the total_amount from the DB is the final total. Otherwise, calculate based on current proposal/selection.
@@ -252,7 +252,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         {/* Mobile List View (Hidden on md and up) */}
         <div className="md:hidden space-y-6">
             <QuoteItemMobileList
-                items={details.compulsoryItems}
+                items={details.compulsoryItems || []} // Defensive check
                 currencySymbol={currencySymbol}
                 themeClasses={themeClasses}
                 isClientView={isClientView}
@@ -260,7 +260,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
                 isOptionalSection={false}
             />
             
-            {details.addOns.length > 0 && (
+            {details.addOns && details.addOns.length > 0 && (
                 <>
                     <h4 className={`text-lg font-bold ${themeClasses.primary} pt-4`}>Optional Add-Ons</h4>
                     <QuoteItemMobileList
@@ -289,7 +289,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
             </TableHeader>
             <TableBody>
               {/* Compulsory Items */}
-              {details.compulsoryItems.map((item) => (
+              {(details.compulsoryItems || []).map((item) => (
                 <QuoteItemRow 
                   key={item.id} 
                   item={item} 
@@ -302,7 +302,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
               ))}
 
               {/* Add-Ons (Optional Items) */}
-              {details.addOns.length > 0 && (
+              {details.addOns && details.addOns.length > 0 && (
                 <TableRow className={`${themeClasses.tableHeaderBg} hover:${themeClasses.tableHeaderBg}`}>
                   <TableCell colSpan={4} className={`font-bold ${themeClasses.primary} py-3`}>
                     Optional Add-Ons {isClientView && !isFinalized && <span className="text-sm font-normal"> (Select Quantity Below)</span>}
@@ -383,7 +383,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
           </div>
           
           {/* Display Add-on total if applicable */}
-          {details.addOns.length > 0 && (
+          {details.addOns && details.addOns.length > 0 && (
             <div className="flex justify-between font-medium text-sm">
               <span>Selected Add-ons Total:</span>
               <span>{formatCurrency(addOnTotal, currencySymbol)}</span>
