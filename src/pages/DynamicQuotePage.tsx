@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import { Card, CardFooter } from '@/components/ui/card';
@@ -253,7 +253,23 @@ const DynamicQuotePage: React.FC = () => {
   }
 
   if (error || !quote) {
-    return <div className="flex justify-center items-center h-screen text-red-500 text-xl">Error: {error || 'Quote data missing.'}</div>;
+    const themeClasses = quote?.details.theme === 'black-gold' 
+      ? { bg: 'bg-brand-dark', text: 'text-brand-light' } 
+      : { bg: 'bg-brand-light', text: 'text-brand-dark' };
+      
+    return (
+      <div className={`min-h-screen flex flex-col items-center justify-center ${themeClasses.bg} ${themeClasses.text} p-8`}>
+        <XCircle className="h-12 w-12 mb-4 text-red-500" />
+        <h1 className="text-3xl font-bold mb-2">Quote Not Found</h1>
+        <p className="text-lg text-center text-brand-dark/70 dark:text-brand-light/70">
+          The quote you are looking for (Slug: {slug}) could not be loaded.
+        </p>
+        {error && <p className="text-sm mt-4 text-red-600 dark:text-red-400">Error details: {error}</p>}
+        <Button asChild className="mt-8 bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+          <Link to="/">Return to Home</Link>
+        </Button>
+      </div>
+    );
   }
 
   const isAccepted = !!quote.accepted_at;
@@ -269,7 +285,7 @@ const DynamicQuotePage: React.FC = () => {
         bg: 'bg-brand-dark',
         cardBg: 'bg-brand-dark-alt',
         text: 'text-brand-light',
-        primary: 'text-brand-yellow',
+        primary: 'text-brand-yellow', // Gold
         secondary: 'text-brand-light/70',
         border: 'border-brand-yellow/50',
         acceptButton: 'bg-brand-yellow text-brand-dark hover:bg-brand-yellow/90',
