@@ -15,6 +15,8 @@ import { Separator } from '@/components/ui/separator';
 import DynamicImage from '../DynamicImage';
 import QuoteItemMobileList from './QuoteItemMobileList'; // Import the new component
 import { cn } from '@/lib/utils'; // Import cn for utility classes
+import { Button } from '@/components/ui/button'; // Import Button
+import { Minus, Plus } from 'lucide-react'; // Import Plus and Minus icons
 
 interface QuoteDisplayProps {
   quote: Quote;
@@ -39,11 +41,14 @@ const QuoteItemRow: React.FC<{
   themeClasses,
   isClientView,
   isFinalized,
-  // onQuantityChange is not used here as the table view is static/non-interactive
+  onQuantityChange,
 }) => {
   const isSelected = item.quantity > 0;
   const totalAmount = item.price * item.quantity;
   
+  // Determine if controls should be shown (Client view, optional, not finalized)
+  const showControls = isOptional && isClientView && !isFinalized && onQuantityChange;
+
   // Logic to display unit cost for optional items that were NOT selected (quantity 0)
   const displayAmount = () => {
     if (isOptional && !isSelected && !isFinalized && isClientView) {
@@ -63,6 +68,9 @@ const QuoteItemRow: React.FC<{
   };
   
   const displayQuantity = () => {
+    // If controls are shown, the quantity is handled by the controls block below.
+    if (showControls) return null; 
+    
     // Static quantity display (Admin view or Finalized Client view)
     if (isOptional && !isSelected && !isFinalized && isClientView) {
         return <span className="text-muted-foreground">0</span>;
@@ -78,7 +86,36 @@ const QuoteItemRow: React.FC<{
           <p className={`text-sm ${themeClasses.secondary} mt-1`}>{item.description}</p>
         )}
       </TableCell>
-      <TableCell className="text-center w-[100px] border-r border-current/10 py-3">{displayQuantity()}</TableCell>
+      <TableCell className="text-center w-[100px] border-r border-current/10 py-3">
+        {showControls ? (
+            <div className={`flex items-center justify-center border rounded-full border-current/30 h-8 ${themeClasses.inputBg}`}>
+                <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={() => onQuantityChange(item.id, -1)}
+                    disabled={item.quantity <= 0}
+                    className={`h-7 w-7 ${themeClasses.primaryText} ${themeClasses.primaryHoverBg} p-0 rounded-full`}
+                >
+                    <Minus className="h-3 w-3" />
+                </Button>
+                <span className={`w-6 text-center font-semibold text-sm ${themeClasses.text}`}>
+                    {item.quantity}
+                </span>
+                <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={() => onQuantityChange(item.id, 1)}
+                    className={`h-7 w-7 ${themeClasses.primaryText} ${themeClasses.primaryHoverBg} p-0 rounded-full`}
+                >
+                    <Plus className="h-3 w-3" />
+                </Button>
+            </div>
+        ) : (
+            displayQuantity()
+        )}
+      </TableCell>
       <TableCell className="text-right w-[120px] border-r border-current/10 py-3">
         {formatCurrency(item.price, currencySymbol)}
       </TableCell>
