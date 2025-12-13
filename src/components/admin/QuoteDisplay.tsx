@@ -14,6 +14,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import DynamicImage from '../DynamicImage';
 import QuoteItemMobileList from './QuoteItemMobileList'; // Import the new component
+import { cn } from '@/lib/utils'; // Import cn for utility classes
 
 interface QuoteDisplayProps {
   quote: Quote;
@@ -175,7 +176,10 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
           <DynamicImage 
             src={details.headerImageUrl} 
             alt="Quote Header" 
-            className={`w-full h-48 object-cover rounded-lg shadow-xl ${headerImagePositionClass}`}
+            className={cn(
+              `w-full h-48 object-cover rounded-lg shadow-xl`,
+              headerImagePositionClass
+            )}
             width={800}
             height={192}
           />
