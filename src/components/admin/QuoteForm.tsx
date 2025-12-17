@@ -394,7 +394,12 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                     <FormItem className="md:col-span-2">
                       <FormLabel>Detailed Description (Optional)</FormLabel>
                       <FormControl>
-                        <Input placeholder="Detailed description of the service." {...itemField} className={inputClasses} />
+                        <Textarea 
+                          placeholder="Detailed description of the service." 
+                          {...itemField} 
+                          rows={2}
+                          className={inputClasses}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -469,7 +474,12 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                     <FormItem className="md:col-span-2">
                       <FormLabel>Detailed Description (Optional)</FormLabel>
                       <FormControl>
-                        <Input placeholder="Description of the add-on service." {...itemField} className={inputClasses} />
+                        <Textarea 
+                          placeholder="Description of the add-on service." 
+                          {...itemField} 
+                          rows={2}
+                          className={inputClasses}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
