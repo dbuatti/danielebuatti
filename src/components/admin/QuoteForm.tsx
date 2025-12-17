@@ -12,6 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import { cn, formatCurrency } from '@/lib/utils';
 import { useMemo } from 'react';
 import PillToggle from './PillToggle';
+import RichTextPreview from './RichTextPreview'; // Import RichTextPreview
 
 // Define the schema for a single item (compulsory or add-on)
 const ItemSchema = z.object({
@@ -352,21 +353,24 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
           />
         </div>
         
-        {/* Preparation Notes Field (unchanged) */}
+        {/* Preparation Notes Field (with live preview) */}
         <FormField
           control={control}
           name="preparationNotes"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Preparation & Service Notes (Displayed under Compulsory Items)</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="e.g., This fee covers 7 hours of commitment...\n\n- Item 1\n- Item 2" 
-                  {...field} 
-                  rows={4}
-                  className={inputClasses}
-                />
-              </FormControl>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormControl>
+                  <Textarea 
+                    placeholder="e.g., This fee covers 7 hours of commitment...\n\n- First bullet point\n* Second bullet point" 
+                    {...field} 
+                    rows={4}
+                    className={inputClasses}
+                  />
+                </FormControl>
+                <RichTextPreview text={field.value || ''} className="min-h-[100px]" />
+              </div>
               <FormMessage />
             </FormItem>
           )}
@@ -393,8 +397,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
         <h3 className="text-lg font-semibold">Compulsory Items (Fixed Fees)</h3>
         <div className="space-y-4">
           {compulsoryFields.map((field, index) => (
-            <div key={field.id} className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 items-start p-4 border rounded-md bg-brand-secondary/5 dark:bg-brand-dark/30">
-              <div className="flex-grow grid grid-cols-1 md:grid-cols-5 gap-4 w-full">
+            <div key={field.id} className="flex flex-col space-y-4 p-4 border rounded-md bg-brand-secondary/5 dark:bg-brand-dark/30">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 w-full">
                 <FormField
                   control={control}
                   name={`compulsoryItems.${index}.name`}
@@ -461,8 +465,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
               </div>
               
               {/* Item Toggles and Delete Button */}
-              <div className="flex flex-col items-end gap-2 pt-0 md:pt-8 w-full md:w-auto">
-                <div className="flex flex-wrap justify-end gap-2">
+              <div className="flex flex-col md:flex-row justify-between items-center gap-2 pt-2 border-t border-brand-secondary/20 md:border-none md:pt-0">
+                <div className="flex flex-wrap justify-start gap-2">
                     <PillToggle name={`compulsoryItems.${index}.showScheduleDates`} label="Schedule" />
                     <PillToggle name={`compulsoryItems.${index}.showQuantity`} label="Qty" />
                     <PillToggle name={`compulsoryItems.${index}.showRate`} label="Rate" />
@@ -476,6 +480,12 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
+              </div>
+              
+              {/* Live Preview for Description */}
+              <div className="md:col-span-5">
+                <FormLabel className="text-sm font-normal text-brand-dark/70 dark:text-brand-light/70">Description Preview:</FormLabel>
+                <RichTextPreview text={form.watch(`compulsoryItems.${index}.description`) || ''} />
               </div>
             </div>
           ))}
@@ -495,8 +505,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
         <h3 className="text-lg font-semibold">Optional Add-Ons (Quantity/Price)</h3>
         <div className="space-y-4">
           {addOnFields.map((field, index) => (
-            <div key={field.id} className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 items-start p-4 border rounded-md bg-brand-secondary/5 dark:bg-brand-dark/30">
-              <div className="flex-grow grid grid-cols-1 md:grid-cols-5 gap-4 w-full">
+            <div key={field.id} className="flex flex-col space-y-4 p-4 border rounded-md bg-brand-secondary/5 dark:bg-brand-dark/30">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 w-full">
                 <FormField
                   control={control}
                   name={`addOns.${index}.name`}
@@ -584,8 +594,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
               </div>
               
               {/* Item Toggles and Delete Button */}
-              <div className="flex flex-col items-end gap-2 pt-0 md:pt-8 w-full md:w-auto">
-                <div className="flex flex-wrap justify-end gap-2">
+              <div className="flex flex-col md:flex-row justify-between items-center gap-2 pt-2 border-t border-brand-secondary/20 md:border-none md:pt-0">
+                <div className="flex flex-wrap justify-start gap-2">
                     <PillToggle name={`addOns.${index}.showScheduleDates`} label="Schedule" />
                     <PillToggle name={`addOns.${index}.showQuantity`} label="Qty" />
                     <PillToggle name={`addOns.${index}.showRate`} label="Rate" />
@@ -598,6 +608,12 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
+              </div>
+              
+              {/* Live Preview for Description */}
+              <div className="md:col-span-5">
+                <FormLabel className="text-sm font-normal text-brand-dark/70 dark:text-brand-light/70">Description Preview:</FormLabel>
+                <RichTextPreview text={form.watch(`addOns.${index}.description`) || ''} />
               </div>
             </div>
           ))}

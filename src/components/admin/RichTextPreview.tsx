@@ -1,0 +1,78 @@
+"use client";
+
+import React from 'react';
+import { cn } from '@/lib/utils';
+
+interface RichTextPreviewProps {
+  text: string;
+  className?: string;
+}
+
+// Helper function to parse simple markdown lists (using - or *)
+const renderRichText = (text: string): React.ReactNode => {
+  if (!text) return null;
+
+  const lines = text.split('\n');
+  let inList = false;
+  const elements: React.ReactNode[] = [];
+  let currentListItems: React.ReactNode[] = [];
+
+  const processList = () => {
+    if (currentListItems.length > 0) {
+      elements.push(
+        <ul key={elements.length} className="list-disc list-inside ml-4 space-y-1 text-sm text-brand-dark/80 dark:text-brand-light/80">
+          {currentListItems}
+        </ul>
+      );
+      currentListItems = [];
+    }
+  };
+
+  lines.forEach((line, index) => {
+    const trimmedLine = line.trim();
+    const isListItem = trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ');
+
+    if (isListItem) {
+      if (!inList) {
+        inList = true;
+      }
+      const content = trimmedLine.substring(2).trim();
+      currentListItems.push(<li key={index}>{content}</li>);
+    } else {
+      if (inList) {
+        processList();
+        inList = false;
+      }
+      if (trimmedLine) {
+        // Render as a paragraph, preserving line breaks within the paragraph using pre-wrap
+        elements.push(
+          <p key={index} className="whitespace-pre-wrap text-sm text-brand-dark/80 dark:text-brand-light/80">
+            {line}
+          </p>
+        );
+      } else {
+        // Preserve empty lines as breaks
+        elements.push(<br key={index} />);
+      }
+    }
+  });
+
+  processList(); // Process any remaining list items
+
+  return <>{elements}</>;
+};
+
+
+const RichTextPreview: React.FC<RichTextPreviewProps> = ({ text, className }) => {
+  return (
+    <div className={cn(
+      "p-3 border border-brand-secondary/50 rounded-md bg-brand-light dark:bg-brand-dark",
+      "min-h-[50px] overflow-y-auto",
+      className
+    )}>
+      {renderRichText(text)}
+    </div>
+  );
+};
+
+export default RichTextPreview;
