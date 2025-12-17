@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import QuoteForm, { QuoteFormSchema, QuoteFormValues } from '@/components/admin/QuoteForm';
@@ -16,7 +16,6 @@ import { Loader2 } from 'lucide-react';
 
 const AdminEditQuotePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const [quote, setQuote] = useState<Quote | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,11 +49,11 @@ const AdminEditQuotePage: React.FC = () => {
   }, [watchedTheme, form, isLoading]);
 
 
-  const fetchQuote = useCallback(async () => {
+  const fetchQuote = useCallback(async (showToast = false) => {
     if (!id) return;
 
     setIsLoading(true);
-    const toastId = showLoading('Loading quote for editing...');
+    const toastId = showToast ? showLoading('Loading quote for editing...') : undefined;
 
     try {
       const { data, error } = await supabase
@@ -123,19 +122,19 @@ const AdminEditQuotePage: React.FC = () => {
       };
 
       form.reset(defaultValues);
-      showSuccess('Quote loaded.', { id: toastId });
+      if (showToast) showSuccess('Quote loaded.', { id: toastId });
     } catch (error: any) {
       console.error('Error fetching quote:', error);
       showError(`Failed to load quote: ${error.message || 'Unknown error occurred'}`, { id: toastId });
       setQuote(null);
     } finally {
       setIsLoading(false);
-      dismissToast(toastId);
+      if (toastId) dismissToast(toastId);
     }
   }, [id, form]);
 
   useEffect(() => {
-    fetchQuote();
+    fetchQuote(true); // Fetch with toast on initial load
   }, [fetchQuote]);
 
   const handlePreviewQuote = (values: QuoteFormValues) => {
@@ -151,7 +150,7 @@ const AdminEditQuotePage: React.FC = () => {
 
     try {
       // Calculate total amount based on compulsory items and add-ons
-      const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0), 0);
+      const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1), 0);
       const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
         sum + ((addOn.price ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
       const totalAmount = compulsoryTotal + addOnTotal;
@@ -187,7 +186,7 @@ const AdminEditQuotePage: React.FC = () => {
       };
 
       // Update the invoice record
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('invoices')
         .update({
           client_name: values.clientName,
@@ -201,9 +200,7 @@ const AdminEditQuotePage: React.FC = () => {
           details: details,
           // Slug remains unchanged
         })
-        .eq('id', quote.id)
-        .select('slug')
-        .single();
+        .eq('id', quote.id);
 
       if (error) {
         throw error;
@@ -211,12 +208,9 @@ const AdminEditQuotePage: React.FC = () => {
 
       showSuccess('Quote updated successfully!', { id: toastId });
 
-      // Refresh data and navigate back to details page
-      if (data && data.slug) {
-        navigate(`/admin/quotes/${quote.id}`);
-      } else {
-        navigate('/admin/quotes');
-      }
+      // Stay on the edit page and refresh the data
+      await fetchQuote(false); 
+      
     } catch (error: any) {
       console.error('Error updating quote:', error);
       showError(`Failed to update quote: ${error.message || 'Unknown error occurred'}`, { id: toastId });
@@ -228,7 +222,7 @@ const AdminEditQuotePage: React.FC = () => {
 
   // Transform form values into Quote interface structure for preview
   const getPreviewData = (values: QuoteFormValues): Quote => {
-    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0), 0);
+    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1), 0);
     const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
       sum + ((addOn.price ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
     const totalAmount = compulsoryTotal + addOnTotal;
