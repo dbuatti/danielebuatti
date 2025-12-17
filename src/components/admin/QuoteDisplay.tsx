@@ -33,7 +33,10 @@ const QuoteItemRow: React.FC<{
   themeClasses: any; 
   isClientView: boolean; 
   isFinalized: boolean;
-  onQuantityChange?: (itemId: string, delta: number) => void 
+  onQuantityChange?: (itemId: string, delta: number) => void;
+  showScheduleDates: boolean; // NEW
+  showQuantity: boolean;      // NEW
+  showRate: boolean;          // NEW
 }> = ({
   item,
   currencySymbol,
@@ -42,6 +45,9 @@ const QuoteItemRow: React.FC<{
   isClientView,
   isFinalized,
   onQuantityChange,
+  showScheduleDates,
+  showQuantity,
+  showRate,
 }) => {
   const isSelected = item.quantity > 0;
   const totalAmount = item.price * item.quantity;
@@ -83,17 +89,27 @@ const QuoteItemRow: React.FC<{
       <TableCell className="font-medium border-r border-current/10 py-3">
         {item.name}
         {item.description && (
-          <p className={`text-sm ${themeClasses.secondary} mt-1`}>{item.description}</p>
+          <p className={`text-sm ${themeClasses.secondary} mt-1 whitespace-pre-wrap`}>{item.description}</p>
         )}
       </TableCell>
-      <TableCell className="text-center w-[100px] border-r border-current/10 py-3">
-        {showControls ? (
+      
+      {/* Schedule / Dates Column */}
+      {showScheduleDates && (
+        <TableCell className="text-center w-[120px] border-r border-current/10 py-3 text-sm">
+          {item.scheduleDates || 'N/A'}
+        </TableCell>
+      )}
+      
+      {/* Quantity Column */}
+      {showQuantity && (
+        <TableCell className="text-center w-[100px] border-r border-current/10 py-3">
+          {showControls ? (
             <div className={`flex items-center justify-center border rounded-full border-current/30 h-8 ${themeClasses.inputBg}`}>
                 <Button 
                     type="button" 
                     variant="ghost" 
                     size="icon" 
-                    onClick={() => onQuantityChange(item.id, -1)}
+                    onClick={() => onQuantityChange!(item.id, -1)}
                     disabled={item.quantity <= 0}
                     className={`h-7 w-7 ${themeClasses.primaryText} ${themeClasses.primaryHoverBg} p-0 rounded-full`}
                 >
@@ -106,19 +122,26 @@ const QuoteItemRow: React.FC<{
                     type="button" 
                     variant="ghost" 
                     size="icon" 
-                    onClick={() => onQuantityChange(item.id, 1)}
+                    onClick={() => onQuantityChange!(item.id, 1)}
                     className={`h-7 w-7 ${themeClasses.primaryText} ${themeClasses.primaryHoverBg} p-0 rounded-full`}
                 >
                     <Plus className="h-3 w-3" />
                 </Button>
             </div>
-        ) : (
-            displayQuantity()
-        )}
-      </TableCell>
-      <TableCell className="text-right w-[120px] border-r border-current/10 py-3">
-        {formatCurrency(item.price, currencySymbol)}
-      </TableCell>
+          ) : (
+              displayQuantity()
+          )}
+        </TableCell>
+      )}
+      
+      {/* Rate (Unit Price) Column */}
+      {showRate && (
+        <TableCell className="text-right w-[120px] border-r border-current/10 py-3">
+          {formatCurrency(item.price, currencySymbol)}
+        </TableCell>
+      )}
+      
+      {/* Amount Column (Always visible) */}
       <TableCell className="text-right font-semibold w-[120px] py-3">
         {displayAmount()}
       </TableCell>
@@ -134,6 +157,9 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
   const isRejected = !!rejected_at;
   const isFinalized = isAccepted || isRejected;
   
+  // Destructure new visibility toggles
+  const { depositPercentage, theme, showScheduleDates, showQuantity, showRate } = details; 
+
   // Determine which list of add-ons to display and calculate totals
   let optionalItemsToDisplay: QuoteItem[];
   
@@ -156,11 +182,11 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
   const subtotal = isAccepted ? total_amount : (compulsoryTotal + addOnTotal); 
 
   // Calculate deposit amount
-  const depositAmount = subtotal * (details.depositPercentage / 100);
+  const depositAmount = subtotal * (depositPercentage / 100);
   const remainingBalance = subtotal - depositAmount;
 
-  // Theme setup
-  const isBlackGoldTheme = details.theme === 'black-gold';
+  // Theme setup (unchanged)
+  const isBlackGoldTheme = theme === 'black-gold';
   
   const themeClasses = isBlackGoldTheme
     ? {
@@ -203,6 +229,14 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       };
       
   const headerImagePositionClass = details.headerImagePosition || 'object-center';
+  
+  // Calculate colspan for the table header
+  const visibleColumns = 1 + // Description (always visible)
+                         (showScheduleDates ? 1 : 0) +
+                         (showQuantity ? 1 : 0) +
+                         (showRate ? 1 : 0) +
+                         1; // Amount (always visible)
+
 
   return (
     <div className={`p-4 sm:p-8 max-w-4xl mx-auto space-y-8 ${themeClasses.bg} ${themeClasses.text}`}>
@@ -258,6 +292,9 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
                 isClientView={isClientView}
                 isFinalized={isFinalized}
                 isOptionalSection={false}
+                showScheduleDates={showScheduleDates} // Pass visibility props
+                showQuantity={showQuantity}
+                showRate={showRate}
             />
             
             {details.addOns && details.addOns.length > 0 && (
@@ -271,6 +308,9 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
                         isFinalized={isFinalized}
                         isOptionalSection={true}
                         onQuantityChange={onQuantityChange}
+                        showScheduleDates={showScheduleDates} // Pass visibility props
+                        showQuantity={showQuantity}
+                        showRate={showRate}
                     />
                 </>
             )}
@@ -282,8 +322,9 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
             <TableHeader>
               <TableRow className={themeClasses.tableHeaderBg}>
                 <TableHead className={`font-bold ${themeClasses.primary} border-r border-current/10 py-3`}>Description</TableHead>
-                <TableHead className={`text-center font-bold ${themeClasses.primary} w-[100px] border-r border-current/10 py-3`}>Qty</TableHead>
-                <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px] border-r border-current/10 py-3`}>Unit Price</TableHead>
+                {showScheduleDates && <TableHead className={`text-center font-bold ${themeClasses.primary} w-[120px] border-r border-current/10 py-3`}>Schedule / Dates</TableHead>}
+                {showQuantity && <TableHead className={`text-center font-bold ${themeClasses.primary} w-[100px] border-r border-current/10 py-3`}>Qty</TableHead>}
+                {showRate && <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px] border-r border-current/10 py-3`}>Rate</TableHead>}
                 <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px] py-3`}>Amount</TableHead>
               </TableRow>
             </TableHeader>
@@ -298,13 +339,16 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
                   themeClasses={themeClasses}
                   isClientView={isClientView}
                   isFinalized={isFinalized}
+                  showScheduleDates={showScheduleDates} // Pass visibility props
+                  showQuantity={showQuantity}
+                  showRate={showRate}
                 />
               ))}
 
               {/* Add-Ons (Optional Items) */}
               {details.addOns && details.addOns.length > 0 && (
                 <TableRow className={`${themeClasses.tableHeaderBg} hover:${themeClasses.tableHeaderBg}`}>
-                  <TableCell colSpan={4} className={`font-bold ${themeClasses.primary} py-3`}>
+                  <TableCell colSpan={visibleColumns} className={`font-bold ${themeClasses.primary} py-3`}>
                     Optional Add-Ons {isClientView && !isFinalized && <span className="text-sm font-normal"> (Select Quantity Below)</span>}
                     {isAccepted && `(Client Selected: ${optionalItemsToDisplay.filter(i => i.quantity > 0).length} of ${details.addOns.length})`}
                   </TableCell>
@@ -326,6 +370,9 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
                           isClientView={isClientView}
                           isFinalized={isFinalized}
                           onQuantityChange={onQuantityChange}
+                          showScheduleDates={showScheduleDates} // Pass visibility props
+                          showQuantity={showQuantity}
+                          showRate={showRate}
                       />
                   );
               })}
@@ -402,7 +449,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
           {/* Deposit Section */}
           <div className="pt-4 space-y-2">
             <div className="flex justify-between text-lg font-semibold">
-              <span className={themeClasses.primary}>Deposit Required ({details.depositPercentage}%):</span>
+              <span className={themeClasses.primary}>Deposit Required ({depositPercentage}%):</span>
               <span className={themeClasses.primary}>{formatCurrency(depositAmount, currencySymbol)}</span>
             </div>
             <div className="flex justify-between text-lg font-semibold">
@@ -422,13 +469,15 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       )}
 
       {/* Payment Terms */}
-      <div className={`pt-4 border-t border-current/20`}>
-        <h3 className={`text-xl font-semibold mb-2 ${themeClasses.primary}`}>Payment Terms</h3>
-        <p className={`text-sm ${themeClasses.secondary}`}>{details.paymentTerms}</p>
-        <p className={`text-sm ${themeClasses.secondary} mt-2`}>
-          Bank Details: BSB {details.bankDetails.bsb}, ACC {details.bankDetails.acc}
-        </p>
-      </div>
+      {details.paymentTerms && (
+        <div className={`pt-4 border-t border-current/20`}>
+          <h3 className={`text-xl font-semibold mb-2 ${themeClasses.primary}`}>Payment Terms</h3>
+          <p className={`whitespace-pre-wrap text-sm ${themeClasses.secondary}`}>{details.paymentTerms}</p>
+          <p className={`text-sm ${themeClasses.secondary} mt-2`}>
+            Bank Details: BSB {details.bankDetails.bsb}, ACC {details.bankDetails.acc}
+          </p>
+        </div>
+      )}
     </div>
   );
 };

@@ -19,6 +19,7 @@ const ItemSchema = z.object({
   description: z.string().optional(),
   price: z.number().min(0, 'Price must be non-negative.'), // Consolidated field
   quantity: z.number().min(0, 'Quantity must be non-negative.').optional(), // Used for add-ons
+  scheduleDates: z.string().optional(), // NEW: Schedule/Dates field
 });
 
 // Define the main form schema
@@ -33,7 +34,7 @@ export const QuoteFormSchema = z.object({
   preparedBy: z.string().min(1, 'Prepared By is required.'),
   currencySymbol: z.string().min(1, 'Currency symbol is required.'),
   depositPercentage: z.number().min(0).max(100, 'Deposit must be between 0 and 100.'),
-  paymentTerms: z.string().min(1, 'Payment Terms are required.'),
+  paymentTerms: z.string().optional(), // MADE OPTIONAL
   bankBSB: z.string().min(1, 'BSB is required.'),
   bankACC: z.string().min(1, 'Account Number is required.'),
   theme: z.enum(['default', 'black-gold']),
@@ -41,6 +42,11 @@ export const QuoteFormSchema = z.object({
   headerImagePosition: z.string().optional(),
   
   preparationNotes: z.string().optional(), 
+
+  // NEW VISIBILITY TOGGLES
+  showScheduleDates: z.boolean().default(true),
+  showQuantity: z.boolean().default(true),
+  showRate: z.boolean().default(true),
 
   compulsoryItems: z.array(ItemSchema).min(1, 'At least one compulsory item is required.'),
   addOns: z.array(ItemSchema),
@@ -80,7 +86,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
     const currencySymbol = watchedFields[2] || '£';
     const depositPercentage = watchedFields[3] || 0;
     
-    const compulsoryTotal = compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0), 0);
+    const compulsoryTotal = compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1), 0);
     const addOnTotal = addOns.reduce((sum: number, addOn) => 
       sum + ((addOn.price ?? 0) * (addOn.quantity ?? 0)), 0) || 0;
       
@@ -355,7 +361,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
               <FormLabel>Preparation & Service Notes (Displayed under Compulsory Items)</FormLabel>
               <FormControl>
                 <Textarea 
-                  placeholder="e.g., This fee covers 7 hours of commitment..." 
+                  placeholder="e.g., This fee covers 7 hours of commitment...\n\n- Item 1\n- Item 2" 
                   {...field} 
                   rows={4}
                   className={inputClasses}
@@ -365,6 +371,91 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             </FormItem>
           )}
         />
+        
+        {/* Payment Terms Field (Now optional) */}
+        <FormField
+          control={control}
+          name="paymentTerms"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Payment Terms (Optional)</FormLabel>
+              <FormControl>
+                <Textarea placeholder="Payment due within 7 days." {...field} rows={3} className={inputClasses} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Separator />
+        
+        {/* Visibility Toggles */}
+        <h3 className="text-lg font-semibold">Quote Display Visibility Toggles</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <FormField
+                control={control}
+                name="showScheduleDates"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Show "Schedule / Dates"</FormLabel>
+                        <Select onValueChange={(val) => field.onChange(val === 'true')} value={field.value ? 'true' : 'false'}>
+                            <FormControl>
+                                <SelectTrigger className={inputClasses}>
+                                    <SelectValue />
+                                </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50">
+                                <SelectItem value="true">Visible</SelectItem>
+                                <SelectItem value="false">Hidden</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
+            <FormField
+                control={control}
+                name="showQuantity"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Show "Qty"</FormLabel>
+                        <Select onValueChange={(val) => field.onChange(val === 'true')} value={field.value ? 'true' : 'false'}>
+                            <FormControl>
+                                <SelectTrigger className={inputClasses}>
+                                    <SelectValue />
+                                </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50">
+                                <SelectItem value="true">Visible</SelectItem>
+                                <SelectItem value="false">Hidden</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
+            <FormField
+                control={control}
+                name="showRate"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Show "Rate" (Unit Price)</FormLabel>
+                        <Select onValueChange={(val) => field.onChange(val === 'true')} value={field.value ? 'true' : 'false'}>
+                            <FormControl>
+                                <SelectTrigger className={inputClasses}>
+                                    <SelectValue />
+                                </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50">
+                                <SelectItem value="true">Visible</SelectItem>
+                                <SelectItem value="false">Hidden</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
+        </div>
 
         <Separator />
 
@@ -373,7 +464,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
         <div className="space-y-4">
           {compulsoryFields.map((field, index) => (
             <div key={field.id} className="flex space-x-4 items-start p-4 border rounded-md bg-brand-secondary/5 dark:bg-brand-dark/30">
-              <div className="flex-grow grid grid-cols-1 md:grid-cols-4 gap-4"> {/* Changed to 4 columns */}
+              <div className="flex-grow grid grid-cols-1 md:grid-cols-5 gap-4">
                 <FormField
                   control={control}
                   name={`compulsoryItems.${index}.name`}
@@ -391,7 +482,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                   control={control}
                   name={`compulsoryItems.${index}.description`}
                   render={({ field: itemField }) => (
-                    <FormItem className="md:col-span-2"> {/* Spans 2 columns */}
+                    <FormItem className="md:col-span-2">
                       <FormLabel>Detailed Description (Optional)</FormLabel>
                       <FormControl>
                         <Textarea 
@@ -400,6 +491,19 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                           rows={2}
                           className={inputClasses}
                         />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name={`compulsoryItems.${index}.scheduleDates`}
+                  render={({ field: itemField }) => (
+                    <FormItem>
+                      <FormLabel>Schedule / Dates</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., 2025-12-11" {...itemField} className={inputClasses} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -439,7 +543,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
           <Button
             type="button"
             variant="outline"
-            onClick={() => appendCompulsory({ name: '', description: '', price: 0, quantity: 1 })}
+            onClick={() => appendCompulsory({ name: '', description: '', price: 0, quantity: 1, scheduleDates: '' })}
             className="w-full"
           >
             <Plus className="h-4 w-4 mr-2" /> Add Compulsory Item
@@ -453,7 +557,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
         <div className="space-y-4">
           {addOnFields.map((field, index) => (
             <div key={field.id} className="flex space-x-4 items-start p-4 border rounded-md bg-brand-secondary/5 dark:bg-brand-dark/30">
-              <div className="flex-grow grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="flex-grow grid grid-cols-1 md:grid-cols-5 gap-4">
                 <FormField
                   control={control}
                   name={`addOns.${index}.name`}
@@ -485,13 +589,26 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={control}
+                  name={`addOns.${index}.scheduleDates`}
+                  render={({ field: itemField }) => (
+                    <FormItem>
+                      <FormLabel>Schedule / Dates</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., 2025-12-11" {...itemField} className={inputClasses} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={control}
                     name={`addOns.${index}.price`}
                     render={({ field: itemField }) => (
                       <FormItem>
-                        <FormLabel>Price (per unit)</FormLabel>
+                        <FormLabel>Rate (per unit)</FormLabel>
                         <FormControl>
                           <Input 
                             type="number" 
@@ -539,7 +656,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
           <Button
             type="button"
             variant="outline"
-            onClick={() => appendAddOn({ name: '', description: '', price: 0, quantity: 0 })}
+            onClick={() => appendAddOn({ name: '', description: '', price: 0, quantity: 0, scheduleDates: '' })}
             className="w-full"
           >
             <Plus className="h-4 w-4 mr-2" /> Add Optional Add-On
@@ -598,19 +715,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
           />
         </div>
         
-        <FormField
-          control={control}
-          name="paymentTerms"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Payment Terms</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Payment due within 7 days." {...field} rows={3} className={inputClasses} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* Payment Terms is now optional and moved above */}
       </form>
     </Form>
   );

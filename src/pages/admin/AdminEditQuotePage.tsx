@@ -98,26 +98,34 @@ const AdminEditQuotePage: React.FC = () => {
         preparedBy: fetchedQuote.prepared_by,
         currencySymbol: details.currencySymbol,
         depositPercentage: details.depositPercentage,
-        paymentTerms: details.paymentTerms,
+        paymentTerms: details.paymentTerms || '', // Handle optional payment terms
         bankBSB: details.bankDetails.bsb,
         bankACC: details.bankDetails.acc,
         theme: details.theme,
         headerImageUrl: details.headerImageUrl || '',
         headerImagePosition: details.headerImagePosition || 'object-center',
         preparationNotes: details.preparationNotes || '',
+        
+        // NEW VISIBILITY TOGGLES
+        showScheduleDates: details.showScheduleDates ?? true,
+        showQuantity: details.showQuantity ?? true,
+        showRate: details.showRate ?? true,
+
         compulsoryItems: details.compulsoryItems.map(item => ({
           id: item.id,
           name: item.name,
           description: item.description,
-          price: item.price, // Use price
-          quantity: item.quantity, // Include quantity for consistency
+          price: item.price,
+          quantity: item.quantity,
+          scheduleDates: item.scheduleDates || '', // Include new field
         })),
         addOns: details.addOns.map(item => ({
           id: item.id,
           name: item.name,
           description: item.description,
-          price: item.price, // Use price
+          price: item.price,
           quantity: item.quantity,
+          scheduleDates: item.scheduleDates || '', // Include new field
         })),
       };
 
@@ -163,6 +171,7 @@ const AdminEditQuotePage: React.FC = () => {
           description: item.description || '',
           price: item.price ?? 0,
           quantity: item.quantity ?? 1,
+          scheduleDates: item.scheduleDates || '', // Include new field
         })),
         addOns: values.addOns?.map(addOn => ({
           id: addOn.id || Math.random().toString(36).substring(2, 11),
@@ -170,6 +179,7 @@ const AdminEditQuotePage: React.FC = () => {
           description: addOn.description || '',
           price: addOn.price ?? 0,
           quantity: addOn.quantity ?? 1,
+          scheduleDates: addOn.scheduleDates || '', // Include new field
         })) || [],
         depositPercentage: values.depositPercentage,
         bankDetails: {
@@ -178,11 +188,15 @@ const AdminEditQuotePage: React.FC = () => {
         },
         eventTime: values.eventTime ?? '',
         currencySymbol: values.currencySymbol,
-        paymentTerms: values.paymentTerms,
+        paymentTerms: values.paymentTerms || '', // Handle optional payment terms
         theme: values.theme,
         headerImageUrl: values.headerImageUrl,
         headerImagePosition: values.headerImagePosition || 'object-center',
         preparationNotes: values.preparationNotes || '',
+        // NEW VISIBILITY TOGGLES
+        showScheduleDates: values.showScheduleDates,
+        showQuantity: values.showQuantity,
+        showRate: values.showRate,
       };
 
       // Update the invoice record
@@ -228,7 +242,7 @@ const AdminEditQuotePage: React.FC = () => {
     const totalAmount = compulsoryTotal + addOnTotal;
 
     // Helper function to map form item to QuoteItem structure
-    const mapFormItemToQuoteItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number }): QuoteItem => {
+    const mapFormItemToQuoteItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number, scheduleDates?: string }): QuoteItem => {
       const quantity = item.quantity ?? 1;
       const price = item.price ?? 0;
       
@@ -238,6 +252,7 @@ const AdminEditQuotePage: React.FC = () => {
         description: item.description || '',
         quantity: quantity,
         price: price,
+        scheduleDates: item.scheduleDates || '',
       };
     };
 
@@ -257,7 +272,7 @@ const AdminEditQuotePage: React.FC = () => {
       created_at: quote?.created_at || new Date().toISOString(),
       details: {
         depositPercentage: values.depositPercentage,
-        paymentTerms: values.paymentTerms,
+        paymentTerms: values.paymentTerms || '',
         bankDetails: {
           bsb: values.bankBSB ?? '',
           acc: values.bankACC ?? '',
@@ -270,6 +285,10 @@ const AdminEditQuotePage: React.FC = () => {
         headerImageUrl: values.headerImageUrl,
         headerImagePosition: values.headerImagePosition || 'object-center',
         preparationNotes: values.preparationNotes || '',
+        // NEW VISIBILITY TOGGLES
+        showScheduleDates: values.showScheduleDates,
+        showQuantity: values.showQuantity,
+        showRate: values.showRate,
       },
       status: quote?.status || 'Created',
     };

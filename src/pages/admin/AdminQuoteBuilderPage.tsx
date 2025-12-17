@@ -39,11 +39,17 @@ const defaultQuoteValues: QuoteFormValues = {
   headerImageUrl: '/whitepinkquoteimage1.jpeg',
   headerImagePosition: 'object-top',
   preparationNotes: 'This fee covers 7 hours of commitment, including preparation, travel, setup, performance, and pack down.',
+  
+  // NEW VISIBILITY DEFAULTS
+  showScheduleDates: true,
+  showQuantity: true,
+  showRate: true,
+  
   compulsoryItems: [
-    { id: 'base-fee', name: 'Base Performance Fee', description: '3 hours of live piano performance.', price: 1000, quantity: 1 },
+    { id: 'base-fee', name: 'Base Performance Fee', description: '3 hours of live piano performance.', price: 1000, quantity: 1, scheduleDates: '' },
   ],
   addOns: [
-    { id: 'extra-hour', name: 'Extra Hour of Performance', description: 'Additional hour of live piano music.', price: 200, quantity: 0 },
+    { id: 'extra-hour', name: 'Extra Hour of Performance', description: 'Additional hour of live piano music.', price: 200, quantity: 0, scheduleDates: '' },
   ],
 };
 
@@ -128,17 +134,18 @@ const AdminQuoteBuilderPage: React.FC = () => {
   // --- Handlers ---
 
   const mapFormValuesToQuote = (values: QuoteFormValues, id?: string, slug?: string, status: Quote['status'] = 'Created'): Quote => {
-    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0), 0);
+    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1), 0);
     const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
       sum + ((addOn.price ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
     const totalAmount = compulsoryTotal + addOnTotal;
 
-    const mapItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number }): QuoteItem => ({
+    const mapItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number, scheduleDates?: string }): QuoteItem => ({
       id: item.id || Math.random().toString(36).substring(2, 11),
       name: item.name,
       description: item.description || '',
       quantity: item.quantity ?? 1,
       price: item.price ?? 0,
+      scheduleDates: item.scheduleDates || '', // Include new field
     });
 
     return {
@@ -157,7 +164,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       created_at: new Date().toISOString(),
       details: {
         depositPercentage: values.depositPercentage,
-        paymentTerms: values.paymentTerms,
+        paymentTerms: values.paymentTerms || '', // Handle optional payment terms
         bankDetails: {
           bsb: values.bankBSB ?? '',
           acc: values.bankACC ?? '',
@@ -170,6 +177,10 @@ const AdminQuoteBuilderPage: React.FC = () => {
         headerImageUrl: values.headerImageUrl,
         headerImagePosition: values.headerImagePosition || 'object-center',
         preparationNotes: values.preparationNotes || '',
+        // NEW VISIBILITY TOGGLES
+        showScheduleDates: values.showScheduleDates,
+        showQuantity: values.showQuantity,
+        showRate: values.showRate,
       },
       status: status,
     };
@@ -338,6 +349,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         description: item.description || '',
         price: item.amount, // Use 'amount' as 'price' for compulsory items
         quantity: 1,
+        scheduleDates: extractedContent.eventDate, // Default schedule date to event date
       }));
       
       const addOns = extractedContent.addOns.map(item => ({
@@ -346,6 +358,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         description: item.description || '',
         price: item.cost, // Use 'cost' as 'price' for add-ons
         quantity: 0, // Default to 0 quantity for add-ons
+        scheduleDates: '',
       }));
       
       // Merge extracted data with default values, prioritizing extracted data
@@ -362,6 +375,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         preparationNotes: extractedContent.preparationNotes || defaultQuoteValues.preparationNotes,
         compulsoryItems: compulsoryItems.length > 0 ? compulsoryItems : defaultQuoteValues.compulsoryItems,
         addOns: addOns,
+        // Visibility toggles remain default (true)
       };
       
       form.reset(newValues);
@@ -387,13 +401,13 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
   // Transform form values into Quote interface structure for preview
   const getPreviewData = (values: QuoteFormValues): Quote => {
-    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0), 0);
+    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1), 0);
     const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
       sum + ((addOn.price ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
     const totalAmount = compulsoryTotal + addOnTotal;
 
     // Helper function to map form item to QuoteItem structure
-    const mapFormItemToQuoteItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number }): QuoteItem => {
+    const mapFormItemToQuoteItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number, scheduleDates?: string }): QuoteItem => {
       const quantity = item.quantity ?? 1;
       const price = item.price ?? 0;
       
@@ -403,6 +417,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         description: item.description || '',
         quantity: quantity,
         price: price,
+        scheduleDates: item.scheduleDates || '',
       };
     };
 
@@ -419,10 +434,10 @@ const AdminQuoteBuilderPage: React.FC = () => {
       total_amount: totalAmount,
       accepted_at: null,
       rejected_at: null,
-      created_at: new Date().toISOString(),
+      created_at: currentQuote?.created_at || new Date().toISOString(),
       details: {
         depositPercentage: values.depositPercentage,
-        paymentTerms: values.paymentTerms,
+        paymentTerms: values.paymentTerms || '',
         bankDetails: {
           bsb: values.bankBSB ?? '',
           acc: values.bankACC ?? '',
@@ -435,6 +450,10 @@ const AdminQuoteBuilderPage: React.FC = () => {
         headerImageUrl: values.headerImageUrl,
         headerImagePosition: values.headerImagePosition || 'object-center',
         preparationNotes: values.preparationNotes || '',
+        // NEW VISIBILITY TOGGLES
+        showScheduleDates: values.showScheduleDates,
+        showQuantity: values.showQuantity,
+        showRate: values.showRate,
       },
       status: currentQuote?.status || 'Draft',
     };
