@@ -38,6 +38,61 @@ const formatDate = (dateString: string | undefined, formatStr: string = 'PPP') =
   }
 };
 
+// Helper function to parse simple markdown lists (using - or *)
+const renderRichText = (text: string, themeClasses: any) => {
+  if (!text) return null;
+
+  const lines = text.split('\n');
+  let inList = false;
+  const elements: React.ReactNode[] = [];
+  let currentListItems: React.ReactNode[] = [];
+
+  const processList = () => {
+    if (currentListItems.length > 0) {
+      elements.push(
+        <ul key={elements.length} className={`list-disc list-inside ml-4 space-y-1 ${themeClasses.secondary}`}>
+          {currentListItems}
+        </ul>
+      );
+      currentListItems = [];
+    }
+  };
+
+  lines.forEach((line, index) => {
+    const trimmedLine = line.trim();
+    const isListItem = trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ');
+
+    if (isListItem) {
+      if (!inList) {
+        inList = true;
+      }
+      const content = trimmedLine.substring(2).trim();
+      currentListItems.push(<li key={index}>{content}</li>);
+    } else {
+      if (inList) {
+        processList();
+        inList = false;
+      }
+      if (trimmedLine) {
+        // Render as a paragraph, preserving line breaks within the paragraph using pre-wrap
+        elements.push(
+          <p key={index} className={`whitespace-pre-wrap ${themeClasses.secondary}`}>
+            {line}
+          </p>
+        );
+      } else {
+        // Preserve empty lines as breaks
+        elements.push(<br key={index} />);
+      }
+    }
+  });
+
+  processList(); // Process any remaining list items
+
+  return <>{elements}</>;
+};
+
+
 // Helper component for rendering a single item row (used only for desktop table view)
 const QuoteItemRow: React.FC<{ 
   item: QuoteItem; 
@@ -96,7 +151,9 @@ const QuoteItemRow: React.FC<{
       <TableCell className="font-medium border-r border-current/10 py-3">
         {item.name}
         {item.description && (
-          <p className={`text-sm ${themeClasses.secondary} mt-1 whitespace-pre-wrap`}>{item.description}</p>
+          <div className={`text-sm mt-1`}>
+            {renderRichText(item.description, themeClasses)}
+          </div>
         )}
       </TableCell>
       
@@ -404,17 +461,17 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       )}
       
       {/* NEW: Image Section for Default Theme (Only renders if images are explicitly set) */}
-      {!isBlackGoldTheme && themeClasses.image1 && (
+      {!isBlackGoldTheme && details.headerImageUrl && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
           <DynamicImage 
-            src={themeClasses.image1} 
+            src={details.headerImageUrl} 
             alt="Daniele Buatti playing piano" 
             className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
             width={400}
             height={256}
           />
           <DynamicImage 
-            src={themeClasses.image2} 
+            src={details.headerImageUrl} 
             alt="Daniele Buatti performing live" 
             className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
             width={400}
@@ -466,7 +523,9 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       {details.preparationNotes && (
         <div className={`pt-4 border-t border-current/20`}>
           <h3 className={`text-xl font-semibold mb-2 ${themeClasses.primary}`}>Preparation & Service Notes</h3>
-          <p className={`whitespace-pre-wrap text-sm ${themeClasses.secondary}`}>{details.preparationNotes}</p>
+          <div className={`text-sm ${themeClasses.secondary}`}>
+            {renderRichText(details.preparationNotes, themeClasses)}
+          </div>
         </div>
       )}
 
