@@ -373,7 +373,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
         <div className="space-y-4">
           {compulsoryFields.map((field, index) => (
             <div key={field.id} className="flex space-x-4 items-start p-4 border rounded-md bg-brand-secondary/5 dark:bg-brand-dark/30">
-              <div className="flex-grow grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex-grow grid grid-cols-1 md:grid-cols-4 gap-4"> {/* Changed to 4 columns */}
                 <FormField
                   control={control}
                   name={`compulsoryItems.${index}.name`}
@@ -391,7 +391,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                   control={control}
                   name={`compulsoryItems.${index}.description`}
                   render={({ field: itemField }) => (
-                    <FormItem className="md:col-span-2">
+                    <FormItem className="md:col-span-2"> {/* Spans 2 columns */}
                       <FormLabel>Detailed Description (Optional)</FormLabel>
                       <FormControl>
                         <Textarea 
