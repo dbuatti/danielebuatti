@@ -5,7 +5,7 @@ import { QuoteItem } from '@/types/quote';
 import { formatCurrency } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Minus, Plus } from 'lucide-react';
-// import { cn } from '@/lib/utils'; // Removed unused import
+// Removed unused import: import { cn } from '@/lib/utils';
 
 interface QuoteItemMobileListProps {
   items: QuoteItem[];
@@ -15,9 +15,7 @@ interface QuoteItemMobileListProps {
   isFinalized: boolean;
   isOptionalSection: boolean;
   onQuantityChange?: (itemId: string, delta: number) => void;
-  showScheduleDates: boolean; // NEW
-  showQuantity: boolean;      // NEW
-  showRate: boolean;          // NEW
+  // Removed global visibility props
 }
 
 const QuoteItemMobileList: React.FC<QuoteItemMobileListProps> = ({
@@ -28,9 +26,7 @@ const QuoteItemMobileList: React.FC<QuoteItemMobileListProps> = ({
   isFinalized,
   isOptionalSection,
   onQuantityChange,
-  showScheduleDates,
-  showQuantity,
-  showRate,
+  // Removed global visibility props
 }) => {
   return (
     <div className="space-y-4">
@@ -66,7 +62,7 @@ const QuoteItemMobileList: React.FC<QuoteItemMobileListProps> = ({
               <p className={`text-sm mb-3 ${themeClasses.secondary} whitespace-pre-wrap`}>{item.description}</p>
             )}
             
-            {showScheduleDates && item.scheduleDates && (
+            {item.showScheduleDates && item.scheduleDates && (
                 <div className={`text-sm mb-3 ${themeClasses.secondary}`}>
                     <span className="font-semibold">Schedule / Dates:</span> {item.scheduleDates}
                 </div>
@@ -81,14 +77,14 @@ const QuoteItemMobileList: React.FC<QuoteItemMobileListProps> = ({
               </div>
               
               <div className="flex items-center space-x-4">
-                {showRate && (
+                {item.showRate && (
                     <div className="flex flex-col items-end">
                         <span className={`text-xs font-medium ${themeClasses.secondary}`}>Rate</span>
                         <span className="font-semibold">{formatCurrency(item.price, currencySymbol)}</span>
                     </div>
                 )}
 
-                {showQuantity && (
+                {item.showQuantity && (
                     <div className="flex flex-col items-end">
                         <span className={`text-xs font-medium ${themeClasses.secondary}`}>Qty</span>
                         {showControls ? (

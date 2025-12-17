@@ -34,9 +34,6 @@ const QuoteItemRow: React.FC<{
   isClientView: boolean; 
   isFinalized: boolean;
   onQuantityChange?: (itemId: string, delta: number) => void;
-  showScheduleDates: boolean; // NEW
-  showQuantity: boolean;      // NEW
-  showRate: boolean;          // NEW
 }> = ({
   item,
   currencySymbol,
@@ -45,9 +42,6 @@ const QuoteItemRow: React.FC<{
   isClientView,
   isFinalized,
   onQuantityChange,
-  showScheduleDates,
-  showQuantity,
-  showRate,
 }) => {
   const isSelected = item.quantity > 0;
   const totalAmount = item.price * item.quantity;
@@ -94,14 +88,14 @@ const QuoteItemRow: React.FC<{
       </TableCell>
       
       {/* Schedule / Dates Column */}
-      {showScheduleDates && (
+      {item.showScheduleDates && ( // Use item.showScheduleDates
         <TableCell className="text-center w-[120px] border-r border-current/10 py-3 text-sm">
           {item.scheduleDates || 'N/A'}
         </TableCell>
       )}
       
       {/* Quantity Column */}
-      {showQuantity && (
+      {item.showQuantity && ( // Use item.showQuantity
         <TableCell className="text-center w-[100px] border-r border-current/10 py-3">
           {showControls ? (
             <div className={`flex items-center justify-center border rounded-full border-current/30 h-8 ${themeClasses.inputBg}`}>
@@ -135,7 +129,7 @@ const QuoteItemRow: React.FC<{
       )}
       
       {/* Rate (Unit Price) Column */}
-      {showRate && (
+      {item.showRate && ( // Use item.showRate
         <TableCell className="text-right w-[120px] border-r border-current/10 py-3">
           {formatCurrency(item.price, currencySymbol)}
         </TableCell>
@@ -157,8 +151,8 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
   const isRejected = !!rejected_at;
   const isFinalized = isAccepted || isRejected;
   
-  // Destructure new visibility toggles
-  const { depositPercentage, theme, showScheduleDates, showQuantity, showRate } = details; 
+  // Destructure only used fields from details
+  const { depositPercentage, theme } = details; 
 
   // Determine which list of add-ons to display and calculate totals
   let optionalItemsToDisplay: QuoteItem[];
@@ -230,11 +224,16 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       
   const headerImagePositionClass = details.headerImagePosition || 'object-center';
   
-  // Calculate colspan for the table header
+  // Determine header visibility based on the first compulsory item (or default to true)
+  const firstCompulsoryItem = details.compulsoryItems?.[0];
+  const headerShowScheduleDates = firstCompulsoryItem?.showScheduleDates ?? true;
+  const headerShowQuantity = firstCompulsoryItem?.showQuantity ?? true;
+  const headerShowRate = firstCompulsoryItem?.showRate ?? true;
+  
   const visibleColumns = 1 + // Description (always visible)
-                         (showScheduleDates ? 1 : 0) +
-                         (showQuantity ? 1 : 0) +
-                         (showRate ? 1 : 0) +
+                         (headerShowScheduleDates ? 1 : 0) +
+                         (headerShowQuantity ? 1 : 0) +
+                         (headerShowRate ? 1 : 0) +
                          1; // Amount (always visible)
 
 
@@ -292,9 +291,6 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
                 isClientView={isClientView}
                 isFinalized={isFinalized}
                 isOptionalSection={false}
-                showScheduleDates={showScheduleDates} // Pass visibility props
-                showQuantity={showQuantity}
-                showRate={showRate}
             />
             
             {details.addOns && details.addOns.length > 0 && (
@@ -308,9 +304,6 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
                         isFinalized={isFinalized}
                         isOptionalSection={true}
                         onQuantityChange={onQuantityChange}
-                        showScheduleDates={showScheduleDates} // Pass visibility props
-                        showQuantity={showQuantity}
-                        showRate={showRate}
                     />
                 </>
             )}
@@ -322,9 +315,9 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
             <TableHeader>
               <TableRow className={themeClasses.tableHeaderBg}>
                 <TableHead className={`font-bold ${themeClasses.primary} border-r border-current/10 py-3`}>Description</TableHead>
-                {showScheduleDates && <TableHead className={`text-center font-bold ${themeClasses.primary} w-[120px] border-r border-current/10 py-3`}>Schedule / Dates</TableHead>}
-                {showQuantity && <TableHead className={`text-center font-bold ${themeClasses.primary} w-[100px] border-r border-current/10 py-3`}>Qty</TableHead>}
-                {showRate && <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px] border-r border-current/10 py-3`}>Rate</TableHead>}
+                {headerShowScheduleDates && <TableHead className={`text-center font-bold ${themeClasses.primary} w-[120px] border-r border-current/10 py-3`}>Schedule / Dates</TableHead>}
+                {headerShowQuantity && <TableHead className={`text-center font-bold ${themeClasses.primary} w-[100px] border-r border-current/10 py-3`}>Qty</TableHead>}
+                {headerShowRate && <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px] border-r border-current/10 py-3`}>Rate</TableHead>}
                 <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px] py-3`}>Amount</TableHead>
               </TableRow>
             </TableHeader>
@@ -339,9 +332,6 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
                   themeClasses={themeClasses}
                   isClientView={isClientView}
                   isFinalized={isFinalized}
-                  showScheduleDates={showScheduleDates} // Pass visibility props
-                  showQuantity={showQuantity}
-                  showRate={showRate}
                 />
               ))}
 
@@ -370,9 +360,6 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
                           isClientView={isClientView}
                           isFinalized={isFinalized}
                           onQuantityChange={onQuantityChange}
-                          showScheduleDates={showScheduleDates} // Pass visibility props
-                          showQuantity={showQuantity}
-                          showRate={showRate}
                       />
                   );
               })}

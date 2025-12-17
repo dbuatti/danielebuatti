@@ -40,16 +40,11 @@ const defaultQuoteValues: QuoteFormValues = {
   headerImagePosition: 'object-top',
   preparationNotes: 'This fee covers 7 hours of commitment, including preparation, travel, setup, performance, and pack down.',
   
-  // NEW VISIBILITY DEFAULTS
-  showScheduleDates: true,
-  showQuantity: true,
-  showRate: true,
-  
   compulsoryItems: [
-    { id: 'base-fee', name: 'Base Performance Fee', description: '3 hours of live piano performance.', price: 1000, quantity: 1, scheduleDates: '' },
+    { id: 'base-fee', name: 'Base Performance Fee', description: '3 hours of live piano performance.', price: 1000, quantity: 1, scheduleDates: '', showScheduleDates: true, showQuantity: true, showRate: true },
   ],
   addOns: [
-    { id: 'extra-hour', name: 'Extra Hour of Performance', description: 'Additional hour of live piano music.', price: 200, quantity: 0, scheduleDates: '' },
+    { id: 'extra-hour', name: 'Extra Hour of Performance', description: 'Additional hour of live piano music.', price: 200, quantity: 0, scheduleDates: '', showScheduleDates: true, showQuantity: true, showRate: true },
   ],
 };
 
@@ -139,13 +134,16 @@ const AdminQuoteBuilderPage: React.FC = () => {
       sum + ((addOn.price ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
     const totalAmount = compulsoryTotal + addOnTotal;
 
-    const mapItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number, scheduleDates?: string }): QuoteItem => ({
+    const mapItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number, scheduleDates?: string, showScheduleDates?: boolean, showQuantity?: boolean, showRate?: boolean }): QuoteItem => ({
       id: item.id || Math.random().toString(36).substring(2, 11),
       name: item.name,
       description: item.description || '',
       quantity: item.quantity ?? 1,
       price: item.price ?? 0,
       scheduleDates: item.scheduleDates || '', // Include new field
+      showScheduleDates: item.showScheduleDates ?? true,
+      showQuantity: item.showQuantity ?? true,
+      showRate: item.showRate ?? true,
     });
 
     return {
@@ -177,10 +175,6 @@ const AdminQuoteBuilderPage: React.FC = () => {
         headerImageUrl: values.headerImageUrl,
         headerImagePosition: values.headerImagePosition || 'object-center',
         preparationNotes: values.preparationNotes || '',
-        // NEW VISIBILITY TOGGLES
-        showScheduleDates: values.showScheduleDates,
-        showQuantity: values.showQuantity,
-        showRate: values.showRate,
       },
       status: status,
     };
@@ -350,6 +344,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
         price: item.amount, // Use 'amount' as 'price' for compulsory items
         quantity: 1,
         scheduleDates: extractedContent.eventDate, // Default schedule date to event date
+        showScheduleDates: true,
+        showQuantity: true,
+        showRate: true,
       }));
       
       const addOns = extractedContent.addOns.map(item => ({
@@ -359,6 +356,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
         price: item.cost, // Use 'cost' as 'price' for add-ons
         quantity: 0, // Default to 0 quantity for add-ons
         scheduleDates: '',
+        showScheduleDates: true,
+        showQuantity: true,
+        showRate: true,
       }));
       
       // Merge extracted data with default values, prioritizing extracted data
@@ -375,7 +375,6 @@ const AdminQuoteBuilderPage: React.FC = () => {
         preparationNotes: extractedContent.preparationNotes || defaultQuoteValues.preparationNotes,
         compulsoryItems: compulsoryItems.length > 0 ? compulsoryItems : defaultQuoteValues.compulsoryItems,
         addOns: addOns,
-        // Visibility toggles remain default (true)
       };
       
       form.reset(newValues);
@@ -407,7 +406,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
     const totalAmount = compulsoryTotal + addOnTotal;
 
     // Helper function to map form item to QuoteItem structure
-    const mapFormItemToQuoteItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number, scheduleDates?: string }): QuoteItem => {
+    const mapFormItemToQuoteItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number, scheduleDates?: string, showScheduleDates?: boolean, showQuantity?: boolean, showRate?: boolean }): QuoteItem => {
       const quantity = item.quantity ?? 1;
       const price = item.price ?? 0;
       
@@ -418,6 +417,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
         quantity: quantity,
         price: price,
         scheduleDates: item.scheduleDates || '',
+        showScheduleDates: item.showScheduleDates ?? true,
+        showQuantity: item.showQuantity ?? true,
+        showRate: item.showRate ?? true,
       };
     };
 
@@ -450,10 +452,6 @@ const AdminQuoteBuilderPage: React.FC = () => {
         headerImageUrl: values.headerImageUrl,
         headerImagePosition: values.headerImagePosition || 'object-center',
         preparationNotes: values.preparationNotes || '',
-        // NEW VISIBILITY TOGGLES
-        showScheduleDates: values.showScheduleDates,
-        showQuantity: values.showQuantity,
-        showRate: values.showRate,
       },
       status: currentQuote?.status || 'Draft',
     };

@@ -7,6 +7,10 @@ export interface QuoteItem {
   quantity: number;
   price: number; // Unit price/cost (replaces 'amount' and 'cost' from form context)
   scheduleDates?: string; // NEW: Schedule/Dates field
+  // NEW: Item-level visibility toggles
+  showScheduleDates: boolean;
+  showQuantity: boolean;
+  showRate: boolean;
 }
 
 export interface QuoteDetails {
@@ -25,10 +29,7 @@ export interface QuoteDetails {
   headerImagePosition?: string; // NEW: Added headerImagePosition
   preparationNotes: string;
   client_selected_add_ons?: QuoteItem[]; // Added missing property
-  // NEW VISIBILITY TOGGLES
-  showScheduleDates: boolean;
-  showQuantity: boolean;
-  showRate: boolean;
+  // REMOVED: showScheduleDates, showQuantity, showRate
 }
 
 export interface Quote {

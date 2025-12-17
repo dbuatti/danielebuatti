@@ -11,6 +11,7 @@ import { Plus, Trash2, Eye, Save, Send, RotateCcw } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { cn, formatCurrency } from '@/lib/utils';
 import { useMemo } from 'react';
+import PillToggle from './PillToggle';
 
 // Define the schema for a single item (compulsory or add-on)
 const ItemSchema = z.object({
@@ -20,6 +21,10 @@ const ItemSchema = z.object({
   price: z.number().min(0, 'Price must be non-negative.'), // Consolidated field
   quantity: z.number().min(0, 'Quantity must be non-negative.').optional(), // Used for add-ons
   scheduleDates: z.string().optional(), // NEW: Schedule/Dates field
+  // NEW: Item-level visibility toggles
+  showScheduleDates: z.boolean().default(true),
+  showQuantity: z.boolean().default(true),
+  showRate: z.boolean().default(true),
 });
 
 // Define the main form schema
@@ -43,10 +48,7 @@ export const QuoteFormSchema = z.object({
   
   preparationNotes: z.string().optional(), 
 
-  // NEW VISIBILITY TOGGLES
-  showScheduleDates: z.boolean().default(true),
-  showQuantity: z.boolean().default(true),
-  showRate: z.boolean().default(true),
+  // REMOVED: showScheduleDates, showQuantity, showRate
 
   compulsoryItems: z.array(ItemSchema).min(1, 'At least one compulsory item is required.'),
   addOns: z.array(ItemSchema),
@@ -121,7 +123,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
     <Form {...form}>
       <form onSubmit={handleSubmit(handleFinalSubmit)} className="space-y-8">
         
-        {/* Action Buttons & Totals */}
+        {/* Action Buttons & Totals (unchanged) */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-4 bg-brand-secondary/10 dark:bg-brand-dark/50 rounded-lg border border-brand-secondary/30">
             <div className="space-y-1">
                 <p className="text-sm font-medium text-brand-dark/70 dark:text-brand-light/70">Current Total (Compulsory + Add-ons):</p>
@@ -159,7 +161,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             </div>
         </div>
         
-        {/* Client Details */}
+        {/* Client Details (unchanged) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={control}
@@ -191,7 +193,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
 
         <Separator />
 
-        {/* Event Details */}
+        {/* Event Details (unchanged) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <FormField
             control={control}
@@ -250,7 +252,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
 
         <Separator />
 
-        {/* Quote Configuration */}
+        {/* Quote Configuration (unchanged) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <FormField
             control={control}
@@ -301,7 +303,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
           />
         </div>
 
-        {/* Theme and Header Image */}
+        {/* Theme and Header Image (unchanged) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <FormField
             control={control}
@@ -352,7 +354,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
           />
         </div>
         
-        {/* Preparation Notes Field */}
+        {/* Preparation Notes Field (unchanged) */}
         <FormField
           control={control}
           name="preparationNotes"
@@ -372,7 +374,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
           )}
         />
         
-        {/* Payment Terms Field (Now optional) */}
+        {/* Payment Terms Field (unchanged) */}
         <FormField
           control={control}
           name="paymentTerms"
@@ -389,82 +391,12 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
 
         <Separator />
         
-        {/* Visibility Toggles */}
-        <h3 className="text-lg font-semibold">Quote Display Visibility Toggles</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <FormField
-                control={control}
-                name="showScheduleDates"
-                render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Show "Schedule / Dates"</FormLabel>
-                        <Select onValueChange={(val) => field.onChange(val === 'true')} value={field.value ? 'true' : 'false'}>
-                            <FormControl>
-                                <SelectTrigger className={inputClasses}>
-                                    <SelectValue />
-                                </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50">
-                                <SelectItem value="true">Visible</SelectItem>
-                                <SelectItem value="false">Hidden</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                    </FormItem>
-                )}
-            />
-            <FormField
-                control={control}
-                name="showQuantity"
-                render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Show "Qty"</FormLabel>
-                        <Select onValueChange={(val) => field.onChange(val === 'true')} value={field.value ? 'true' : 'false'}>
-                            <FormControl>
-                                <SelectTrigger className={inputClasses}>
-                                    <SelectValue />
-                                </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50">
-                                <SelectItem value="true">Visible</SelectItem>
-                                <SelectItem value="false">Hidden</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                    </FormItem>
-                )}
-            />
-            <FormField
-                control={control}
-                name="showRate"
-                render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Show "Rate" (Unit Price)</FormLabel>
-                        <Select onValueChange={(val) => field.onChange(val === 'true')} value={field.value ? 'true' : 'false'}>
-                            <FormControl>
-                                <SelectTrigger className={inputClasses}>
-                                    <SelectValue />
-                                </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50">
-                                <SelectItem value="true">Visible</SelectItem>
-                                <SelectItem value="false">Hidden</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                    </FormItem>
-                )}
-            />
-        </div>
-
-        <Separator />
-
         {/* Compulsory Items */}
         <h3 className="text-lg font-semibold">Compulsory Items (Fixed Fees)</h3>
         <div className="space-y-4">
           {compulsoryFields.map((field, index) => (
-            <div key={field.id} className="flex space-x-4 items-start p-4 border rounded-md bg-brand-secondary/5 dark:bg-brand-dark/30">
-              <div className="flex-grow grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div key={field.id} className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 items-start p-4 border rounded-md bg-brand-secondary/5 dark:bg-brand-dark/30">
+              <div className="flex-grow grid grid-cols-1 md:grid-cols-5 gap-4 w-full">
                 <FormField
                   control={control}
                   name={`compulsoryItems.${index}.name`}
@@ -529,21 +461,30 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                   )}
                 />
               </div>
-              <Button 
-                type="button" 
-                variant="destructive" 
-                onClick={() => removeCompulsory(index)}
-                className="mt-8"
-                disabled={compulsoryFields.length === 1}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              
+              {/* Item Toggles and Delete Button */}
+              <div className="flex flex-col items-end gap-2 pt-0 md:pt-8 w-full md:w-auto">
+                <div className="flex flex-wrap justify-end gap-2">
+                    <PillToggle name={`compulsoryItems.${index}.showScheduleDates`} label="Schedule" />
+                    <PillToggle name={`compulsoryItems.${index}.showQuantity`} label="Qty" />
+                    <PillToggle name={`compulsoryItems.${index}.showRate`} label="Rate" />
+                </div>
+                <Button 
+                  type="button" 
+                  variant="destructive" 
+                  onClick={() => removeCompulsory(index)}
+                  disabled={compulsoryFields.length === 1}
+                  className="w-full md:w-auto"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           ))}
           <Button
             type="button"
             variant="outline"
-            onClick={() => appendCompulsory({ name: '', description: '', price: 0, quantity: 1, scheduleDates: '' })}
+            onClick={() => appendCompulsory({ name: '', description: '', price: 0, quantity: 1, scheduleDates: '', showScheduleDates: true, showQuantity: true, showRate: true })}
             className="w-full"
           >
             <Plus className="h-4 w-4 mr-2" /> Add Compulsory Item
@@ -556,8 +497,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
         <h3 className="text-lg font-semibold">Optional Add-Ons (Quantity/Price)</h3>
         <div className="space-y-4">
           {addOnFields.map((field, index) => (
-            <div key={field.id} className="flex space-x-4 items-start p-4 border rounded-md bg-brand-secondary/5 dark:bg-brand-dark/30">
-              <div className="flex-grow grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div key={field.id} className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 items-start p-4 border rounded-md bg-brand-secondary/5 dark:bg-brand-dark/30">
+              <div className="flex-grow grid grid-cols-1 md:grid-cols-5 gap-4 w-full">
                 <FormField
                   control={control}
                   name={`addOns.${index}.name`}
@@ -643,20 +584,29 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                   />
                 </div>
               </div>
-              <Button 
-                type="button" 
-                variant="destructive" 
-                onClick={() => removeAddOn(index)}
-                className="mt-8"
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              
+              {/* Item Toggles and Delete Button */}
+              <div className="flex flex-col items-end gap-2 pt-0 md:pt-8 w-full md:w-auto">
+                <div className="flex flex-wrap justify-end gap-2">
+                    <PillToggle name={`addOns.${index}.showScheduleDates`} label="Schedule" />
+                    <PillToggle name={`addOns.${index}.showQuantity`} label="Qty" />
+                    <PillToggle name={`addOns.${index}.showRate`} label="Rate" />
+                </div>
+                <Button 
+                  type="button" 
+                  variant="destructive" 
+                  onClick={() => removeAddOn(index)}
+                  className="w-full md:w-auto"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           ))}
           <Button
             type="button"
             variant="outline"
-            onClick={() => appendAddOn({ name: '', description: '', price: 0, quantity: 0, scheduleDates: '' })}
+            onClick={() => appendAddOn({ name: '', description: '', price: 0, quantity: 0, scheduleDates: '', showScheduleDates: true, showQuantity: true, showRate: true })}
             className="w-full"
           >
             <Plus className="h-4 w-4 mr-2" /> Add Optional Add-On
@@ -665,7 +615,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
 
         <Separator />
 
-        {/* Payment Details */}
+        {/* Payment Details (unchanged) */}
         <h3 className="text-lg font-semibold">Payment & Terms</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <FormField

@@ -106,11 +106,6 @@ const AdminEditQuotePage: React.FC = () => {
         headerImagePosition: details.headerImagePosition || 'object-center',
         preparationNotes: details.preparationNotes || '',
         
-        // NEW VISIBILITY TOGGLES
-        showScheduleDates: details.showScheduleDates ?? true,
-        showQuantity: details.showQuantity ?? true,
-        showRate: details.showRate ?? true,
-
         compulsoryItems: details.compulsoryItems.map(item => ({
           id: item.id,
           name: item.name,
@@ -118,6 +113,9 @@ const AdminEditQuotePage: React.FC = () => {
           price: item.price,
           quantity: item.quantity,
           scheduleDates: item.scheduleDates || '', // Include new field
+          showScheduleDates: item.showScheduleDates ?? true,
+          showQuantity: item.showQuantity ?? true,
+          showRate: item.showRate ?? true,
         })),
         addOns: details.addOns.map(item => ({
           id: item.id,
@@ -126,6 +124,9 @@ const AdminEditQuotePage: React.FC = () => {
           price: item.price,
           quantity: item.quantity,
           scheduleDates: item.scheduleDates || '', // Include new field
+          showScheduleDates: item.showScheduleDates ?? true,
+          showQuantity: item.showQuantity ?? true,
+          showRate: item.showRate ?? true,
         })),
       };
 
@@ -172,6 +173,9 @@ const AdminEditQuotePage: React.FC = () => {
           price: item.price ?? 0,
           quantity: item.quantity ?? 1,
           scheduleDates: item.scheduleDates || '', // Include new field
+          showScheduleDates: item.showScheduleDates,
+          showQuantity: item.showQuantity,
+          showRate: item.showRate,
         })),
         addOns: values.addOns?.map(addOn => ({
           id: addOn.id || Math.random().toString(36).substring(2, 11),
@@ -180,6 +184,9 @@ const AdminEditQuotePage: React.FC = () => {
           price: addOn.price ?? 0,
           quantity: addOn.quantity ?? 1,
           scheduleDates: addOn.scheduleDates || '', // Include new field
+          showScheduleDates: addOn.showScheduleDates,
+          showQuantity: addOn.showQuantity,
+          showRate: addOn.showRate,
         })) || [],
         depositPercentage: values.depositPercentage,
         bankDetails: {
@@ -193,10 +200,6 @@ const AdminEditQuotePage: React.FC = () => {
         headerImageUrl: values.headerImageUrl,
         headerImagePosition: values.headerImagePosition || 'object-center',
         preparationNotes: values.preparationNotes || '',
-        // NEW VISIBILITY TOGGLES
-        showScheduleDates: values.showScheduleDates,
-        showQuantity: values.showQuantity,
-        showRate: values.showRate,
       };
 
       // Update the invoice record
@@ -242,7 +245,7 @@ const AdminEditQuotePage: React.FC = () => {
     const totalAmount = compulsoryTotal + addOnTotal;
 
     // Helper function to map form item to QuoteItem structure
-    const mapFormItemToQuoteItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number, scheduleDates?: string }): QuoteItem => {
+    const mapFormItemToQuoteItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number, scheduleDates?: string, showScheduleDates?: boolean, showQuantity?: boolean, showRate?: boolean }): QuoteItem => {
       const quantity = item.quantity ?? 1;
       const price = item.price ?? 0;
       
@@ -253,6 +256,9 @@ const AdminEditQuotePage: React.FC = () => {
         quantity: quantity,
         price: price,
         scheduleDates: item.scheduleDates || '',
+        showScheduleDates: item.showScheduleDates ?? true,
+        showQuantity: item.showQuantity ?? true,
+        showRate: item.showRate ?? true,
       };
     };
 
@@ -285,10 +291,6 @@ const AdminEditQuotePage: React.FC = () => {
         headerImageUrl: values.headerImageUrl,
         headerImagePosition: values.headerImagePosition || 'object-center',
         preparationNotes: values.preparationNotes || '',
-        // NEW VISIBILITY TOGGLES
-        showScheduleDates: values.showScheduleDates,
-        showQuantity: values.showQuantity,
-        showRate: values.showRate,
       },
       status: quote?.status || 'Created',
     };
