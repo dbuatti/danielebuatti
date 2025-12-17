@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import QuoteForm, { QuoteFormSchema, QuoteFormValues } from '@/components/admin/QuoteForm';
@@ -12,7 +12,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Quote, QuoteItem } from '@/types/quote';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const AdminEditQuotePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -327,7 +328,14 @@ const AdminEditQuotePage: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Edit Quote: {quote.event_title}</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Edit Quote: {quote.event_title}</h2>
+        <Button asChild variant="outline" className="text-brand-dark dark:text-brand-light border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50">
+          <Link to={`/admin/quotes/${id}`}>
+            <ArrowLeft className="h-4 w-4 mr-2" /> Back to Details
+          </Link>
+        </Button>
+      </div>
       <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
         Modify the details of this existing quote.
       </p>
