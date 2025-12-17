@@ -48,6 +48,7 @@ export const QuoteFormSchema = z.object({
   headerImagePosition: z.string().optional(),
   
   preparationNotes: z.string().optional(), 
+  scopeOfWorkUrl: z.string().url('Must be a valid URL.').optional().or(z.literal('')), // NEW FIELD
 
   compulsoryItems: z.array(ItemSchema).min(1, 'At least one compulsory item is required.'),
   addOns: z.array(ItemSchema),
@@ -251,7 +252,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
 
         <Separator />
 
-        {/* Quote Configuration (unchanged) */}
+        {/* Quote Configuration */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <FormField
             control={control}
@@ -301,7 +302,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             )}
           />
         </div>
-
+        
         {/* Theme and Header Image (unchanged) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <FormField
@@ -352,6 +353,23 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             )}
           />
         </div>
+        
+        {/* NEW: Scope of Work URL */}
+        <FormField
+          control={control}
+          name="scopeOfWorkUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Scope of Work URL (Optional)</FormLabel>
+              <FormControl>
+                <Input placeholder="https://docs.google.com/document/d/..." {...field} className={inputClasses} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Separator />
         
         {/* Preparation Notes Field (with live preview) */}
         <FormField

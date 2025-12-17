@@ -29,6 +29,7 @@ export interface QuoteDetails {
   headerImagePosition?: string; // NEW: Added headerImagePosition
   preparationNotes: string;
   client_selected_add_ons?: QuoteItem[]; // Added missing property
+  scopeOfWorkUrl?: string; // NEW: Scope of Work URL
   // REMOVED: showScheduleDates, showQuantity, showRate
 }
 

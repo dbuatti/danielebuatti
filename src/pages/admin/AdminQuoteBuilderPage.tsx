@@ -39,6 +39,7 @@ const defaultQuoteValues: QuoteFormValues = {
   headerImageUrl: '', // Default to empty
   headerImagePosition: '', // Default to empty
   preparationNotes: 'This fee covers 7 hours of commitment, including preparation, travel, setup, performance, and pack down.',
+  scopeOfWorkUrl: '', // NEW DEFAULT
   
   compulsoryItems: [
     { id: 'base-fee', name: 'Base Performance Fee', description: '3 hours of live piano performance.', price: 1000, quantity: 1, scheduleDates: '', showScheduleDates: false, showQuantity: true, showRate: true },
@@ -184,6 +185,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         headerImageUrl: values.headerImageUrl || '', // Preserve empty string
         headerImagePosition: values.headerImagePosition || '', // Preserve empty string
         preparationNotes: values.preparationNotes || '',
+        scopeOfWorkUrl: values.scopeOfWorkUrl || '', // NEW FIELD
       },
       status: status,
     };
@@ -387,6 +389,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         // Ensure header image fields are preserved if AI didn't touch them, or use defaults
         headerImageUrl: defaultQuoteValues.headerImageUrl,
         headerImagePosition: defaultQuoteValues.headerImagePosition,
+        scopeOfWorkUrl: defaultQuoteValues.scopeOfWorkUrl, // NEW DEFAULT
       };
       
       form.reset(newValues);
@@ -464,6 +467,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         headerImageUrl: values.headerImageUrl || '',
         headerImagePosition: values.headerImagePosition || '',
         preparationNotes: values.preparationNotes || '',
+        scopeOfWorkUrl: values.scopeOfWorkUrl || '', // NEW FIELD
       },
       status: currentQuote?.status || 'Draft',
     };

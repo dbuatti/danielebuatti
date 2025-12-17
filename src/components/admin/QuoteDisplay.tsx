@@ -16,7 +16,7 @@ import DynamicImage from '../DynamicImage';
 import QuoteItemMobileList from './QuoteItemMobileList'; // Import the new component
 import { cn } from '@/lib/utils'; // Import cn for utility classes
 import { Button } from '@/components/ui/button'; // Import Button
-import { Minus, Plus } from 'lucide-react'; // Import Plus and Minus icons
+import { Minus, Plus, FileText } from 'lucide-react'; // Import Plus and Minus icons
 import { format } from 'date-fns'; // Import format for date consistency
 
 interface QuoteDisplayProps {
@@ -222,7 +222,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
   const isFinalized = isAccepted || isRejected;
   
   // Destructure only used fields from details
-  const { depositPercentage, theme } = details; 
+  const { depositPercentage, theme, scopeOfWorkUrl } = details; 
 
   // Determine which list of add-ons to display and calculate totals
   let optionalItemsToDisplay: QuoteItem[];
@@ -339,6 +339,26 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
           <p className="text-sm">{event_location}</p>
         </div>
       </div>
+      
+      {/* Scope of Work Link */}
+      {scopeOfWorkUrl && (
+        <div className="text-center pt-4">
+          <a 
+            href={scopeOfWorkUrl} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className={cn(
+              "inline-flex items-center justify-center gap-2 px-6 py-3 text-lg font-semibold rounded-full shadow-md transition-colors",
+              isBlackGoldTheme 
+                ? "bg-brand-yellow text-brand-dark hover:bg-brand-yellow/90" 
+                : "bg-brand-primary text-brand-light hover:bg-brand-primary/90"
+            )}
+          >
+            <FileText className="h-5 w-5" />
+            View Scope of Work Document
+          </a>
+        </div>
+      )}
 
       {/* Client Details (Only show if finalized or in admin view) */}
       {(isFinalized || !isClientView) && (

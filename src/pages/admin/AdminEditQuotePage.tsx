@@ -114,6 +114,7 @@ const AdminEditQuotePage: React.FC = () => {
         headerImageUrl: details.headerImageUrl || '', // Preserve empty string
         headerImagePosition: details.headerImagePosition || '', // Preserve empty string
         preparationNotes: details.preparationNotes || '',
+        scopeOfWorkUrl: details.scopeOfWorkUrl || '', // NEW FIELD
         
         compulsoryItems: details.compulsoryItems.map(item => ({
           id: item.id,
@@ -209,6 +210,7 @@ const AdminEditQuotePage: React.FC = () => {
         headerImageUrl: values.headerImageUrl || '', // Preserve empty string
         headerImagePosition: values.headerImagePosition || '', // Preserve empty string
         preparationNotes: values.preparationNotes || '',
+        scopeOfWorkUrl: values.scopeOfWorkUrl || '', // NEW FIELD
       };
 
       // Update the invoice record
@@ -300,6 +302,7 @@ const AdminEditQuotePage: React.FC = () => {
         headerImageUrl: values.headerImageUrl || '',
         headerImagePosition: values.headerImagePosition || '',
         preparationNotes: values.preparationNotes || '',
+        scopeOfWorkUrl: values.scopeOfWorkUrl || '', // NEW FIELD
       },
       status: quote?.status || 'Created',
     };
