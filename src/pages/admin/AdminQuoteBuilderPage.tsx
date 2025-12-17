@@ -18,6 +18,7 @@ import DraftLoader from '@/components/admin/DraftLoader';
 import QuoteSendingModal from '@/components/admin/QuoteSendingModal';
 import { createSlug } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth'; // Import useAuth
 
 // Default values for a new quote
 const defaultQuoteValues: QuoteFormValues = {
@@ -55,6 +56,7 @@ interface QuoteDraft {
 
 const AdminQuoteBuilderPage: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth(); // Get user from auth context
   const [currentQuoteId, setCurrentQuoteId] = useState<string | undefined>(undefined);
   const [currentDraftId, setCurrentDraftId] = useState<string | undefined>(undefined);
   const [currentQuote, setCurrentQuote] = useState<Quote | null>(null);
@@ -94,9 +96,11 @@ const AdminQuoteBuilderPage: React.FC = () => {
   // --- Data Fetching ---
   const fetchDrafts = useCallback(async () => {
     setIsLoadingDrafts(true);
+    // Note: RLS should ensure only the current user's drafts are returned if user_id is set.
     const { data, error } = await supabase
       .from('quote_drafts')
-      .select('id, title, updated_at, data');
+      .select('id, title, updated_at, data')
+      .order('updated_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching drafts:', error);
@@ -200,6 +204,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         // Handle Draft saving/updating
         const draftPayload = {
           id: currentDraftId,
+          user_id: user?.id, // Include user ID for RLS
           title: values.eventTitle || 'Untitled Draft',
           data: values,
         };
