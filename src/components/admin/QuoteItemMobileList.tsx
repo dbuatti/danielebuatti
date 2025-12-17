@@ -62,6 +62,7 @@ const QuoteItemMobileList: React.FC<QuoteItemMobileListProps> = ({
               <p className={`text-sm mb-3 ${themeClasses.secondary} whitespace-pre-wrap`}>{item.description}</p>
             )}
             
+            {/* Use item.showScheduleDates */}
             {item.showScheduleDates && item.scheduleDates && (
                 <div className={`text-sm mb-3 ${themeClasses.secondary}`}>
                     <span className="font-semibold">Schedule / Dates:</span> {item.scheduleDates}
@@ -77,6 +78,7 @@ const QuoteItemMobileList: React.FC<QuoteItemMobileListProps> = ({
               </div>
               
               <div className="flex items-center space-x-4">
+                {/* Use item.showRate */}
                 {item.showRate && (
                     <div className="flex flex-col items-end">
                         <span className={`text-xs font-medium ${themeClasses.secondary}`}>Rate</span>
@@ -84,6 +86,7 @@ const QuoteItemMobileList: React.FC<QuoteItemMobileListProps> = ({
                     </div>
                 )}
 
+                {/* Use item.showQuantity */}
                 {item.showQuantity && (
                     <div className="flex flex-col items-end">
                         <span className={`text-xs font-medium ${themeClasses.secondary}`}>Qty</span>

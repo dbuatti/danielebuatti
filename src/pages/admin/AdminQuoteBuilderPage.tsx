@@ -36,15 +36,15 @@ const defaultQuoteValues: QuoteFormValues = {
   bankBSB: '923100',
   bankACC: '301110875',
   theme: 'default',
-  headerImageUrl: '/whitepinkquoteimage1.jpeg',
-  headerImagePosition: 'object-top',
+  headerImageUrl: '', // Default to empty
+  headerImagePosition: '', // Default to empty
   preparationNotes: 'This fee covers 7 hours of commitment, including preparation, travel, setup, performance, and pack down.',
   
   compulsoryItems: [
-    { id: 'base-fee', name: 'Base Performance Fee', description: '3 hours of live piano performance.', price: 1000, quantity: 1, scheduleDates: '', showScheduleDates: true, showQuantity: true, showRate: true },
+    { id: 'base-fee', name: 'Base Performance Fee', description: '3 hours of live piano performance.', price: 1000, quantity: 1, scheduleDates: '', showScheduleDates: false, showQuantity: true, showRate: true },
   ],
   addOns: [
-    { id: 'extra-hour', name: 'Extra Hour of Performance', description: 'Additional hour of live piano music.', price: 200, quantity: 0, scheduleDates: '', showScheduleDates: true, showQuantity: true, showRate: true },
+    { id: 'extra-hour', name: 'Extra Hour of Performance', description: 'Additional hour of live piano music.', price: 200, quantity: 0, scheduleDates: '', showScheduleDates: false, showQuantity: true, showRate: true },
   ],
 };
 
@@ -81,14 +81,23 @@ const AdminQuoteBuilderPage: React.FC = () => {
   // Update header image URL based on theme selection
   useEffect(() => {
     const currentImageUrl = form.getValues('headerImageUrl');
+    const defaultWhitePink = '/whitepinkquoteimage1.jpeg';
+    const defaultBlackGold = '/blackgoldquoteimage1.jpg';
+    
     let newImageUrl = currentImageUrl;
 
-    if (watchedTheme === 'black-gold' && currentImageUrl !== '/blackgoldquoteimage1.jpg') {
-      newImageUrl = '/blackgoldquoteimage1.jpg';
-    } else if (watchedTheme === 'default' && currentImageUrl !== '/whitepinkquoteimage1.jpeg') {
-      newImageUrl = '/whitepinkquoteimage1.jpeg';
+    // Check if the current image is empty OR if it matches the default for the *other* theme
+    const isCurrentEmptyOrDefault = !currentImageUrl || currentImageUrl === defaultWhitePink || currentImageUrl === defaultBlackGold;
+
+    if (watchedTheme === 'black-gold' && isCurrentEmptyOrDefault) {
+      newImageUrl = defaultBlackGold;
+    } else if (watchedTheme === 'default' && isCurrentEmptyOrDefault) {
+      // If the user cleared the field, we respect the empty string.
+      // We only set the default if the field is currently empty.
+      newImageUrl = currentImageUrl || ''; 
     }
     
+    // If the current image is NOT empty and NOT a default, we leave it alone.
     if (newImageUrl !== currentImageUrl) {
         form.setValue('headerImageUrl', newImageUrl, { shouldDirty: true });
     }
@@ -140,8 +149,8 @@ const AdminQuoteBuilderPage: React.FC = () => {
       description: item.description || '',
       quantity: item.quantity ?? 1,
       price: item.price ?? 0,
-      scheduleDates: item.scheduleDates || '', // Include new field
-      showScheduleDates: item.showScheduleDates ?? true,
+      scheduleDates: item.scheduleDates || '', // Preserve empty string
+      showScheduleDates: item.showScheduleDates ?? false, // Use false default
       showQuantity: item.showQuantity ?? true,
       showRate: item.showRate ?? true,
     });
@@ -162,7 +171,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       created_at: new Date().toISOString(),
       details: {
         depositPercentage: values.depositPercentage,
-        paymentTerms: values.paymentTerms || '', // Handle optional payment terms
+        paymentTerms: values.paymentTerms || '', // Preserve empty string
         bankDetails: {
           bsb: values.bankBSB ?? '',
           acc: values.bankACC ?? '',
@@ -172,8 +181,8 @@ const AdminQuoteBuilderPage: React.FC = () => {
         currencySymbol: values.currencySymbol,
         eventTime: values.eventTime ?? '',
         theme: values.theme,
-        headerImageUrl: values.headerImageUrl,
-        headerImagePosition: values.headerImagePosition || 'object-center',
+        headerImageUrl: values.headerImageUrl || '', // Preserve empty string
+        headerImagePosition: values.headerImagePosition || '', // Preserve empty string
         preparationNotes: values.preparationNotes || '',
       },
       status: status,
@@ -344,7 +353,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         price: item.amount, // Use 'amount' as 'price' for compulsory items
         quantity: 1,
         scheduleDates: extractedContent.eventDate, // Default schedule date to event date
-        showScheduleDates: true,
+        showScheduleDates: false, // Use new default
         showQuantity: true,
         showRate: true,
       }));
@@ -356,7 +365,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         price: item.cost, // Use 'cost' as 'price' for add-ons
         quantity: 0, // Default to 0 quantity for add-ons
         scheduleDates: '',
-        showScheduleDates: true,
+        showScheduleDates: false, // Use new default
         showQuantity: true,
         showRate: true,
       }));
@@ -375,6 +384,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
         preparationNotes: extractedContent.preparationNotes || defaultQuoteValues.preparationNotes,
         compulsoryItems: compulsoryItems.length > 0 ? compulsoryItems : defaultQuoteValues.compulsoryItems,
         addOns: addOns,
+        // Ensure header image fields are preserved if AI didn't touch them, or use defaults
+        headerImageUrl: defaultQuoteValues.headerImageUrl,
+        headerImagePosition: defaultQuoteValues.headerImagePosition,
       };
       
       form.reset(newValues);
@@ -417,7 +429,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         quantity: quantity,
         price: price,
         scheduleDates: item.scheduleDates || '',
-        showScheduleDates: item.showScheduleDates ?? true,
+        showScheduleDates: item.showScheduleDates ?? false,
         showQuantity: item.showQuantity ?? true,
         showRate: item.showRate ?? true,
       };
@@ -449,8 +461,8 @@ const AdminQuoteBuilderPage: React.FC = () => {
         currencySymbol: values.currencySymbol,
         eventTime: values.eventTime ?? '',
         theme: values.theme,
-        headerImageUrl: values.headerImageUrl,
-        headerImagePosition: values.headerImagePosition || 'object-center',
+        headerImageUrl: values.headerImageUrl || '',
+        headerImagePosition: values.headerImagePosition || '',
         preparationNotes: values.preparationNotes || '',
       },
       status: currentQuote?.status || 'Draft',

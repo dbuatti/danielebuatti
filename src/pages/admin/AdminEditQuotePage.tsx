@@ -34,14 +34,23 @@ const AdminEditQuotePage: React.FC = () => {
     // Only run this if the form is initialized and the theme changes
     if (!isLoading) {
       const currentImageUrl = form.getValues('headerImageUrl');
+      const defaultWhitePink = '/whitepinkquoteimage1.jpeg';
+      const defaultBlackGold = '/blackgoldquoteimage1.jpg';
+      
       let newImageUrl = currentImageUrl;
 
-      if (watchedTheme === 'black-gold' && currentImageUrl !== '/blackgoldquoteimage1.jpg') {
-        newImageUrl = '/blackgoldquoteimage1.jpg';
-      } else if (watchedTheme === 'default' && currentImageUrl !== '/whitepinkquoteimage1.jpeg') {
-        newImageUrl = '/whitepinkquoteimage1.jpeg';
+      // Check if the current image is empty OR if it matches the default for the *other* theme
+      const isCurrentEmptyOrDefault = !currentImageUrl || currentImageUrl === defaultWhitePink || currentImageUrl === defaultBlackGold;
+
+      if (watchedTheme === 'black-gold' && isCurrentEmptyOrDefault) {
+        newImageUrl = defaultBlackGold;
+      } else if (watchedTheme === 'default' && isCurrentEmptyOrDefault) {
+        // If the user cleared the field, we respect the empty string.
+        // We only set the default if the field is currently empty.
+        newImageUrl = currentImageUrl || ''; 
       }
       
+      // If the current image is NOT empty and NOT a default, we leave it alone.
       if (newImageUrl !== currentImageUrl) {
           form.setValue('headerImageUrl', newImageUrl, { shouldDirty: true });
       }
@@ -98,12 +107,12 @@ const AdminEditQuotePage: React.FC = () => {
         preparedBy: fetchedQuote.prepared_by,
         currencySymbol: details.currencySymbol,
         depositPercentage: details.depositPercentage,
-        paymentTerms: details.paymentTerms || '', // Handle optional payment terms
+        paymentTerms: details.paymentTerms || '', // Preserve empty string
         bankBSB: details.bankDetails.bsb,
         bankACC: details.bankDetails.acc,
         theme: details.theme,
-        headerImageUrl: details.headerImageUrl || '',
-        headerImagePosition: details.headerImagePosition || 'object-center',
+        headerImageUrl: details.headerImageUrl || '', // Preserve empty string
+        headerImagePosition: details.headerImagePosition || '', // Preserve empty string
         preparationNotes: details.preparationNotes || '',
         
         compulsoryItems: details.compulsoryItems.map(item => ({
@@ -112,8 +121,8 @@ const AdminEditQuotePage: React.FC = () => {
           description: item.description,
           price: item.price,
           quantity: item.quantity,
-          scheduleDates: item.scheduleDates || '', // Include new field
-          showScheduleDates: item.showScheduleDates ?? true,
+          scheduleDates: item.scheduleDates || '', // Preserve empty string
+          showScheduleDates: item.showScheduleDates ?? false, // Use false default
           showQuantity: item.showQuantity ?? true,
           showRate: item.showRate ?? true,
         })),
@@ -123,8 +132,8 @@ const AdminEditQuotePage: React.FC = () => {
           description: item.description,
           price: item.price,
           quantity: item.quantity,
-          scheduleDates: item.scheduleDates || '', // Include new field
-          showScheduleDates: item.showScheduleDates ?? true,
+          scheduleDates: item.scheduleDates || '', // Preserve empty string
+          showScheduleDates: item.showScheduleDates ?? false, // Use false default
           showQuantity: item.showQuantity ?? true,
           showRate: item.showRate ?? true,
         })),
@@ -172,10 +181,10 @@ const AdminEditQuotePage: React.FC = () => {
           description: item.description || '',
           price: item.price ?? 0,
           quantity: item.quantity ?? 1,
-          scheduleDates: item.scheduleDates || '', // Include new field
-          showScheduleDates: item.showScheduleDates,
-          showQuantity: item.showQuantity,
-          showRate: item.showRate,
+          scheduleDates: item.scheduleDates || '', // Preserve empty string
+          showScheduleDates: item.showScheduleDates ?? false,
+          showQuantity: item.showQuantity ?? true,
+          showRate: item.showRate ?? true,
         })),
         addOns: values.addOns?.map(addOn => ({
           id: addOn.id || Math.random().toString(36).substring(2, 11),
@@ -183,10 +192,10 @@ const AdminEditQuotePage: React.FC = () => {
           description: addOn.description || '',
           price: addOn.price ?? 0,
           quantity: addOn.quantity ?? 1,
-          scheduleDates: addOn.scheduleDates || '', // Include new field
-          showScheduleDates: addOn.showScheduleDates,
-          showQuantity: addOn.showQuantity,
-          showRate: addOn.showRate,
+          scheduleDates: addOn.scheduleDates || '', // Preserve empty string
+          showScheduleDates: addOn.showScheduleDates ?? false,
+          showQuantity: addOn.showQuantity ?? true,
+          showRate: addOn.showRate ?? true,
         })) || [],
         depositPercentage: values.depositPercentage,
         bankDetails: {
@@ -195,10 +204,10 @@ const AdminEditQuotePage: React.FC = () => {
         },
         eventTime: values.eventTime ?? '',
         currencySymbol: values.currencySymbol,
-        paymentTerms: values.paymentTerms || '', // Handle optional payment terms
+        paymentTerms: values.paymentTerms || '', // Preserve empty string
         theme: values.theme,
-        headerImageUrl: values.headerImageUrl,
-        headerImagePosition: values.headerImagePosition || 'object-center',
+        headerImageUrl: values.headerImageUrl || '', // Preserve empty string
+        headerImagePosition: values.headerImagePosition || '', // Preserve empty string
         preparationNotes: values.preparationNotes || '',
       };
 
@@ -256,7 +265,7 @@ const AdminEditQuotePage: React.FC = () => {
         quantity: quantity,
         price: price,
         scheduleDates: item.scheduleDates || '',
-        showScheduleDates: item.showScheduleDates ?? true,
+        showScheduleDates: item.showScheduleDates ?? false,
         showQuantity: item.showQuantity ?? true,
         showRate: item.showRate ?? true,
       };
@@ -288,8 +297,8 @@ const AdminEditQuotePage: React.FC = () => {
         currencySymbol: values.currencySymbol,
         eventTime: values.eventTime ?? '',
         theme: values.theme,
-        headerImageUrl: values.headerImageUrl,
-        headerImagePosition: values.headerImagePosition || 'object-center',
+        headerImageUrl: values.headerImageUrl || '',
+        headerImagePosition: values.headerImagePosition || '',
         preparationNotes: values.preparationNotes || '',
       },
       status: quote?.status || 'Created',

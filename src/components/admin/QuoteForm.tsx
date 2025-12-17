@@ -22,7 +22,7 @@ const ItemSchema = z.object({
   quantity: z.number().min(0, 'Quantity must be non-negative.').optional(), // Used for add-ons
   scheduleDates: z.string().optional(), // NEW: Schedule/Dates field
   // NEW: Item-level visibility toggles
-  showScheduleDates: z.boolean().default(true),
+  showScheduleDates: z.boolean().default(false), // Default to false
   showQuantity: z.boolean().default(true),
   showRate: z.boolean().default(true),
 });
@@ -39,16 +39,14 @@ export const QuoteFormSchema = z.object({
   preparedBy: z.string().min(1, 'Prepared By is required.'),
   currencySymbol: z.string().min(1, 'Currency symbol is required.'),
   depositPercentage: z.number().min(0).max(100, 'Deposit must be between 0 and 100.'),
-  paymentTerms: z.string().optional(), // MADE OPTIONAL
+  paymentTerms: z.string().optional(),
   bankBSB: z.string().min(1, 'BSB is required.'),
   bankACC: z.string().min(1, 'Account Number is required.'),
   theme: z.enum(['default', 'black-gold']),
-  headerImageUrl: z.string(),
+  headerImageUrl: z.string().optional(),
   headerImagePosition: z.string().optional(),
   
   preparationNotes: z.string().optional(), 
-
-  // REMOVED: showScheduleDates, showQuantity, showRate
 
   compulsoryItems: z.array(ItemSchema).min(1, 'At least one compulsory item is required.'),
   addOns: z.array(ItemSchema),
@@ -484,7 +482,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
           <Button
             type="button"
             variant="outline"
-            onClick={() => appendCompulsory({ name: '', description: '', price: 0, quantity: 1, scheduleDates: '', showScheduleDates: true, showQuantity: true, showRate: true })}
+            onClick={() => appendCompulsory({ name: '', description: '', price: 0, quantity: 1, scheduleDates: '', showScheduleDates: false, showQuantity: true, showRate: true })}
             className="w-full"
           >
             <Plus className="h-4 w-4 mr-2" /> Add Compulsory Item
@@ -606,7 +604,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
           <Button
             type="button"
             variant="outline"
-            onClick={() => appendAddOn({ name: '', description: '', price: 0, quantity: 0, scheduleDates: '', showScheduleDates: true, showQuantity: true, showRate: true })}
+            onClick={() => appendAddOn({ name: '', description: '', price: 0, quantity: 0, scheduleDates: '', showScheduleDates: false, showQuantity: true, showRate: true })}
             className="w-full"
           >
             <Plus className="h-4 w-4 mr-2" /> Add Optional Add-On

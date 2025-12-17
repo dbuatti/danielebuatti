@@ -17,6 +17,7 @@ import QuoteItemMobileList from './QuoteItemMobileList'; // Import the new compo
 import { cn } from '@/lib/utils'; // Import cn for utility classes
 import { Button } from '@/components/ui/button'; // Import Button
 import { Minus, Plus } from 'lucide-react'; // Import Plus and Minus icons
+import { format } from 'date-fns'; // Import format for date consistency
 
 interface QuoteDisplayProps {
   quote: Quote;
@@ -24,6 +25,18 @@ interface QuoteDisplayProps {
   onQuantityChange?: (itemId: string, delta: number) => void;
   mutableAddOns?: QuoteItem[];
 }
+
+// Helper function to format dates consistently
+const formatDate = (dateString: string | undefined, formatStr: string = 'PPP') => {
+  if (!dateString) return 'N/A';
+  try {
+    // Handle ISO date strings (YYYY-MM-DD)
+    return format(new Date(dateString), formatStr);
+  } catch (e) {
+    // Handle non-standard date strings (like "15–18 June")
+    return dateString;
+  }
+};
 
 // Helper component for rendering a single item row (used only for desktop table view)
 const QuoteItemRow: React.FC<{ 
@@ -203,7 +216,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         image2: '/blackgoldquoteimage2.jpg',
       }
     : {
-        // Default Theme (Premium Light/Pink)
+        // Default Theme (Premium Light/Pink) - Images removed
         bg: 'bg-brand-light',
         text: 'text-brand-dark',
         primary: 'text-brand-primary', // Pink
@@ -218,15 +231,15 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         inputBg: 'bg-brand-light',
         primaryText: 'text-brand-primary',
         primaryHoverBg: 'hover:bg-brand-primary/10',
-        image1: '/whitepinkquoteimage1.jpeg',
-        image2: '/whitepinkquoteimage2.jpeg',
+        image1: undefined, 
+        image2: undefined, 
       };
       
   const headerImagePositionClass = details.headerImagePosition || 'object-center';
   
-  // Determine header visibility based on the first compulsory item (or default to true)
+  // Determine header visibility based on the first compulsory item (or default to false)
   const firstCompulsoryItem = details.compulsoryItems?.[0];
-  const headerShowScheduleDates = firstCompulsoryItem?.showScheduleDates ?? true;
+  const headerShowScheduleDates = firstCompulsoryItem?.showScheduleDates ?? false;
   const headerShowQuantity = firstCompulsoryItem?.showQuantity ?? true;
   const headerShowRate = firstCompulsoryItem?.showRate ?? true;
   
@@ -264,7 +277,8 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         </div>
         <div className="text-right mt-4 sm:mt-0">
           <h2 className="text-2xl font-semibold font-display">{event_title}</h2>
-          <p className="mt-1 text-sm">{event_date} {details.eventTime}</p>
+          {/* Date Formatting Consistency Fix */}
+          <p className="mt-1 text-sm">{formatDate(event_date)} {details.eventTime}</p>
           <p className="text-sm">{event_location}</p>
         </div>
       </div>
@@ -332,6 +346,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
                   themeClasses={themeClasses}
                   isClientView={isClientView}
                   isFinalized={isFinalized}
+                  onQuantityChange={onQuantityChange}
                 />
               ))}
 
@@ -369,7 +384,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       </div>
       
       {/* NEW: Image Section for Black & Gold Theme */}
-      {isBlackGoldTheme && (
+      {isBlackGoldTheme && themeClasses.image1 && ( // Check if image1 exists
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
           <DynamicImage 
             src={themeClasses.image1} 
@@ -388,8 +403,8 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         </div>
       )}
       
-      {/* NEW: Image Section for Default Theme */}
-      {!isBlackGoldTheme && (
+      {/* NEW: Image Section for Default Theme (Only renders if images are explicitly set) */}
+      {!isBlackGoldTheme && themeClasses.image1 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
           <DynamicImage 
             src={themeClasses.image1} 
