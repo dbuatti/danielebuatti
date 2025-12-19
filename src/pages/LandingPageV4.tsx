@@ -79,10 +79,10 @@ const LandingPageV4: React.FC = () => {
         <section className="grid md:grid-cols-2 gap-16 items-center mb-24">
           <div className="space-y-8">
             <h1 className="text-5xl md:text-6xl font-light leading-tight text-gray-900 dark:text-white">Daniele Buatti</h1>
-            <p className="text-2xl text-gray-700 dark:text-gray-300 font-light">
+            <p className="text-2xl text-gray-700 dark:text-gray-300 font-light text-left">
               Pianist • Vocal Coach • Music Director • Embodiment Practitioner
             </p>
-            <p className="text-xl leading-relaxed text-gray-600 dark:text-gray-400">
+            <p className="text-xl leading-relaxed text-gray-600 dark:text-gray-400 text-left">
               I help singers, performers, and speakers connect body, breath, and voice for authentic and easeful expression.
             </p>
             
@@ -182,13 +182,13 @@ const LandingPageV4: React.FC = () => {
             ].map((text, idx) => (
               <div key={idx} className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-8 rounded-3xl shadow-sm border border-gray-200/50 dark:border-gray-800/50 flex items-start gap-4">
                 <CheckCircle2 className="w-8 h-8 text-gray-400 flex-shrink-0" />
-                <p className="text-lg text-gray-700 dark:text-gray-300 leading-snug">{text}</p>
+                <p className="text-lg text-gray-700 dark:text-gray-300 leading-snug text-left">{text}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Spruced-up Testimonial Carousel */}
+        {/* Testimonial Carousel */}
         <section className="mb-24 relative">
           <div className="flex items-end justify-between mb-12 px-2 text-left">
             <div>
@@ -259,8 +259,8 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* Signature Service Portal */}
-        <section className="mb-24 px-4">
+        {/* Signature Service Portal - The Definitive Conclusion */}
+        <section className="mb-32 px-4">
           <Link to="/live-piano-services" className="group block relative overflow-hidden rounded-[2.5rem] bg-black shadow-2xl transition-all duration-500 hover:scale-[1.01]">
             <div className="absolute inset-0 bg-[url('/blacktie.avif')] bg-cover bg-center opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />
             <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent" />
@@ -290,19 +290,6 @@ const LandingPageV4: React.FC = () => {
               </div>
             </div>
           </Link>
-        </section>
-
-        {/* Projects & Resources Section */}
-        <section className="mb-32 text-center">
-          <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm py-20 px-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
-            <h2 className="text-4xl font-light mb-6">Explore My Other Work</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">
-              Music direction, digital products, community choir, and creative resources.
-            </p>
-            <Button asChild size="lg" className="text-lg px-12 py-7 rounded-full">
-              <Link to="/projects-resources">View Projects & Resources</Link>
-            </Button>
-          </div>
         </section>
       </main>
 
