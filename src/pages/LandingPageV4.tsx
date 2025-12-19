@@ -23,7 +23,7 @@ const testimonials = [
   { quote: "Daniele is an exceptional teacher, leader, and encourager...", author: "Experienced Educator", title: "Colleague" },
 ];
 
-// Inline FeaturedProgramCard (fully functional)
+// Rebuilt FeaturedProgramCard – powerful, consistent, visible backgrounds
 const FeaturedProgramCard: React.FC<{
   title: string;
   description: string;
@@ -32,8 +32,6 @@ const FeaturedProgramCard: React.FC<{
   backgroundImageSrc?: string;
   backgroundColorClass?: string;
   logoSrc?: string;
-  overlayColorClass?: string;
-  backgroundPosition?: string;
 }> = ({
   title,
   description,
@@ -42,34 +40,43 @@ const FeaturedProgramCard: React.FC<{
   backgroundImageSrc,
   backgroundColorClass,
   logoSrc,
-  overlayColorClass = "bg-black/30",
-  backgroundPosition = "center",
 }) => {
   const hasBackgroundImage = !!backgroundImageSrc;
   const hasSolidBackgroundWithLogo = !!backgroundColorClass && !!logoSrc;
   const isInternalLink = link.startsWith("/") || link.startsWith("#");
 
   return (
-    <div
-      className="relative w-full h-64 rounded-2xl overflow-hidden shadow-md flex items-center justify-center text-center"
-      style={
-        hasBackgroundImage
-          ? { backgroundImage: `url(${backgroundImageSrc})`, backgroundSize: "cover", backgroundPosition }
-          : hasSolidBackgroundWithLogo
-          ? { backgroundColor: backgroundColorClass }
-          : {}
-      }
-    >
-      {hasBackgroundImage && <div className={`absolute inset-0 ${overlayColorClass}`}></div>}
+    <div className="relative h-80 rounded-3xl overflow-hidden shadow-2xl group">
+      {/* Background */}
+      {hasBackgroundImage ? (
+        <div
+          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+          style={{ backgroundImage: `url(${backgroundImageSrc})` }}
+        />
+      ) : hasSolidBackgroundWithLogo ? (
+        <div className={cn("absolute inset-0 flex items-center justify-center p-12", backgroundColorClass)}>
+          <DynamicImage
+            src={logoSrc!}
+            alt={title}
+            className="max-w-full max-h-full object-contain opacity-30"
+            width={800}
+            height={400}
+          />
+        </div>
+      ) : null}
 
-      {hasSolidBackgroundWithLogo && logoSrc && (
-        <img src={logoSrc} alt={`${title} logo`} className="absolute inset-0 w-full h-full object-contain opacity-20" />
-      )}
+      {/* Dark overlay – lighter for better visibility */}
+      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors duration-500" />
 
-      <div className="relative z-10 max-w-sm mx-auto p-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl shadow-lg">
-        <h4 className="text-2xl font-bold mb-3">{title}</h4>
-        <p className="text-gray-700 dark:text-gray-300 mb-6">{description}</p>
-        <Button asChild variant="default" size="lg">
+      {/* Content */}
+      <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-8">
+        <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 drop-shadow-lg">
+          {title}
+        </h3>
+        <p className="text-lg md:text-xl text-white/90 mb-8 max-w-md drop-shadow-md">
+          {description}
+        </p>
+        <Button asChild size="lg" className="bg-white/20 hover:bg-white/30 backdrop-blur-md text-white border border-white/30 text-lg px-10 py-6 rounded-full shadow-xl">
           {isInternalLink ? (
             <Link to={link}>{linkText}</Link>
           ) : (
@@ -265,7 +272,7 @@ const LandingPage: React.FC = () => {
                   description="Professional tracks for singers"
                   link="https://pianobackingsbydaniele.vercel.app"
                   linkText="Explore"
-                  backgroundColorClass="#2596be"
+                  backgroundColorClass="bg-[#2596be]"
                   logoSrc="/pianobackingslogo.png"
                 />
                 <FeaturedProgramCard
