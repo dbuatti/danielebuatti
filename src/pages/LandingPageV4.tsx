@@ -174,31 +174,18 @@ const LandingPageV4: React.FC = () => {
           </Button>
         </section>
 
-        {/* Contact – cleaner, more natural AMEB guidance */}
+        {/* Contact – clean, single CTA with subtle AMEB note */}
         <section className="py-16">
           <h2 className="text-4xl font-light text-center mb-10">Get in Touch</h2>
           <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10">
-            {/* Subtle AMEB note – integrated inside the card */}
-            <div className="text-center mb-10">
-              <p className="text-lg text-gray-600 dark:text-gray-400 italic">
-                For AMEB accompanying inquiries, please use the dedicated form below for the fastest response.
-              </p>
-              <Button asChild variant="outline" size="lg" className="mt-6 border-2 text-lg px-10 py-6">
-                <Link to="/ameb-accompanying">AMEB Accompanying Form</Link>
+            <p className="text-center text-lg text-gray-600 dark:text-gray-400 mb-8 italic">
+              For AMEB accompanying inquiries, please use the dedicated page for rates and booking.
+            </p>
+            <div className="text-center mb-12">
+              <Button asChild size="lg" variant="outline" className="border-2 text-lg px-12 py-7">
+                <Link to="/ameb-accompanying">View AMEB Rates & Book</Link>
               </Button>
             </div>
-
-            {/* Divider */}
-            <div className="relative my-12">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300 dark:border-gray-700" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white dark:bg-gray-900 text-gray-500">or</span>
-              </div>
-            </div>
-
-            {/* General contact form */}
             <ContactForm />
           </div>
         </section>
