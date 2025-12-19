@@ -188,76 +188,79 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* Testimonial Carousel */}
-        <section className="mb-24 relative">
-          <div className="flex items-end justify-between mb-12 px-2 text-left">
-            <div>
-              <h2 className="text-4xl font-light">Client Feedback</h2>
-              <p className="text-gray-500 mt-2">Stories from the studio and stage</p>
-            </div>
-            <div className="hidden md:flex gap-3">
-              <Button 
-                variant="outline" 
-                size="icon" 
-                onClick={() => api?.scrollPrev()}
-                className="rounded-full border-gray-200 dark:border-gray-800 hover:bg-white dark:hover:bg-gray-900 transition-all"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </Button>
-              <Button 
-                variant="outline" 
-                size="icon" 
-                onClick={() => api?.scrollNext()}
-                className="rounded-full border-gray-200 dark:border-gray-800 hover:bg-white dark:hover:bg-gray-900 transition-all"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </Button>
-            </div>
-          </div>
+ {/* Testimonial Carousel */}
+<section className="mb-24 relative">
+  <div className="flex items-end justify-between mb-12 px-2 text-left">
+    <div>
+      <h2 className="text-4xl font-light">Client Feedback</h2>
+      <p className="text-gray-500 mt-2">Stories from the studio and stage</p>
+    </div>
+    <div className="hidden md:flex gap-3">
+      <Button 
+        variant="outline" 
+        size="icon" 
+        onClick={() => api?.scrollPrev()}
+        className="rounded-full border-gray-200 dark:border-gray-800 hover:bg-white dark:hover:bg-gray-900 transition-all"
+      >
+        <ChevronLeft className="w-5 h-5" />
+      </Button>
+      <Button 
+        variant="outline" 
+        size="icon" 
+        onClick={() => api?.scrollNext()}
+        className="rounded-full border-gray-200 dark:border-gray-800 hover:bg-white dark:hover:bg-gray-900 transition-all"
+      >
+        <ChevronRight className="w-5 h-5" />
+      </Button>
+    </div>
+  </div>
 
-          <div className="relative pb-12">
-            <Carousel
-              opts={{ align: "start", loop: true }}
-              plugins={[WheelGesturesPlugin()]}
-              setApi={setApi}
-              className="w-full"
-            >
-              <CarouselContent className="-ml-4">
-                {testimonials.map((t, i) => (
-                  <CarouselItem key={i} className="pl-4 md:basis-1/2 lg:basis-1/3 h-full">
-                    <div className="group h-full flex flex-col justify-between bg-white/70 dark:bg-gray-900/60 backdrop-blur-md p-10 rounded-[2rem] border border-gray-200/50 dark:border-gray-800/50 shadow-sm hover:shadow-xl hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-500">
-                      <div className="text-left">
-                        <div className="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                          <Quote className="w-5 h-5 text-gray-400" />
-                        </div>
-                        <p className="text-lg italic text-gray-700 dark:text-gray-300 leading-relaxed mb-8">
-                          "{t.quote}"
-                        </p>
-                      </div>
-                      <div className="pt-6 border-t border-gray-100 dark:border-gray-800 text-left">
-                        <p className="font-semibold text-gray-900 dark:text-white">{t.author}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-widest mt-1">{t.title}</p>
-                      </div>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
-          </div>
+  <div className="relative pb-12">
+    <Carousel
+      opts={{ align: "start", loop: true }}
+      plugins={[WheelGesturesPlugin()]}
+      setApi={setApi}
+      className="w-full"
+    >
+      {/* 1. Added 'items-stretch' to the content row */}
+      <CarouselContent className="-ml-4 items-stretch">
+        {testimonials.map((t, i) => (
+          /* 2. Added 'flex' to the item container */
+          <CarouselItem key={i} className="pl-4 md:basis-1/2 lg:basis-1/3 flex">
+            {/* 3. 'h-full' and 'flex-1' ensure the card expands to fill the flex container */}
+            <div className="group flex flex-col justify-between bg-white/70 dark:bg-gray-900/60 backdrop-blur-md p-10 rounded-[2rem] border border-gray-200/50 dark:border-gray-800/50 shadow-sm hover:shadow-xl hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-500 w-full h-full flex-1">
+              <div className="text-left">
+                <div className="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                  <Quote className="w-5 h-5 text-gray-400" />
+                </div>
+                <p className="text-lg italic text-gray-700 dark:text-gray-300 leading-relaxed mb-8">
+                  "{t.quote}"
+                </p>
+              </div>
+              <div className="pt-6 border-t border-gray-100 dark:border-gray-800 text-left">
+                <p className="font-semibold text-gray-900 dark:text-white">{t.author}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-widest mt-1">{t.title}</p>
+              </div>
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+    </Carousel>
+  </div>
 
-          <div className="flex justify-center gap-2">
-            {Array.from({ length: count }).map((_, i) => (
-              <button
-                key={i}
-                onClick={() => api?.scrollTo(i)}
-                className={`transition-all duration-500 rounded-full ${
-                  current === i ? "w-8 h-1.5 bg-gray-400 dark:bg-gray-500" : "w-1.5 h-1.5 bg-gray-200 dark:bg-gray-800"
-                }`}
-                aria-label={`Go to slide ${i + 1}`}
-              />
-            ))}
-          </div>
-        </section>
+  <div className="flex justify-center gap-2">
+    {Array.from({ length: count }).map((_, i) => (
+      <button
+        key={i}
+        onClick={() => api?.scrollTo(i)}
+        className={`transition-all duration-500 rounded-full ${
+          current === i ? "w-8 h-1.5 bg-gray-400 dark:bg-gray-500" : "w-1.5 h-1.5 bg-gray-200 dark:bg-gray-800"
+        }`}
+        aria-label={`Go to slide ${i + 1}`}
+      />
+    ))}
+  </div>
+</section>
 
         {/* Signature Service Portal - The Definitive Conclusion */}
         <section className="mb-12 px-2">
