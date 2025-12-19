@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Star } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetOverlay } from "@/components/ui/sheet";
@@ -23,9 +23,15 @@ const Navbar = () => {
   useEffect(() => {
     // Check session storage for dismissal
     const isDismissed = sessionStorage.getItem("live-piano-banner-dismissed");
-    if (!isDismissed) {
-      setShowBanner(true);
-    }
+    
+    // Trigger fade-in animation slightly after mount
+    const timer = setTimeout(() => {
+      if (!isDismissed) {
+        setShowBanner(true);
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const dismissBanner = () => {
@@ -68,33 +74,37 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full">
-      {/* 1. THE BLACK BAR (Now Instant Appearance) */}
-      {showBanner && (
-        <div className="w-full bg-black text-white py-2.5 px-4 flex items-center justify-between border-b border-yellow-900/30 shadow-lg">
-          <div className="flex-1 flex justify-center items-center gap-2.5 text-[10px] md:text-xs tracking-[0.2em] font-light">
-            <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-            <span className="uppercase tracking-widest text-white">Signature Live Piano & Vocals</span>
-            <Link 
-              to="/live-piano-services" 
-              className="ml-3 text-yellow-500 hover:text-yellow-400 underline underline-offset-4 transition-colors font-medium"
-            >
-              EXPLORE THE GALLERY
-            </Link>
-          </div>
-          <button 
-            onClick={dismissBanner}
-            className="text-white/40 hover:text-white transition-colors p-1"
-            aria-label="Dismiss banner"
+      {/* 1. THE BLACK BAR (With Fade-In Animation) */}
+      <div 
+        className={cn(
+          "w-full bg-black text-white px-4 flex items-center justify-between border-b border-yellow-900/30 shadow-lg transition-all duration-700 ease-in-out overflow-hidden",
+          showBanner ? "max-h-20 py-2.5 opacity-100" : "max-h-0 py-0 opacity-0 border-none"
+        )}
+      >
+        <div className="flex-1 flex justify-center items-center gap-2.5 text-[10px] md:text-xs tracking-[0.2em] font-light">
+          <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+          <span className="uppercase tracking-widest text-white">Signature Live Piano & Vocals</span>
+          <Link 
+            to="/live-piano-services" 
+            className="ml-3 text-yellow-500 hover:text-yellow-400 underline underline-offset-4 transition-colors font-medium"
           >
-            <X className="h-4 w-4" />
-          </button>
+            EXPLORE THE GALLERY
+          </Link>
         </div>
-      )}
+        <button 
+          onClick={dismissBanner}
+          className="text-white/40 hover:text-white transition-colors p-1"
+          aria-label="Dismiss banner"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </div>
 
       {/* 2. THE MAIN NAVBAR */}
       <div className="w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
         <div className="container flex h-16 items-center justify-between">
           
+          {/* LOGO SECTION - Links to home */}
           <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
             <DynamicImage
               src={brandSymbolSrc}
