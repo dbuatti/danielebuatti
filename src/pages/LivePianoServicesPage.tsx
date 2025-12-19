@@ -261,7 +261,7 @@ const LivePianoServicesPage: React.FC = () => {
                     <FormItem>
                       <FormLabel className="text-white">First Name *</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="First name" className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/50 transition-colors h-12 text-lg" />
+                        <Input {...field} placeholder="First name" className="bg-black/50 border-white/20 text-white placeholder:text-white/70 focus:border-white/50 transition-colors h-12 text-lg" />
                       </FormControl>
                       <FormMessage className="text-red-400" />
                     </FormItem>
@@ -270,7 +270,7 @@ const LivePianoServicesPage: React.FC = () => {
                     <FormItem>
                       <FormLabel className="text-white">Last Name *</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Last name" className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/50 transition-colors h-12 text-lg" />
+                        <Input {...field} placeholder="Last name" className="bg-black/50 border-white/20 text-white placeholder:text-white/70 focus:border-white/50 transition-colors h-12 text-lg" />
                       </FormControl>
                       <FormMessage className="text-red-400" />
                     </FormItem>
@@ -281,7 +281,7 @@ const LivePianoServicesPage: React.FC = () => {
                   <FormItem>
                     <FormLabel className="text-white">Email Address *</FormLabel>
                     <FormControl>
-                      <Input {...field} type="email" placeholder="your@email.com" className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/50 h-12 text-lg" />
+                      <Input {...field} type="email" placeholder="your@email.com" className="bg-black/50 border-white/20 text-white placeholder:text-white/70 focus:border-white/50 h-12 text-lg" />
                     </FormControl>
                     <FormMessage className="text-red-400" />
                   </FormItem>
@@ -292,7 +292,7 @@ const LivePianoServicesPage: React.FC = () => {
                     <FormItem>
                       <FormLabel className="text-white">Phone</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="0424 174 067" className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/50 h-12 text-lg" />
+                        <Input {...field} placeholder="0424 174 067" className="bg-black/50 border-white/20 text-white placeholder:text-white/70 focus:border-white/50 h-12 text-lg" />
                       </FormControl>
                     </FormItem>
                   )} />
@@ -300,7 +300,7 @@ const LivePianoServicesPage: React.FC = () => {
                     <FormItem>
                       <FormLabel className="text-white">Suburb / Area</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="e.g. Toorak" className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/50 h-12 text-lg" />
+                        <Input {...field} placeholder="e.g. Toorak" className="bg-black/50 border-white/20 text-white placeholder:text-white/70 focus:border-white/50 h-12 text-lg" />
                       </FormControl>
                     </FormItem>
                   )} />
@@ -310,7 +310,7 @@ const LivePianoServicesPage: React.FC = () => {
                   <FormItem>
                     <FormLabel className="text-white">Tell us about your event *</FormLabel>
                     <FormControl>
-                      <Textarea {...field} rows={6} placeholder="Event type, date, venue..." className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/50 resize-none text-lg" />
+                      <Textarea {...field} rows={6} placeholder="Event type, date, venue..." className="bg-black/50 border-white/20 text-white placeholder:text-white/70 focus:border-white/50 resize-none text-lg" />
                     </FormControl>
                     <FormMessage className="text-red-400" />
                   </FormItem>

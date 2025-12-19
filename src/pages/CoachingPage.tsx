@@ -30,7 +30,7 @@ const CoachingPage: React.FC = () => {
             Not performance tricks. Not vocal hacks.<br />
             This is about alignment — musical, physical, and psychological.
           </p>
-          <Button asChild size="lg" className="text-lg px-14 py-8 rounded-full shadow-xl">
+          <Button asChild size="lg" className="text-lg px-14 py-8 rounded-full shadow-xl bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
             <a
               href="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:1:1%20Coaching:%20Voice,%20Piano%20%26%20Performance"
               target="_blank"
@@ -95,9 +95,6 @@ const CoachingPage: React.FC = () => {
             </div>
           </div>
         </section>
-
-        {/* Sessions & Rates – removed (duplicated CTA already in hero) */}
-        {/* Group Workshops – removed (now on projects page) */}
 
         {/* Additional Services – simple, elegant */}
         <section className="py-20 bg-white dark:bg-gray-900 rounded-3xl text-center">

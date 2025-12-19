@@ -90,14 +90,16 @@ const LandingPageV4: React.FC = () => {
             <div className="flex flex-wrap gap-4">
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button size="lg" className="text-lg px-8 py-7 rounded-full">Book a discovery call</Button>
+                  <Button size="lg" className="text-lg px-8 py-7 rounded-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+                    Book a discovery call
+                  </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-4xl h-[90vh] p-0">
                   <CalEmbed calLink="danielebuatti/30min" />
                 </DialogContent>
               </Dialog>
               
-              <Button asChild variant="outline" size="lg" className="text-lg px-8 py-7 rounded-full border-2">
+              <Button asChild variant="outline" size="lg" className="text-lg px-8 py-7 rounded-full border-2 text-brand-dark dark:text-brand-light border-brand-secondary hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50">
                 <Link to="/contact">Make an Enquiry</Link>
               </Button>
             </div>
@@ -236,7 +238,7 @@ const LandingPageV4: React.FC = () => {
             <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
               With over 12 years as a music director, pianist, vocal coach, and educator, I combine music theatre expertise with kinesiology and somatic practices.
             </p>
-            <Button asChild size="lg" variant="outline" className="border-2 rounded-full">
+            <Button asChild size="lg" variant="outline" className="border-2 rounded-full text-brand-dark dark:text-brand-light border-brand-secondary hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50">
               <Link to="/coaching">Read more about my approach</Link>
             </Button>
           </div>
