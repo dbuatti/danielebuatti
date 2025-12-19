@@ -248,7 +248,8 @@ const LivePianoServicesPage: React.FC = () => {
       </section>
 
       {/* Contact Form Section */}
-      <section id="enquire" className="py-32 px-4 max-w-4xl mx-auto">
+<section id="enquire" className="pt-32 pb-16 px-4 max-w-4xl mx-auto">
+
         <motion.div initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1 }}>
           <h3 className="text-4xl md:text-5xl font-libre-baskerville text-center text-white mb-12">
             Enquire About Your Event
