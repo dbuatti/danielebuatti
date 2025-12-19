@@ -23,7 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import DynamicImage from "@/components/DynamicImage";
-import { motion } from "framer-motion"; // Add framer-motion to dependencies
+import { motion } from "framer-motion";
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required." }),
@@ -40,12 +40,14 @@ const LivePianoServicesPage: React.FC = () => {
   const [api, setApi] = useState<CarouselApi>();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
+  // Add more images here, especially ones showing you singing/vocalizing at the piano
   const galleryImages = [
-    "/placeholder-1.jpg",
-    "/placeholder-2.jpg",
-    "/placeholder-3.jpg",
-    "/placeholder-4.jpg",
-    "/placeholder-5.jpg",
+    "/blacktie.avif",
+    "/blacktie1.avif",
+    "/blacktie3.avif",
+    "/blacktie4.avif",
+    "/other.avif",
+    // Add new paths like: "/daniele-singing1.avif", "/daniele-vocal-piano.avif", etc.
   ];
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -133,8 +135,11 @@ const LivePianoServicesPage: React.FC = () => {
           <h1 className="text-5xl md:text-7xl font-light tracking-widest uppercase font-montserrat text-gold-400">
             Daniele Buatti
           </h1>
-          <p className="text-xl md:text-2xl mt-4 font-libre-baskerville italic text-gray-200">
-            Live Piano Virtuoso
+          <p className="text-2xl md:text-4xl mt-6 font-libre-baskerville italic text-gold-300">
+            Pianist & Vocalist
+          </p>
+          <p className="text-lg md:text-xl mt-4 text-gray-300 max-w-2xl mx-auto">
+            Sophisticated live music for discerning events
           </p>
         </motion.div>
 
@@ -158,7 +163,7 @@ const LivePianoServicesPage: React.FC = () => {
             Moments of Elegance
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Captured performances at prestigious events across Australia
+            Captured performances at prestigious weddings, galas, and private events across Australia
           </p>
         </motion.div>
 
@@ -214,18 +219,29 @@ const LivePianoServicesPage: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1 }}
-          className="max-w-4xl mx-auto text-center"
+          className="max-w-5xl mx-auto text-center space-y-16"
         >
-          <h2 className="text-5xl md:text-7xl font-bold font-libre-baskerville text-gold-400 mb-10 leading-tight">
-            AN UNFORGETTABLE MUSICAL EXPERIENCE
-          </h2>
-          <p className="text-xl md:text-2xl leading-relaxed text-gray-200 mb-8 font-light">
-            Elevate your wedding, gala, or private soirée with the refined artistry of Daniele Buatti.
-          </p>
-          <p className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-3xl mx-auto">
-            With a repertoire that gracefully spans classical masterpieces, sophisticated jazz standards, and contemporary favorites,
-            Daniele creates an atmosphere of timeless elegance that leaves lasting impressions.
-          </p>
+          <div>
+            <h2 className="text-5xl md:text-7xl font-bold font-libre-baskerville text-gold-400 mb-10 leading-tight">
+              AN UNFORGETTABLE MUSICAL EXPERIENCE
+            </h2>
+            <p className="text-xl md:text-2xl leading-relaxed text-gray-200 mb-8 font-light max-w-4xl mx-auto">
+              Elevate your wedding, gala, corporate function, or intimate private soirée with the refined artistry of Daniele Buatti — a masterful pianist and captivating vocalist.
+            </p>
+            <p className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-3xl mx-auto">
+              Blending virtuoso piano performance with warm, sophisticated vocals, Daniele delivers a high-class piano bar experience that is both intimate and grand — perfect for creating timeless memories at discerning events.
+            </p>
+          </div>
+
+          <div className="pt-12 border-t border-gold-800/30">
+            <h3 className="text-3xl md:text-4xl font-libre-baskerville text-gold-300 mb-8">
+              Performance Style
+            </h3>
+            <p className="text-lg md:text-xl text-gray-200 leading-relaxed max-w-4xl mx-auto">
+              Drawing from the golden era of piano bar elegance, Daniele's performances feature exquisite piano artistry paired with velvety vocals across classical masterpieces, timeless jazz standards, swing classics, and curated contemporary favorites. 
+              Whether providing subtle background ambiance or commanding the spotlight with dedicated vocal sets, his delivery exudes class, charm, and emotional depth — tailored impeccably to upscale weddings, luxury venues, and high-brow gatherings.
+            </p>
+          </div>
         </motion.div>
       </section>
 
@@ -238,12 +254,13 @@ const LivePianoServicesPage: React.FC = () => {
           transition={{ duration: 1 }}
         >
           <h3 className="text-4xl md:text-5xl font-libre-baskerville text-center text-gold-400 mb-12">
-            Begin Your Journey
+            Enquire About Your Event
           </h3>
 
           <Card className="bg-zinc-950/90 border border-gold-800/30 backdrop-blur-xl shadow-2xl rounded-2xl p-10 md:p-16">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(handleContactSubmit)} className="space-y-8">
+                {/* Form fields remain the same */}
                 <div className="grid md:grid-cols-2 gap-8">
                   <FormField control={form.control} name="firstName" render={({ field }) => (
                     <FormItem>
@@ -324,7 +341,7 @@ const LivePianoServicesPage: React.FC = () => {
                       <Textarea
                         {...field}
                         rows={6}
-                        placeholder="Event type, date, venue, special song requests..."
+                        placeholder="Event type, date, venue, special song requests, vocal or instrumental focus..."
                         className="bg-black/50 border-gold-700/50 text-white placeholder:text-gray-500 focus:border-gold-500 resize-none text-lg"
                       />
                     </FormControl>
@@ -366,7 +383,7 @@ const LivePianoServicesPage: React.FC = () => {
         </motion.div>
       </section>
 
-      {/* Footer */}
+      {/* Footer remains the same */}
       <footer className="relative py-24 text-center overflow-hidden">
         <div
           className="absolute inset-0 -z-10 brightness-50 scale-110"
