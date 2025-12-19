@@ -3,119 +3,108 @@
 import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import SectionHeading from "@/components/SectionHeading";
+import DynamicImage from "@/components/DynamicImage";
 import ImageCarouselSection from "@/components/pages/landing-page-v3/ImageCarouselSection";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import DynamicImage from "@/components/DynamicImage";
-import CorePrinciplesHeading from "@/components/CorePrinciplesHeading"; // Import new component
 
 const AboutPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
       <Navbar />
-      <main className="container mx-auto px-4 pt-6 pb-6">
-        <div className="text-center space-y-4 mb-6">
-          <SectionHeading>About Daniele Buatti</SectionHeading>
-          <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 max-w-3xl mx-auto">
-            Discover Daniele's journey, philosophy, and the integrated approach that defines his coaching.
-          </p>
-          {/* Removed Separator here */}
-        </div>
 
-        {/* Introduction with Integrated Image */}
-        <section className="max-w-4xl mx-auto py-4 flex flex-col md:flex-row items-center gap-8">
-          <div className="md:w-1/3 flex justify-center">
+      <main className="max-w-5xl mx-auto px-6 py-16">
+        {/* Hero Introduction */}
+        <section className="text-center mb-24">
+          <h1 className="text-5xl md:text-6xl font-light mb-8">About Daniele Buatti</h1>
+          <p className="text-xl max-w-3xl mx-auto text-gray-600 dark:text-gray-400">
+            Pianist, music director, vocal coach, and embodiment practitioner based in Melbourne.
+          </p>
+        </section>
+
+        {/* Photo + Short Bio */}
+        <section className="grid md:grid-cols-2 gap-16 items-center mb-32">
+          <div className="flex justify-center">
             <DynamicImage
               src="/daniele simple.jpeg"
               alt="Daniele Buatti"
-              className="rounded-full shadow-xl border-4 border-brand-primary w-48 h-48 object-cover"
-              width={192}
-              height={192}
+              className="w-full max-w-md rounded-3xl shadow-2xl"
+              width={600}
+              height={600}
             />
           </div>
-          <div className="md:w-2/3 text-center md:text-left">
-            <h2 className="text-2xl font-bold text-brand-primary mb-4">Dedicated to Embodied Performance and Well-being</h2>
-            <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
-              With over 12 years of experience as a Music Director, Pianist, Arranger, Vocal Coach, and Educator,
-              Daniele Buatti brings together professional music theatre expertise with somatic practices to train
-              versatile, resilient, and expressive performers.
+          <div className="space-y-6 text-lg leading-relaxed">
+            <p>
+              I’ve spent over 12 years working as a music director, pianist, arranger, vocal coach, and educator in music theatre and performance.
+            </p>
+            <p>
+              Alongside that, I trained in kinesiology and draw from yoga and somatic practices. This combination lets me help performers connect their body, breath, and voice in a practical, grounded way.
+            </p>
+            <p>
+              My work focuses on removing tension, building awareness, and letting authentic expression come through naturally — whether on stage, in the studio, or in everyday communication.
             </p>
           </div>
         </section>
-        {/* Removed Separator here */}
 
-        {/* 1. Daniele's Story: Experience & Credibility */}
-        <section id="daniele-story" className="max-w-4xl mx-auto space-y-6 py-8">
-          <SectionHeading>Daniele Buatti: Musician, Coach, and Embodiment Practitioner</SectionHeading>
-          <div className="text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed space-y-4">
+        {/* My Approach */}
+        <section className="mb-32">
+          <h2 className="text-4xl md:text-5xl font-light text-center mb-12">My Approach</h2>
+          <div className="max-w-3xl mx-auto space-y-6 text-lg leading-relaxed text-center">
             <p>
-              Daniele's journey began with a deep passion for music and performance, leading him to a Bachelor of Music at the Australian Institute of Music. His career has spanned a wide range of productions, from large-scale musicals to intimate workshops, where he has collaborated with artists to unlock their full potential.
+              Everything I teach is built around four connected steps:
             </p>
-            <p>
-              Beyond the stage, Daniele's commitment to holistic development led him to pursue a Diploma of Kinesiology, specialising in mind-body integration for performance and well-being. This unique blend of artistic and therapeutic knowledge allows him to guide students not only in technical mastery but also in fostering authentic connection and healing through self-awareness.
-            </p>
-            <p>
-              He believes expression truly happens when the thought arises to express, and his therapeutic approach helps students gain a deeper understanding of their own mannerisms, expressions, and thoughts. Daniele is passionate about the transformative power of music and theatre, inspiring performers of all ages and levels to combine artistry, empathy, and technical skill to create performances that are both compelling and heartfelt.
-            </p>
+            <div className="grid md:grid-cols-2 gap-12 mt-12">
+              <div>
+                <h3 className="text-2xl font-medium mb-4">Thought</h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Becoming aware of mental patterns and habits that hold you back.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-2xl font-medium mb-4">Intention</h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Clarifying what you want to express and aligning your body with that purpose.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-2xl font-medium mb-4">Breath</h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Freeing and deepening breath to release tension and support sound.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-2xl font-medium mb-4">Expression</h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Letting your natural voice and presence emerge without force.
+                </p>
+              </div>
+            </div>
+            <div className="mt-12">
+              <Button asChild size="lg" variant="outline" className="border-2 text-lg px-10 py-6">
+                <Link to="/coaching">More about my coaching</Link>
+              </Button>
+            </div>
           </div>
         </section>
-        {/* Removed Separator here */}
 
-        {/* 2. My Embodied Holistic Approach (Narrative text only) */}
-        <section id="embodied-approach-narrative" className="max-w-4xl mx-auto space-y-10 py-8">
-          <SectionHeading>My Embodied Holistic Approach</SectionHeading>
-          <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
-            All my teachings are informed by Buddhist and yogic philosophies, fostering a heart-centred, process-oriented journey focused on truth and transformation, not just the destination.
-          </p>
-          <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-            I help performers and communicators connect body, breath, and voice so they can express themselves with freedom, authenticity, and ease. My work is about discovering a voice that feels grounded, resonant, and spacious — one that grows out of the whole body rather than being forced or strained.
-          </p>
-          <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-            With over 12 years of experience as a Music Director, Pianist, Arranger, Vocal Coach, and Educator, I bring together professional music theatre expertise, vocal pedagogy, and somatic practices influenced by kinesiology and yoga. This integrated approach forms the foundation for my unique, embodied coaching.
-          </p>
-          <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-            Ready to dive deeper into how this approach can transform your performance and communication?
-          </p>
-          <div className="text-center">
-            <Button asChild size="lg" className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-              <Link to="/coaching">
-                Explore My Full Approach
-              </Link>
-            </Button>
-          </div>
-        </section>
-        {/* Removed Separator here */}
-
-        {/* 3. The Guiding Principles: THOUGHT • INTENTION • BREATH • EXPRESSION */}
-        <section id="guiding-principles" className="max-w-4xl mx-auto space-y-10 py-8">
-          <CorePrinciplesHeading />
-          <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 text-center max-w-3xl mx-auto">
-            My coaching is built upon a simple yet powerful framework that integrates the mind, body, and voice to unlock true expressive freedom. This process ensures your performance is authentic, grounded, and sustainable.
-          </p>
-          <div className="text-lg text-brand-dark/80 dark:text-brand-light/80 space-y-4 pl-4">
-            <p>
-              <strong className="text-brand-primary">THOUGHT:</strong> We address the mental blocks and patterned behaviours that hinder your freedom. This involves conscious intention-setting and cultivating the self-awareness necessary for growth.
-            </p>
-            <p>
-              <strong className="text-brand-primary">INTENTION:</strong> We clarify your artistic purpose and desired outcome for every performance and interaction. When your physical body aligns with your intention, your expression becomes effortlessly powerful.
-            </p>
-            <p>
-              <strong className="text-brand-primary">BREATH:</strong> We establish the physical foundation for sound. By deepening and freeing your breath, we release physical tension, calm the nervous system, and create the space for a resonant, authentic voice to emerge.
-            </p>
-            <p>
-              <strong className="text-brand-primary">EXPRESSION:</strong> This is the culmination of the process—your authentic voice in action. It is the moment when technique, body, and intention integrate, allowing you to connect confidently and compellingly with your audience.
-            </p>
-          </div>
-        </section>
-        {/* Removed Separator here */}
-
-        {/* 4. Daniele's Moments (Image Gallery) */}
-        <div className="py-8">
+        {/* Photo Moments */}
+        <section className="mb-32">
+          <h2 className="text-4xl md:text-5xl font-light text-center mb-12">Moments from My Work</h2>
           <ImageCarouselSection />
-        </div>
-        {/* Removed Separator here */}
+        </section>
+
+        {/* Simple CTA */}
+        <section className="text-center py-20 bg-white dark:bg-gray-900 rounded-3xl">
+          <h2 className="text-4xl md:text-5xl font-light mb-8">Get in Touch</h2>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">
+            If you’d like to talk about coaching, performance work, or anything else, feel free to reach out.
+          </p>
+          <Button asChild size="lg" className="bg-gray-800 hover:bg-gray-700 dark:bg-gray-200 dark:hover:bg-gray-300 text-white dark:text-gray-900 text-lg px-10 py-6 rounded-full">
+            <Link to="/contact">Contact me</Link>
+          </Button>
+        </section>
       </main>
+
       <Footer />
     </div>
   );
