@@ -116,17 +116,25 @@ const LivePianoServicesPage: React.FC = () => {
 
   return (
     <div className="live-piano-theme min-h-screen bg-livePiano-background text-livePiano-light">
-      {/* Header */}
-      <header className="bg-livePiano-darker py-4 px-6 md:px-12">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          {/* Left section: Back to Services */}
+      {/* Video Header */}
+      <header className="relative w-full h-[60vh] md:h-[70vh] overflow-hidden">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover z-0"
+        >
+          <source src="/Daniele Buatti - Gatsby Event Gala 1.mov" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-black/30 z-10"></div>
+        <div className="relative z-20 flex items-center justify-between h-full px-6 md:px-12">
           <div className="flex items-center gap-4">
             <Button asChild className="bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light px-4 py-2 text-sm">
               <Link to="/">Back to Home</Link>
             </Button>
           </div>
-
-          {/* Right section: Logo and Title */}
           <div className="flex flex-col items-end">
             <DynamicImage src="/gold-36.png" alt="Daniele Buatti Logo" className="h-16 md:h-20" width={80} height={80} />
             <h1 className="text-xl md:text-2xl font-montserrat font-light uppercase text-livePiano-light tracking-widest mt-2">
