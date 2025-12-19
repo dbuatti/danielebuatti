@@ -42,16 +42,17 @@ const CoachingPage: React.FC = () => {
           </Button>
         </section>
 
-        {/* Hero Image – fixed crop, head fully visible */}
-        <div className="mb-24 -mx-6">
-          <DynamicImage
-            src="/danielecalmatpiano.jpeg"
-            alt="Daniele Buatti in flow at the piano"
-            className="w-full h-[650px] object-cover object-center shadow-2xl"  // object-center ensures head is visible
-            width={1400}
-            height={800}
-          />
-        </div>
+{/* Hero Image – your head is now fully visible + beautiful */}
+<div className="mb-24 -mx-6">
+  <DynamicImage
+    src="/danielecalmatpiano.jpeg"
+    alt="Daniele Buatti in flow at the piano"
+    className="w-full h-[700px] object-cover object-top shadow-2xl"  // ← this line fixes it
+    width={1400}
+    height={800}
+    priority  // loads faster, looks instant
+  />
+</div>
 
         {/* The Work – elevated, no bullet lists */}
         <section className="mb-32">
