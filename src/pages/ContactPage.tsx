@@ -30,16 +30,18 @@ const ContactPage: React.FC = () => {
           </p>
         </header>
 
-        <div className="grid md:grid-cols-2 gap-12 items-start">
+        {/* Updated grid with items-stretch to ensure equal height */}
+        <div className="grid md:grid-cols-2 gap-12 items-stretch">
+          
           {/* Left Column: Contact Details & Quick Links */}
-          <div className="space-y-8">
-            <div className="p-8 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
-              <h2 className="text-3xl font-medium mb-6">Direct Contact</h2>
+          <div className="flex flex-col p-8 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
+            <div className="flex-grow">
+              <h2 className="text-3xl font-medium mb-8">Direct Contact</h2>
               <div className="space-y-6">
                 <div className="flex items-center space-x-4">
                   <Mail className="w-7 h-7 text-gray-700 dark:text-gray-300 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold">Email</p>
+                    <p className="font-semibold text-sm text-gray-500 uppercase tracking-wide">Email</p>
                     <a href="mailto:info@danielebuatti.com" className="text-lg text-blue-600 dark:text-blue-400 hover:underline">
                       info@danielebuatti.com
                     </a>
@@ -48,7 +50,7 @@ const ContactPage: React.FC = () => {
                 <div className="flex items-center space-x-4">
                   <Phone className="w-7 h-7 text-gray-700 dark:text-gray-300 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold">WhatsApp</p>
+                    <p className="font-semibold text-sm text-gray-500 uppercase tracking-wide">WhatsApp</p>
                     <a href="https://wa.me/61424174067" target="_blank" rel="noopener noreferrer" className="text-lg text-blue-600 dark:text-blue-400 hover:underline">
                       +61 424 174 067
                     </a>
@@ -57,42 +59,44 @@ const ContactPage: React.FC = () => {
                 <div className="flex items-start space-x-4">
                   <MapPin className="w-7 h-7 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1" />
                   <div>
-                    <p className="font-semibold">Studio Location</p>
+                    <p className="font-semibold text-sm text-gray-500 uppercase tracking-wide">Studio Location</p>
                     <p className="text-lg text-gray-600 dark:text-gray-400">Toorak, Melbourne, VIC</p>
                   </div>
                 </div>
               </div>
-              
-              {/* Quick Links Section */}
-              <div className="pt-8 mt-8 border-t border-gray-200 dark:border-gray-800 space-y-4">
-                  <h3 className="text-xl font-medium mb-4">Quick Actions</h3>
-                  
-                  {/* Cal.com Dialog Embed */}
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button className="w-full justify-start text-lg py-7 rounded-full gap-3 shadow-sm">
-                        <Calendar className="w-5 h-5" /> Book a discovery call
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-4xl h-[90vh] p-0">
-                      <CalEmbed calLink="danielebuatti/30min" />
-                    </DialogContent>
-                  </Dialog>
+            </div>
+            
+            {/* Quick Links Section anchored to the bottom */}
+            <div className="pt-8 mt-8 border-t border-gray-200 dark:border-gray-800 space-y-4">
+                <h3 className="text-xl font-medium mb-4">Quick Actions</h3>
+                
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button className="w-full justify-start text-lg py-7 rounded-full gap-3 shadow-sm transition-all hover:scale-[1.01]">
+                      <Calendar className="w-5 h-5" /> Book a discovery call
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-4xl h-[90vh] p-0">
+                    <CalEmbed calLink="danielebuatti/30min" />
+                  </DialogContent>
+                </Dialog>
 
-                  <Button asChild variant="outline" className="w-full justify-start border-2 text-lg py-7 rounded-full gap-3">
-                    <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="w-5 h-5" /> Book a Coaching Session
-                    </a>
-                  </Button>
-              </div>
+                <Button asChild variant="outline" className="w-full justify-start border-2 text-lg py-7 rounded-full gap-3 transition-all hover:scale-[1.01]">
+                  <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="w-5 h-5" /> Book a Coaching Session
+                  </a>
+                </Button>
             </div>
           </div>
 
           {/* Right Column: Contact Form */}
-          <div className="p-8 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
+          <div className="flex flex-col p-8 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
             <h2 className="text-3xl font-medium mb-6">Send a Message</h2>
-            <ContactForm />
+            <div className="flex-grow">
+                <ContactForm />
+            </div>
           </div>
+
         </div>
       </main>
 
