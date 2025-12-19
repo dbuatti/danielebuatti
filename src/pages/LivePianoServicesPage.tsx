@@ -350,7 +350,7 @@ const LivePianoServicesPage: React.FC = () => {
         </motion.div>
       </section>
 
-      <footer className="relative py-24 text-center overflow-hidden">
+<footer className="relative pt-16 pb-24 text-center overflow-hidden">
         <div className="absolute inset-0 -z-10 brightness-50 scale-110" style={{ backgroundImage: `url(/bowtie.avif)`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
         <div className="relative z-10 space-y-12">
