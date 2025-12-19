@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/form";
 import DynamicImage from "@/components/DynamicImage";
 import { motion } from "framer-motion";
-import { cn } from "@/lib/utils"; // Keeping cn import
+import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required." }),
@@ -40,7 +40,7 @@ const formSchema = z.object({
   phone: z.string().optional(),
   suburb: z.string().optional(),
   eventDescription: z.string().min(10, { message: "Please describe your event (at least 10 characters)." }).max(500, { message: "Description too long." }),
-  pianoType: z.string().optional(),
+  pianoType: z.string().min(1, { message: "Please select an instrument option." }),
 });
 
 type GalleryItem = {
@@ -87,13 +87,12 @@ const LivePianoServicesPage: React.FC = () => {
     
     const messageBody = `
       Event Description: ${values.eventDescription}
-      Piano Type: ${values.pianoType || 'Not specified'}
+      Piano Type: ${values.pianoType}
       Phone: ${values.phone || 'Not provided'}
       Suburb: ${values.suburb || 'Not provided'}
     `;
 
     try {
-      // Use the secure Edge Function to submit the contact message
       const { error } = await supabase.functions.invoke('submit-contact-message', {
         body: {
           name: `${values.firstName} ${values.lastName}`,
@@ -144,7 +143,6 @@ const LivePianoServicesPage: React.FC = () => {
           </p>
         </motion.div>
 
-        {/* Main Large Media Display */}
         <motion.div
           key={selectedIndex}
           initial={{ opacity: 0, scale: 0.98 }}
@@ -168,16 +166,9 @@ const LivePianoServicesPage: React.FC = () => {
           )}
         </motion.div>
 
-        {/* Thumbnail Carousel with Trackpad Support */}
         <Carousel
-          opts={{
-            align: "center",
-            loop: true,
-            dragFree: true,
-          }}
-          plugins={[
-            WheelGesturesPlugin()
-          ]}
+          opts={{ align: "center", loop: true, dragFree: true }}
+          plugins={[WheelGesturesPlugin()]}
           setApi={setApi}
           className="w-full max-w-6xl mx-auto"
         >
@@ -197,11 +188,7 @@ const LivePianoServicesPage: React.FC = () => {
                 >
                   {item.type === "video" ? (
                     <div className="relative w-full h-full">
-                      <img
-                        src={item.poster || "/fallback-poster.jpg"}
-                        alt="Video performance preview"
-                        className="w-full h-full object-cover"
-                      />
+                      <img src={item.poster || "/fallback-poster.jpg"} alt="Preview" className="w-full h-full object-cover" />
                       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                         <div className="bg-black/60 rounded-full p-5 backdrop-blur-md">
                           <Play className="w-12 h-12 text-gold-400" fill="currentColor" />
@@ -209,11 +196,7 @@ const LivePianoServicesPage: React.FC = () => {
                       </div>
                     </div>
                   ) : (
-                    <img
-                      src={item.src}
-                      alt={`Gallery ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
+                    <img src={item.src} alt={`Gallery ${index + 1}`} className="w-full h-full object-cover" />
                   )}
                 </motion.div>
               </CarouselItem>
@@ -228,29 +211,24 @@ const LivePianoServicesPage: React.FC = () => {
       <section className="py-32 px-4 bg-gradient-to-b from-black to-zinc-950">
         <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1 }} className="max-w-5xl mx-auto text-center space-y-16">
           <div>
-            <h2 className="text-5xl md:text-7xl font-bold font-libre-baskerville text-gold-400 mb-10 leading-tight">
+            <h2 className="text-5xl md:text-7xl font-bold font-libre-baskerville text-gold-400 mb-10 leading-tight tracking-tight">
               AN UNFORGETTABLE MUSICAL EXPERIENCE
             </h2>
             <p className="text-xl md:text-2xl leading-relaxed text-gray-200 mb-8 font-light max-w-4xl mx-auto">
               Elevate your wedding, gala, corporate function, or intimate private soirée with the refined artistry of Daniele Buatti — a masterful pianist and captivating vocalist.
             </p>
-            <p className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-3xl mx-auto">
-              Blending virtuoso piano performance with warm, sophisticated vocals, Daniele delivers a high-class piano bar experience that is both intimate and grand — perfect for creating timeless memories at discerning events.
-            </p>
           </div>
-
           <div className="pt-12 border-t border-gold-800/30">
             <h3 className="text-3xl md:text-4xl font-libre-baskerville text-gold-300 mb-8">Performance Style</h3>
             <p className="text-lg md:text-xl text-gray-200 leading-relaxed max-w-4xl mx-auto">
-              Drawing from the golden era of piano bar elegance, Daniele's performances feature exquisite piano artistry paired with velvety vocals across classical masterpieces, timeless jazz standards, swing classics, and curated contemporary favorites. 
-              Whether providing subtle background ambiance or commanding the spotlight with dedicated vocal sets, his delivery exudes class, charm, and emotional depth — tailored impeccably to upscale weddings, luxury venues, and high-brow gatherings.
+              Blending virtuoso piano performance with warm, sophisticated vocals, Daniele delivers a high-class piano bar experience... tailored impeccably to upscale weddings, luxury venues, and high-brow gatherings.
             </p>
           </div>
         </motion.div>
       </section>
 
       {/* Contact Form Section */}
-      <section className="py-32 px-4 max-w-4xl mx-auto">
+      <section id="enquire" className="py-32 px-4 max-w-4xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1 }}>
           <h3 className="text-4xl md:text-5xl font-libre-baskerville text-center text-gold-400 mb-12">Enquire About Your Event</h3>
           <Card className="bg-zinc-950/90 border border-gold-800/30 backdrop-blur-xl shadow-2xl rounded-2xl p-10 md:p-16">
@@ -274,26 +252,31 @@ const LivePianoServicesPage: React.FC = () => {
                     <FormItem><FormLabel className="text-gold-300">Phone</FormLabel><FormControl><Input {...field} placeholder="0424 174 067" className="bg-black/50 border-gold-700/50 text-white placeholder:text-gray-500 focus:border-gold-500 h-12 text-lg" /></FormControl></FormItem>
                   )} />
                   <FormField control={form.control} name="suburb" render={({ field }) => (
-                    <FormItem><FormLabel className="text-gold-300">Suburb / Area</FormLabel><FormControl><Input {...field} placeholder="e.g. Sydney CBD" className="bg-black/50 border-gold-700/50 text-white placeholder:text-gray-500 focus:border-gold-500 h-12 text-lg" /></FormControl></FormItem>
+                    <FormItem><FormLabel className="text-gold-300">Suburb / Area</FormLabel><FormControl><Input {...field} placeholder="e.g. Toorak" className="bg-black/50 border-gold-700/50 text-white placeholder:text-gray-500 focus:border-gold-500 h-12 text-lg" /></FormControl></FormItem>
                   )} />
                 </div>
 
                 <FormField control={form.control} name="eventDescription" render={({ field }) => (
-                  <FormItem><FormLabel className="text-gold-300">Tell us about your event *</FormLabel><FormControl><Textarea {...field} rows={6} placeholder="Event type, date, venue, special song requests, vocal or instrumental focus..." className="bg-black/50 border-gold-700/50 text-white placeholder:text-gray-500 focus:border-gold-500 resize-none text-lg" /></FormControl><FormMessage className="text-red-400" /></FormItem>
+                  <FormItem><FormLabel className="text-gold-300">Tell us about your event *</FormLabel><FormControl><Textarea {...field} rows={6} placeholder="Event type, date, venue..." className="bg-black/50 border-gold-700/50 text-white placeholder:text-gray-500 focus:border-gold-500 resize-none text-lg" /></FormControl><FormMessage className="text-red-400" /></FormItem>
                 )} />
 
                 <FormField control={form.control} name="pianoType" render={({ field }) => (
-                  <FormItem><FormLabel className="text-gold-300">Instrument available at venue?</FormLabel>
+                  <FormItem>
+                    <FormLabel className="text-gold-300">Is there an instrument available at the venue? *</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl><SelectTrigger className="bg-black/50 border-gold-700/50 text-white h-12 text-lg"><SelectValue placeholder="Select an option" /></SelectTrigger></FormControl>
-                      <SelectContent className="bg-zinc-900 border-gold-800">
-                        <SelectItem value="grand-piano">Grand Piano</SelectItem>
-                        <SelectItem value="upright-piano">Upright Piano</SelectItem>
-                        <SelectItem value="digital-piano">Digital Piano / Keyboard</SelectItem>
-                        <SelectItem value="none">None – please provide</SelectItem>
+                      <FormControl>
+                        <SelectTrigger className="bg-black/50 border-gold-700/50 text-white h-12 text-lg focus:ring-gold-500">
+                          <SelectValue placeholder="Please select an option" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="bg-zinc-900 border border-gold-800 text-white">
+                        <SelectItem value="grand-piano" className="text-white hover:bg-gold-500 focus:bg-gold-500 focus:text-black cursor-pointer py-3 transition-colors">Grand Piano</SelectItem>
+                        <SelectItem value="upright-piano" className="text-white hover:bg-gold-500 focus:bg-gold-500 focus:text-black cursor-pointer py-3 transition-colors">Upright Piano</SelectItem>
+                        <SelectItem value="digital-piano" className="text-white hover:bg-gold-500 focus:bg-gold-500 focus:text-black cursor-pointer py-3 transition-colors">Digital Piano / Keyboard</SelectItem>
+                        <SelectItem value="none" className="text-white hover:bg-gold-500 focus:bg-gold-500 focus:text-black cursor-pointer py-3 transition-colors">None – please provide</SelectItem>
                       </SelectContent>
                     </Select>
-                    <FormMessage />
+                    <FormMessage className="text-red-400" />
                   </FormItem>
                 )} />
 
@@ -311,21 +294,20 @@ const LivePianoServicesPage: React.FC = () => {
         </motion.div>
       </section>
 
-      {/* Footer */}
       <footer className="relative py-24 text-center overflow-hidden">
         <div className="absolute inset-0 -z-10 brightness-50 scale-110" style={{ backgroundImage: `url(/bowtie.avif)`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
-        <div className="relative z-10">
-          <DynamicImage src="/gold-36.png" alt="Logo" className="h-20 mx-auto mb-8 opacity-90" width={80} height={80} />
+        <div className="relative z-10 space-y-12">
+          <DynamicImage src="/gold-36.png" alt="Logo" className="h-20 mx-auto opacity-90" width={80} height={80} />
           <div className="space-y-6 text-2xl md:text-3xl font-light">
-            <a href="https://wa.me/61424174067" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-4 hover:text-gold-400 transition-colors">
-              <Phone size={32} /> 0424 174 067
+            <a href="https://wa.me/61424174067" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-4 hover:text-gold-400 transition-colors underline-offset-8 hover:underline">
+              <Phone size={32} className="text-gold-400" /> 0424 174 067
             </a>
-            <a href="mailto:info@danielebuatti.com" className="flex items-center justify-center gap-4 hover:text-gold-400 transition-colors">
-              <Mail size={32} /> info@danielebuatti.com
+            <a href="mailto:info@danielebuatti.com" className="flex items-center justify-center gap-4 hover:text-gold-400 transition-colors underline-offset-8 hover:underline">
+              <Mail size={32} className="text-gold-400" /> info@danielebuatti.com
             </a>
           </div>
-          <p className="mt-12 text-gray-400 text-lg">© {new Date().getFullYear()} Daniele Buatti. All rights reserved.</p>
+          <p className="text-gray-400 text-lg">© {new Date().getFullYear()} Daniele Buatti. All rights reserved.</p>
         </div>
       </footer>
     </div>
