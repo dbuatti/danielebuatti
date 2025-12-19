@@ -63,18 +63,18 @@ const LandingPageV4: React.FC = () => {
         {/* Expertise */}
         <section>
           <h2 className="text-4xl font-light text-center mb-10">My Expertise</h2>
-          <div className="grid md:grid-cols-3 gap-10">
-            <div className="text-center space-y-6 bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg">
+          <div className="grid md:grid-cols-3 gap-10 justify-items-center">
+            <div className="text-center space-y-6 bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg w-full max-w-sm">
               <Mic2 className="w-16 h-16 mx-auto text-gray-700 dark:text-gray-300" />
               <h3 className="text-2xl font-medium">Voice & Piano</h3>
               <p className="text-gray-600 dark:text-gray-400">Technique, repertoire, theory, audition prep, and expressive performance.</p>
             </div>
-            <div className="text-center space-y-6 bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg">
+            <div className="text-center space-y-6 bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg w-full max-w-sm">
               <Leaf className="w-16 h-16 mx-auto text-gray-700 dark:text-gray-300" />
               <h3 className="text-2xl font-medium">Body & Breath</h3>
               <p className="text-gray-600 dark:text-gray-400">Kinesiology and somatic work to release tension and support natural resonance.</p>
             </div>
-            <div className="text-center space-y-6 bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg">
+            <div className="text-center space-y-6 bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg w-full max-w-sm">
               <Megaphone className="w-16 h-16 mx-auto text-gray-700 dark:text-gray-300" />
               <h3 className="text-2xl font-medium">Presence & Communication</h3>
               <p className="text-gray-600 dark:text-gray-400">Public speaking, on-camera work, and building calm, authentic presence.</p>
@@ -102,23 +102,23 @@ const LandingPageV4: React.FC = () => {
         {/* Who I Work With */}
         <section>
           <h2 className="text-4xl font-light text-center mb-10">Who I Work With</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg text-center">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center">
+            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg text-center w-full max-w-xs">
               <Mic2 className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300" />
               <h3 className="text-xl font-medium mb-2">Singers & Musicians</h3>
               <p className="text-gray-600 dark:text-gray-400">Technical skill and expressive freedom</p>
             </div>
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg text-center">
+            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg text-center w-full max-w-xs">
               <Megaphone className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300" />
               <h3 className="text-xl font-medium mb-2">Public Speakers</h3>
               <p className="text-gray-600 dark:text-gray-400">Confident and impactful communication</p>
             </div>
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg text-center">
+            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg text-center w-full max-w-xs">
               <Leaf className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300" />
               <h3 className="text-xl font-medium mb-2">Film & Streaming Performers</h3>
               <p className="text-gray-600 dark:text-gray-400">Nuanced presence on camera</p>
             </div>
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg text-center">
+            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg text-center w-full max-w-xs">
               <CheckCircle2 className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300" />
               <h3 className="text-xl font-medium mb-2">Committed Professionals</h3>
               <p className="text-gray-600 dark:text-gray-400">Sustainable long-term practice</p>
@@ -129,20 +129,20 @@ const LandingPageV4: React.FC = () => {
         {/* Why Work With Me */}
         <section>
           <h2 className="text-4xl font-light text-center mb-10">Why Work With Me</h2>
-          <div className="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg flex items-start gap-5">
+          <div className="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto justify-items-center">
+            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg flex items-start gap-5 w-full max-w-lg">
               <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1" />
               <p className="text-lg text-gray-700 dark:text-gray-300"><strong>Holistic expertise</strong> — voice, piano, presence, kinesiology, and mindset.</p>
             </div>
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg flex items-start gap-5">
+            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg flex items-start gap-5 w-full max-w-lg">
               <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1" />
               <p className="text-lg text-gray-700 dark:text-gray-300"><strong>Embodiment-based</strong> — build skill without tension or burnout.</p>
             </div>
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg flex items-start gap-5">
+            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg flex items-start gap-5 w-full max-w-lg">
               <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1" />
               <p className="text-lg text-gray-700 dark:text-gray-300"><strong>Results-focused</strong> — leave sessions more confident and capable.</p>
             </div>
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg flex items-start gap-5">
+            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg flex items-start gap-5 w-full max-w-lg">
               <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1" />
               <p className="text-lg text-gray-700 dark:text-gray-300"><strong>Creative freedom</strong> — technique meets artistry and authentic expression.</p>
             </div>
@@ -152,9 +152,9 @@ const LandingPageV4: React.FC = () => {
         {/* Testimonials */}
         <section>
           <h2 className="text-4xl font-light text-center mb-10">Client Feedback</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
             {testimonials.map((t, i) => (
-              <div key={i} className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg">
+              <div key={i} className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg w-full max-w-md">
                 <p className="text-lg italic mb-6 text-gray-700 dark:text-gray-300">"{t.quote}"</p>
                 <p className="font-medium">— {t.author}</p>
                 <p className="text-sm text-gray-600 dark:text-gray-400">{t.title}</p>
