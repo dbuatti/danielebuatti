@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import DynamicImage from "@/components/DynamicImage";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Mic2, Leaf, Megaphone, Users, Calendar } from "lucide-react";
+import { Mic2, Leaf, Megaphone, Calendar } from "lucide-react";
 
 const CoachingPage: React.FC = () => {
   return (
@@ -110,19 +110,6 @@ const CoachingPage: React.FC = () => {
               </a>
             </Button>
           </div>
-        </section>
-
-        {/* Group Workshops – intentional */}
-        <section className="mb-32 text-center">
-          <Users className="w-16 h-16 mx-auto mb-8 text-gray-700 dark:text-gray-300" />
-          <h2 className="text-4xl font-light mb-8">Group Workshops</h2>
-          <p className="text-xl max-w-3xl mx-auto text-gray-600 dark:text-gray-400 mb-10 leading-relaxed">
-            Throughout the year, I offer small-group workshops exploring voice, presence, and embodied performance.<br />
-            These sessions are exploratory, practical, and designed for people who want depth — not quick fixes.
-          </p>
-          <Button asChild size="lg" variant="outline" className="border-2 text-lg px-12 py-7">
-            <Link to="/projects-resources">View upcoming workshops</Link>
-          </Button>
         </section>
 
         {/* Additional Services */}
