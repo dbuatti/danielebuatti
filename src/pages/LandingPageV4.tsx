@@ -35,9 +35,9 @@ const LandingPageV4: React.FC = () => {
       />
       <Navbar />
 
-      <main className="max-w-5xl mx-auto px-6 py-12 space-y-20">
+      <main className="max-w-5xl mx-auto px-6 py-16">
         {/* Hero */}
-        <section className="grid md:grid-cols-2 gap-16 items-center">
+        <section className="grid md:grid-cols-2 gap-16 items-center mb-24">
           <div className="space-y-8">
             <h1 className="text-5xl md:text-6xl font-light leading-tight">Daniele Buatti</h1>
             <p className="text-2xl text-gray-700 dark:text-gray-300">
@@ -60,38 +60,38 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* Expertise */}
-        <section className="w-full">
-          <h2 className="text-4xl font-light text-center mb-10">My Expertise</h2>
-          <div className="grid md:grid-cols-3 gap-10">
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg">
-              <div className="text-center space-y-6">
-                <Mic2 className="w-16 h-16 mx-auto text-gray-700 dark:text-gray-300" />
-                <h3 className="text-2xl font-medium">Voice & Piano</h3>
-                <p className="text-gray-600 dark:text-gray-400">Technique, repertoire, theory, audition prep, and expressive performance.</p>
-              </div>
+        {/* Expertise – softer cards */}
+        <section className="mb-24">
+          <h2 className="text-4xl font-light text-center mb-16">My Expertise</h2>
+          <div className="grid md:grid-cols-3 gap-12">
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
+              <Mic2 className="w-16 h-16 mx-auto mb-6 text-gray-700 dark:text-gray-300 opacity-80" />
+              <h3 className="text-2xl font-medium text-center mb-4">Voice & Piano</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Technique, repertoire, theory, audition prep, and expressive performance.
+              </p>
             </div>
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg">
-              <div className="text-center space-y-6">
-                <Leaf className="w-16 h-16 mx-auto text-gray-700 dark:text-gray-300" />
-                <h3 className="text-2xl font-medium">Body & Breath</h3>
-                <p className="text-gray-600 dark:text-gray-400">Kinesiology and somatic work to release tension and support natural resonance.</p>
-              </div>
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
+              <Leaf className="w-16 h-16 mx-auto mb-6 text-gray-700 dark:text-gray-300 opacity-80" />
+              <h3 className="text-2xl font-medium text-center mb-4">Body & Breath</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Kinesiology and somatic work to release tension and support natural resonance.
+              </p>
             </div>
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg">
-              <div className="text-center space-y-6">
-                <Megaphone className="w-16 h-16 mx-auto text-gray-700 dark:text-gray-300" />
-                <h3 className="text-2xl font-medium">Presence & Communication</h3>
-                <p className="text-gray-600 dark:text-gray-400">Public speaking, on-camera work, and building calm, authentic presence.</p>
-              </div>
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
+              <Megaphone className="w-16 h-16 mx-auto mb-6 text-gray-700 dark:text-gray-300 opacity-80" />
+              <h3 className="text-2xl font-medium text-center mb-4">Presence & Communication</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Public speaking, on-camera work, and building calm, authentic presence.
+              </p>
             </div>
           </div>
         </section>
 
-        {/* Approach */}
-        <section className="grid md:grid-cols-2 gap-16 items-center">
-          <DynamicImage src="/pinkcarpet.jpg" alt="Daniele Buatti" className="w-full rounded-3xl shadow-2xl order-2 md:order-1" width={600} height={600} />
-          <div className="space-y-6 order-1 md:order-2">
+        {/* Approach – more organic flow */}
+        <section className="grid md:grid-cols-2 gap-20 items-center mb-24">
+          <DynamicImage src="/pinkcarpet.jpg" alt="Daniele Buatti" className="w-full rounded-3xl shadow-xl" width={600} height={600} />
+          <div className="space-y-8">
             <h2 className="text-4xl font-light">My Approach</h2>
             <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
               I help performers connect body, breath, and voice so they can express themselves with freedom and ease.
@@ -99,68 +99,68 @@ const LandingPageV4: React.FC = () => {
             <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
               With over 12 years as a music director, pianist, vocal coach, and educator, I combine music theatre expertise with kinesiology and somatic practices.
             </p>
-            <Button asChild size="lg" variant="outline" className="border-2">
+            <Button asChild size="lg" variant="outline" className="border-2 rounded-full">
               <Link to="/coaching">Read more about my approach</Link>
             </Button>
           </div>
         </section>
 
-        {/* Who I Work With */}
-        <section className="w-full">
-          <h2 className="text-4xl font-light text-center mb-10">Who I Work With</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg text-center">
-              <Mic2 className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300" />
+        {/* Who I Work With – softer, less boxy */}
+        <section className="mb-24">
+          <h2 className="text-4xl font-light text-center mb-16">Who I Work With</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-8 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 text-center">
+              <Mic2 className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300 opacity-80" />
               <h3 className="text-xl font-medium mb-2">Singers & Musicians</h3>
               <p className="text-gray-600 dark:text-gray-400">Technical skill and expressive freedom</p>
             </div>
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg text-center">
-              <Megaphone className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300" />
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-8 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 text-center">
+              <Megaphone className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300 opacity-80" />
               <h3 className="text-xl font-medium mb-2">Public Speakers</h3>
               <p className="text-gray-600 dark:text-gray-400">Confident and impactful communication</p>
             </div>
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg text-center">
-              <Leaf className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300" />
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-8 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 text-center">
+              <Leaf className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300 opacity-80" />
               <h3 className="text-xl font-medium mb-2">Film & Streaming Performers</h3>
               <p className="text-gray-600 dark:text-gray-400">Nuanced presence on camera</p>
             </div>
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg text-center">
-              <CheckCircle2 className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300" />
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-8 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 text-center">
+              <CheckCircle2 className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300 opacity-80" />
               <h3 className="text-xl font-medium mb-2">Committed Professionals</h3>
               <p className="text-gray-600 dark:text-gray-400">Sustainable long-term practice</p>
             </div>
           </div>
         </section>
 
-        {/* Why Work With Me */}
-        <section className="w-full">
-          <h2 className="text-4xl font-light text-center mb-10">Why Work With Me</h2>
-          <div className="grid md:grid-cols-2 gap-10">
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg flex items-start gap-5">
-              <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1" />
+        {/* Why Work With Me – softer cards */}
+        <section className="mb-24">
+          <h2 className="text-4xl font-light text-center mb-16">Why Work With Me</h2>
+          <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 flex items-start gap-6">
+              <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1 opacity-80" />
               <p className="text-lg text-gray-700 dark:text-gray-300"><strong>Holistic expertise</strong> — voice, piano, presence, kinesiology, and mindset.</p>
             </div>
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg flex items-start gap-5">
-              <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1" />
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 flex items-start gap-6">
+              <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1 opacity-80" />
               <p className="text-lg text-gray-700 dark:text-gray-300"><strong>Embodiment-based</strong> — build skill without tension or burnout.</p>
             </div>
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg flex items-start gap-5">
-              <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1" />
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 flex items-start gap-6">
+              <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1 opacity-80" />
               <p className="text-lg text-gray-700 dark:text-gray-300"><strong>Results-focused</strong> — leave sessions more confident and capable.</p>
             </div>
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg flex items-start gap-5">
-              <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1" />
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 flex items-start gap-6">
+              <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1 opacity-80" />
               <p className="text-lg text-gray-700 dark:text-gray-300"><strong>Creative freedom</strong> — technique meets artistry and authentic expression.</p>
             </div>
           </div>
         </section>
 
-        {/* Testimonials */}
-        <section className="w-full">
-          <h2 className="text-4xl font-light text-center mb-10">Client Feedback</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Testimonials – softer */}
+        <section className="mb-24">
+          <h2 className="text-4xl font-light text-center mb-16">Client Feedback</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
             {testimonials.map((t, i) => (
-              <div key={i} className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg">
+              <div key={i} className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
                 <p className="text-lg italic mb-6 text-gray-700 dark:text-gray-300">"{t.quote}"</p>
                 <p className="font-medium">— {t.author}</p>
                 <p className="text-sm text-gray-600 dark:text-gray-400">{t.title}</p>
@@ -169,26 +169,28 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* Teaser to Projects & Resources Page */}
-        <section className="w-full text-center py-16 bg-white dark:bg-gray-900 rounded-3xl">
-          <h2 className="text-4xl font-light mb-6">Explore My Other Work</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">
-            Live performances, music direction, digital products, community choir, and more.
-          </p>
-          <Button asChild size="lg" className="text-lg px-12 py-7 rounded-full">
-            <Link to="/projects-resources">View Projects & Resources</Link>
-          </Button>
+        {/* Teaser – softer card */}
+        <section className="mb-24 text-center">
+          <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm py-16 px-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
+            <h2 className="text-4xl font-light mb-6">Explore My Other Work</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">
+              Live performances, music direction, digital products, community choir, and more.
+            </p>
+            <Button asChild size="lg" className="text-lg px-12 py-7 rounded-full">
+              <Link to="/projects-resources">View Projects & Resources</Link>
+            </Button>
+          </div>
         </section>
 
-        {/* Contact */}
-        <section className="w-full pb-20">
-          <h2 className="text-4xl font-light text-center mb-6">Get in Touch</h2>
-          <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10">
+        {/* Contact – soft card */}
+        <section className="pb-20">
+          <h2 className="text-4xl font-light text-center mb-10">Get in Touch</h2>
+          <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 p-10">
             <p className="text-center text-lg text-gray-600 dark:text-gray-400 mb-8 italic">
               For AMEB accompanying inquiries, please use the dedicated page for rates and booking.
             </p>
             <div className="text-center mb-12">
-              <Button asChild size="lg" variant="outline" className="border-2 text-lg px-12 py-7">
+              <Button asChild size="lg" variant="outline" className="border-2 text-lg px-12 py-7 rounded-full">
                 <Link to="/ameb-accompanying">View AMEB Rates & Book</Link>
               </Button>
             </div>
