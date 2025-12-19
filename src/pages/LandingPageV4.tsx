@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 import { Mic2, Leaf, Megaphone, CheckCircle2 } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import CalEmbed from "@/components/CalEmbed";
-import { Button } from "@/components/ui/button"; // Import Button
+import { Button } from "@/components/ui/button";
 
 // Testimonials
 const testimonials = [
@@ -23,79 +23,6 @@ const testimonials = [
   { quote: "The show was awesome! Daniele's energy and piano playing were amazing...", author: "Alex Glenk", title: "Audience Member" },
   { quote: "Daniele is an exceptional teacher, leader, and encourager...", author: "Experienced Educator", title: "Colleague" },
 ];
-
-// Horizontal card – no button, whole card clickable, subtle hover cue
-const HorizontalProgramCard: React.FC<{
-  title: string;
-  description: string;
-  link: string;
-  imageSrc: string;
-}> = ({ title, description, link, imageSrc }) => {
-  const isInternalLink = link.startsWith("/") || link.startsWith("#");
-
-  return (
-    <div
-      className="group relative h-80 rounded-3xl overflow-hidden shadow-2xl cursor-pointer"
-      onClick={() => window.open(link, isInternalLink ? "_self" : "_blank")}
-      onKeyDown={(e) => e.key === "Enter" && window.open(link, isInternalLink ? "_self" : "_blank")}
-      tabIndex={0}
-      role="link"
-      aria-label={`Go to ${title}`}
-    >
-      {/* Image */}
-      <DynamicImage
-        src={imageSrc}
-        alt={title}
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        width={1200}
-        height={600}
-      />
-
-      {/* Strong gradient for readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/20" />
-
-      {/* Content */}
-      <div className="relative z-10 h-full flex flex-col justify-end p-10 text-left">
-        <h3 className="text-3xl font-bold text-white mb-3 drop-shadow-2xl">
-          {title}
-        </h3>
-        <p className="text-lg text-white/95 drop-shadow-lg">
-          {description}
-        </p>
-      </div>
-
-      {/* Subtle hover indicator – no button */}
-      <div className="absolute inset-0 ring-4 ring-white/0 group-hover:ring-white/30 transition-all duration-300 pointer-events-none" />
-    </div>
-  );
-};
-
-// Piano Backings Card – whole card clickable, no text/button
-const PianoBackingsCard: React.FC = () => {
-  return (
-    <div
-      className="group relative h-80 rounded-3xl overflow-hidden shadow-2xl cursor-pointer"
-      onClick={() => window.open("https://pianobackingsbydaniele.vercel.app", "_blank")}
-      onKeyDown={(e) => e.key === "Enter" && window.open("https://pianobackingsbydaniele.vercel.app", "_blank")}
-      tabIndex={0}
-      role="link"
-      aria-label="Go to Piano Backing Tracks"
-    >
-      <div className="absolute inset-0 bg-[#ff00b3]" />
-      <div className="absolute inset-0 flex items-center justify-center p-12">
-        <DynamicImage
-          src="/pianobackingslogo.png"
-          alt="Piano Backing Tracks"
-          className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
-          width={1200}
-          height={600}
-        />
-      </div>
-      {/* Subtle hover overlay */}
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-    </div>
-  );
-};
 
 const LandingPageV4: React.FC = () => {
   return (
@@ -236,55 +163,15 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* Other Work & Resources */}
-        <section>
-          <h2 className="text-4xl font-light text-center mb-12">Other Work</h2>
-          <div className="space-y-16">
-            {/* Specialised Services */}
-            <div>
-              <h3 className="text-3xl font-medium text-center mb-12">Specialised Services</h3>
-              <div className="space-y-12">
-                <HorizontalProgramCard
-                  title="Music Director & Pianist"
-                  description="Music theatre direction, vocal coaching, and performance."
-                  link="/music-director-pianist"
-                  imageSrc="/daniele-conducting.jpeg"
-                />
-                <HorizontalProgramCard
-                  title="Live Piano Services"
-                  description="Weddings, events, and private functions."
-                  link="/live-piano-services"
-                  imageSrc="/blacktie.avif"
-                />
-                <HorizontalProgramCard
-                  title="AMEB Accompanying"
-                  description="Exam day and rehearsal accompaniment."
-                  link="/ameb-accompanying"
-                  imageSrc="/ameb-placeholder.jpg"
-                />
-              </div>
-            </div>
-
-            {/* Digital & Community */}
-            <div>
-              <h3 className="text-3xl font-medium text-center mb-12">Digital Products & Community</h3>
-              <div className="space-y-12">
-                <HorizontalProgramCard
-                  title="Buattiverse"
-                  description="Sheet music and backing tracks"
-                  link="https://buattiverse.gumroad.com/"
-                  imageSrc="/sheetmusic.png"
-                />
-                <PianoBackingsCard />
-                <HorizontalProgramCard
-                  title="Resonance with Daniele: A Joyful Pop-Up Choir for All Voices"
-                  description="Join a welcoming community to sing, connect, and shine, with no experience needed."
-                  link="https://resonance-with-daniele.vercel.app"
-                  imageSrc="/conduct.jpeg"
-                />
-              </div>
-            </div>
-          </div>
+        {/* Teaser to Projects & Resources Page */}
+        <section className="text-center py-16">
+          <h2 className="text-4xl font-light mb-8">Explore My Other Work</h2>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">
+            Live performances, music direction, digital products, community choir, and more.
+          </p>
+          <Button asChild size="lg" className="text-lg px-12 py-7 rounded-full">
+            <Link to="/projects">View Projects & Resources</Link>
+          </Button>
         </section>
 
         {/* Contact */}
