@@ -230,7 +230,7 @@ const LivePianoServicesPage: React.FC = () => {
         >
           <div>
             <h2 className="text-5xl md:text-7xl font-bold font-libre-baskerville text-white mb-10 leading-tight tracking-tight">
-              AN UNFORGETTABLE MUSICAL EXPERIENCE
+              An Unforgettable Experience
             </h2>
             <p className="text-xl md:text-2xl leading-relaxed text-white/90 mb-8 font-light max-w-4xl mx-auto">
               Elevate your wedding, gala, corporate function, or intimate private soirée with the refined artistry of Daniele Buatti — a masterful pianist and captivating vocalist.
