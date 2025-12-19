@@ -26,7 +26,7 @@ const ContactPage: React.FC = () => {
         <header className="text-center mb-16">
           <h1 className="text-5xl md:text-6xl font-light mb-6">Get in Touch</h1>
           <p className="text-xl max-w-3xl mx-auto text-gray-600 dark:text-gray-400">
-            I look forward to hearing from you. Please use the form for general inquiries, or book a call directly below.
+            I look forward to hearing from you. Please use the form below for general inquiries, or check the dedicated links for bookings.
           </p>
         </header>
 
@@ -85,6 +85,12 @@ const ContactPage: React.FC = () => {
                   <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="w-5 h-5" /> Book a Coaching Session
                   </a>
+                </Button>
+                
+                <Button asChild variant="outline" className="w-full justify-start border-2 text-lg py-7 rounded-full gap-3 transition-all hover:scale-[1.01]">
+                    <Link to="/ameb-accompanying">
+                        <ExternalLink className="w-5 h-5" /> View AMEB Rates & Book
+                    </Link>
                 </Button>
             </div>
           </div>
