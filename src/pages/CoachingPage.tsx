@@ -43,11 +43,11 @@ const CoachingPage: React.FC = () => {
         </section>
 
 {/* Hero Image – your head is now fully visible + beautiful */}
-<div className="mb-25 -mx-6">
+<div className="mb-24 -mx-6">
   <DynamicImage
     src="/danielecalmatpiano.jpeg"
     alt="Daniele Buatti in flow at the piano"
-    className="w-full h-[700px] object-cover object-top shadow-2xl"  // ← this line fixes it
+    className="w-full h-[600px] object-cover object-top shadow-2xl"  // ← this line fixes it
     width={1400}
     height={800}
     priority  // loads faster, looks instant
