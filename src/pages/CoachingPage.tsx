@@ -95,42 +95,6 @@ const CoachingPage: React.FC = () => {
           </div>
         </section>
 
-        {/* Sessions & Rates – premium, calm */}
-        <section className="mb-32 py-20 bg-white dark:bg-gray-900 rounded-3xl">
-          <h2 className="text-4xl font-light text-center mb-16">Sessions & Rates</h2>
-          <div className="max-w-4xl mx-auto space-y-16">
-            {/* Single Sessions */}
-            <div>
-              <h3 className="text-2xl font-medium text-center mb-10">One-to-One Sessions</h3>
-              <div className="grid md:grid-cols-4 gap-10 text-center">
-                <div className="space-y-3">
-                  <p className="text-3xl font-light">30 min</p>
-                  <p className="text-2xl font-semibold">$90</p>
-                </div>
-                <div className="space-y-3">
-                  <p className="text-3xl font-light">45 min</p>
-                  <p className="text-2xl font-semibold">$130</p>
-                </div>
-                <div className="space-y-3">
-                  <p className="text-3xl font-light">60 min</p>
-                  <p className="text-2xl font-semibold">$170</p>
-                </div>
-                <div className="space-y-3">
-                  <p className="text-3xl font-light">90 min</p>
-                  <p className="text-2xl font-semibold">$250</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Packages */}
-            <div className="text-center">
-              <h3 className="text-2xl font-medium mb-8">Packages (60-minute sessions)</h3>
-              <div className="space-y-4 max-w-md mx-auto text-xl">
-                <p>4 sessions — $640</p>
-                <p>8 sessions — $1,240</p>
-                <p className="text-lg text-gray-600 dark:text-gray-400 mt-4">Custom packages available for ongoing or integrated work.</p>
-              </div>
-            </div>
 
             {/* Booking CTA */}
             <div className="text-center">
