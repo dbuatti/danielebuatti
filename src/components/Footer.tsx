@@ -1,6 +1,3 @@
-"use client";
-
-import React from "react";
 import { Instagram, Youtube, Mail, Phone, Newspaper, Twitch, Facebook } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import DynamicImage from "@/components/DynamicImage";
@@ -18,76 +15,69 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-brand-dark text-brand-light py-16">
-      <div className="max-w-5xl mx-auto px-6">
-        <div className="grid md:grid-cols-3 gap-12 items-start text-center md:text-left">
-          {/* Newsletter */}
-          <div className="space-y-4">
-            <h3 className="text-2xl font-bold">Stay Connected</h3>
-            <p className="text-brand-light/80 text-lg leading-relaxed">
-              Occasional reflections on voice, performance, embodiment, and creative practice — plus updates on workshops and availability.
-            </p>
-            <div className="mt-6">
-              <NewsletterSignup />
-            </div>
-          </div>
-
-          {/* Social Links */}
-          <div className="flex flex-col items-center md:items-start">
-            <h4 className="text-lg font-medium mb-6">Find Me Online</h4>
-            <div className="flex flex-wrap justify-center md:justify-start gap-8">
-              {socialLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-brand-light hover:text-brand-primary transition-colors duration-300"
-                  aria-label={`Visit Daniele Buatti on ${link.name}`}
-                >
-                  <link.icon className="h-7 w-7" />
-                  <span className="text-base">{link.name}</span>
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Contact */}
-          <div className="space-y-5 text-center md:text-right">
-            <h4 className="text-lg font-medium">Contact</h4>
-            <a
-              href="mailto:info@danielebuatti.com"
-              className="flex items-center justify-center md:justify-end gap-3 text-brand-light hover:text-brand-primary transition-colors duration-300"
-              aria-label="Email Daniele Buatti"
-            >
-              <Mail className="h-6 w-6" />
-              <span className="text-base">info@danielebuatti.com</span>
-            </a>
-            <a
-              href="https://wa.me/61424174067"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center md:justify-end gap-3 text-brand-light hover:text-brand-primary transition-colors duration-300"
-              aria-label="Message Daniele Buatti on WhatsApp"
-            >
-              <Phone className="h-6 w-6" />
-              <span className="text-base">+61 424 174 067</span>
-            </a>
-          </div>
+    <footer className="bg-brand-dark text-brand-light py-12">
+      <div className="container mx-auto px-4 text-center space-y-8">
+        {/* Newsletter Signup Section */}
+        <div className="space-y-3">
+          <h3 className="text-2xl font-bold text-brand-light">Stay Connected</h3>
+          <p className="text-brand-light/80 max-w-xl mx-auto">
+            Join my newsletter for exclusive insights, updates, and special offers.
+          </p>
+          <NewsletterSignup />
         </div>
 
-        {/* Logo & Copyright */}
-        <div className="mt-16 flex flex-col items-center gap-8">
+        <Separator className="max-w-md mx-auto bg-brand-secondary" />
+
+        <div className="flex flex-wrap justify-center gap-8">
+          {socialLinks.map((link) => (
+            <a
+              key={link.name}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center gap-2 text-brand-light hover:text-brand-primary transition-colors"
+            >
+              <link.icon className="h-6 w-6" />
+              <span className="text-sm">{link.name}</span>
+            </a>
+          ))}
+        </div>
+
+        <div className="space-y-2">
+          <p className="text-lg font-semibold">Contact Me</p>
+          <a
+            href="mailto:info@danielebuatti.com"
+            className="flex items-center justify-center gap-2 text-brand-light hover:text-brand-primary transition-colors"
+          >
+            <Mail className="h-5 w-5" />
+            info@danielebuatti.com
+          </a>
+          <a
+            href="https://wa.me/61424174067"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 text-brand-light hover:text-brand-primary transition-colors"
+          >
+            <Phone className="h-5 w-5" />
+            +61 424 174 067
+          </a>
+        </div>
+
+        <Separator className="max-w-md mx-auto bg-brand-secondary" />
+
+        <div className="flex justify-center py-2">
           <DynamicImage
             src="/logo-piano-white-44.png"
             alt="Daniele Buatti Brand Symbol"
-            className="h-28 w-auto opacity-90"
-            width={112}
-            height={112}
+            className="h-24 w-auto"
+            width={96}
+            height={96}
           />
-          <p className="text-sm text-brand-light/60">
-            © {currentYear} Daniele Buatti. All rights reserved.
-          </p>
+        </div>
+
+        {/* Copyright Notice */}
+        <div className="pt-6 text-sm text-brand-light/70">
+          &copy; {currentYear} Daniele Buatti. All rights reserved.
         </div>
       </div>
     </footer>
