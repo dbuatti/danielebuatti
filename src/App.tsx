@@ -10,6 +10,7 @@ import FaviconManager from './components/FaviconManager'; // Import FaviconManag
 
 // Public Pages
 import LandingPageV3 from './pages/LandingPageV3';
+import LandingPageV4 from './pages/LandingPageV4';
 import NotFound from './pages/NotFound';
 import LivePianoServicesPage from './pages/LivePianoServicesPage';
 import AmebAccompanyingPage from './pages/AmebAccompanyingPage';
@@ -47,6 +48,7 @@ function App() {
           <Route path="/" element={<RootLayout />}>
             {/* Public Routes */}
             <Route index element={<LandingPageV3 />} />
+            <Route path="landing-v4" element={<LandingPageV4 />} />
             <Route path="coaching" element={<CoachingPage />} />
             <Route path="projects-resources" element={<ProjectsResourcesPage />} />
             <Route path="live-piano-services" element={<LivePianoServicesPage />} />
