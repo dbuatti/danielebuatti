@@ -8,6 +8,7 @@ interface DynamicImageProps {
   className?: string;
   width?: number;
   height?: number;
+  style?: React.CSSProperties; // Added style prop
 }
 
 const DynamicImage: React.FC<DynamicImageProps> = ({
@@ -16,6 +17,7 @@ const DynamicImage: React.FC<DynamicImageProps> = ({
   className,
   width = 600,
   height = 400,
+  style, // Destructure style
 }) => {
   // Use the local placeholder.svg if src is not provided or is the placeholder itself
   const imageSource = src && src !== "/public/placeholder.svg" ? src : "/public/placeholder.svg";
@@ -28,6 +30,7 @@ const DynamicImage: React.FC<DynamicImageProps> = ({
       width={width}
       height={height}
       loading="lazy"
+      style={style} // Spread style prop onto the img element
     />
   );
 };
