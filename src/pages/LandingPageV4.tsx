@@ -15,36 +15,12 @@ import CalEmbed from "@/components/CalEmbed";
 
 // Testimonials
 const testimonials = [
-  {
-    quote: "Daniele's clear, direct, and thoughtful communication is truly exceptional...",
-    author: "Em",
-    title: "Creative Collaborator",
-  },
-  {
-    quote: "This program has been eye-opening; I've grown leaps and bounds as an artist...",
-    author: "Ben",
-    title: "Emerging Artist",
-  },
-  {
-    quote: "Daniele has a wonderfully positive aura and a very friendly, engaging presence...",
-    author: "Helge Hansmann",
-    title: "Participant",
-  },
-  {
-    quote: "Daniele is an awesome Music Director, guiding us with such thought and care...",
-    author: "Joanne Duckworth & Anna Robinson",
-    title: "Choir Members",
-  },
-  {
-    quote: "The show was awesome! Daniele's energy and piano playing were amazing...",
-    author: "Alex Glenk",
-    title: "Audience Member",
-  },
-  {
-    quote: "Daniele is an exceptional teacher, leader, and encourager...",
-    author: "Experienced Educator",
-    title: "Colleague",
-  },
+  { quote: "Daniele's clear, direct, and thoughtful communication is truly exceptional...", author: "Em", title: "Creative Collaborator" },
+  { quote: "This program has been eye-opening; I've grown leaps and bounds as an artist...", author: "Ben", title: "Emerging Artist" },
+  { quote: "Daniele has a wonderfully positive aura and a very friendly, engaging presence...", author: "Helge Hansmann", title: "Participant" },
+  { quote: "Daniele is an awesome Music Director, guiding us with such thought and care...", author: "Joanne Duckworth & Anna Robinson", title: "Choir Members" },
+  { quote: "The show was awesome! Daniele's energy and piano playing were amazing...", author: "Alex Glenk", title: "Audience Member" },
+  { quote: "Daniele is an exceptional teacher, leader, and encourager...", author: "Experienced Educator", title: "Colleague" },
 ];
 
 // Inline FeaturedProgramCard – powerful, consistent, visible backgrounds
@@ -299,13 +275,27 @@ const LandingPage: React.FC = () => {
                   backgroundColorClass="bg-[#2596be]"
                   logoSrc="/pianobackingslogo.png"
                 />
-                <FeaturedProgramCard
-                  title="Resonance with Daniele: A Joyful Pop-Up Choir for All Voices"
-                  description="Join a welcoming community to sing, connect, and shine, with no experience needed."
-                  link="https://resonance-with-daniele.vercel.app"
-                  linkText="Join Resonance Choir"
-                  backgroundImageSrc="/conduct.jpeg"
-                />
+                {/* Resonance Choir Card - Full Original Style Inline */}
+                <div className="relative h-80 rounded-3xl overflow-hidden shadow-2xl group">
+                  <div
+                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                    style={{ backgroundImage: "url(/conduct.jpeg)" }}
+                  />
+                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors duration-500" />
+                  <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-8">
+                    <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 drop-shadow-lg">
+                      Resonance with Daniele: A Joyful Pop-Up Choir for All Voices
+                    </h3>
+                    <p className="text-lg md:text-xl text-white/90 mb-8 max-w-md drop-shadow-md">
+                      Join a welcoming community to sing, connect, and shine, with no experience needed.
+                    </p>
+                    <Button asChild size="lg" className="bg-white/20 hover:bg-white/30 backdrop-blur-md text-white border border-white/30 text-lg px-10 py-6 rounded-full shadow-xl">
+                      <a href="https://resonance-with-daniele.vercel.app" target="_blank" rel="noopener noreferrer">
+                        Join Resonance Choir
+                      </a>
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
