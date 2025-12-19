@@ -9,13 +9,12 @@
   }
 
   html {
-    scroll-behavior: auto !important; /* Force instant scroll to top for better performance */
+    scroll-behavior: auto !important; /* Force instant scroll to top */
   }
 
   :root {
-    /* --- Standard Shadcn UI Variables --- */
     --background: 0 0% 100%; /* White */
-    --foreground: 222.2 84% 4.9%; /* Dark Blue */
+    --foreground: 222.2 84% 4.9%; /* Dark Blue (default, will be overridden by brand dark blue) */
 
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -24,27 +23,26 @@
     --popover-foreground: 222.2 84% 4.9%;
 
     --primary: 320 60% 57%; /* DB4CA3 - Pink/Purple */
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 0 0% 100%; /* White */
 
-    --secondary: 210 40% 96.1%; /* Light Blue */
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 210 40% 96.1%; /* A6CCE8 - Light Blue */
+    --secondary-foreground: 222.2 47.4% 11.2%; /* Dark Blue */
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 320 60% 57%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 320 60% 57%; /* DB4CA3 - Pink/Purple */
+    --accent-foreground: 0 0% 100%; /* White */
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 320 60% 57%;
+    --border: 214.3 31.8% 91.4%; /* A6CCE8 - Light Blue */
+    --input: 214.3 31.8% 91.4%; /* A6CCE8 - Light Blue */
+    --ring: 320 60% 57%; /* DB4CA3 - Pink/Purple */
 
-    --radius: 0.75rem; /* Standardized radius for a premium feel */
+    --radius: 0.5rem;
 
-    /* --- Admin Dashboard Sidebar Variables --- */
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -54,43 +52,46 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
 
-    /* --- Custom Brand Colors --- */
+    /* Custom Brand Colors */
     --brand-primary: 320 60% 57%; /* DB4CA3 */
-    --brand-dark: 222.2 84% 4.9%;
-    --brand-light: 0 0% 100%;
-    --brand-secondary: 210 40% 90%;
-    --brand-blue: 227 63% 33%;
-    --brand-gold: 43 98% 53%; /* Unified Gold Color for Star accents */
+    --brand-dark: 222.2 84% 4.9%; /* Very Dark Blue */
+    --brand-light: 0 0% 100%; /* FFFFFF */
+    --brand-secondary: 210 40% 90%; /* A6CCE8 */
+    --brand-blue: 227 63% 33%; /* New blue from image */
+    --brand-magenta: 324 100% 50%; /* Updated to match provided pink (FF0099) */
+    --brand-yellow: 48 100% 50%; /* Bright Yellow */
+    --brand-dark-alt: 222.2 84% 8%; /* Slightly lighter dark blue for contrast */
   }
 
   .dark {
-    /* Softened black background for better dark-mode premium feel */
-    --background: 240 100% 2%;
-    --foreground: 0 0% 100%;
+    --background: 240 100% 0%; /* 00022D - Dark Blue */
+    --foreground: 0 0% 100%; /* FFFFFF - White */
 
-    --card: 240 100% 2%;
+    --card: 240 100% 0%;
     --card-foreground: 0 0% 100%;
 
-    --popover: 240 100% 2%;
+    --popover: 240 100% 0%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 320 60% 57%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 320 60% 57%; /* DB4CA3 - Pink/Purple */
+    --primary-foreground: 0 0% 100%; /* White */
 
-    --secondary: 210 40% 15%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 210 40% 90%; /* A6CCE8 - Light Blue */
+    --secondary-foreground: 240 100% 0%; /* Dark Blue */
 
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 320 60% 57%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 320 60% 57%; /* DB4CA3 - Pink/Purple */
+    --accent-foreground: 0 0% 100%; /* White */
 
-    --border: 240 100% 12%; /* Darker borders for a cleaner look */
-    --input: 240 100% 12%;
-    --ring: 320 60% 57%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
 
-    /* --- Admin Dashboard Sidebar (Dark Mode) --- */
+    --border: 210 40% 90%; /* A6CCE8 - Light Blue */
+    --input: 210 40% 90%; /* A6CCE8 - Light Blue */
+    --ring: 320 60% 57%; /* DB4CA3 - Pink/Purple */
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -99,26 +100,25 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Custom Brand Colors */
+    --brand-primary: 320 60% 57%; /* DB4CA3 */
+    --brand-dark: 240 100% 0%; /* 00022D */
+    --brand-light: 0 0% 100%; /* FFFFFF */
+    --brand-secondary: 210 40% 90%; /* A6CCE8 */
+    --brand-blue: 227 63% 33%; /* New blue from image */
+    --brand-magenta: 324 100% 50%; /* Updated to match provided pink (FF0099) */
+    --brand-yellow: 48 100% 50%; /* Bright Yellow */
+    --brand-dark-alt: 240 100% 5%; /* Slightly lighter dark blue for contrast */
   }
 
-  /* --- Live Piano Services Page Theme (Black Label) --- */
+  /* Live Piano Services Page Theme */
   .live-piano-theme {
-    --background: 0 0% 0%; /* Pure Black tie aesthetic */
-    --foreground: 0 0% 100%;
-    
-    --card: 0 0% 5%;
-    --card-foreground: 0 0% 100%;
-    
-    --primary: 43 98% 53%; /* Gold #fdb813 */
-    --primary-foreground: 0 0% 0%; /* Black text on gold buttons */
-    
-    --accent: 43 98% 53%;
-    --accent-foreground: 0 0% 0%;
-    
-    --border: 43 98% 20%; /* Subtle gold-tinted borders */
-    --ring: 43 98% 53%;
-    
-    --radius: 2rem; /* Larger radius for the signature black cards */
+    --live-piano-background: 0 0% 10.6%; /* #1b1b1b */
+    --live-piano-primary: 43 98% 53.3%; /* #fdb813 */
+    --live-piano-light: 0 0% 100%; /* #FFFFFF */
+    --live-piano-border: 0 0% 20%; /* Slightly lighter grey for borders */
+    --live-piano-darker: 0 0% 8%; /* Even darker for header/footer */
   }
 }
 
@@ -128,27 +128,19 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased; /* Standard font application */
-  }
-
-  /* Improved scrollbar for dark/gold themes */
-  ::-webkit-scrollbar {
-    width: 10px;
-  }
-  ::-webkit-scrollbar-track {
-    @apply bg-background;
-  }
-  ::-webkit-scrollbar-thumb {
-    @apply bg-muted-foreground/20 rounded-full hover:bg-muted-foreground/40 transition-colors;
+    @apply bg-background text-foreground font-sans; /* Apply the new font here */
   }
 }
 
-/* Modal and Sheet Overlays */
-.radix-dialog-overlay {
-  @apply backdrop-blur-sm transition-all duration-300;
-  background-color: rgba(0, 0, 0, 0.7) !important;
+/* Custom CSS to ensure SheetOverlay is dark and themed */
+.radix-dialog-overlay[data-state="open"] {
+  /* Always use a semi-transparent black for the overlay */
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  z-index: 40 !important; /* Ensure it's above content but below sheet content */
 }
 
-.dark .radix-dialog-overlay {
-  background-color: rgba(0, 0, 0, 0.85) !important;
+.dark .radix-dialog-overlay[data-state="open"] {
+  /* Slightly darker in dark mode for better contrast */
+  background-color: rgba(0, 0, 0, 0.9) !important;
+  z-index: 40 !important;
 }
