@@ -42,7 +42,7 @@ const NewsletterSignup: React.FC = () => {
     try {
       // Invoke the new Supabase Edge Function to add to Mailchimp
       const { data, error } = await supabase.functions.invoke('add-mailchimp-subscriber', {
-        body: { 
+        body: {
           email: values.email,
           firstName: values.firstName, // Pass first name
           lastName: values.lastName,   // Pass last name

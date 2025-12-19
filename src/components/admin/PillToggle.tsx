@@ -21,12 +21,12 @@ const PillToggle: React.FC<PillToggleProps> = ({ name, label, className }) => {
       name={name}
       render={({ field }) => (
         <FormItem className={cn("flex flex-col", className)}>
-          <Select 
-            onValueChange={(val) => field.onChange(val === 'true')} 
+          <Select
+            onValueChange={(val) => field.onChange(val === 'true')}
             value={field.value ? 'true' : 'false'}
           >
             <FormControl>
-              <SelectTrigger 
+              <SelectTrigger
                 className={cn(
                   "h-8 px-2 py-1 text-xs font-medium rounded-full transition-colors",
                   field.value ? "bg-brand-primary text-brand-light hover:bg-brand-primary/90" : "bg-brand-secondary/50 dark:bg-brand-dark/50 text-brand-dark dark:text-brand-light hover:bg-brand-secondary/70 dark:hover:bg-brand-dark/70",

@@ -9,7 +9,7 @@ interface RichTextPreviewProps {
 }
 
 // Helper function to parse simple markdown lists (using - or *)
-const renderRichText = (text: string): React.ReactNode => {
+const renderRichText = (text: string, themeClasses: any) => {
   if (!text) return null;
 
   const lines = text.split('\n');
@@ -20,7 +20,7 @@ const renderRichText = (text: string): React.ReactNode => {
   const processList = () => {
     if (currentListItems.length > 0) {
       elements.push(
-        <ul key={elements.length} className="list-disc list-inside ml-4 space-y-1 text-sm text-brand-dark/80 dark:text-brand-light/80">
+        <ul key={elements.length} className={`list-disc list-inside ml-4 space-y-1 ${themeClasses.secondary}`}>
           {currentListItems}
         </ul>
       );
@@ -46,7 +46,7 @@ const renderRichText = (text: string): React.ReactNode => {
       if (trimmedLine) {
         // Render as a paragraph, preserving line breaks within the paragraph using pre-wrap
         elements.push(
-          <p key={index} className="whitespace-pre-wrap text-sm text-brand-dark/80 dark:text-brand-light/80">
+          <p key={index} className={`whitespace-pre-wrap ${themeClasses.secondary}`}>
             {line}
           </p>
         );
@@ -61,7 +61,6 @@ const renderRichText = (text: string): React.ReactNode => {
 
   return <>{elements}</>;
 };
-
 
 const RichTextPreview: React.FC<RichTextPreviewProps> = ({ text, className }) => {
   return (

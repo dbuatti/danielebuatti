@@ -37,8 +37,8 @@ const AboutPage: React.FC = () => {
           <div className="md:w-2/3 text-center md:text-left">
             <h2 className="text-2xl font-bold text-brand-primary mb-4">Dedicated to Embodied Performance and Well-being</h2>
             <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
-              With over 12 years of experience as a Music Director, Pianist, Arranger, Vocal Coach, and Educator, 
-              Daniele Buatti brings together professional music theatre expertise with somatic practices to train 
+              With over 12 years of experience as a Music Director, Pianist, Arranger, Vocal Coach, and Educator,
+              Daniele Buatti brings together professional music theatre expertise with somatic practices to train
               versatile, resilient, and expressive performers.
             </p>
           </div>

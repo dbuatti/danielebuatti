@@ -92,7 +92,6 @@ const renderRichText = (text: string, themeClasses: any) => {
   return <>{elements}</>;
 };
 
-
 // Helper component for rendering a single item row (used only for desktop table view)
 const QuoteItemRow: React.FC<{ 
   item: QuoteItem; 
@@ -113,7 +112,7 @@ const QuoteItemRow: React.FC<{
 }) => {
   const isSelected = item.quantity > 0;
   const totalAmount = item.price * item.quantity;
-  
+
   // Determine if controls should be shown (Client view, optional, not finalized)
   const showControls = isOptional && isClientView && !isFinalized && onQuantityChange;
 
@@ -130,15 +129,15 @@ const QuoteItemRow: React.FC<{
         </div>
       );
     }
-    
+
     // Otherwise, show the calculated total amount
     return formatCurrency(totalAmount, currencySymbol);
   };
-  
+
   const displayQuantity = () => {
     // If controls are shown, the quantity is handled by the controls block below.
-    if (showControls) return null; 
-    
+    if (showControls) return null;
+
     // Static quantity display (Admin view or Finalized Client view)
     if (isOptional && !isSelected && !isFinalized && isClientView) {
         return <span className="text-muted-foreground">0</span>;
@@ -156,14 +155,14 @@ const QuoteItemRow: React.FC<{
           </div>
         )}
       </TableCell>
-      
+
       {/* Schedule / Dates Column */}
       {item.showScheduleDates && ( // Use item.showScheduleDates
         <TableCell className="text-center w-[120px] border-r border-current/10 py-3 text-sm">
           {item.scheduleDates || 'N/A'}
         </TableCell>
       )}
-      
+
       {/* Quantity Column */}
       {item.showQuantity && ( // Use item.showQuantity
         <TableCell className="text-center w-[100px] border-r border-current/10 py-3">
@@ -197,14 +196,14 @@ const QuoteItemRow: React.FC<{
           )}
         </TableCell>
       )}
-      
+
       {/* Rate (Unit Price) Column */}
       {item.showRate && ( // Use item.showRate
         <TableCell className="text-right w-[120px] border-r border-current/10 py-3">
           {formatCurrency(item.price, currencySymbol)}
         </TableCell>
       )}
-      
+
       {/* Amount Column (Always visible) */}
       <TableCell className="text-right font-semibold w-[120px] py-3">
         {displayAmount()}
@@ -216,17 +215,17 @@ const QuoteItemRow: React.FC<{
 const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false, onQuantityChange, mutableAddOns }) => {
   const { details, total_amount, accepted_at, rejected_at, event_title, event_date, event_location, prepared_by } = quote;
   const currencySymbol = details.currencySymbol || '£';
-  
+
   const isAccepted = !!accepted_at;
   const isRejected = !!rejected_at;
   const isFinalized = isAccepted || isRejected;
-  
+
   // Destructure only used fields from details
-  const { depositPercentage, theme, scopeOfWorkUrl } = details; 
+  const { depositPercentage, theme, scopeOfWorkUrl } = details;
 
   // Determine which list of add-ons to display and calculate totals
   let optionalItemsToDisplay: QuoteItem[];
-  
+
   if (isClientView && !isFinalized && mutableAddOns) {
       // Client view, pending: use mutable state for display and calculation
       optionalItemsToDisplay = mutableAddOns;
@@ -237,13 +236,13 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       // Admin preview or Rejected: use original addOns list
       optionalItemsToDisplay = details.addOns || []; // Defensive check
   }
-  
+
   // Calculate totals based on the items being displayed/calculated
   const compulsoryTotal = (details.compulsoryItems || []).reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
   const addOnTotal = optionalItemsToDisplay.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
-  
+
   // If accepted, the total_amount from the DB is the final total. Otherwise, calculate based on current proposal/selection.
-  const subtotal = isAccepted ? total_amount : (compulsoryTotal + addOnTotal); 
+  const subtotal = isAccepted ? total_amount : (compulsoryTotal + addOnTotal);
 
   // Calculate deposit amount
   const depositAmount = subtotal * (depositPercentage / 100);
@@ -251,7 +250,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
 
   // Theme setup (unchanged)
   const isBlackGoldTheme = theme === 'black-gold';
-  
+
   const themeClasses = isBlackGoldTheme
     ? {
         // Black & Gold Theme (Premium Dark)
@@ -288,34 +287,33 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         inputBg: 'bg-brand-light',
         primaryText: 'text-brand-primary',
         primaryHoverBg: 'hover:bg-brand-primary/10',
-        image1: undefined, 
-        image2: undefined, 
+        image1: undefined,
+        image2: undefined,
       };
-      
+
   const headerImagePositionClass = details.headerImagePosition || 'object-center';
-  
+
   // Determine header visibility based on the first compulsory item (or default to false)
   const firstCompulsoryItem = details.compulsoryItems?.[0];
   const headerShowScheduleDates = firstCompulsoryItem?.showScheduleDates ?? false;
   const headerShowQuantity = firstCompulsoryItem?.showQuantity ?? true;
   const headerShowRate = firstCompulsoryItem?.showRate ?? true;
-  
+
   const visibleColumns = 1 + // Description (always visible)
                          (headerShowScheduleDates ? 1 : 0) +
                          (headerShowQuantity ? 1 : 0) +
                          (headerShowRate ? 1 : 0) +
                          1; // Amount (always visible)
 
-
   return (
     <div className={`p-4 sm:p-8 max-w-4xl mx-auto space-y-8 ${themeClasses.bg} ${themeClasses.text}`}>
-      
+
       {/* Header Image */}
       {details.headerImageUrl && (
         <div className="mb-4">
-          <DynamicImage 
-            src={details.headerImageUrl} 
-            alt="Quote Header" 
+          <DynamicImage
+            src={details.headerImageUrl}
+            alt="Quote Header"
             className={cn(
               `w-full h-48 object-cover rounded-lg shadow-xl`,
               headerImagePositionClass
@@ -339,18 +337,18 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
           <p className="text-sm">{event_location}</p>
         </div>
       </div>
-      
+
       {/* Scope of Work Link */}
       {scopeOfWorkUrl && (
         <div className="text-center pt-4">
-          <a 
-            href={scopeOfWorkUrl} 
-            target="_blank" 
+          <a
+            href={scopeOfWorkUrl}
+            target="_blank"
             rel="noopener noreferrer"
             className={cn(
               "inline-flex items-center justify-center gap-2 px-6 py-3 text-lg font-semibold rounded-full shadow-md transition-colors",
-              isBlackGoldTheme 
-                ? "bg-brand-yellow text-brand-dark hover:bg-brand-yellow/90" 
+              isBlackGoldTheme
+                ? "bg-brand-yellow text-brand-dark hover:bg-brand-yellow/90"
                 : "bg-brand-primary text-brand-light hover:bg-brand-primary/90"
             )}
           >
@@ -368,11 +366,11 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
           <p>{quote.client_email}</p>
         </div>
       )}
-      
+
       {/* Items Section */}
       <div className="pt-4">
         <h3 className={`text-xl font-semibold mb-4 ${themeClasses.primary}`}>Items Included</h3>
-        
+
         {/* Mobile List View (Hidden on md and up) */}
         <div className="md:hidden space-y-6">
             <QuoteItemMobileList
@@ -383,7 +381,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
                 isFinalized={isFinalized}
                 isOptionalSection={false}
             />
-            
+
             {details.addOns && details.addOns.length > 0 && (
                 <>
                     <h4 className={`text-lg font-bold ${themeClasses.primary} pt-4`}>Optional Add-Ons</h4>
@@ -415,11 +413,11 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
             <TableBody>
               {/* Compulsory Items */}
               {(details.compulsoryItems || []).map((item) => (
-                <QuoteItemRow 
-                  key={item.id} 
-                  item={item} 
-                  currencySymbol={currencySymbol} 
-                  isOptional={false} 
+                <QuoteItemRow
+                  key={item.id}
+                  item={item}
+                  currencySymbol={currencySymbol}
+                  isOptional={false}
                   themeClasses={themeClasses}
                   isClientView={isClientView}
                   isFinalized={isFinalized}
@@ -436,18 +434,18 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
                   </TableCell>
                 </TableRow>
               )}
-              
+
               {/* Display all optional items */}
               {optionalItemsToDisplay.map((item) => {
                   // If finalized and client view, only show selected items
                   if (isClientView && isFinalized && item.quantity === 0) return null;
-                  
+
                   return (
-                      <QuoteItemRow 
-                          key={item.id} 
-                          item={item} 
-                          currencySymbol={currencySymbol} 
-                          isOptional={true} 
+                      <QuoteItemRow
+                          key={item.id}
+                          item={item}
+                          currencySymbol={currencySymbol}
+                          isOptional={true}
                           themeClasses={themeClasses}
                           isClientView={isClientView}
                           isFinalized={isFinalized}
@@ -459,40 +457,40 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
           </Table>
         </div>
       </div>
-      
+
       {/* NEW: Image Section for Black & Gold Theme */}
       {isBlackGoldTheme && themeClasses.image1 && ( // Check if image1 exists
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-          <DynamicImage 
-            src={themeClasses.image1} 
-            alt="Daniele Buatti playing piano" 
+          <DynamicImage
+            src={themeClasses.image1}
+            alt="Daniele Buatti playing piano"
             className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
             width={400}
             height={256}
           />
-          <DynamicImage 
-            src={themeClasses.image2} 
-            alt="Daniele Buatti performing live" 
+          <DynamicImage
+            src={themeClasses.image2}
+            alt="Daniele Buatti performing live"
             className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
             width={400}
             height={256}
           />
         </div>
       )}
-      
+
       {/* NEW: Image Section for Default Theme (Only renders if images are explicitly set) */}
       {!isBlackGoldTheme && details.headerImageUrl && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-          <DynamicImage 
-            src={details.headerImageUrl} 
-            alt="Daniele Buatti playing piano" 
+          <DynamicImage
+            src={details.headerImageUrl}
+            alt="Daniele Buatti playing piano"
             className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
             width={400}
             height={256}
           />
-          <DynamicImage 
-            src={details.headerImageUrl} 
-            alt="Daniele Buatti performing live" 
+          <DynamicImage
+            src={details.headerImageUrl}
+            alt="Daniele Buatti performing live"
             className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
             width={400}
             height={256}
@@ -507,7 +505,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
             <span>Compulsory Subtotal:</span>
             <span>{formatCurrency(compulsoryTotal, currencySymbol)}</span>
           </div>
-          
+
           {/* Display Add-on total if applicable */}
           {details.addOns && details.addOns.length > 0 && (
             <div className="flex justify-between font-medium text-sm">
@@ -515,7 +513,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
               <span>{formatCurrency(addOnTotal, currencySymbol)}</span>
             </div>
           )}
-          
+
           <Separator className={themeClasses.separator} />
 
           <div className={`flex justify-between font-bold text-xl p-2 ${themeClasses.totalBoxBg} rounded-md`}>

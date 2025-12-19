@@ -46,8 +46,8 @@ export const QuoteFormSchema = z.object({
   theme: z.enum(['default', 'black-gold']),
   headerImageUrl: z.string().optional(),
   headerImagePosition: z.string().optional(),
-  
-  preparationNotes: z.string().optional(), 
+
+  preparationNotes: z.string().optional(),
   scopeOfWorkUrl: z.string().url('Must be a valid URL.').optional().or(z.literal('')), // NEW FIELD
 
   compulsoryItems: z.array(ItemSchema).min(1, 'At least one compulsory item is required.'),
@@ -78,26 +78,25 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
     control,
     name: 'addOns',
   });
-  
+
   // Watch all relevant fields for dynamic calculation
   const watchedFields = watch(['compulsoryItems', 'addOns', 'currencySymbol', 'depositPercentage']);
-  
+
   const { totalAmount, depositAmount, currencySymbol, depositPercentage } = useMemo(() => {
     const compulsoryItems = watchedFields[0] || [];
     const addOns = watchedFields[1] || [];
     const currencySymbol = watchedFields[2] || '£';
     const depositPercentage = watchedFields[3] || 0;
-    
+
     const compulsoryTotal = compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1), 0);
-    const addOnTotal = addOns.reduce((sum: number, addOn) => 
+    const addOnTotal = addOns.reduce((sum: number, addOn) =>
       sum + ((addOn.price ?? 0) * (addOn.quantity ?? 0)), 0) || 0;
-      
+
     const totalAmount = compulsoryTotal + addOnTotal;
     const depositAmount = totalAmount * (depositPercentage / 100);
-    
+
     return { compulsoryTotal, addOnTotal, totalAmount, depositAmount, currencySymbol, depositPercentage };
   }, [watchedFields]);
-
 
   const handlePreview = () => {
     onPreview(getValues());
@@ -108,21 +107,21 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
       onSaveDraft(getValues());
     }
   };
-  
+
   const handleFinalSubmit = (values: QuoteFormValues) => {
     onCreateAndSend(values);
   };
-  
-  const submitButtonText = isQuoteCreated 
+
+  const submitButtonText = isQuoteCreated
     ? (onSaveDraft ? 'Create & Send Quote' : 'Update Quote')
     : 'Create & Send Quote';
-    
+
   const inputClasses = "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary";
 
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(handleFinalSubmit)} className="space-y-8">
-        
+
         {/* Action Buttons & Totals (unchanged) */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-4 bg-brand-secondary/10 dark:bg-brand-dark/50 rounded-lg border border-brand-secondary/30">
             <div className="space-y-1">
@@ -148,8 +147,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                 <Button type="button" variant="outline" onClick={handlePreview} disabled={isSubmitting}>
                     <Eye className="h-4 w-4 mr-2" /> Preview Quote
                 </Button>
-                <Button 
-                    type="submit" 
+                <Button
+                    type="submit"
                     disabled={isSubmitting || !isValid}
                     className={cn(
                         "bg-brand-primary hover:bg-brand-primary/90 text-brand-light",
@@ -160,7 +159,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                 </Button>
             </div>
         </div>
-        
+
         {/* Client Details (unchanged) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
@@ -235,7 +234,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             )}
           />
         </div>
-        
+
         <FormField
           control={control}
           name="eventLocation"
@@ -302,7 +301,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             )}
           />
         </div>
-        
+
         {/* Theme and Header Image (unchanged) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <FormField
@@ -353,7 +352,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             )}
           />
         </div>
-        
+
         {/* NEW: Scope of Work URL */}
         <FormField
           control={control}
@@ -370,7 +369,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
         />
 
         <Separator />
-        
+
         {/* Preparation Notes Field (with live preview) */}
         <FormField
           control={control}
@@ -380,9 +379,9 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
               <FormLabel>Preparation & Service Notes (Displayed under Compulsory Items)</FormLabel>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormControl>
-                  <Textarea 
-                    placeholder="e.g., This fee covers 7 hours of commitment...\n\n- First bullet point\n* Second bullet point" 
-                    {...field} 
+                  <Textarea
+                    placeholder="e.g., This fee covers 7 hours of commitment...\n\n- First bullet point\n* Second bullet point"
+                    {...field}
                     rows={4}
                     className={inputClasses}
                   />
@@ -393,7 +392,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             </FormItem>
           )}
         />
-        
+
         {/* Payment Terms Field (unchanged) */}
         <FormField
           control={control}
@@ -410,7 +409,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
         />
 
         <Separator />
-        
+
         {/* Compulsory Items */}
         <h3 className="text-lg font-semibold">Compulsory Items (Fixed Fees)</h3>
         <div className="space-y-4">
@@ -437,9 +436,9 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                     <FormItem className="md:col-span-2">
                       <FormLabel>Detailed Description (Optional)</FormLabel>
                       <FormControl>
-                        <Textarea 
-                          placeholder="Detailed description of the service." 
-                          {...itemField} 
+                        <Textarea
+                          placeholder="Detailed description of the service."
+                          {...itemField}
                           rows={2}
                           className={inputClasses}
                         />
@@ -468,10 +467,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                     <FormItem>
                       <FormLabel>Price</FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
-                          placeholder="1000" 
-                          {...itemField} 
+                        <Input
+                          type="number"
+                          placeholder="1000"
+                          {...itemField}
                           onChange={e => itemField.onChange(parseFloat(e.target.value) || 0)}
                           className={inputClasses}
                         />
@@ -481,7 +480,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                   )}
                 />
               </div>
-              
+
               {/* Item Toggles and Delete Button */}
               <div className="flex flex-col md:flex-row justify-between items-center gap-2 pt-2 border-t border-brand-secondary/20 md:border-none md:pt-0">
                 <div className="flex flex-wrap justify-start gap-2">
@@ -489,9 +488,9 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                     <PillToggle name={`compulsoryItems.${index}.showQuantity`} label="Qty" />
                     <PillToggle name={`compulsoryItems.${index}.showRate`} label="Rate" />
                 </div>
-                <Button 
-                  type="button" 
-                  variant="destructive" 
+                <Button
+                  type="button"
+                  variant="destructive"
                   onClick={() => removeCompulsory(index)}
                   disabled={compulsoryFields.length === 1}
                   className="w-full md:w-auto"
@@ -499,7 +498,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
-              
+
               {/* Live Preview for Description */}
               <div className="md:col-span-5">
                 <FormLabel className="text-sm font-normal text-brand-dark/70 dark:text-brand-light/70">Description Preview:</FormLabel>
@@ -545,9 +544,9 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                     <FormItem className="md:col-span-2">
                       <FormLabel>Detailed Description (Optional)</FormLabel>
                       <FormControl>
-                        <Textarea 
-                          placeholder="Description of the add-on service." 
-                          {...itemField} 
+                        <Textarea
+                          placeholder="Description of the add-on service."
+                          {...itemField}
                           rows={2}
                           className={inputClasses}
                         />
@@ -577,10 +576,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                       <FormItem>
                         <FormLabel>Rate (per unit)</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            placeholder="200" 
-                            {...itemField} 
+                          <Input
+                            type="number"
+                            placeholder="200"
+                            {...itemField}
                             onChange={e => itemField.onChange(parseFloat(e.target.value) || 0)}
                             className={inputClasses}
                           />
@@ -596,10 +595,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                       <FormItem>
                         <FormLabel>Quantity (Default)</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            placeholder="0" 
-                            {...itemField} 
+                          <Input
+                            type="number"
+                            placeholder="0"
+                            {...itemField}
                             onChange={e => itemField.onChange(parseInt(e.target.value) || 0)}
                             className={inputClasses}
                           />
@@ -610,7 +609,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                   />
                 </div>
               </div>
-              
+
               {/* Item Toggles and Delete Button */}
               <div className="flex flex-col md:flex-row justify-between items-center gap-2 pt-2 border-t border-brand-secondary/20 md:border-none md:pt-0">
                 <div className="flex flex-wrap justify-start gap-2">
@@ -618,16 +617,16 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                     <PillToggle name={`addOns.${index}.showQuantity`} label="Qty" />
                     <PillToggle name={`addOns.${index}.showRate`} label="Rate" />
                 </div>
-                <Button 
-                  type="button" 
-                  variant="destructive" 
+                <Button
+                  type="button"
+                  variant="destructive"
                   onClick={() => removeAddOn(index)}
                   className="w-full md:w-auto"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
-              
+
               {/* Live Preview for Description */}
               <div className="md:col-span-5">
                 <FormLabel className="text-sm font-normal text-brand-dark/70 dark:text-brand-light/70">Description Preview:</FormLabel>
@@ -657,10 +656,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
               <FormItem>
                 <FormLabel>Deposit Percentage (%)</FormLabel>
                 <FormControl>
-                  <Input 
-                    type="number" 
-                    placeholder="50" 
-                    {...field} 
+                  <Input
+                    type="number"
+                    placeholder="50"
+                    {...field}
                     onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
                     className={inputClasses}
                   />
@@ -696,7 +695,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             )}
           />
         </div>
-        
+
         {/* Payment Terms is now optional and moved above */}
       </form>
     </Form>

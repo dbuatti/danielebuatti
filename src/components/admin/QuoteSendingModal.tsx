@@ -66,7 +66,7 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
   const generateHtmlBody = useCallback((theme: QuoteTheme) => {
     const themeConfig = emailThemes[theme];
     const quoteUrl = `${window.location.origin}/quotes/${quote.slug}`;
-    
+
     const footerHtml = `
       <div style="text-align: center; padding: 20px 0; border-top: 1px solid ${themeConfig.secondaryColor}33; margin-top: 20px;">
         <img src="${themeConfig.logo}" alt="${themeConfig.logoAlt}" style="height: 40px; width: auto; margin-bottom: 10px; max-width: 100%; display: block; margin: 0 auto 10px auto;" />
@@ -74,7 +74,7 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
           Embodied Coaching for Performers & Communicators
         </p>
         <p style="font-size: 14px; color: ${themeConfig.secondaryColor}CC; margin: 5px 0;">
-          <a href="mailto:info@danielebuatti.com" style="color: ${themeConfig.primaryColor}; text-decoration: none;">info@danielebuatti.com</a> | 
+          <a href="mailto:info@danielebuatti.com" style="color: ${themeConfig.primaryColor}; text-decoration: none;">info@danielebuatti.com</a> |
           <a href="https://wa.me/61424174067" style="color: ${themeConfig.primaryColor}; text-decoration: none;">+61 424 174 067</a>
         </p>
         <p style="font-size: 12px; color: ${themeConfig.secondaryColor}99; margin-top: 10px;">
@@ -89,24 +89,24 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
           <h2 style="color: ${themeConfig.primaryColor}; text-align: center; margin-bottom: 20px;">Your Quote Proposal is Ready!</h2>
           <p style="font-size: 16px; line-height: 1.6; color: ${themeConfig.secondaryColor};">Dear ${quote.client_name},</p>
           <p style="font-size: 16px; line-height: 1.6; color: ${themeConfig.secondaryColor};">Please find attached your <strong style="color: ${themeConfig.primaryColor};">personalised</strong> quote proposal for <strong>${quote.event_title}</strong> on ${quote.event_date}.</p>
-          
+
           <div style="text-align: center; margin: 30px 0;">
             <a href="${quoteUrl}" style="background-color: ${themeConfig.primaryColor}; color: ${themeConfig.cardBg}; padding: 12px 24px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; display: inline-block;">
               View & Accept Quote
             </a>
           </div>
-          
+
           <p style="font-size: 16px; line-height: 1.6; color: ${themeConfig.secondaryColor};">The total proposed amount is <strong>${quote.details.currencySymbol}${quote.total_amount.toFixed(2)}</strong>. You can review the full details and select any optional add-ons directly on the quote page.</p>
-          
+
           <p style="font-size: 14px; color: ${themeConfig.secondaryColor}99; text-align: center; margin-top: 30px;">
             If you have any questions, please reply to this email.
           </p>
-          
+
           ${footerHtml}
         </div>
       </div>
     `;
-    
+
     setHtmlBody(html);
     setIsHtmlLoading(false);
   }, [quote]);
@@ -119,7 +119,7 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
       generateHtmlBody(quote.details.theme);
     }
   }, [isOpen, quote, generateHtmlBody]);
-  
+
   // Re-generate HTML whenever the selected email theme changes
   useEffect(() => {
     if (isOpen) {
@@ -160,7 +160,7 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
       dismissToast(toastId);
     }
   };
-  
+
   const handleCopyLink = () => {
     const quoteUrl = `${window.location.origin}/quotes/${quote.slug}`;
     copy(quoteUrl);
@@ -176,9 +176,8 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
             Final confirmation before sending the quote to the client. The quote status will be updated to 'Sent'.
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-3 h-[calc(90vh-150px)] overflow-hidden">
-          
           {/* Left Column: Controls */}
           <div className="lg:col-span-1 p-6 space-y-6 border-r border-brand-secondary/50 overflow-y-auto">
             <div className="space-y-2">
@@ -196,7 +195,7 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
                 placeholder="Email Subject"
               />
             </div>
-            
+
             <div className="space-y-2">
               <h3 className="font-semibold text-lg text-brand-primary">Email Theme</h3>
               <Select onValueChange={(value: QuoteTheme) => setEmailTheme(value)} value={emailTheme}>
@@ -251,7 +250,7 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
               )}
             </Button>
           </div>
-          
+
           {/* Right Column: Live Quote Preview */}
           <div className="lg:col-span-2 p-4">
             <div className="flex justify-between items-center mb-4">
@@ -273,7 +272,7 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
           </div>
         </div>
       </DialogContent>
-      
+
       {/* Full Screen Preview Modal */}
       <Dialog open={isFullPreviewOpen} onOpenChange={setIsFullPreviewOpen}>
         <DialogContent className="sm:max-w-[95vw] w-[95vw] h-[95vh] p-0 bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50">

@@ -13,7 +13,7 @@ const CallToActionSection: React.FC = () => {
       </p>
       {/* The ContactForm is now rendered directly here */}
       <ContactForm />
-      {/* The main ContactForm is now removed from this section. 
+      {/* The main ContactForm is now removed from this section.
           A newsletter signup is available in the footer, and direct contact info is also there. */}
     </section>
   );

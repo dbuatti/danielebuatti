@@ -6,20 +6,20 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Mic, Leaf, Megaphone, Users, DollarSign } from 'lucide-react';
 import DynamicImage from '@/components/DynamicImage';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import SectionHeading from '@/components/SectionHeading';
-import { Separator } from '@/components/ui/separator';
-import WhyWorkWithMeSection from '@/components/pages/landing-page-v3/WhyWorkWithMeSection';
-import WhoIWorkWithSection from '@/components/pages/landing-page-v3/WhoIWorkWithSection';
+import Navbar from '@/components/Navbar'; // Import Navbar
+import Footer from '@/components/Footer'; // Import Footer
+import SectionHeading from '@/components/SectionHeading'; // Import SectionHeading
+import { Separator } from '@/components/ui/separator'; // Import Separator
 
 const CoachingPage: React.FC = () => {
+  // Removed useEffect for scrolling, as ScrollToTop component now handles all scroll logic.
+
   const pageTitle = "My Coaching Services";
   const subtitle = "Your Three-Pillar Journey to Performance Freedom.";
 
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
-      <Navbar />
+      <Navbar /> {/* Add Navbar */}
       <main className="container mx-auto px-4 pt-8 pb-8">
         <div className="text-center space-y-4 mb-8">
           <SectionHeading>{pageTitle}</SectionHeading>

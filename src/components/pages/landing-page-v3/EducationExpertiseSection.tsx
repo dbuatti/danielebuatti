@@ -21,7 +21,7 @@ const EducationExpertiseSection: React.FC = () => {
             </CardHeader>
             <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-3 flex-grow">
               <p>
-                Develop effortless breath control, expand your range, refine tone, and master various vocal styles. Enhance your instrumental skills, improve sight-reading, and develop expressive piano performance.
+                Develop effortless breath control, expand your range, refine tone, and master various vocal styles (contemporary, classical, musical theatre). Enhance your instrumental skills, improve sight-reading, and develop expressive piano performance.
               </p>
             </CardContent>
             <div className="mt-6">

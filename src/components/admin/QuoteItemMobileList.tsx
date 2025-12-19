@@ -72,7 +72,6 @@ const renderRichText = (text: string, themeClasses: any) => {
   return <>{elements}</>;
 };
 
-
 const QuoteItemMobileList: React.FC<QuoteItemMobileListProps> = ({
   items,
   currencySymbol,
@@ -88,20 +87,20 @@ const QuoteItemMobileList: React.FC<QuoteItemMobileListProps> = ({
       {items.map((item) => {
         const isOptional = isOptionalSection;
         const isSelected = item.quantity > 0;
-        
+
         // If finalized client view, only show selected items
         if (isClientView && isFinalized && isOptional && item.quantity === 0) return null;
 
         const totalAmount = item.price * item.quantity;
         const showControls = isOptional && isClientView && !isFinalized && onQuantityChange;
-        
+
         const itemClasses = isOptional && !isSelected && !isFinalized && isClientView
           ? `opacity-60 ${themeClasses.secondary}`
           : themeClasses.text;
 
         return (
-          <div 
-            key={item.id} 
+          <div
+            key={item.id}
             className={`p-4 rounded-lg border border-current/20 shadow-sm ${themeClasses.tableHeaderBg} ${itemClasses}`}
           >
             <div className="flex justify-between items-start mb-2">
@@ -112,13 +111,13 @@ const QuoteItemMobileList: React.FC<QuoteItemMobileListProps> = ({
                 </span>
               )}
             </div>
-            
+
             {item.description && (
               <div className={`text-sm mb-3`}>
                 {renderRichText(item.description, themeClasses)}
               </div>
             )}
-            
+
             {/* Use item.showScheduleDates */}
             {item.showScheduleDates && item.scheduleDates && (
                 <div className={`text-sm mb-3 ${themeClasses.secondary}`}>
@@ -133,7 +132,7 @@ const QuoteItemMobileList: React.FC<QuoteItemMobileListProps> = ({
                   {formatCurrency(totalAmount, currencySymbol)}
                 </span>
               </div>
-              
+
               <div className="flex items-center space-x-4">
                 {/* Use item.showRate */}
                 {item.showRate && (
@@ -149,10 +148,10 @@ const QuoteItemMobileList: React.FC<QuoteItemMobileListProps> = ({
                         <span className={`text-xs font-medium ${themeClasses.secondary}`}>Qty</span>
                         {showControls ? (
                             <div className={`flex items-center justify-center mt-1 border rounded-full border-current/30 h-8 ${themeClasses.inputBg}`}>
-                                <Button 
-                                    type="button" 
-                                    variant="ghost" 
-                                    size="icon" 
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
                                     onClick={() => onQuantityChange!(item.id, -1)}
                                     disabled={item.quantity <= 0}
                                     className={`h-7 w-7 ${themeClasses.primaryText} ${themeClasses.primaryHoverBg} p-0 rounded-full`}
@@ -162,10 +161,10 @@ const QuoteItemMobileList: React.FC<QuoteItemMobileListProps> = ({
                                 <span className={`w-6 text-center font-semibold text-sm ${themeClasses.text}`}>
                                     {item.quantity}
                                 </span>
-                                <Button 
-                                    type="button" 
-                                    variant="ghost" 
-                                    size="icon" 
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
                                     onClick={() => onQuantityChange!(item.id, 1)}
                                     className={`h-7 w-7 ${themeClasses.primaryText} ${themeClasses.primaryHoverBg} p-0 rounded-full`}
                                 >

@@ -45,7 +45,7 @@ const DraftLoader: React.FC<DraftLoaderProps> = ({
           </p>
         )}
       </div>
-      
+
       <div className="flex gap-2 w-full md:w-auto">
         <Select onValueChange={handleSelectChange} value={currentDraftId || ""}>
           <SelectTrigger className="w-full md:w-[250px] bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light">
@@ -67,11 +67,11 @@ const DraftLoader: React.FC<DraftLoaderProps> = ({
             )}
           </SelectContent>
         </Select>
-        
+
         {currentDraftId && (
-          <Button 
-            variant="destructive" 
-            size="icon" 
+          <Button
+            variant="destructive"
+            size="icon"
             onClick={() => onDeleteDraft(currentDraftId)}
             title="Delete current draft"
           >

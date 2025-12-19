@@ -19,7 +19,6 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { CheckCircle2 } from 'lucide-react'; // Import CheckCircle2 for the confirmation message
 
-
 const formSchema = z.object({
   studentParentName: z.string().min(2, { message: "Student/Parent Name is required." }),
   contactEmail: z.string().email({ message: "Please enter a valid email address." }),

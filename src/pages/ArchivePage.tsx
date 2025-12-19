@@ -4,7 +4,6 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SectionHeading from "@/components/SectionHeading";
-import { Separator } from "@/components/ui/separator";
 import AdditionalProgramBanner from "@/components/AdditionalProgramBanner";
 import BackToTopButton from "@/components/BackToTopButton";
 
@@ -18,7 +17,7 @@ const ArchivePage: React.FC = () => {
           <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 max-w-3xl mx-auto">
             This page contains content that is currently not featured on the main site but may be brought back in the future.
           </p>
-          <Separator className="max-w-xs mx-auto bg-brand-secondary" />
+          {/* Removed redundant Separator here */}
         </div>
 
         <section className="py-12 space-y-12">

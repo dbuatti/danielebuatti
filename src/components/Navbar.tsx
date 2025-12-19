@@ -5,8 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetOverlay } from "@/components/ui/sheet";
 import { Link, useLocation } from "react-router-dom";
-import { ThemeToggle } from "./ThemeToggle";
-import { navLinks } from "@/constants/navigation";
 import { useActiveSection } from "@/hooks/use-active-section";
 import { cn } from "@/lib/utils";
 import DynamicImage from "@/components/DynamicImage";
@@ -19,7 +17,6 @@ import { useTheme } from "next-themes";
 //   DropdownMenuTrigger,
 //   DropdownMenuSeparator,
 // } from "@/components/ui/dropdown-menu";
-
 
 const Navbar = () => {
   const activeSection = useActiveSection();
@@ -92,10 +89,10 @@ const Navbar = () => {
               Book Now
             </a>
           </Button>
-          <ThemeToggle />
+          {/* Removed ThemeToggle */}
         </nav>
         <div className="flex items-center md:hidden">
-          <ThemeToggle />
+          {/* Removed ThemeToggle */}
           <Sheet key={isSheetOpen ? "open" : "closed"} open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
               <Button
