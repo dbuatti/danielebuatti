@@ -13,10 +13,8 @@ import { Link } from "react-router-dom";
 import { Mic2, Leaf, Megaphone, CheckCircle2 } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import CalEmbed from "@/components/CalEmbed";
-import HorizontalProgramCard from "@/components/HorizontalProgramCard";
-import PianoBackingsCard from "@/components/PianoBackingsCard";
 
-// Testimonials (Restored from context)
+// Testimonials
 const testimonials = [
   { quote: "Daniele's clear, direct, and thoughtful communication is truly exceptional...", author: "Em", title: "Creative Collaborator" },
   { quote: "This program has been eye-opening; I've grown leaps and bounds as an artist...", author: "Ben", title: "Emerging Artist" },
@@ -26,14 +24,81 @@ const testimonials = [
   { quote: "Daniele is an exceptional teacher, leader, and encourager...", author: "Experienced Educator", title: "Colleague" },
 ];
 
+// New compact horizontal card – shorter height, better readability, strong gradient
+const HorizontalProgramCard: React.FC<{
+  title: string;
+  description: string;
+  link: string;
+  linkText: string;
+  imageSrc: string;
+}> = ({ title, description, link, linkText, imageSrc }) => {
+  const isInternalLink = link.startsWith("/") || link.startsWith("#");
+
+  return (
+    <div className="group relative h-80 rounded-3xl overflow-hidden shadow-2xl cursor-pointer" onClick={() => window.open(link, isInternalLink ? "_self" : "_blank")}>
+      {/* Image */}
+      <DynamicImage
+        src={imageSrc}
+        alt={title}
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        width={1200}
+        height={600}
+      />
+
+      {/* Stronger, more consistent gradient – ensures readability on any image */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/20" />
+
+      {/* Compact content – less vertical space, more gradient coverage */}
+      <div className="relative z-10 h-full flex flex-col justify-end p-8 text-left">
+        <h3 className="text-3xl font-bold text-white mb-3 drop-shadow-2xl">
+          {title}
+        </h3>
+        <p className="text-lg text-white/95 mb-6 max-w-xl drop-shadow-lg">
+          {description}
+        </p>
+        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <Button size="lg" className="bg-white hover:bg-gray-100 text-gray-900 font-semibold text-lg px-10 py-6 rounded-full shadow-xl">
+            {linkText}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Updated Piano Backings Card – whole card clickable, no text/button overlay
+const PianoBackingsCard: React.FC = () => {
+  return (
+    <a
+      href="https://pianobackingsbydaniele.vercel.app"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block group relative h-80 rounded-3xl overflow-hidden shadow-2xl cursor-pointer"
+    >
+      <div className="absolute inset-0 bg-[#ff00b3]" />
+      <div className="absolute inset-0 flex items-center justify-center p-12">
+        <DynamicImage
+          src="/pianobackingslogo.png"
+          alt="Piano Backing Tracks by Daniele"
+          className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
+          width={1200}
+          height={600}
+        />
+      </div>
+      {/* Optional subtle hover indicator */}
+      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+    </a>
+  );
+};
+
 const LandingPageV4: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
       <SeoStructuredData />
       <SeoMetadata 
-        title="Landing Page V4 - New Design"
-        description="A new landing page template for Daniele Buatti's services."
-        url={`${window.location.origin}/landing-v4`}
+        title="Daniele Buatti - Pianist & Vocal Coach"
+        description="Professional coaching in voice, piano, performance, and embodiment."
+        url={`${window.location.origin}`}
       />
       <Navbar />
 
@@ -41,7 +106,7 @@ const LandingPageV4: React.FC = () => {
         {/* Hero */}
         <section className="grid md:grid-cols-2 gap-16 items-center">
           <div className="space-y-8">
-            <h1 className="text-5xl md:text-6xl font-light leading-tight">Hello</h1>
+            <h1 className="text-5xl md:text-6xl font-light leading-tight">Daniele Buatti</h1>
             <p className="text-2xl text-gray-700 dark:text-gray-300">
               Pianist • Vocal Coach • Music Director • Embodiment Practitioner
             </p>
