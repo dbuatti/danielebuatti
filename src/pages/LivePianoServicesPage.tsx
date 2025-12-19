@@ -42,6 +42,7 @@ const LivePianoServicesPage: React.FC = () => {
 
   // Add more images here, especially ones showing you singing/vocalizing at the piano
   const galleryImages = [
+    "/blackgoldquoteimage1.jpg",
     "/blacktie.avif",
     "/blacktie1.avif",
     "/blacktie3.avif",
