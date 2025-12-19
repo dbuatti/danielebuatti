@@ -33,10 +33,12 @@ const LandingPageV4: React.FC = () => {
       />
       <Navbar />
 
-      {/* Floating Enquiry Button for Mobile/Desktop accessibility */}
+      {/* Floating Enquiry Button for Mobile accessibility */}
       <div className="fixed bottom-8 right-8 z-50 md:hidden">
-        <Button asChild size="icon" className="h-14 w-14 rounded-full shadow-2xl">
-          <Link to="/contact"><Mail className="h-6 w-6" /></Link>
+        <Button asChild size="icon" className="h-14 w-14 rounded-full shadow-2xl bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900">
+          <Link to="/contact">
+            <Mail className="h-6 w-6" />
+          </Link>
         </Button>
       </div>
 
@@ -133,12 +135,12 @@ const LandingPageV4: React.FC = () => {
             </div>
             <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-8 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 text-center">
               <Leaf className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300 opacity-80" />
-              <h3 className="text-xl font-medium mb-2">Film & Streaming Performers</h3>
+              <h3 className="text-xl font-medium mb-2">Film & Streaming</h3>
               <p className="text-gray-600 dark:text-gray-400">Nuanced presence on camera</p>
             </div>
             <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-8 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 text-center">
               <CheckCircle2 className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300 opacity-80" />
-              <h3 className="text-xl font-medium mb-2">Committed Professionals</h3>
+              <h3 className="text-xl font-medium mb-2">Professionals</h3>
               <p className="text-gray-600 dark:text-gray-400">Sustainable long-term practice</p>
             </div>
           </div>
@@ -167,7 +169,7 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* Testimonials – softer */}
+        {/* Testimonials */}
         <section className="mb-24">
           <h2 className="text-4xl font-light text-center mb-16">Client Feedback</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -181,9 +183,9 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* Teaser – softer card */}
-        <section className="mb-24 text-center">
-          <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm py-16 px-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
+        {/* Teaser - Final CTA Section */}
+        <section className="mb-32 text-center">
+          <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm py-20 px-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
             <h2 className="text-4xl font-light mb-6">Explore My Other Work</h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">
               Live performances, music direction, digital products, community choir, and more.
@@ -191,27 +193,6 @@ const LandingPageV4: React.FC = () => {
             <Button asChild size="lg" className="text-lg px-12 py-7 rounded-full">
               <Link to="/projects-resources">View Projects & Resources</Link>
             </Button>
-          </div>
-        </section>
-
-        {/* Contact CTA */}
-        <section id="contact" className="pb-20 text-center">
-          <h2 className="text-4xl font-light text-center mb-10">Get in Touch</h2>
-          <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 p-12 max-w-xl mx-auto">
-            <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 italic">
-              For general inquiries, performance bookings, or to discuss coaching, please visit the dedicated contact page.
-            </p>
-            <Button asChild size="lg" className="text-lg px-12 py-7 rounded-full">
-              <Link to="/contact">Go to Contact Page</Link>
-            </Button>
-            <div className="mt-8">
-              <p className="text-center text-lg text-gray-600 dark:text-gray-400 mb-4 italic">
-                For AMEB accompanying inquiries, please use the dedicated page for rates and booking.
-              </p>
-              <Button asChild size="lg" variant="outline" className="border-2 text-lg px-12 py-7 rounded-full">
-                <Link to="/ameb-accompanying">View AMEB Rates & Book</Link>
-              </Button>
-            </div>
           </div>
         </section>
       </main>
