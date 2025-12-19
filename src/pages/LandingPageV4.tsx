@@ -260,7 +260,7 @@ const LandingPageV4: React.FC = () => {
         </section>
 
         {/* Signature Service Portal - The Definitive Conclusion */}
-        <section className="mb-12 px-4">
+        <section className="mb-12 px-2">
           <Link to="/live-piano-services" className="group block relative overflow-hidden rounded-[2.5rem] bg-black shadow-2xl transition-all duration-500 hover:scale-[1.01]">
             <div className="absolute inset-0 bg-[url('/blacktie.avif')] bg-cover bg-center opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />
             <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent" />
