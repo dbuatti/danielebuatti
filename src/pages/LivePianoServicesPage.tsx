@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Mail, Phone } from 'lucide-react';
+import { Mail, Phone, Play } from 'lucide-react'; // Added Play icon
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
@@ -38,18 +38,23 @@ const formSchema = z.object({
 const LivePianoServicesPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [api, setApi] = useState<CarouselApi>();
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-  // Add more images here, especially ones showing you singing/vocalizing at the piano
-  const galleryImages = [
-    "/blackgoldquoteimage1.jpg",
-    "/blackgoldquoteimage2.jpg",
-    "3Degrees_Xmas_109.JPG",
-    "/blacktie.avif",
-    "/blacktie1.avif",
-    "/blacktie3.avif",
-    "/blacktie4.avif",
-    // Add new paths like: "/daniele-singing1.avif", "/daniele-vocal-piano.avif", etc.
+  // Mixed gallery: images AND videos
+  const galleryItems = [
+    { type: "image", src: "/blackgoldquoteimage1.jpg" },
+    { type: "image", src: "/blackgoldquoteimage2.jpg" },
+    { type: "image", src: "/3Degrees_Xmas_109.JPG" },
+    { type: "image", src: "/blacktie.avif" },
+    { type: "image", src: "/blacktie1.avif" },
+    { type: "image", src: "/blacktie3.avif" },
+    { type: "image", src: "/blacktie4.avif" },
+    
+    // ADD YOUR VIDEOS HERE (place in public folder)
+    // Example:
+    // { type: "video", src: "/performance-wedding-clip.mp4" },
+    // { type: "video", src: "/daniele-singing-gala.mov" },
+    // { type: "video", src: "/jazz-standard-short.mp4" },
   ];
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -67,8 +72,8 @@ const LivePianoServicesPage: React.FC = () => {
 
   useEffect(() => {
     if (!api) return;
-    setSelectedImageIndex(api.selectedScrollSnap());
-    api.on("select", () => setSelectedImageIndex(api.selectedScrollSnap()));
+    setSelectedIndex(api.selectedScrollSnap());
+    api.on("select", () => setSelectedIndex(api.selectedScrollSnap()));
   }, [api]);
 
   const handleContactSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -104,6 +109,8 @@ const LivePianoServicesPage: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const currentItem = galleryItems[selectedIndex];
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
@@ -169,19 +176,32 @@ const LivePianoServicesPage: React.FC = () => {
           </p>
         </motion.div>
 
-        {/* Main Large Image */}
+        {/* Main Large Media Display */}
         <motion.div
+          key={selectedIndex} // Forces re-animation on change
           initial={{ opacity: 0, scale: 0.98 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.2 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
           className="mb-12 rounded-2xl overflow-hidden shadow-2xl"
         >
-          <img
-            src={galleryImages[selectedImageIndex]}
-            alt="Featured performance"
-            className="w-full h-[60vh] md:h-[80vh] object-cover transition-transform duration-1000 ease-out"
-          />
+          {currentItem.type === "video" ? (
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-[60vh] md:h-[80vh] object-cover"
+            >
+              <source src={currentItem.src} type="video/mp4" />
+              Your browser does not support video.
+            </video>
+          ) : (
+            <img
+              src={currentItem.src}
+              alt="Featured performance"
+              className="w-full h-[60vh] md:h-[80vh] object-cover"
+            />
+          )}
         </motion.div>
 
         {/* Thumbnail Carousel */}
@@ -191,20 +211,45 @@ const LivePianoServicesPage: React.FC = () => {
           className="w-full max-w-6xl mx-auto"
         >
           <CarouselContent className="-ml-2 md:-ml-4">
-            {galleryImages.map((src, index) => (
+            {galleryItems.map((item, index) => (
               <CarouselItem key={index} className="pl-2 md:pl-4 basis-1/2 md:basis-1/3 lg:basis-1/4">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => api?.scrollTo(index)}
                   className={cn(
-                    "cursor-pointer rounded-xl overflow-hidden transition-all duration-300",
-                    selectedImageIndex === index
-                      ? "ring-4 ring-gold-500 shadow-2xl shadow-gold-500/20"
+                    "relative cursor-pointer rounded-xl overflow-hidden transition-all duration-300",
+                    selectedIndex === index
+                      ? "ring-4 ring-gold-500 shadow-2xl shadow-gold-500/30"
                       : "opacity-70 hover:opacity-100"
                   )}
                 >
-                  <img src={src} alt={`Gallery ${index + 1}`} className="w-full h-48 object-cover" />
+                  {item.type === "video" ? (
+                    <>
+                      {/* Poster frame or blurred preview – using a placeholder or first frame */}
+                      <div className="relative w-full h-48 bg-black/40">
+                        <video
+                          muted
+                          playsInline
+                          className="w-full h-full object-cover opacity-60"
+                        >
+                          <source src={item.src} type="video/mp4" />
+                        </video>
+                        {/* Play icon overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="bg-black/60 rounded-full p-5 backdrop-blur-sm">
+                            <Play className="w-12 h-12 text-gold-400" fill="currentColor" />
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <img
+                      src={item.src}
+                      alt={`Gallery ${index + 1}`}
+                      className="w-full h-48 object-cover"
+                    />
+                  )}
                 </motion.div>
               </CarouselItem>
             ))}
@@ -262,7 +307,6 @@ const LivePianoServicesPage: React.FC = () => {
           <Card className="bg-zinc-950/90 border border-gold-800/30 backdrop-blur-xl shadow-2xl rounded-2xl p-10 md:p-16">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(handleContactSubmit)} className="space-y-8">
-                {/* Form fields remain the same */}
                 <div className="grid md:grid-cols-2 gap-8">
                   <FormField control={form.control} name="firstName" render={({ field }) => (
                     <FormItem>
@@ -372,20 +416,20 @@ const LivePianoServicesPage: React.FC = () => {
                 )} />
 
                 <Button
-  type="submit"
-  size="lg"
-  disabled={loading}
-  className="w-full bg-gradient-to-r from-yellow-500 to-yellow-400 hover:from-yellow-400 hover:to-yellow-300 text-black font-semibold text-xl py-8 rounded-full shadow-2xl shadow-yellow-500/30 transition-all duration-300"
->
-  {loading ? "Sending Inquiry..." : "Send Your Inquiry"}
-</Button>
+                  type="submit"
+                  size="lg"
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-yellow-500 to-yellow-400 hover:from-yellow-400 hover:to-yellow-300 text-black font-semibold text-xl py-8 rounded-full shadow-2xl shadow-yellow-500/30 transition-all duration-300"
+                >
+                  {loading ? "Sending Inquiry..." : "Send Your Inquiry"}
+                </Button>
               </form>
             </Form>
           </Card>
         </motion.div>
       </section>
 
-      {/* Footer remains the same */}
+      {/* Footer */}
       <footer className="relative py-24 text-center overflow-hidden">
         <div
           className="absolute inset-0 -z-10 brightness-50 scale-110"
