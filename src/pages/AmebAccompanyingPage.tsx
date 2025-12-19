@@ -1,108 +1,112 @@
 "use client";
 
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Piano, CalendarDays, MapPin } from 'lucide-react'; // Removed FileText
-import DynamicImage from '@/components/DynamicImage';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import SectionHeading from '@/components/SectionHeading';
-import { Separator } from '@/components/ui/separator';
-import AmebBookingForm from '@/components/AmebBookingForm'; // Import the new booking form
+import React from "react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import DynamicImage from "@/components/DynamicImage";
+import AmebBookingForm from "@/components/AmebBookingForm";
+import { Piano, Calendar, MapPin } from "lucide-react";
 
 const AmebAccompanyingPage: React.FC = () => {
-  const pageTitle = "AMEB Accompanying Services";
-  const subtitle = "Professional & Supportive Piano Accompaniment for Your Exams";
-
   return (
-    <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
       <Navbar />
-      <main id="ameb-top" className="container mx-auto px-4 pt-12 pb-12"> {/* Added id="ameb-top" */}
-        <div className="text-center space-y-4 mb-10">
-          <SectionHeading>{pageTitle}</SectionHeading>
-          {subtitle && <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70">{subtitle}</p>}
-          <Separator className="max-w-xs mx-auto bg-brand-secondary" />
+
+      <main className="max-w-5xl mx-auto px-6 py-16">
+        {/* Header */}
+        <header className="text-center mb-20">
+          <h1 className="text-5xl md:text-6xl font-light mb-6">AMEB Accompanying</h1>
+          <p className="text-xl max-w-3xl mx-auto text-gray-600 dark:text-gray-400">
+            Professional piano accompaniment for your AMEB exams and rehearsals.
+          </p>
+        </header>
+
+        {/* Hero Image */}
+        <div className="mb-20 -mx-6">
+          <DynamicImage
+            src="/danieleatkeyboard.jpeg"
+            alt="Daniele Buatti at the keyboard"
+            className="w-full h-[500px] object-cover object-center rounded-b-3xl shadow-2xl"
+            width={1200}
+            height={600}
+          />
         </div>
-        <div className="max-w-4xl mx-auto space-y-10">
-          {/* Hero Image Section */}
-          <section className="relative mt-8 mb-8 rounded-xl overflow-hidden shadow-lg border-4 border-brand-secondary">
-            <DynamicImage
-              src="/danieleatkeyboard.jpeg"
-              alt="Daniele Buatti playing keyboard"
-              className="w-full h-96 md:h-[450px] object-cover object-[50%_70%]"
-              width={800}
-              height={533}
-            />
-            {/* Gradient Overlay for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/50 to-transparent"></div>
-          </section>
 
-          {/* Overview */}
-          <section className="bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-8 rounded-xl shadow-inner space-y-6">
-            <p className="text-xl text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-              Support for AMEB students requiring a professional accompanist for both exam day and preparation rehearsals. All services are designed to ensure students feel calm, confident, and musically aligned with their accompanist on the day.
+        {/* Overview */}
+        <section className="mb-20 text-center">
+          <p className="text-xl max-w-3xl mx-auto leading-relaxed text-gray-600 dark:text-gray-400">
+            I provide calm, reliable accompaniment for AMEB exams (all grades and instruments) and optional rehearsals beforehand. My goal is to help you feel prepared and supported on the day.
+          </p>
+        </section>
+
+        {/* Exam Day */}
+        <section className="mb-20 grid md:grid-cols-2 gap-12 items-center">
+          <div className="space-y-6">
+            <h2 className="text-3xl font-medium flex items-center gap-4">
+              <Piano className="w-10 h-10 text-gray-700 dark:text-gray-300" />
+              Exam Day Accompaniment
+            </h2>
+            <p className="text-2xl font-semibold">$180 per exam</p>
+            <ul className="space-y-3 text-lg text-gray-600 dark:text-gray-400">
+              <li>• I arrive 15–20 minutes early to set up</li>
+              <li>• Repertoire fully prepared in advance</li>
+              <li>• Clear communication about tempo and feel</li>
+              <li>• Calm, supportive presence throughout</li>
+            </ul>
+          </div>
+          <div className="bg-white dark:bg-gray-900 rounded-3xl p-8 shadow-lg">
+            <p className="text-lg italic text-gray-600 dark:text-gray-400">
+              “Having a reliable accompanist who knows the music inside out makes a huge difference on exam day.”
             </p>
-          </section>
+          </div>
+        </section>
 
-          {/* Exam Day Accompanying */}
-          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
-            <CardHeader className="p-0 pb-4">
-              <CardTitle className="flex items-center gap-3 text-2xl text-brand-primary">
-                <Piano className="h-7 w-7" />
-                Exam Day Accompanying
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-4">
-              <p className="text-xl font-semibold">Rate: £100 per exam</p>
-              <p>
-                I will arrive <strong className="text-brand-primary">15 minutes</strong> prior to your exam to ensure readiness and setup. Your exam repertoire will be fully prepared in advance, and all music will be rehearsed as discussed prior to the date.
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Rehearsals */}
-          <Card className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6">
-            <CardHeader className="p-0 pb-4">
-              <CardTitle className="flex items-center gap-3 text-2xl text-brand-primary">
-                <CalendarDays className="h-7 w-7" />
-                Rehearsals
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-brand-dark/80 dark:text-brand-light/80 p-0 space-y-4">
-              <p>
-                Rehearsals provide the opportunity to refine ensemble balance, tempo, and musical interpretation ahead of your AMEB exam. Sessions take place at my studio in Toorak, ideally within two weeks of the exam.
-              </p>
-              <h4 className="text-xl font-semibold text-brand-primary">Available durations and rates:</h4>
-              <ul className="list-disc list-inside space-y-2 pl-4">
-                <li>15 minutes – £30</li>
-                <li>30 minutes – £50</li>
-                <li>45 minutes – £75</li>
-              </ul>
-              <h4 className="text-xl font-semibold text-brand-primary flex items-center gap-2">
-                <MapPin className="h-6 w-6" /> Rehearsal Location:
-              </h4>
-              <ul className="list-disc list-inside space-y-1 pl-4">
-                <li><strong>Studio:</strong> Toorak</li>
-                <li><strong>Public Transport:</strong> Tram routes 16 and 58</li>
-                <li><strong>Parking:</strong> Free parking on Glenferrie Road</li>
-              </ul>
-              <p className="text-lg font-semibold text-brand-primary mt-4">Booking Note:</p>
-              <p>
-                To ensure adequate preparation, please confirm all AMEB bookings and provide sheet music at least two weeks prior to the exam date.
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Contact Section with Booking Form */}
-          <section id="ameb-booking-form" className="bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-8 rounded-xl shadow-inner space-y-6">
-            <h3 className="text-3xl font-bold text-brand-primary text-center">Book Now / Inquire</h3>
-            <p className="text-lg text-center text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-              Fill out the form below to book your AMEB accompanying services or to make an inquiry.
+        {/* Rehearsals */}
+        <section className="mb-20 py-16 bg-white dark:bg-gray-900 rounded-3xl">
+          <h2 className="text-3xl font-medium text-center mb-12 flex items-center justify-center gap-4">
+            <Calendar className="w-10 h-10 text-gray-700 dark:text-gray-300" />
+            Rehearsal Sessions (optional)
+          </h2>
+          <div className="max-w-2xl mx-auto space-y-8">
+            <div className="grid md:grid-cols-3 gap-8 text-center">
+              <div>
+                <p className="text-3xl font-light">15 min</p>
+                <p className="text-xl mt-2">$50</p>
+              </div>
+              <div>
+                <p className="text-3xl font-light">30 min</p>
+                <p className="text-xl mt-2">$90</p>
+              </div>
+              <div>
+                <p className="text-3xl font-light">45 min</p>
+                <p className="text-xl mt-2">$130</p>
+              </div>
+            </div>
+            <div className="flex items-center justify-center gap-3 text-lg">
+              <MapPin className="w-8 h-8 text-gray-700 dark:text-gray-300" />
+              <div>
+                <p className="font-medium">Studio in Toorak, Melbourne</p>
+                <p className="text-gray-600 dark:text-gray-400">Trams 58 & 16 • Free street parking</p>
+              </div>
+            </div>
+            <p className="text-center text-gray-600 dark:text-gray-400">
+              Rehearsals recommended within two weeks of the exam.
             </p>
+          </div>
+        </section>
+
+        {/* Booking Form */}
+        <section className="py-20">
+          <h2 className="text-4xl font-light text-center mb-12">Book or Inquire</h2>
+          <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 rounded-3xl shadow-lg p-10">
             <AmebBookingForm />
-          </section>
-        </div>
+          </div>
+          <p className="text-center mt-8 text-gray-600 dark:text-gray-400">
+            Please send sheet music at least two weeks before the exam so I can prepare properly.
+          </p>
+        </section>
       </main>
+
       <Footer />
     </div>
   );
