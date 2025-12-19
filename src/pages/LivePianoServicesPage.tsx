@@ -124,11 +124,26 @@ const LivePianoServicesPage: React.FC = () => {
         <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.5, ease: "easeOut" }} className="relative z-10 text-center px-6">
           <DynamicImage src="/gold-36.png" alt="Daniele Buatti Logo" className="h-24 md:h-32 mx-auto mb-6 drop-shadow-2xl" width={128} height={128} />
           <h1 className="text-5xl md:text-7xl font-light tracking-widest uppercase font-montserrat text-white">
-            DANIELE BUATTI
-          </h1>
-          {/* Separator */}
-          <div className="w-24 h-0.5 bg-gold-400 mx-auto mt-4 mb-6" />
-          <p className="text-2xl md:text-4xl font-libre-baskerville italic text-white">Pianist & Vocalist</p>
+  DANIELE BUATTI
+</h1>
+
+{/* Animated Gold Line */}
+<motion.div
+  initial={{ scaleX: 0, opacity: 0 }}
+  animate={{ scaleX: 1, opacity: 1 }}
+  transition={{
+    duration: 1.4,
+    ease: [0.22, 1, 0.36, 1], // elegant cubic-bezier
+    delay: 0.6,
+  }}
+  className="origin-center mx-auto my-6 h-[2px] w-32 md:w-48 rounded-full 
+             bg-gradient-to-r from-transparent via-yellow-400 to-transparent
+             shadow-[0_0_20px_rgba(234,179,8,0.45)]"
+/>
+
+<p className="text-2xl md:text-4xl font-libre-baskerville italic text-white">
+  Pianist & Vocalist
+</p>
           <p className="text-lg md:text-xl mt-4 text-gray-300 max-w-2xl mx-auto">Sophisticated live music for discerning events</p>
         </motion.div>
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
