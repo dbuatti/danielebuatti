@@ -356,7 +356,10 @@ const LivePianoServicesPage: React.FC = () => {
         <div className="relative z-10 space-y-12">
           <DynamicImage src="/gold-36.png" alt="Logo" className="h-20 mx-auto opacity-90" width={80} height={80} />
           <div className="space-y-6 text-2xl md:text-3xl font-light">
-            <a href="https://wa.me/61424174067" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-4 hover:text-white transition-colors underline-offset-8 hover:underline">
+<a
+  href="https://wa.me/61424174067"
+  className="flex items-center justify-center gap-4 transition-opacity hover:opacity-80"
+>
               <Phone size={32} className="text-white" /> 0424 174 067
             </a>
             <a href="mailto:info@danielebuatti.com" className="flex items-center justify-center gap-4 hover:text-white transition-colors underline-offset-8 hover:underline">
