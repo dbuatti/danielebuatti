@@ -72,7 +72,7 @@ const ContactPage: React.FC = () => {
                 
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button className="w-full justify-start text-lg py-7 rounded-full gap-3 shadow-sm transition-all hover:scale-[1.01]">
+                    <Button className="w-full justify-start text-lg py-7 rounded-full gap-3 shadow-sm transition-all hover:scale-[1.01] bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
                       <Calendar className="w-5 h-5" /> Book a discovery call
                     </Button>
                   </DialogTrigger>
