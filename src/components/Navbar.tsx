@@ -21,8 +21,9 @@ const Navbar = () => {
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
-    // Check if user has already dismissed it in this browser session
-    const isDismissed = localStorage.getItem("live-piano-banner-dismissed");
+    // UPDATED: Changed from localStorage to sessionStorage
+    // This means it stays hidden while the tab is open, but returns on a fresh visit/refresh
+    const isDismissed = sessionStorage.getItem("live-piano-banner-dismissed");
     if (!isDismissed) {
       setShowBanner(true);
     }
@@ -30,7 +31,8 @@ const Navbar = () => {
 
   const dismissBanner = () => {
     setShowBanner(false);
-    localStorage.setItem("live-piano-banner-dismissed", "true");
+    // UPDATED: Changed to sessionStorage
+    sessionStorage.setItem("live-piano-banner-dismissed", "true");
   };
 
   useEffect(() => {
@@ -68,12 +70,12 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full">
-      {/* 1. THE BLACK BAR (Re-added here) */}
+      {/* 1. THE BLACK BAR (Now using Session Storage) */}
       {showBanner && (
         <div className="w-full bg-black text-white py-2.5 px-4 flex items-center justify-between border-b border-yellow-900/30 shadow-lg">
           <div className="flex-1 flex justify-center items-center gap-2.5 text-[10px] md:text-xs tracking-[0.2em] font-light">
             <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-            <span className="uppercase tracking-widest">Signature Live Piano & Vocals</span>
+            <span className="uppercase tracking-widest text-white">Signature Live Piano & Vocals</span>
             <Link 
               to="/live-piano-services" 
               className="ml-3 text-yellow-500 hover:text-yellow-400 underline underline-offset-4 transition-colors font-medium"
