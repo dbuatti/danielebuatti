@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
 import SeoStructuredData from "@/components/SeoStructuredData";
+import SeoMetadata from "@/components/SeoMetadata";
 import DynamicImage from "@/components/DynamicImage";
 import ContactForm from "@/components/ContactForm";
 import { Button } from "@/components/ui/button";
@@ -12,8 +13,10 @@ import { Link } from "react-router-dom";
 import { Mic2, Leaf, Megaphone, CheckCircle2 } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import CalEmbed from "@/components/CalEmbed";
+import HorizontalProgramCard from "@/components/HorizontalProgramCard";
+import PianoBackingsCard from "@/components/PianoBackingsCard";
 
-// Testimonials
+// Testimonials (Restored from context)
 const testimonials = [
   { quote: "Daniele's clear, direct, and thoughtful communication is truly exceptional...", author: "Em", title: "Creative Collaborator" },
   { quote: "This program has been eye-opening; I've grown leaps and bounds as an artist...", author: "Ben", title: "Emerging Artist" },
@@ -23,96 +26,22 @@ const testimonials = [
   { quote: "Daniele is an exceptional teacher, leader, and encourager...", author: "Experienced Educator", title: "Colleague" },
 ];
 
-// New horizontal card with gradient overlay – clean, readable, powerful
-const HorizontalProgramCard: React.FC<{
-  title: string;
-  description: string;
-  link: string;
-  linkText: string;
-  imageSrc: string;
-}> = ({ title, description, link, linkText, imageSrc }) => {
-  const isInternalLink = link.startsWith("/") || link.startsWith("#");
-
-  return (
-    <div className="group relative h-96 rounded-3xl overflow-hidden shadow-2xl">
-      {/* Image */}
-      <DynamicImage
-        src={imageSrc}
-        alt={title}
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        width={1200}
-        height={600}
-      />
-
-      {/* Gradient overlay – dark at bottom for readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-
-      {/* Content – aligned to bottom left */}
-      <div className="relative z-10 h-full flex flex-col justify-end p-10 text-left">
-        <h3 className="text-4xl font-bold text-white mb-4 drop-shadow-2xl">
-          {title}
-        </h3>
-        <p className="text-xl text-white/95 mb-8 max-w-2xl drop-shadow-lg">
-          {description}
-        </p>
-        <Button asChild size="lg" className="w-fit bg-white hover:bg-gray-100 text-gray-900 text-lg px-10 py-6 rounded-full shadow-xl">
-          {isInternalLink ? (
-            <Link to={link}>{linkText}</Link>
-          ) : (
-            <a href={link} target="_blank" rel="noopener noreferrer">
-              {linkText}
-            </a>
-          )}
-        </Button>
-      </div>
-    </div>
-  );
-};
-
-{/* Piano Backing Tracks Card – New Improved Design */}
-<div className="relative h-96 rounded-3xl overflow-hidden shadow-2xl bg-[#ff00b3] flex flex-col justify-between p-10">
-  {/* Large centered logo – visible but subtle */}
-  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-    <DynamicImage
-      src="/pianobackingslogo.png"
-      alt="Piano Backing Tracks"
-      className="max-w-full max-h-full object-contain opacity-70"
-      width={1000}
-      height={500}
-    />
-  </div>
-
-  {/* Content – bottom aligned, high contrast */}
-  <div className="relative z-10">
-    {/* Empty top space for logo visibility */}
-  </div>
-
-  <div className="relative z-10 space-y-6">
-    <h3 className="text-4xl md:text-5xl font-bold text-white drop-shadow-2xl leading-tight">
-      Piano Backing Tracks
-    </h3>
-    <p className="text-xl md:text-2xl text-white/95 drop-shadow-lg max-w-lg">
-      Professional tracks for singers
-    </p>
-    <Button asChild size="lg" className="bg-white hover:bg-gray-100 text-[#ff00b3] font-semibold text-lg px-12 py-7 rounded-full shadow-2xl">
-      <a href="https://pianobackingsbydaniele.vercel.app" target="_blank" rel="noopener noreferrer">
-        Explore
-      </a>
-    </Button>
-  </div>
-</div>
-
-const LandingPage: React.FC = () => {
+const LandingPageV4: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
       <SeoStructuredData />
+      <SeoMetadata 
+        title="Landing Page V4 - New Design"
+        description="A new landing page template for Daniele Buatti's services."
+        url={`${window.location.origin}/landing-v4`}
+      />
       <Navbar />
 
       <main className="max-w-5xl mx-auto px-6 py-16 space-y-24">
         {/* Hero */}
         <section className="grid md:grid-cols-2 gap-16 items-center">
           <div className="space-y-8">
-            <h1 className="text-5xl md:text-6xl font-light leading-tight">Daniele Buatti</h1>
+            <h1 className="text-5xl md:text-6xl font-light leading-tight">Hello</h1>
             <p className="text-2xl text-gray-700 dark:text-gray-300">
               Pianist • Vocal Coach • Music Director • Embodiment Practitioner
             </p>
@@ -307,4 +236,4 @@ const LandingPage: React.FC = () => {
   );
 };
 
-export default LandingPage;
+export default LandingPageV4;
