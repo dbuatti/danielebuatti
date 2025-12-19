@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
-import { Mail, Phone } from 'lucide-react'; // Removed Play
+import { Mail, Phone } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 // Removed Carousel imports
@@ -46,17 +46,7 @@ const LivePianoServicesPage: React.FC = () => {
   // Removed api and setApi state
   // Removed selectedIndex state
 
-  const galleryItems: GalleryItem[] = [
-    { type: "image", src: "/blackgoldquoteimage1.jpg" },
-    { type: "image", src: "/blackgoldquoteimage2.jpg" },
-    { type: "image", src: "/3Degrees_Xmas_109.JPG" },
-    { type: "image", src: "/blacktie.avif" },
-    { type: "image", src: "/blacktie1.avif" },
-    { type: "image", src: "/blacktie3.avif" },
-    { type: "image", src: "/blacktie4.avif" },
-    { type: "video", src: "/IMG_5103.mov", poster: "/IMG_5103-poster.jpg" },
-    { type: "video", src: "/IMG_4436.MOV", poster: "/IMG_4436-poster.jpg" },
-  ];
+  // Removed galleryItems constant
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
