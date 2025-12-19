@@ -49,7 +49,7 @@ const CoachingPage: React.FC = () => {
     alt="Daniele Buatti in flow at the piano"
     className="w-full h-[600px] object-cover object-top shadow-2xl"  // ← this line fixes it
     width={1400}
-    height={900}
+    height={800}
     priority  // loads faster, looks instant
   />
 </div>
