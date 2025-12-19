@@ -10,7 +10,15 @@ import { cn } from "@/lib/utils";
 import { Mail, Phone, Play } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
+import { 
+  Carousel, 
+  CarouselContent, 
+  CarouselItem, 
+  CarouselNext, 
+  CarouselPrevious, 
+  type CarouselApi 
+} from "@/components/ui/carousel";
+import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures'; // ← NEW IMPORT
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -38,7 +46,7 @@ const formSchema = z.object({
 type GalleryItem = {
   type: "image" | "video";
   src: string;
-  poster?: string; // Required for videos — a static JPG thumbnail
+  poster?: string;
 };
 
 const LivePianoServicesPage: React.FC = () => {
@@ -54,7 +62,6 @@ const LivePianoServicesPage: React.FC = () => {
     { type: "image", src: "/blacktie1.avif" },
     { type: "image", src: "/blacktie3.avif" },
     { type: "image", src: "/blacktie4.avif" },
-    // === VIDEOS WITH POSTER IMAGES ===
     { type: "video", src: "/IMG_5103.mov", poster: "/IMG_5103-poster.jpg" },
     { type: "video", src: "/IMG_4436.MOV", poster: "/IMG_4436-poster.jpg" },
   ];
@@ -101,7 +108,7 @@ const LivePianoServicesPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
-      {/* Hero Section - unchanged */}
+      {/* Hero Section */}
       <header className="relative w-full h-screen flex items-center justify-center overflow-hidden">
         <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover brightness-75">
           <source src="/Daniele Buatti - Gatsby Event Gala 1.mov" type="video/mp4" />
@@ -129,7 +136,7 @@ const LivePianoServicesPage: React.FC = () => {
           </p>
         </motion.div>
 
-        {/* Main Large Media Display - Perfect for portrait videos */}
+        {/* Main Large Media Display */}
         <motion.div
           key={selectedIndex}
           initial={{ opacity: 0, scale: 0.98 }}
@@ -139,40 +146,33 @@ const LivePianoServicesPage: React.FC = () => {
         >
           {currentItem.type === "video" ? (
             <>
-              {/* Blurred background */}
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="absolute inset-0 w-full h-full object-cover blur-3xl scale-150 opacity-60"
-              >
+              <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover blur-3xl scale-150 opacity-60">
                 <source src={currentItem.src} type="video/mp4" />
               </video>
-              {/* Sharp centered video */}
               <div className="relative flex items-center justify-center w-full h-[60vh] md:h-[80vh]">
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="max-w-full max-h-full object-contain"
-                >
+                <video autoPlay loop muted playsInline className="max-w-full max-h-full object-contain">
                   <source src={currentItem.src} type="video/mp4" />
                 </video>
               </div>
             </>
           ) : (
-            <img
-              src={currentItem.src}
-              alt="Featured performance"
-              className="w-full h-[60vh] md:h-[80vh] object-cover"
-            />
+            <img src={currentItem.src} alt="Featured performance" className="w-full h-[60vh] md:h-[80vh] object-cover" />
           )}
         </motion.div>
 
-        {/* Thumbnail Carousel - NOW 100% RELIABLE */}
-        <Carousel opts={{ align: "center", loop: true }} setApi={setApi} className="w-full max-w-6xl mx-auto">
+        {/* Thumbnail Carousel with Trackpad Support */}
+        <Carousel
+          opts={{
+            align: "center",
+            loop: true,
+            dragFree: true,
+          }}
+          plugins={[
+            WheelGesturesPlugin() // ← Enables two-finger trackpad scrolling!
+          ]}
+          setApi={setApi}
+          className="w-full max-w-6xl mx-auto"
+        >
           <CarouselContent className="-ml-2 md:-ml-4">
             {galleryItems.map((item, index) => (
               <CarouselItem key={index} className="pl-2 md:pl-4 basis-1/2 md:basis-1/3 lg:basis-1/4">
@@ -190,7 +190,7 @@ const LivePianoServicesPage: React.FC = () => {
                   {item.type === "video" ? (
                     <div className="relative w-full h-full">
                       <img
-                        src={item.poster || "/fallback-poster.jpg"} // Create this as a backup
+                        src={item.poster || "/fallback-poster.jpg"}
                         alt="Video performance preview"
                         className="w-full h-full object-cover"
                       />
@@ -216,19 +216,109 @@ const LivePianoServicesPage: React.FC = () => {
         </Carousel>
       </section>
 
-      {/* About, Contact Form, and Footer remain exactly as before */}
-      {/* (Omitted here for brevity — keep your existing code) */}
-
+      {/* About Section */}
       <section className="py-32 px-4 bg-gradient-to-b from-black to-zinc-950">
-        {/* ... your about section ... */}
+        <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1 }} className="max-w-5xl mx-auto text-center space-y-16">
+          <div>
+            <h2 className="text-5xl md:text-7xl font-bold font-libre-baskerville text-gold-400 mb-10 leading-tight">
+              AN UNFORGETTABLE MUSICAL EXPERIENCE
+            </h2>
+            <p className="text-xl md:text-2xl leading-relaxed text-gray-200 mb-8 font-light max-w-4xl mx-auto">
+              Elevate your wedding, gala, corporate function, or intimate private soirée with the refined artistry of Daniele Buatti — a masterful pianist and captivating vocalist.
+            </p>
+            <p className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-3xl mx-auto">
+              Blending virtuoso piano performance with warm, sophisticated vocals, Daniele delivers a high-class piano bar experience that is both intimate and grand — perfect for creating timeless memories at discerning events.
+            </p>
+          </div>
+
+          <div className="pt-12 border-t border-gold-800/30">
+            <h3 className="text-3xl md:text-4xl font-libre-baskerville text-gold-300 mb-8">Performance Style</h3>
+            <p className="text-lg md:text-xl text-gray-200 leading-relaxed max-w-4xl mx-auto">
+              Drawing from the golden era of piano bar elegance, Daniele's performances feature exquisite piano artistry paired with velvety vocals across classical masterpieces, timeless jazz standards, swing classics, and curated contemporary favorites. 
+              Whether providing subtle background ambiance or commanding the spotlight with dedicated vocal sets, his delivery exudes class, charm, and emotional depth — tailored impeccably to upscale weddings, luxury venues, and high-brow gatherings.
+            </p>
+          </div>
+        </motion.div>
       </section>
 
+      {/* Contact Form Section */}
       <section className="py-32 px-4 max-w-4xl mx-auto">
-        {/* ... your form ... */}
+        <motion.div initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1 }}>
+          <h3 className="text-4xl md:text-5xl font-libre-baskerville text-center text-gold-400 mb-12">Enquire About Your Event</h3>
+          <Card className="bg-zinc-950/90 border border-gold-800/30 backdrop-blur-xl shadow-2xl rounded-2xl p-10 md:p-16">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(handleContactSubmit)} className="space-y-8">
+                <div className="grid md:grid-cols-2 gap-8">
+                  <FormField control={form.control} name="firstName" render={({ field }) => (
+                    <FormItem><FormLabel className="text-gold-300">First Name *</FormLabel><FormControl><Input {...field} placeholder="First name" className="bg-black/50 border-gold-700/50 text-white placeholder:text-gray-500 focus:border-gold-500 transition-colors h-12 text-lg" /></FormControl><FormMessage className="text-red-400" /></FormItem>
+                  )} />
+                  <FormField control={form.control} name="lastName" render={({ field }) => (
+                    <FormItem><FormLabel className="text-gold-300">Last Name *</FormLabel><FormControl><Input {...field} placeholder="Last name" className="bg-black/50 border-gold-700/50 text-white placeholder:text-gray-500 focus:border-gold-500 transition-colors h-12 text-lg" /></FormControl><FormMessage className="text-red-400" /></FormItem>
+                  )} />
+                </div>
+
+                <FormField control={form.control} name="email" render={({ field }) => (
+                  <FormItem><FormLabel className="text-gold-300">Email Address *</FormLabel><FormControl><Input {...field} type="email" placeholder="your@email.com" className="bg-black/50 border-gold-700/50 text-white placeholder:text-gray-500 focus:border-gold-500 h-12 text-lg" /></FormControl><FormMessage className="text-red-400" /></FormItem>
+                )} />
+
+                <div className="grid md:grid-cols-2 gap-8">
+                  <FormField control={form.control} name="phone" render={({ field }) => (
+                    <FormItem><FormLabel className="text-gold-300">Phone</FormLabel><FormControl><Input {...field} placeholder="0424 174 067" className="bg-black/50 border-gold-700/50 text-white placeholder:text-gray-500 focus:border-gold-500 h-12 text-lg" /></FormControl></FormItem>
+                  )} />
+                  <FormField control={form.control} name="suburb" render={({ field }) => (
+                    <FormItem><FormLabel className="text-gold-300">Suburb / Area</FormLabel><FormControl><Input {...field} placeholder="e.g. Sydney CBD" className="bg-black/50 border-gold-700/50 text-white placeholder:text-gray-500 focus:border-gold-500 h-12 text-lg" /></FormControl></FormItem>
+                  )} />
+                </div>
+
+                <FormField control={form.control} name="eventDescription" render={({ field }) => (
+                  <FormItem><FormLabel className="text-gold-300">Tell us about your event *</FormLabel><FormControl><Textarea {...field} rows={6} placeholder="Event type, date, venue, special song requests, vocal or instrumental focus..." className="bg-black/50 border-gold-700/50 text-white placeholder:text-gray-500 focus:border-gold-500 resize-none text-lg" /></FormControl><FormMessage className="text-red-400" /></FormItem>
+                )} />
+
+                <FormField control={form.control} name="pianoType" render={({ field }) => (
+                  <FormItem><FormLabel className="text-gold-300">Instrument available at venue?</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl><SelectTrigger className="bg-black/50 border-gold-700/50 text-white h-12 text-lg"><SelectValue placeholder="Select an option" /></SelectTrigger></FormControl>
+                      <SelectContent className="bg-zinc-900 border-gold-800">
+                        <SelectItem value="grand-piano">Grand Piano</SelectItem>
+                        <SelectItem value="upright-piano">Upright Piano</SelectItem>
+                        <SelectItem value="digital-piano">Digital Piano / Keyboard</SelectItem>
+                        <SelectItem value="none">None – please provide</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+
+                <Button
+                  type="submit"
+                  size="lg"
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-yellow-500 to-yellow-400 hover:from-yellow-400 hover:to-yellow-300 text-black font-semibold text-xl py-8 rounded-full shadow-2xl shadow-yellow-500/30 transition-all duration-300"
+                >
+                  {loading ? "Sending Inquiry..." : "Send Your Inquiry"}
+                </Button>
+              </form>
+            </Form>
+          </Card>
+        </motion.div>
       </section>
 
+      {/* Footer */}
       <footer className="relative py-24 text-center overflow-hidden">
-        {/* ... your footer ... */}
+        <div className="absolute inset-0 -z-10 brightness-50 scale-110" style={{ backgroundImage: `url(/bowtie.avif)`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
+        <div className="relative z-10">
+          <DynamicImage src="/gold-36.png" alt="Logo" className="h-20 mx-auto mb-8 opacity-90" width={80} height={80} />
+          <div className="space-y-6 text-2xl md:text-3xl font-light">
+            <a href="https://wa.me/61424174067" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-4 hover:text-gold-400 transition-colors">
+              <Phone size={32} /> 0424 174 067
+            </a>
+            <a href="mailto:info@danielebuatti.com" className="flex items-center justify-center gap-4 hover:text-gold-400 transition-colors">
+              <Mail size={32} /> info@danielebuatti.com
+            </a>
+          </div>
+          <p className="mt-12 text-gray-400 text-lg">© {new Date().getFullYear()} Daniele Buatti. All rights reserved.</p>
+        </div>
       </footer>
     </div>
   );
