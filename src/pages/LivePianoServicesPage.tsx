@@ -342,7 +342,7 @@ const LivePianoServicesPage: React.FC = () => {
                   disabled={loading}
                   className="w-full bg-white text-black hover:bg-gray-200 font-semibold text-xl py-8 rounded-full shadow-2xl transition-all duration-300"
                 >
-                  {loading ? "Sending Inquiry..." : "Send Your Inquiry"}
+                  {loading ? "Sending Inquiry..." : "Send Inquiry"}
                 </Button>
               </form>
             </Form>
