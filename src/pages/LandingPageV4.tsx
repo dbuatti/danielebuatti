@@ -284,7 +284,7 @@ const LandingPage: React.FC = () => {
                   <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors duration-500" />
                   <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-8">
                     <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 drop-shadow-lg">
-                      Resonance with Daniele: A sadaadas Pop-Up Choir for All Voices
+                      Resonance with Daniele: A Joyful Pop-Up Choir for All Voices
                     </h3>
                     <p className="text-lg md:text-xl text-white/90 mb-8 max-w-md drop-shadow-md">
                       Join a welcoming community to sing, connect, and shine, with no experience needed.
