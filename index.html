@@ -31,14 +31,6 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <!-- Conditional Mailchimp script loading -->
-    <script>
-      const currentPath = window.location.pathname;
-      // Exclude admin, login, quote, and live-piano-services pages from loading the Mailchimp script
-      const isExcludedPath = currentPath.startsWith('/admin') || currentPath === '/login' || currentPath.startsWith('/quotes/') || currentPath.startsWith('/live-piano-services');
-      if (!isExcludedPath) {
-        !function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/584811697f8ff0680172c8aa7/29d98bf506955b5213953118f.js");
-      }
-    </script>
+    <!-- Conditional Mailchimp script loading removed -->
   </body>
 </html>
