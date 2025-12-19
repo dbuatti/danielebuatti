@@ -46,7 +46,7 @@ const CoachingPage: React.FC = () => {
   <DynamicImage
     src="/danielecalmatpiano.jpeg"
     alt="Daniele Buatti in flow at the piano"
-    className="w-full h-[650px] object-cover shadow-xl"
+    className="w-full h-[650px] object-cover shadow-2xl"
     style={{ objectPosition: "center 45%" }}  // change 35% to 40%, 45%, etc.
     width={1400}
     height={800}
