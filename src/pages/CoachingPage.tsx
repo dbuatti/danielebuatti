@@ -47,9 +47,9 @@ const CoachingPage: React.FC = () => {
   <DynamicImage
     src="/danielecalmatpiano.jpeg"
     alt="Daniele Buatti in flow at the piano"
-    className="w-full h-[600px] object-cover object-top shadow-3xl"  // ← this line fixes it
+    className="w-full h-[600px] object-cover object-top shadow-2xl"  // ← this line fixes it
     width={1400}
-    height={800}
+    height={900}
     priority  // loads faster, looks instant
   />
 </div>
