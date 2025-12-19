@@ -7,7 +7,6 @@ import BackToTopButton from "@/components/BackToTopButton";
 import SeoStructuredData from "@/components/SeoStructuredData";
 import SeoMetadata from "@/components/SeoMetadata";
 import DynamicImage from "@/components/DynamicImage";
-import ContactForm from "@/components/ContactForm";
 import { Link } from "react-router-dom";
 import { Mic2, Leaf, Megaphone, CheckCircle2 } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -182,19 +181,24 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* Contact – soft card */}
-        <section id="contact" className="pb-20">
+        {/* Contact CTA */}
+        <section id="contact" className="pb-20 text-center">
           <h2 className="text-4xl font-light text-center mb-10">Get in Touch</h2>
-          <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 p-10">
-            <p className="text-center text-lg text-gray-600 dark:text-gray-400 mb-8 italic">
-              For AMEB accompanying inquiries, please use the dedicated page for rates and booking.
+          <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 p-10 max-w-xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 italic">
+              For general inquiries, performance bookings, or to discuss coaching, please visit the dedicated contact page.
             </p>
-            <div className="text-center mb-12">
+            <Button asChild size="lg" className="text-lg px-12 py-7 rounded-full">
+              <Link to="/contact">Go to Contact Page</Link>
+            </Button>
+            <div className="mt-8">
+              <p className="text-center text-lg text-gray-600 dark:text-gray-400 mb-4 italic">
+                For AMEB accompanying inquiries, please use the dedicated page for rates and booking.
+              </p>
               <Button asChild size="lg" variant="outline" className="border-2 text-lg px-12 py-7 rounded-full">
                 <Link to="/ameb-accompanying">View AMEB Rates & Book</Link>
               </Button>
             </div>
-            <ContactForm />
           </div>
         </section>
       </main>

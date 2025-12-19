@@ -25,6 +25,7 @@ import EmbodimentSomaticBookingPage from './pages/EmbodimentSomaticBookingPage';
 import PresenceCommunicationBookingPage from './pages/PresenceCommunicationBookingPage';
 import DynamicQuotePage from './pages/DynamicQuotePage';
 import QuoteConfirmationPage from './pages/QuoteConfirmationPage';
+import ContactPage from './pages/ContactPage'; // Import new ContactPage
 
 // Admin Pages
 import Login from './pages/Login';
@@ -63,6 +64,7 @@ function App() {
             <Route path="book-presence-communication" element={<PresenceCommunicationBookingPage />} />
             <Route path="quotes/:slug" element={<DynamicQuotePage />} />
             <Route path="live-piano-services/quote-confirmation" element={<QuoteConfirmationPage />} />
+            <Route path="contact" element={<ContactPage />} /> {/* NEW Contact Route */}
 
             {/* Auth Route */}
             <Route path="login" element={<Login />} />
