@@ -43,7 +43,7 @@ const CoachingPage: React.FC = () => {
         </section>
 
 {/* Hero Image – your head is now fully visible + beautiful */}
-<div className="mb-24 -mx-5">
+<div className="mb-25 -mx-6">
   <DynamicImage
     src="/danielecalmatpiano.jpeg"
     alt="Daniele Buatti in flow at the piano"
