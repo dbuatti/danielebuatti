@@ -47,7 +47,7 @@ const CoachingPage: React.FC = () => {
     src="/danielecalmatpiano.jpeg"
     alt="Daniele Buatti in flow at the piano"
     className="w-full h-[650px] object-cover shadow-2xl"
-    style={{ objectPosition: "center 5%" }}  // change 35% to 40%, 45%, etc.
+    style={{ objectPosition: "center 7%" }}  // change 35% to 40%, 45%, etc.
     width={1400}
     height={800}
   />
