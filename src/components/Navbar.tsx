@@ -1,142 +1,63 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Menu, X, Star } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger, SheetOverlay } from "@/components/ui/sheet";
-import { Link, useLocation } from "react-router-dom";
-import { useActiveSection } from "@/hooks/use-active-section";
-import { cn } from "@/lib/utils";
-import DynamicImage from "@/components/DynamicImage";
-import { useTheme } from "next-themes";
-import { navLinks } from "@/constants/navigation";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import DynamicImage from './DynamicImage';
+import { Menu } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
-const Navbar = () => {
-  const activeSection = useActiveSection();
-  const location = useLocation();
-  const { theme } = useTheme();
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
-  
-  // Announcement Bar State
-  const [showBanner, setShowBanner] = useState(false);
+const navItems = [
+  { name: "Coaching", href: "/coaching" },
+  { name: "Live Piano", href: "/live-piano-services" },
+  { name: "Resources", href: "/projects-resources" },
+  { name: "Contact", href: "/contact" },
+];
 
-  useEffect(() => {
-    // UPDATED: Using sessionStorage
-    const isDismissed = sessionStorage.getItem("live-piano-banner-dismissed");
-    if (!isDismissed) {
-      setShowBanner(true);
-    }
-  }, []);
-
-  const dismissBanner = () => {
-    setShowBanner(false);
-    // UPDATED: Using sessionStorage
-    sessionStorage.setItem("live-piano-banner-dismissed", "true");
-  };
-
-  useEffect(() => {
-    setIsSheetOpen(false);
-  }, [location.pathname]);
-
-  const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
-  const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
-
-  const renderNavLink = (link: typeof navLinks[0], isMobile = false) => {
-    const commonClasses = cn(
-      "font-medium transition-colors hover:text-brand-primary",
-      isMobile ? "text-lg" : "text-sm",
-      link.href && (link.href.startsWith("#")
-        ? (activeSection === link.href.substring(1) || (link.href === "/" && activeSection === "home"))
-        : location.pathname === link.href)
-        ? "font-bold text-brand-primary dark:text-brand-primary" + (!isMobile ? " border-b-[3px] border-brand-primary pb-2" : "")
-        : "text-brand-dark dark:text-brand-light"
-    );
-
-    if (link.href) {
-      return (
-        <Link key={link.name} to={link.href} className={commonClasses}>
-          {link.name}
-        </Link>
-      );
-    }
-    return null;
-  };
-
+const Navbar: React.FC = () => {
   return (
-    <header className="sticky top-0 z-50 w-full">
-      {/* 1. THE BLACK BAR (Announcement Bar) */}
-      {showBanner && (
-        <div className="w-full bg-black text-white py-2 px-4 flex items-center justify-between border-b border-yellow-900/30">
-          <div className="flex-1 flex justify-center items-center gap-2 text-xs md:text-sm font-light tracking-widest">
-            <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-            <span>SIGNATURE LIVE PIANO & VOCALS</span>
-            <Link 
-              to="/live-piano-services" 
-              className="ml-4 text-yellow-500 hover:text-yellow-400 underline underline-offset-4 transition-colors font-medium"
+    <header className="sticky top-0 z-40 w-full border-b bg-white/80 backdrop-blur-md dark:bg-gray-950/80 dark:border-gray-800 transition-colors">
+      <div className="container flex h-16 items-center justify-between px-4 md:px-6 max-w-5xl mx-auto">
+        {/* Logo/Home Link */}
+        <Link to="/" className="flex items-center space-x-2 transition-opacity hover:opacity-80">
+          <DynamicImage src="/gold-36.png" alt="Daniele Buatti Logo" className="h-8 w-8" width={32} height={32} />
+          <span className="hidden sm:inline-block font-semibold text-lg text-gray-900 dark:text-white">Daniele Buatti</span>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-6">
+          {navItems.map((item) => (
+            <Link
+              key={item.name}
+              to={item.href}
+              className="text-sm font-medium transition-colors hover:text-brand-primary dark:hover:text-brand-primary text-gray-600 dark:text-gray-300"
             >
-              EXPLORE THE GALLERY
+              {item.name}
             </Link>
-          </div>
-          <button 
-            onClick={dismissBanner}
-            className="text-white/60 hover:text-white transition-colors"
-            aria-label="Dismiss banner"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-      )}
+          ))}
+        </nav>
 
-      {/* 2. THE MAIN NAVBAR */}
-      <div className="w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
-        <div className="container flex h-16 items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2">
-            <DynamicImage
-              src={brandSymbolSrc}
-              alt="Daniele Buatti Brand Symbol"
-              className="h-8 w-auto"
-              width={32}
-              height={32}
-            />
-            <DynamicImage
-              src={textLogoSrc}
-              alt="Daniele Buatti Logo"
-              className="h-12 w-auto"
-              width={220}
-              height={48}
-            />
-          </Link>
-          
-          <nav className="hidden md:flex items-center space-x-6">
-            {navLinks.map((link) => renderNavLink(link))}
-            <Button asChild size="sm" className="h-9 px-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-              <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
-                Book Now
-              </a>
+        {/* Mobile Navigation */}
+        <Sheet>
+          <SheetTrigger asChild className="md:hidden">
+            <Button variant="ghost" size="icon">
+              <Menu className="h-6 w-6" />
             </Button>
-          </nav>
-
-          <div className="flex items-center md:hidden">
-            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-brand-dark dark:text-brand-light">
-                  <Menu className="h-6 w-6" />
-                </Button>
-              </SheetTrigger>
-              <SheetOverlay className="bg-black/60 dark:bg-black/90" />
-              <SheetContent side="right" className="w-[300px] bg-brand-light dark:bg-brand-dark">
-                <nav className="flex flex-col gap-4 pt-6">
-                  {navLinks.map((link) => renderNavLink(link, true))}
-                  <Button asChild size="lg" className="h-12 px-6 py-3 bg-brand-primary text-brand-light mt-4">
-                    <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
-                      Book Now
-                    </a>
-                  </Button>
-                </nav>
-              </SheetContent>
-            </Sheet>
-          </div>
-        </div>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-white dark:bg-gray-950">
+            <div className="flex flex-col space-y-4 pt-6">
+              {navItems.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className="text-lg font-medium py-2 text-gray-800 dark:text-gray-200 hover:text-brand-primary dark:hover:text-brand-primary transition-colors"
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
     </header>
   );
