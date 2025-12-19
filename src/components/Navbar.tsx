@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Star } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetOverlay } from "@/components/ui/sheet";
@@ -19,21 +19,19 @@ const Navbar = () => {
   
   // Announcement Bar State
   const [showBanner, setShowBanner] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
-    // We remove the "isDismissed" check entirely for now 
-    // to guarantee it returns on every refresh.
-    const timer = setTimeout(() => {
+    // UPDATED: Using sessionStorage
+    const isDismissed = sessionStorage.getItem("live-piano-banner-dismissed");
+    if (!isDismissed) {
       setShowBanner(true);
-    }, 100); // Slight delay for the fade-in effect
-    
-    return () => clearTimeout(timer);
+    }
   }, []);
 
   const dismissBanner = () => {
     setShowBanner(false);
+    // UPDATED: Using sessionStorage
+    sessionStorage.setItem("live-piano-banner-dismissed", "true");
   };
 
   useEffect(() => {
@@ -56,12 +54,7 @@ const Navbar = () => {
 
     if (link.href) {
       return (
-        <Link 
-          key={link.name} 
-          to={link.href} 
-          className={commonClasses} 
-          onClick={() => isMobile && setIsSheetOpen(false)}
-        >
+        <Link key={link.name} to={link.href} className={commonClasses}>
           {link.name}
         </Link>
       );
@@ -71,31 +64,28 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full">
-      {/* 1. THE BLACK BAR (With Fade-In Animation) */}
-      <div 
-        className={cn(
-          "w-full bg-black text-white px-4 flex items-center justify-between border-b border-yellow-900/30 shadow-lg transition-all duration-700 ease-in-out overflow-hidden",
-          showBanner ? "max-h-20 py-2.5 opacity-100" : "max-h-0 py-0 opacity-0 border-none"
-        )}
-      >
-        <div className="flex-1 flex justify-center items-center gap-2.5 text-[10px] md:text-xs tracking-[0.2em] font-light">
-          <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-          <span className="uppercase tracking-widest text-white">Signature Live Piano & Vocals</span>
-          <Link 
-            to="/live-piano-services" 
-            className="ml-3 text-yellow-500 hover:text-yellow-400 underline underline-offset-4 transition-colors font-medium"
+      {/* 1. THE BLACK BAR (Announcement Bar) */}
+      {showBanner && (
+        <div className="w-full bg-black text-white py-2 px-4 flex items-center justify-between border-b border-yellow-900/30">
+          <div className="flex-1 flex justify-center items-center gap-2 text-xs md:text-sm font-light tracking-widest">
+            <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+            <span>SIGNATURE LIVE PIANO & VOCALS</span>
+            <Link 
+              to="/live-piano-services" 
+              className="ml-4 text-yellow-500 hover:text-yellow-400 underline underline-offset-4 transition-colors font-medium"
+            >
+              EXPLORE THE GALLERY
+            </Link>
+          </div>
+          <button 
+            onClick={dismissBanner}
+            className="text-white/60 hover:text-white transition-colors"
+            aria-label="Dismiss banner"
           >
-            EXPLORE THE GALLERY
-          </Link>
+            <X className="h-4 w-4" />
+          </button>
         </div>
-        <button 
-          onClick={dismissBanner}
-          className="text-white/40 hover:text-white transition-colors p-1"
-          aria-label="Dismiss banner"
-        >
-          <X className="h-4 w-4" />
-        </button>
-      </div>
+      )}
 
       {/* 2. THE MAIN NAVBAR */}
       <div className="w-full border-b bg-brand-light/95 backdrop-blur supports-[backdrop-filter]:bg-brand-light/60 dark:bg-brand-dark/95 dark:supports-[backdrop-filter]:bg-brand-dark/60">
@@ -119,7 +109,7 @@ const Navbar = () => {
           
           <nav className="hidden md:flex items-center space-x-6">
             {navLinks.map((link) => renderNavLink(link))}
-            <Button asChild size="sm" className="h-9 px-4 bg-brand-primary hover:bg-brand-primary/90 text-brand-light rounded-full transition-transform hover:scale-105">
+            <Button asChild size="sm" className="h-9 px-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
               <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
                 Book Now
               </a>
@@ -135,9 +125,9 @@ const Navbar = () => {
               </SheetTrigger>
               <SheetOverlay className="bg-black/60 dark:bg-black/90" />
               <SheetContent side="right" className="w-[300px] bg-brand-light dark:bg-brand-dark">
-                <nav className="flex flex-col gap-4 pt-8">
+                <nav className="flex flex-col gap-4 pt-6">
                   {navLinks.map((link) => renderNavLink(link, true))}
-                  <Button asChild size="lg" className="h-12 px-6 py-3 bg-brand-primary text-brand-light mt-6 rounded-full">
+                  <Button asChild size="lg" className="h-12 px-6 py-3 bg-brand-primary text-brand-light mt-4">
                     <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
                       Book Now
                     </a>
