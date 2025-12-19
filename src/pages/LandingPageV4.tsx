@@ -6,7 +6,6 @@ import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
 import SeoStructuredData from "@/components/SeoStructuredData";
 import SeoMetadata from "@/components/SeoMetadata";
-import { cn } from "@/lib/utils"; // Import cn
 
 const LandingPageV4: React.FC = () => {
   return (
