@@ -194,7 +194,7 @@ const LivePianoServicesPage: React.FC = () => {
                   className={cn(
                     "relative cursor-pointer rounded-xl overflow-hidden transition-all duration-300 h-48",
                     selectedIndex === index
-                      ? "ring-4 ring-yellow-500 shadow-2xl shadow-yellow-500/30"
+                      ? "ring-2 ring-white/40 shadow-xl shadow-black/40"
                       : "opacity-70 hover:opacity-100"
                   )}
                 >
