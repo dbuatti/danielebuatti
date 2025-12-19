@@ -12,17 +12,17 @@ const AmebAccompanyingPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
       <Navbar />
 
-      <main className="max-w-5xl mx-auto px-6 py-16">
+      <main className="max-w-5xl mx-auto px-6 py-12">
         {/* Header */}
-        <header className="text-center mb-20">
-          <h1 className="text-5xl md:text-6xl font-light mb-6">AMEB Accompanying</h1>
+        <header className="text-center mb-16">
+          <h1 className="text-5xl md:text-6xl font-light mb-4">AMEB Accompanying</h1>
           <p className="text-xl max-w-3xl mx-auto text-gray-600 dark:text-gray-400">
             Professional piano accompaniment for your AMEB exams and rehearsals.
           </p>
         </header>
 
         {/* Hero Image */}
-        <div className="mb-20 -mx-6">
+        <div className="mb-16 -mx-6">
           <DynamicImage
             src="/danieleatkeyboard.jpeg"
             alt="Daniele Buatti at the keyboard"
@@ -33,14 +33,14 @@ const AmebAccompanyingPage: React.FC = () => {
         </div>
 
         {/* Overview */}
-        <section className="mb-20 text-center">
+        <section className="mb-16 text-center">
           <p className="text-xl max-w-3xl mx-auto leading-relaxed text-gray-600 dark:text-gray-400">
             I provide calm, reliable accompaniment for AMEB exams (all grades and instruments) and optional rehearsals beforehand. My goal is to help you feel prepared and supported on the day.
           </p>
         </section>
 
         {/* Exam Day */}
-        <section className="mb-20 grid md:grid-cols-2 gap-12 items-center">
+        <section className="mb-16 grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
             <h2 className="text-3xl font-medium flex items-center gap-4">
               <Piano className="w-10 h-10 text-gray-700 dark:text-gray-300" />
@@ -62,8 +62,8 @@ const AmebAccompanyingPage: React.FC = () => {
         </section>
 
         {/* Rehearsals */}
-        <section className="mb-20 py-16 bg-white dark:bg-gray-900 rounded-3xl">
-          <h2 className="text-3xl font-medium text-center mb-12 flex items-center justify-center gap-4">
+        <section className="mb-16 py-12 bg-white dark:bg-gray-900 rounded-3xl">
+          <h2 className="text-3xl font-medium text-center mb-10 flex items-center justify-center gap-4">
             <Calendar className="w-10 h-10 text-gray-700 dark:text-gray-300" />
             Rehearsal Sessions (optional)
           </h2>
@@ -95,13 +95,13 @@ const AmebAccompanyingPage: React.FC = () => {
           </div>
         </section>
 
-        {/* Booking Form */}
-        <section className="py-20">
-          <h2 className="text-4xl font-light text-center mb-12">Book or Inquire</h2>
+        {/* Booking Form – reduced top spacing */}
+        <section className="py-12">
+          <h2 className="text-4xl font-light text-center mb-8">Book or Inquire</h2>
           <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 rounded-3xl shadow-lg p-10">
             <AmebBookingForm />
           </div>
-          <p className="text-center mt-8 text-gray-600 dark:text-gray-400">
+          <p className="text-center mt-6 text-gray-600 dark:text-gray-400">
             Please send sheet music at least two weeks before the exam so I can prepare properly.
           </p>
         </section>
