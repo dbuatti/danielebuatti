@@ -44,6 +44,7 @@ const LivePianoServicesPage: React.FC = () => {
   const galleryImages = [
     "/blackgoldquoteimage1.jpg",
     "/blackgoldquoteimage2.jpg",
+    "/blackgoldquoteimage2.jpg",
     "/blacktie.avif",
     "/blacktie1.avif",
     "/blacktie3.avif",
