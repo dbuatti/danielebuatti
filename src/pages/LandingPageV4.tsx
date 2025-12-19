@@ -35,7 +35,7 @@ const LandingPageV4: React.FC = () => {
       />
       <Navbar />
 
-      <main className="max-w-5xl mx-auto px-6 py-16 space-y-24">
+      <main className="max-w-5xl mx-auto px-6 py-12 space-y-20">
         {/* Hero */}
         <section className="grid md:grid-cols-2 gap-16 items-center">
           <div className="space-y-8">
@@ -62,19 +62,19 @@ const LandingPageV4: React.FC = () => {
 
         {/* Expertise */}
         <section>
-          <h2 className="text-4xl font-light text-center mb-12">My Expertise</h2>
-          <div className="grid md:grid-cols-3 gap-12">
-            <div className="text-center space-y-6">
+          <h2 className="text-4xl font-light text-center mb-10">My Expertise</h2>
+          <div className="grid md:grid-cols-3 gap-10">
+            <div className="text-center space-y-6 bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg">
               <Mic2 className="w-16 h-16 mx-auto text-gray-700 dark:text-gray-300" />
               <h3 className="text-2xl font-medium">Voice & Piano</h3>
               <p className="text-gray-600 dark:text-gray-400">Technique, repertoire, theory, audition prep, and expressive performance.</p>
             </div>
-            <div className="text-center space-y-6">
+            <div className="text-center space-y-6 bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg">
               <Leaf className="w-16 h-16 mx-auto text-gray-700 dark:text-gray-300" />
               <h3 className="text-2xl font-medium">Body & Breath</h3>
               <p className="text-gray-600 dark:text-gray-400">Kinesiology and somatic work to release tension and support natural resonance.</p>
             </div>
-            <div className="text-center space-y-6">
+            <div className="text-center space-y-6 bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg">
               <Megaphone className="w-16 h-16 mx-auto text-gray-700 dark:text-gray-300" />
               <h3 className="text-2xl font-medium">Presence & Communication</h3>
               <p className="text-gray-600 dark:text-gray-400">Public speaking, on-camera work, and building calm, authentic presence.</p>
@@ -84,8 +84,8 @@ const LandingPageV4: React.FC = () => {
 
         {/* Approach */}
         <section className="grid md:grid-cols-2 gap-16 items-center">
-          <DynamicImage src="/pinkcarpet.jpg" alt="Daniele Buatti" className="w-full rounded-3xl shadow-2xl" width={600} height={600} />
-          <div className="space-y-6">
+          <DynamicImage src="/pinkcarpet.jpg" alt="Daniele Buatti" className="w-full rounded-3xl shadow-2xl order-2 md:order-1" width={600} height={600} />
+          <div className="space-y-6 order-1 md:order-2">
             <h2 className="text-4xl font-light">My Approach</h2>
             <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
               I help performers connect body, breath, and voice so they can express themselves with freedom and ease.
@@ -101,25 +101,25 @@ const LandingPageV4: React.FC = () => {
 
         {/* Who I Work With */}
         <section>
-          <h2 className="text-4xl font-light text-center mb-12">Who I Work With</h2>
+          <h2 className="text-4xl font-light text-center mb-10">Who I Work With</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-md text-center">
-              <Mic2 className="w-12 h-12 mx-auto mb-4 text-gray-700 dark:text-gray-300" />
+            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg text-center">
+              <Mic2 className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300" />
               <h3 className="text-xl font-medium mb-2">Singers & Musicians</h3>
               <p className="text-gray-600 dark:text-gray-400">Technical skill and expressive freedom</p>
             </div>
-            <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-md text-center">
-              <Megaphone className="w-12 h-12 mx-auto mb-4 text-gray-700 dark:text-gray-300" />
+            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg text-center">
+              <Megaphone className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300" />
               <h3 className="text-xl font-medium mb-2">Public Speakers</h3>
               <p className="text-gray-600 dark:text-gray-400">Confident and impactful communication</p>
             </div>
-            <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-md text-center">
-              <Leaf className="w-12 h-12 mx-auto mb-4 text-gray-700 dark:text-gray-300" />
+            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg text-center">
+              <Leaf className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300" />
               <h3 className="text-xl font-medium mb-2">Film & Streaming Performers</h3>
               <p className="text-gray-600 dark:text-gray-400">Nuanced presence on camera</p>
             </div>
-            <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-md text-center">
-              <CheckCircle2 className="w-12 h-12 mx-auto mb-4 text-gray-700 dark:text-gray-300" />
+            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg text-center">
+              <CheckCircle2 className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300" />
               <h3 className="text-xl font-medium mb-2">Committed Professionals</h3>
               <p className="text-gray-600 dark:text-gray-400">Sustainable long-term practice</p>
             </div>
@@ -128,33 +128,33 @@ const LandingPageV4: React.FC = () => {
 
         {/* Why Work With Me */}
         <section>
-          <h2 className="text-4xl font-light text-center mb-12">Why Work With Me</h2>
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="flex items-start gap-4">
-              <CheckCircle2 className="w-8 h-8 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1" />
-              <p className="text-lg text-gray-600 dark:text-gray-400"><strong>Holistic expertise</strong> — voice, piano, presence, kinesiology, and mindset.</p>
+          <h2 className="text-4xl font-light text-center mb-10">Why Work With Me</h2>
+          <div className="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
+            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg flex items-start gap-5">
+              <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1" />
+              <p className="text-lg text-gray-700 dark:text-gray-300"><strong>Holistic expertise</strong> — voice, piano, presence, kinesiology, and mindset.</p>
             </div>
-            <div className="flex items-start gap-4">
-              <CheckCircle2 className="w-8 h-8 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1" />
-              <p className="text-lg text-gray-600 dark:text-gray-400"><strong>Embodiment-based</strong> — build skill without tension or burnout.</p>
+            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg flex items-start gap-5">
+              <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1" />
+              <p className="text-lg text-gray-700 dark:text-gray-300"><strong>Embodiment-based</strong> — build skill without tension or burnout.</p>
             </div>
-            <div className="flex items-start gap-4">
-              <CheckCircle2 className="w-8 h-8 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1" />
-              <p className="text-lg text-gray-600 dark:text-gray-400"><strong>Results-focused</strong> — leave sessions more confident and capable.</p>
+            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg flex items-start gap-5">
+              <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1" />
+              <p className="text-lg text-gray-700 dark:text-gray-300"><strong>Results-focused</strong> — leave sessions more confident and capable.</p>
             </div>
-            <div className="flex items-start gap-4">
-              <CheckCircle2 className="w-8 h-8 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1" />
-              <p className="text-lg text-gray-600 dark:text-gray-400"><strong>Creative freedom</strong> — technique meets artistry and authentic expression.</p>
+            <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg flex items-start gap-5">
+              <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1" />
+              <p className="text-lg text-gray-700 dark:text-gray-300"><strong>Creative freedom</strong> — technique meets artistry and authentic expression.</p>
             </div>
           </div>
         </section>
 
         {/* Testimonials */}
         <section>
-          <h2 className="text-4xl font-light text-center mb-12">Client Feedback</h2>
+          <h2 className="text-4xl font-light text-center mb-10">Client Feedback</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {testimonials.map((t, i) => (
-              <div key={i} className="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-md">
+              <div key={i} className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-lg">
                 <p className="text-lg italic mb-6 text-gray-700 dark:text-gray-300">"{t.quote}"</p>
                 <p className="font-medium">— {t.author}</p>
                 <p className="text-sm text-gray-600 dark:text-gray-400">{t.title}</p>
@@ -164,8 +164,8 @@ const LandingPageV4: React.FC = () => {
         </section>
 
         {/* Teaser to Projects & Resources Page */}
-        <section className="text-center py-16">
-          <h2 className="text-4xl font-light mb-8">Explore My Other Work</h2>
+        <section className="text-center py-16 bg-white dark:bg-gray-900 rounded-3xl">
+          <h2 className="text-4xl font-light mb-6">Explore My Other Work</h2>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">
             Live performances, music direction, digital products, community choir, and more.
           </p>
@@ -175,9 +175,9 @@ const LandingPageV4: React.FC = () => {
         </section>
 
         {/* Contact */}
-        <section className="py-16 bg-white dark:bg-gray-900 rounded-3xl text-center">
-          <h2 className="text-4xl font-light mb-10">Get in Touch</h2>
-          <div className="max-w-3xl mx-auto">
+        <section className="py-16">
+          <h2 className="text-4xl font-light text-center mb-10">Get in Touch</h2>
+          <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10">
             <ContactForm />
           </div>
         </section>
