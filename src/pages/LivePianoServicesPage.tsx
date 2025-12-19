@@ -149,7 +149,7 @@ const LivePianoServicesPage: React.FC = () => {
       {/* Gallery Section */}
       <section className="py-24 px-4 max-w-7xl mx-auto">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1 }} className="mb-16 text-center">
-          <h2 className="text-5xl md:text-6xl font-libre-baskerville text-white mb-6">Moments of Elegance</h2>
+          <h2 className="text-4xl md:text-6xl font-libre-baskerville text-white mb-6">Moments of Elegance</h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
             Captured performances at prestigious weddings, galas, and private events across Australia
           </p>
