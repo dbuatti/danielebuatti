@@ -226,25 +226,36 @@ const LivePianoServicesPage: React.FC = () => {
         </Carousel>
       </section>
 
-      {/* About Section */}
-      <section className="py-32 px-4 bg-gradient-to-b from-black to-zinc-950">
-        <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1 }} className="max-w-5xl mx-auto text-center space-y-16">
-          <div>
-            <h2 className="text-5xl md:text-7xl font-bold font-libre-baskerville text-gold-400 mb-10 leading-tight tracking-tight">
-              AN UNFORGETTABLE MUSICAL EXPERIENCE
-            </h2>
-            <p className="text-xl md:text-2xl leading-relaxed text-gray-200 mb-8 font-light max-w-4xl mx-auto">
-              Elevate your wedding, gala, corporate function, or intimate private soirée with the refined artistry of Daniele Buatti — a masterful pianist and captivating vocalist.
-            </p>
-          </div>
-          <div className="pt-12 border-t border-gold-800/30">
-            <h3 className="text-3xl md:text-4xl font-libre-baskerville text-gold-300 mb-8">Performance Style</h3>
-            <p className="text-lg md:text-xl text-gray-200 leading-relaxed max-w-4xl mx-auto">
-              Blending virtuoso piano performance with warm, sophisticated vocals, Daniele delivers a high-class piano bar experience... tailored impeccably to upscale weddings, luxury venues, and high-brow gatherings.
-            </p>
-          </div>
-        </motion.div>
-      </section>
+{/* About Section */}
+<section className="py-32 px-4 bg-gradient-to-b from-black to-zinc-950">
+  <motion.div
+    initial={{ opacity: 0, y: 40 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 1 }}
+    className="max-w-5xl mx-auto text-center space-y-16"
+  >
+    <div>
+      <h2 className="text-5xl md:text-7xl font-bold font-libre-baskerville text-white mb-10 leading-tight tracking-tight">
+        AN UNFORGETTABLE MUSICAL EXPERIENCE
+      </h2>
+
+      <p className="text-xl md:text-2xl leading-relaxed text-white/90 mb-8 font-light max-w-4xl mx-auto">
+        Elevate your wedding, gala, corporate function, or intimate private soirée with the refined artistry of Daniele Buatti — a masterful pianist and captivating vocalist.
+      </p>
+    </div>
+
+    <div className="pt-12 border-t border-white/10">
+      <h3 className="text-3xl md:text-4xl font-libre-baskerville text-white mb-8">
+        Performance Style
+      </h3>
+
+      <p className="text-lg md:text-xl text-white/90 leading-relaxed max-w-4xl mx-auto">
+        Blending virtuoso piano performance with warm, sophisticated vocals, Daniele delivers a high-class piano bar experience... tailored impeccably to upscale weddings, luxury venues, and high-brow gatherings.
+      </p>
+    </div>
+  </motion.div>
+</section>
 
       {/* Contact Form Section */}
       <section id="enquire" className="py-32 px-4 max-w-4xl mx-auto">
