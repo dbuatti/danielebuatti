@@ -51,6 +51,8 @@ const LivePianoServicesPage: React.FC = () => {
     { type: "image", src: "/blacktie4.avif" },
     
     // ADD YOUR VIDEOS HERE (place in public folder)
+    { type: "video", src: "/performance-wedding-clip.mp4" },
+    { type: "video", src: "/performance-wedding-clip.mp4" },
     // Example:
     // { type: "video", src: "/performance-wedding-clip.mp4" },
     // { type: "video", src: "/daniele-singing-gala.mov" },
