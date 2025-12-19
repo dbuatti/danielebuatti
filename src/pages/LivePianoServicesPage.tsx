@@ -123,7 +123,9 @@ const LivePianoServicesPage: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
         <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.5, ease: "easeOut" }} className="relative z-10 text-center px-6">
           <DynamicImage src="/gold-36.png" alt="Daniele Buatti Logo" className="h-24 md:h-32 mx-auto mb-6 drop-shadow-2xl" width={128} height={128} />
-          <h1 className="text-5xl md:text-7xl font-light tracking-widest uppercase font-montserrat text-gold-400">Daniele Buatti</h1>
+          <h1 className="text-5xl md:text-7xl font-light tracking-widest uppercase font-montserrat text-gold-400">
+            <span className="text-white">D</span>aniele <span className="text-white">B</span>uatti
+          </h1>
           <p className="text-2xl md:text-4xl mt-6 font-libre-baskerville italic text-white">Pianist & Vocalist</p>
           <p className="text-lg md:text-xl mt-4 text-gray-300 max-w-2xl mx-auto">Sophisticated live music for discerning events</p>
         </motion.div>
