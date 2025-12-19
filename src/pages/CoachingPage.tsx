@@ -42,16 +42,16 @@ const CoachingPage: React.FC = () => {
           </Button>
         </section>
 
-<div className="mb-24 -mx-6">
-  <DynamicImage
-    src="/danielecalmatpiano.jpeg"
-    alt="Daniele Buatti in flow at the piano"
-    className="w-full h-[650px] object-cover shadow-2xl"
-    style={{ objectPosition: "center 7%" }}  // change 35% to 40%, 45%, etc.
-    width={1400}
-    height={800}
-  />
-</div>
+        <div className="mb-24 -mx-6">
+          <DynamicImage
+            src="/danielecalmatpiano.jpeg"
+            alt="Daniele Buatti in flow at the piano"
+            className="w-full h-[650px] object-cover shadow-2xl"
+            style={{ objectPosition: "center 7%" }}
+            width={1400}
+            height={800}
+          />
+        </div>
 
         {/* The Work – elevated, no bullet lists */}
         <section className="mb-32">
@@ -93,24 +93,22 @@ const CoachingPage: React.FC = () => {
               </p>
             </div>
           </div>
-        </section>
-
-            {/* Booking CTA */}
-            <div className="text-center">
-              <p className="text-lg text-gray-600 dark:text-gray-400 mb-10">
-                Sessions available in person (Toorak, Melbourne) or online via Zoom.
-              </p>
-              <Button asChild size="lg" className="text-lg px-14 py-8 rounded-full shadow-2xl">
-                <a
-                  href="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:1:1%20Coaching:%20Voice,%20Piano%20%26%20Performance"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Calendar className="w-7 h-7 inline mr-4" />
-                  Check availability & book
-                </a>
-              </Button>
-            </div>
+          
+          {/* Booking CTA */}
+          <div className="text-center pt-16">
+            <p className="text-lg text-gray-600 dark:text-gray-400 mb-10">
+              Sessions available in person (Toorak, Melbourne) or online via Zoom.
+            </p>
+            <Button asChild size="lg" className="text-lg px-14 py-8 rounded-full shadow-2xl">
+              <a
+                href="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:1:1%20Coaching:%20Voice,%20Piano%20%26%20Performance"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Calendar className="w-7 h-7 inline mr-4" />
+                Check availability & book
+              </a>
+            </Button>
           </div>
         </section>
 
