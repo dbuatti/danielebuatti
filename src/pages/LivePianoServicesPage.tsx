@@ -137,7 +137,7 @@ const LivePianoServicesPage: React.FC = () => {
           <p className="text-2xl md:text-4xl font-libre-baskerville italic text-white">
             Pianist & Vocalist
           </p>
-          <p className="text-lg md:text-xl mt-4 text-gray-300 max-w-2xl mx-auto">Live piano and vocals for elegant, considered events.</p>
+          <p className="text-lg md:text-xl mt-4 text-gray-300 max-w-2xl mx-auto font-light">Live piano and vocals for elegant, considered events.</p>
         </motion.div>
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-[pulse_3s_ease-in-out_infinite]">
           <div className="w-8 h-12 border-2 border-white/50 rounded-full flex justify-center">
@@ -229,9 +229,9 @@ const LivePianoServicesPage: React.FC = () => {
           className="max-w-5xl mx-auto text-center space-y-16"
         >
           <div>
-<h2 className="text-5xl md:text-7xl font-bold font-libre-baskerville text-white mb-10 leading-tight tracking-wide uppercase">
-  AN UNFORGETTABLE MUSICAL EXPERIENCE
-</h2>
+            <h2 className="text-4xl md:text-7xl font-bold font-libre-baskerville text-white mb-10 leading-tight tracking-wide uppercase break-words">
+              AN UNFORGETTABLE MUSICAL EXPERIENCE
+            </h2>
             <p className="text-xl md:text-2xl leading-relaxed text-white/90 mb-8 font-light max-w-4xl mx-auto">
               Elevate your wedding, gala, corporate function, or intimate private soirée with the refined artistry of Daniele Buatti — a masterful pianist and captivating vocalist.
             </p>
@@ -248,8 +248,7 @@ const LivePianoServicesPage: React.FC = () => {
       </section>
 
       {/* Contact Form Section */}
-<section id="enquire" className="pt-32 pb-16 px-4 max-w-4xl mx-auto">
-
+      <section id="enquire" className="pt-32 pb-16 px-4 max-w-4xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1 }}>
           <h3 className="text-4xl md:text-5xl font-libre-baskerville text-center text-white mb-12">
             Enquire About Your Event
@@ -351,17 +350,16 @@ const LivePianoServicesPage: React.FC = () => {
         </motion.div>
       </section>
 
-<footer className="relative pt-12 pb-24 text-center overflow-hidden">
-
+      <footer className="relative pt-12 pb-24 text-center overflow-hidden">
         <div className="absolute inset-0 -z-10 brightness-50 scale-110" style={{ backgroundImage: `url(/bowtie.avif)`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
         <div className="relative z-10 space-y-12">
           <DynamicImage src="/gold-36.png" alt="Logo" className="h-20 mx-auto opacity-90" width={80} height={80} />
           <div className="space-y-6 text-2xl md:text-3xl font-light">
-<a
-  href="https://wa.me/61424174067"
-  className="flex items-center justify-center gap-4 transition-opacity hover:opacity-80"
->
+            <a
+              href="https://wa.me/61424174067"
+              className="flex items-center justify-center gap-4 transition-opacity hover:opacity-80"
+            >
               <Phone size={32} className="text-white" /> 0424 174 067
             </a>
             <a href="mailto:info@danielebuatti.com" className="flex items-center justify-center gap-4 hover:text-white transition-colors underline-offset-8 hover:underline">
