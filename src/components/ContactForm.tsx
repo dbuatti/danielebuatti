@@ -17,8 +17,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Link } from "react-router-dom";
-import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -29,8 +27,8 @@ const formSchema = z.object({
   }),
   message: z.string().min(10, {
     message: "Message must be at least 10 characters.",
-  }).max(500, {
-    message: "Message must not be longer than 500 characters.",
+  }).max(1000, {
+    message: "Message must not be longer than 1000 characters.",
   }),
 });
 
@@ -58,100 +56,85 @@ const ContactForm: React.FC = () => {
           },
         ]);
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
-      toast.success("Your message has been sent!", {
+      toast.success("Message sent!", {
         id: loadingToastId,
-        description: "Daniele will get back to you shortly.",
+        description: "Thank you — I'll get back to you as soon as possible.",
       });
       form.reset();
     } catch (error) {
       console.error("Error submitting contact form:", error);
       toast.error("Failed to send message.", {
         id: loadingToastId,
-        description: "Please try again later or contact directly via email.",
+        description: "Please try again later or email directly.",
       });
     }
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-lg mx-auto">
-        <div className="bg-brand-secondary/10 dark:bg-brand-dark-alt/30 p-4 rounded-md text-sm text-brand-dark/80 dark:text-brand-light/80 mb-4">
-          <p className="mb-2">
-            For AMEB accompanying inquiries, please use the dedicated form for a faster and more tailored response:
-          </p>
-          <Link
-            to="/ameb-accompanying#ameb-top"
-            className={cn(
-              "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium",
-              "ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-              "disabled:pointer-events-none disabled:opacity-50",
-              "h-9 px-3",
-              "bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-            )}
-          >
-            View AMEB Rates & Services
-          </Link>
-        </div>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-brand-dark dark:text-brand-light">Name</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Your Name"
+                  placeholder="Your name"
                   {...field}
-                  className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                  className="h-12 text-base"
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-brand-dark dark:text-brand-light">Email</FormLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input
                   type="email"
                   placeholder="your@email.com"
                   {...field}
-                  className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                  className="h-12 text-base"
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="message"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-brand-dark dark:text-brand-light">Message</FormLabel>
+              <FormLabel>Message</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Your message..."
+                  placeholder="How can I help?"
                   {...field}
-                  rows={5}
-                  className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                  rows={6}
+                  className="resize-none text-base"
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <Button
           type="submit"
-          className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+          size="lg"
+          className="w-full rounded-full py-7 text-lg font-medium shadow-xl transition-all duration-300 hover:scale-105"
           disabled={form.formState.isSubmitting}
         >
           {form.formState.isSubmitting ? "Sending..." : "Send Message"}
