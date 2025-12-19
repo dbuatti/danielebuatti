@@ -366,7 +366,7 @@ const LivePianoServicesPage: React.FC = () => {
               <Mail size={32} className="text-white" /> info@danielebuatti.com
             </a>
           </div>
-          <p className="text-gray-100 text-lg">© {new Date().getFullYear()} Daniele Buatti. All rights reserved.</p>
+          <p className="text-gray-00 text-lg">© {new Date().getFullYear()} Daniele Buatti. All rights reserved.</p>
         </div>
       </footer>
     </div>
