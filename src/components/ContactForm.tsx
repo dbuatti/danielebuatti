@@ -46,17 +46,10 @@ const ContactForm: React.FC = () => {
     const loadingToastId = toast.loading("Sending your message...");
 
     try {
-      // Ensure we are inserting into the correct table and handling the response correctly
-      const { error } = await supabase
-        .from("contact_messages")
-        .insert([
-          {
-            name: values.name,
-            email: values.email,
-            message: values.message,
-          },
-        ])
-        .select(); // Use .select() to ensure the trigger fires correctly and we get a response
+      // Invoke the Edge Function for secure submission
+      const { error } = await supabase.functions.invoke('submit-contact-message', {
+        body: values,
+      });
 
       if (error) throw error;
 
