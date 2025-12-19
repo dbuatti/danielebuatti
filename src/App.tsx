@@ -47,7 +47,8 @@ function App() {
         <Routes>
           <Route path="/" element={<RootLayout />}>
             {/* Public Routes */}
-            <Route index element={<LandingPageV3 />} />
+            <Route index element={<LandingPageV4 />} /> {/* Changed index route to V4 */}
+            <Route path="landing-v3" element={<LandingPageV3 />} /> {/* V3 is now accessible via /landing-v3 */}
             <Route path="landing-v4" element={<LandingPageV4 />} />
             <Route path="coaching" element={<CoachingPage />} />
             <Route path="projects-resources" element={<ProjectsResourcesPage />} />
