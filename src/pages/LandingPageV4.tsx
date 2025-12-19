@@ -177,8 +177,17 @@ const LandingPageV4: React.FC = () => {
         {/* Contact */}
         <section className="py-16">
           <h2 className="text-4xl font-light text-center mb-10">Get in Touch</h2>
-          <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10">
-            <ContactForm />
+          <div className="max-w-3xl mx-auto">
+            {/* Centered AMEB note */}
+            <p className="text-center text-lg text-gray-600 dark:text-gray-400 mb-8 italic">
+              For AMEB accompanying inquiries, please use the dedicated form for a faster and more tailored response:
+            </p>
+            <Button asChild variant="outline" size="lg" className="block mx-auto mb-10 border-2 text-lg px-10 py-6">
+              <Link to="/ameb-accompanying">AMEB Accompanying Form</Link>
+            </Button>
+            <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10">
+              <ContactForm />
+            </div>
           </div>
         </section>
       </main>
