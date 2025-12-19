@@ -23,13 +23,73 @@ const testimonials = [
   { quote: "Daniele is an exceptional teacher, leader, and encourager...", author: "Experienced Educator", title: "Colleague" },
 ];
 
+// Inline FeaturedProgramCard (fully functional)
+const FeaturedProgramCard: React.FC<{
+  title: string;
+  description: string;
+  link: string;
+  linkText: string;
+  backgroundImageSrc?: string;
+  backgroundColorClass?: string;
+  logoSrc?: string;
+  overlayColorClass?: string;
+  backgroundPosition?: string;
+}> = ({
+  title,
+  description,
+  link,
+  linkText,
+  backgroundImageSrc,
+  backgroundColorClass,
+  logoSrc,
+  overlayColorClass = "bg-black/30",
+  backgroundPosition = "center",
+}) => {
+  const hasBackgroundImage = !!backgroundImageSrc;
+  const hasSolidBackgroundWithLogo = !!backgroundColorClass && !!logoSrc;
+  const isInternalLink = link.startsWith("/") || link.startsWith("#");
+
+  return (
+    <div
+      className="relative w-full h-64 rounded-2xl overflow-hidden shadow-md flex items-center justify-center text-center"
+      style={
+        hasBackgroundImage
+          ? { backgroundImage: `url(${backgroundImageSrc})`, backgroundSize: "cover", backgroundPosition }
+          : hasSolidBackgroundWithLogo
+          ? { backgroundColor: backgroundColorClass }
+          : {}
+      }
+    >
+      {hasBackgroundImage && <div className={`absolute inset-0 ${overlayColorClass}`}></div>}
+
+      {hasSolidBackgroundWithLogo && logoSrc && (
+        <img src={logoSrc} alt={`${title} logo`} className="absolute inset-0 w-full h-full object-contain opacity-20" />
+      )}
+
+      <div className="relative z-10 max-w-sm mx-auto p-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl shadow-lg">
+        <h4 className="text-2xl font-bold mb-3">{title}</h4>
+        <p className="text-gray-700 dark:text-gray-300 mb-6">{description}</p>
+        <Button asChild variant="default" size="lg">
+          {isInternalLink ? (
+            <Link to={link}>{linkText}</Link>
+          ) : (
+            <a href={link} target="_blank" rel="noopener noreferrer">
+              {linkText}
+            </a>
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 const LandingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
       <SeoStructuredData />
       <Navbar />
 
-      <main className="max-w-5xl mx-auto px-6 py-16 space-y-24"> {/* Reduced from space-y-32 */}
+      <main className="max-w-5xl mx-auto px-6 py-16 space-y-24">
         {/* Hero */}
         <section className="grid md:grid-cols-2 gap-16 items-center">
           <div className="space-y-8">
@@ -56,7 +116,7 @@ const LandingPage: React.FC = () => {
 
         {/* Expertise */}
         <section>
-          <h2 className="text-4xl font-light text-center mb-12">My Expertise</h2> {/* Reduced mb-16 */}
+          <h2 className="text-4xl font-light text-center mb-12">My Expertise</h2>
           <div className="grid md:grid-cols-3 gap-12">
             <div className="text-center space-y-6">
               <Mic2 className="w-16 h-16 mx-auto text-gray-700 dark:text-gray-300" />
@@ -165,30 +225,27 @@ const LandingPage: React.FC = () => {
             <div>
               <h3 className="text-3xl font-medium text-center mb-12">Specialised Services</h3>
               <div className="grid md:grid-cols-3 gap-8">
-                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-md overflow-hidden">
-                  <DynamicImage src="/daniele-conducting.jpeg" alt="Music Director" className="w-full h-64 object-cover" width={800} height={400} />
-                  <div className="p-6 text-center">
-                    <h4 className="text-xl font-medium mb-2">Music Director & Pianist</h4>
-                    <p className="text-gray-600 dark:text-gray-400 mb-4">Music theatre direction, vocal coaching, and performance.</p>
-                    <Button asChild variant="outline"><Link to="/music-director-pianist">View profile</Link></Button>
-                  </div>
-                </div>
-                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-md overflow-hidden">
-                  <DynamicImage src="/blacktie.avif" alt="Live Piano" className="w-full h-64 object-cover" width={800} height={400} />
-                  <div className="p-6 text-center">
-                    <h4 className="text-xl font-medium mb-2">Live Piano Services</h4>
-                    <p className="text-gray-600 dark:text-gray-400 mb-4">Weddings, events, and private functions.</p>
-                    <Button asChild variant="outline"><Link to="/live-piano-services">Enquire</Link></Button>
-                  </div>
-                </div>
-                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-md overflow-hidden">
-                  <DynamicImage src="/ameb-placeholder.jpg" alt="AMEB" className="w-full h-64 object-cover" width={800} height={400} />
-                  <div className="p-6 text-center">
-                    <h4 className="text-xl font-medium mb-2">AMEB Accompanying</h4>
-                    <p className="text-gray-600 dark:text-gray-400 mb-4">Exam day and rehearsal accompaniment.</p>
-                    <Button asChild variant="outline"><Link to="/ameb-accompanying">Book</Link></Button>
-                  </div>
-                </div>
+                <FeaturedProgramCard
+                  title="Music Director & Pianist"
+                  description="Music theatre direction, vocal coaching, and performance."
+                  link="/music-director-pianist"
+                  linkText="View profile"
+                  backgroundImageSrc="/daniele-conducting.jpeg"
+                />
+                <FeaturedProgramCard
+                  title="Live Piano Services"
+                  description="Weddings, events, and private functions."
+                  link="/live-piano-services"
+                  linkText="Enquire"
+                  backgroundImageSrc="/blacktie.avif"
+                />
+                <FeaturedProgramCard
+                  title="AMEB Accompanying"
+                  description="Exam day and rehearsal accompaniment."
+                  link="/ameb-accompanying"
+                  linkText="Book"
+                  backgroundImageSrc="/ameb-placeholder.jpg"
+                />
               </div>
             </div>
 
@@ -196,59 +253,36 @@ const LandingPage: React.FC = () => {
             <div>
               <h3 className="text-3xl font-medium text-center mb-12">Digital Products & Community</h3>
               <div className="grid md:grid-cols-3 gap-8">
-                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-md overflow-hidden">
-                  <DynamicImage src="/sheetmusic.png" alt="Buattiverse" className="w-full h-64 object-cover" width={800} height={400} />
-                  <div className="p-6 text-center">
-                    <h4 className="text-xl font-medium mb-2">Buattiverse</h4>
-                    <p className="text-gray-600 dark:text-gray-400 mb-4">Sheet music and backing tracks</p>
-                    <Button asChild variant="outline">
-                      <a href="https://buattiverse.gumroad.com/" target="_blank" rel="noopener">Visit store</a>
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Piano Backings with Square Blue Background */}
-                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-md overflow-hidden flex flex-col">
-                  <div className="flex-1 flex items-center justify-center bg-[#ff00b3] p-8">
-                    <DynamicImage 
-                      src="/pianobackingslogo.png" 
-                      alt="Piano Backing Tracks" 
-                      className="max-w-full max-h-full object-contain" 
-                      width={800} 
-                      height={400} 
-                    />
-                  </div>
-                  <div className="p-6 text-center">
-                    <h4 className="text-xl font-medium mb-2">Piano Backing Tracks</h4>
-                    <p className="text-gray-600 dark:text-gray-400 mb-4">Professional tracks for singers</p>
-                    <Button asChild variant="outline">
-                      <a href="https://pianobackingsbydaniele.vercel.app" target="_blank" rel="noopener">Explore</a>
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Resonance Choir Card - Inline */}
-                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-md p-6 flex flex-col justify-between">
-                  <div className="space-y-4">
-                    <h4 className="text-xl font-medium text-center">Resonance Choir</h4>
-                    <p className="text-gray-600 dark:text-gray-400">
-                      A community choir focused on harmony, expression, and joy in singing. Open to all levels.
-                    </p>
-                  </div>
-                  <div className="mt-6 text-center">
-                    <Button asChild variant="outline">
-                      <Link to="/resonance-choir">Learn more</Link>
-                    </Button>
-                  </div>
-                </div>
+                <FeaturedProgramCard
+                  title="Buattiverse"
+                  description="Sheet music and backing tracks"
+                  link="https://buattiverse.gumroad.com/"
+                  linkText="Visit store"
+                  backgroundImageSrc="/sheetmusic.png"
+                />
+                <FeaturedProgramCard
+                  title="Piano Backing Tracks"
+                  description="Professional tracks for singers"
+                  link="https://pianobackingsbydaniele.vercel.app"
+                  linkText="Explore"
+                  backgroundColorClass="#2596be"
+                  logoSrc="/pianobackingslogo.png"
+                />
+                <FeaturedProgramCard
+                  title="Resonance with Daniele: A Joyful Pop-Up Choir for All Voices"
+                  description="Join a welcoming community to sing, connect, and shine, with no experience needed."
+                  link="https://resonance-with-daniele.vercel.app"
+                  linkText="Join Resonance Choir"
+                  backgroundImageSrc="/conduct.jpeg"
+                />
               </div>
             </div>
           </div>
         </section>
 
         {/* Contact */}
-        <section className="py-16 bg-white dark:bg-gray-900 rounded-3xl text-center"> {/* Reduced py-20 */}
-          <h2 className="text-4xl font-light mb-10">Get in Touch</h2> {/* Reduced mb-12 */}
+        <section className="py-16 bg-white dark:bg-gray-900 rounded-3xl text-center">
+          <h2 className="text-4xl font-light mb-10">Get in Touch</h2>
           <div className="max-w-3xl mx-auto">
             <ContactForm />
           </div>
