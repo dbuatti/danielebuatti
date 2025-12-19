@@ -4,9 +4,36 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import DynamicImage from "@/components/DynamicImage";
-import ImageCarouselSection from "@/components/pages/landing-page-v3/ImageCarouselSection";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { Calendar } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";  // Assuming you have shadcn/ui carousel installed
+
+const images = [
+  {
+    src: "/greenroom.jpeg",
+    alt: "Daniele Buatti at the Greenroom Awards",
+  },
+  {
+    src: "/daniele-smile-host-bu.jpeg",
+    alt: "Daniele Buatti at Broadway Unplugged",
+  },
+  {
+    src: "/danielecalmatpiano.jpeg",
+    alt: "Daniele Buatti playing piano",
+  },
+  {
+    src: "/tulips.jpeg",
+    alt: "Daniele Buatti in the garden",
+  },
+  // Add more images here if you have them
+];
 
 const AboutPage: React.FC = () => {
   return (
@@ -24,7 +51,7 @@ const AboutPage: React.FC = () => {
 
         {/* Photo + Short Bio */}
         <section className="grid md:grid-cols-2 gap-16 items-center mb-32">
-          <div className="flex justify-center">
+          <div className="flex justify-center order-2 md:order-1">
             <DynamicImage
               src="/daniele simple.jpeg"
               alt="Daniele Buatti"
@@ -33,15 +60,15 @@ const AboutPage: React.FC = () => {
               height={600}
             />
           </div>
-          <div className="space-y-6 text-lg leading-relaxed">
+          <div className="space-y-6 text-lg leading-relaxed order-1 md:order-2">
             <p>
               I’ve spent over fifteen years working across music theatre and performance as a music director, pianist, arranger, vocal coach, and educator.
             </p>
             <p>
-Alongside this, I trained in kinesiology and draw from yoga and somatic practices, allowing me to work with performers in a way that integrates body, breath, and voice — not as separate skills, but as a single, responsive system.
+              Alongside this, I trained in kinesiology and draw from yoga and somatic practices, allowing me to work with performers in a way that integrates body, breath, and voice — not as separate skills, but as a single, responsive system.
             </p>
             <p>
-My work centres on reducing unnecessary tension, increasing awareness, and creating the conditions for authentic expression to emerge naturally — whether on stage, in the studio, or in everyday communication.
+              My work centres on reducing unnecessary tension, increasing awareness, and creating the conditions for authentic expression to emerge naturally — whether on stage, in the studio, or in everyday communication.
             </p>
           </div>
         </section>
@@ -87,10 +114,35 @@ My work centres on reducing unnecessary tension, increasing awareness, and creat
           </div>
         </section>
 
-        {/* Photo Moments */}
+        {/* Improved Image Gallery – modern carousel with swipe/drag support */}
         <section className="mb-32">
           <h2 className="text-4xl md:text-5xl font-light text-center mb-12">Moments from My Work</h2>
-          <ImageCarouselSection />
+          <Carousel
+            opts={{
+              align: "center",
+              loop: true,
+              dragFree: true,  // Enables trackpad/mouse drag & touch swipe
+            }}
+            className="w-full max-w-4xl mx-auto"
+          >
+            <CarouselContent className="-ml-4">
+              {images.map((image, index) => (
+                <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/2">
+                  <div className="p-1">
+                    <DynamicImage
+                      src={image.src}
+                      alt={image.alt}
+                      className="w-full h-[500px] object-cover rounded-3xl shadow-2xl"
+                      width={800}
+                      height={600}
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-4" />
+            <CarouselNext className="right-4" />
+          </Carousel>
         </section>
 
         {/* Simple CTA */}
@@ -99,7 +151,7 @@ My work centres on reducing unnecessary tension, increasing awareness, and creat
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">
             If you’d like to talk about coaching, performance work, or anything else, feel free to reach out.
           </p>
-          <Button asChild size="lg" className="bg-gray-800 hover:bg-gray-700 dark:bg-gray-200 dark:hover:bg-gray-300 text-white dark:text-gray-900 text-lg px-10 py-6 rounded-full">
+          <Button asChild size="lg" className="text-lg px-10 py-6 rounded-full">
             <Link to="/contact">Contact me</Link>
           </Button>
         </section>
