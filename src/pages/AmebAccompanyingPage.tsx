@@ -71,15 +71,15 @@ const AmebAccompanyingPage: React.FC = () => {
             <div className="grid md:grid-cols-3 gap-8 text-center">
               <div>
                 <p className="text-3xl font-light">15 min</p>
-                <p className="text-xl mt-2">$50</p>
+                <p className="text-xl mt-2">$30</p>
               </div>
               <div>
                 <p className="text-3xl font-light">30 min</p>
-                <p className="text-xl mt-2">$90</p>
+                <p className="text-xl mt-2">$50</p>
               </div>
               <div>
                 <p className="text-3xl font-light">45 min</p>
-                <p className="text-xl mt-2">$130</p>
+                <p className="text-xl mt-2">$75</p>
               </div>
             </div>
             <div className="flex items-center justify-center gap-3 text-lg">
