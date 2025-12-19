@@ -46,7 +46,6 @@ const LivePianoServicesPage: React.FC = () => {
     "/blacktie1.avif",
     "/blacktie3.avif",
     "/blacktie4.avif",
-    "/other.avif",
     // Add new paths like: "/daniele-singing1.avif", "/daniele-vocal-piano.avif", etc.
   ];
 
