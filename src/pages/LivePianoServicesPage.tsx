@@ -141,7 +141,7 @@ const LivePianoServicesPage: React.FC = () => {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-12 space-y-16">
+      <main className="max-w-7xl mx-auto px-4 py-16 space-y-20"> {/* Increased space-y for major sections */}
         {/* Large Image Display */}
         <section className="py-0">
           <Card className="bg-livePiano-darker border-livePiano-border/30 rounded-xl overflow-hidden shadow-lg">
@@ -179,8 +179,8 @@ const LivePianoServicesPage: React.FC = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="-left-8 flex" /> {/* Changed from hidden md:flex to flex */}
-            <CarouselNext className="-right-8 flex" /> {/* Changed from hidden md:flex to flex */}
+            <CarouselPrevious className="-left-8 flex" />
+            <CarouselNext className="-right-8 flex" />
           </Carousel>
         </section>
 
@@ -201,7 +201,7 @@ const LivePianoServicesPage: React.FC = () => {
         <section className="max-w-2xl mx-auto bg-livePiano-darker p-8 rounded-xl shadow-2xl border border-livePiano-border/30 py-0">
           <h3 className="text-4xl font-bold text-center text-livePiano-light mb-8">Enquire now!</h3>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleContactSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(handleContactSubmit)} className="space-y-8"> {/* Increased space-y for form fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
@@ -213,7 +213,7 @@ const LivePianoServicesPage: React.FC = () => {
                         <Input
                           placeholder="Your First Name"
                           {...field}
-                          className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
+                          className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/80" {/* Lightened placeholder */}
                         />
                       </FormControl>
                       <FormMessage />
@@ -230,7 +230,7 @@ const LivePianoServicesPage: React.FC = () => {
                         <Input
                           placeholder="Your Last Name"
                           {...field}
-                          className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
+                          className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/80" {/* Lightened placeholder */}
                         />
                       </FormControl>
                       <FormMessage />
@@ -249,7 +249,7 @@ const LivePianoServicesPage: React.FC = () => {
                         type="email"
                         placeholder="your@email.com"
                         {...field}
-                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
+                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/80" {/* Lightened placeholder */}
                       />
                     </FormControl>
                     <FormMessage />
@@ -267,7 +267,7 @@ const LivePianoServicesPage: React.FC = () => {
                         type="tel"
                         placeholder="Your Phone Number"
                         {...field}
-                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
+                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/80" {/* Lightened placeholder */}
                       />
                     </FormControl>
                     <FormMessage />
@@ -284,7 +284,7 @@ const LivePianoServicesPage: React.FC = () => {
                       <Input
                         placeholder="Your Suburb"
                         {...field}
-                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
+                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/80" {/* Lightened placeholder */}
                       />
                     </FormControl>
                     <FormMessage />
@@ -302,7 +302,7 @@ const LivePianoServicesPage: React.FC = () => {
                         placeholder="Describe your event, date, time, and any special requests..."
                         {...field}
                         rows={5}
-                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
+                        className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/80" {/* Lightened placeholder */}
                       />
                     </FormControl>
                     <FormMessage />
@@ -314,14 +314,14 @@ const LivePianoServicesPage: React.FC = () => {
                 name="pianoType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-livePiano-light">What piano do you have at your home?</FormLabel>
+                    <FormLabel className="text-livePiano-light">What piano do you have at your home?</FormLabel> {/* Clearer label */}
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger className="w-full bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60">
+                        <SelectTrigger className="w-full bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/80"> {/* Lightened placeholder */}
                           <SelectValue placeholder="Select an option" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="z-50 bg-livePiano-darker border-livePiano-border"> {/* Changed background to darker */}
+                      <SelectContent className="z-50 bg-livePiano-darker border-livePiano-border">
                         <SelectItem value="grand-piano" className="text-livePiano-light focus:bg-livePiano-primary focus:text-livePiano-light data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker">Grand Piano</SelectItem>
                         <SelectItem value="upright-piano" className="text-livePiano-light focus:bg-livePiano-primary focus:text-livePiano-light data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker">Upright Piano</SelectItem>
                         <SelectItem value="digital-piano" className="text-livePiano-light focus:bg-livePiano-primary focus:text-livePiano-light data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker">Digital Piano</SelectItem>
@@ -332,7 +332,7 @@ const LivePianoServicesPage: React.FC = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" size="lg" className="w-full bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light text-lg py-3 rounded-full" disabled={loading}>
+              <Button type="submit" size="lg" className="w-full bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-light text-xl py-4 rounded-full shadow-xl" disabled={loading}> {/* Increased size and shadow */}
                 {loading ? 'Sending...' : 'Send'}
               </Button>
             </form>
