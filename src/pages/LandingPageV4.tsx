@@ -8,7 +8,6 @@ import SeoStructuredData from "@/components/SeoStructuredData";
 import SeoMetadata from "@/components/SeoMetadata";
 import DynamicImage from "@/components/DynamicImage";
 import ContactForm from "@/components/ContactForm";
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Mic2, Leaf, Megaphone, CheckCircle2 } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -24,18 +23,24 @@ const testimonials = [
   { quote: "Daniele is an exceptional teacher, leader, and encourager...", author: "Experienced Educator", title: "Colleague" },
 ];
 
-// New compact horizontal card – shorter height, better readability, strong gradient
+// Horizontal card – no button, whole card clickable, subtle hover cue
 const HorizontalProgramCard: React.FC<{
   title: string;
   description: string;
   link: string;
-  linkText: string;
   imageSrc: string;
-}> = ({ title, description, link, linkText, imageSrc }) => {
+}> = ({ title, description, link, imageSrc }) => {
   const isInternalLink = link.startsWith("/") || link.startsWith("#");
 
   return (
-    <div className="group relative h-80 rounded-3xl overflow-hidden shadow-2xl cursor-pointer" onClick={() => window.open(link, isInternalLink ? "_self" : "_blank")}>
+    <div
+      className="group relative h-80 rounded-3xl overflow-hidden shadow-2xl cursor-pointer"
+      onClick={() => window.open(link, isInternalLink ? "_self" : "_blank")}
+      onKeyDown={(e) => e.key === "Enter" && window.open(link, isInternalLink ? "_self" : "_blank")}
+      tabIndex={0}
+      role="link"
+      aria-label={`Go to ${title}`}
+    >
       {/* Image */}
       <DynamicImage
         src={imageSrc}
@@ -45,49 +50,49 @@ const HorizontalProgramCard: React.FC<{
         height={600}
       />
 
-      {/* Stronger, more consistent gradient – ensures readability on any image */}
+      {/* Strong gradient for readability */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/20" />
 
-      {/* Compact content – less vertical space, more gradient coverage */}
-      <div className="relative z-10 h-full flex flex-col justify-end p-8 text-left">
+      {/* Content */}
+      <div className="relative z-10 h-full flex flex-col justify-end p-10 text-left">
         <h3 className="text-3xl font-bold text-white mb-3 drop-shadow-2xl">
           {title}
         </h3>
-        <p className="text-lg text-white/95 mb-6 max-w-xl drop-shadow-lg">
+        <p className="text-lg text-white/95 drop-shadow-lg">
           {description}
         </p>
-        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <Button size="lg" className="bg-white hover:bg-gray-100 text-gray-900 font-semibold text-lg px-10 py-6 rounded-full shadow-xl">
-            {linkText}
-          </Button>
-        </div>
       </div>
+
+      {/* Subtle hover indicator – no button */}
+      <div className="absolute inset-0 ring-4 ring-white/0 group-hover:ring-white/30 transition-all duration-300 pointer-events-none" />
     </div>
   );
 };
 
-// Updated Piano Backings Card – whole card clickable, no text/button overlay
+// Piano Backings Card – whole card clickable, no text/button
 const PianoBackingsCard: React.FC = () => {
   return (
-    <a
-      href="https://pianobackingsbydaniele.vercel.app"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="block group relative h-80 rounded-3xl overflow-hidden shadow-2xl cursor-pointer"
+    <div
+      className="group relative h-80 rounded-3xl overflow-hidden shadow-2xl cursor-pointer"
+      onClick={() => window.open("https://pianobackingsbydaniele.vercel.app", "_blank")}
+      onKeyDown={(e) => e.key === "Enter" && window.open("https://pianobackingsbydaniele.vercel.app", "_blank")}
+      tabIndex={0}
+      role="link"
+      aria-label="Go to Piano Backing Tracks"
     >
       <div className="absolute inset-0 bg-[#ff00b3]" />
       <div className="absolute inset-0 flex items-center justify-center p-12">
         <DynamicImage
           src="/pianobackingslogo.png"
-          alt="Piano Backing Tracks by Daniele"
+          alt="Piano Backing Tracks"
           className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
           width={1200}
           height={600}
         />
       </div>
-      {/* Optional subtle hover indicator */}
+      {/* Subtle hover overlay */}
       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-    </a>
+    </div>
   );
 };
 
@@ -242,21 +247,18 @@ const LandingPageV4: React.FC = () => {
                   title="Music Director & Pianist"
                   description="Music theatre direction, vocal coaching, and performance."
                   link="/music-director-pianist"
-                  linkText="View profile"
                   imageSrc="/daniele-conducting.jpeg"
                 />
                 <HorizontalProgramCard
                   title="Live Piano Services"
                   description="Weddings, events, and private functions."
                   link="/live-piano-services"
-                  linkText="Enquire"
                   imageSrc="/blacktie.avif"
                 />
                 <HorizontalProgramCard
                   title="AMEB Accompanying"
                   description="Exam day and rehearsal accompaniment."
                   link="/ameb-accompanying"
-                  linkText="Book"
                   imageSrc="/ameb-placeholder.jpg"
                 />
               </div>
@@ -270,7 +272,6 @@ const LandingPageV4: React.FC = () => {
                   title="Buattiverse"
                   description="Sheet music and backing tracks"
                   link="https://buattiverse.gumroad.com/"
-                  linkText="Visit store"
                   imageSrc="/sheetmusic.png"
                 />
                 <PianoBackingsCard />
@@ -278,7 +279,6 @@ const LandingPageV4: React.FC = () => {
                   title="Resonance with Daniele: A Joyful Pop-Up Choir for All Voices"
                   description="Join a welcoming community to sing, connect, and shine, with no experience needed."
                   link="https://resonance-with-daniele.vercel.app"
-                  linkText="Join Resonance Choir"
                   imageSrc="/conduct.jpeg"
                 />
               </div>
