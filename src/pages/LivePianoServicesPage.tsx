@@ -9,7 +9,6 @@ import { Card } from "@/components/ui/card";
 import { Mail, Phone } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-// Removed Carousel imports
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -23,7 +22,6 @@ import {
 } from "@/components/ui/form";
 import DynamicImage from "@/components/DynamicImage";
 import { motion } from "framer-motion";
-// Removed cn import
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required." }),
@@ -35,16 +33,10 @@ const formSchema = z.object({
   pianoType: z.string().optional(),
 });
 
-type GalleryItem = {
-  type: "image" | "video";
-  src: string;
-  poster?: string;
-};
+// Removed unused GalleryItem type
 
 const LivePianoServicesPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  // Removed api and setApi state
-  // Removed selectedIndex state
 
   // Removed galleryItems constant
 
@@ -54,10 +46,6 @@ const LivePianoServicesPage: React.FC = () => {
       firstName: '', lastName: '', email: '', phone: '', suburb: '', eventDescription: '', pianoType: '',
     },
   });
-
-  // Removed useEffect related to carousel API
-
-  // Removed currentItem variable
 
   const handleContactSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
