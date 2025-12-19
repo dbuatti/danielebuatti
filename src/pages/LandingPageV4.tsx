@@ -170,7 +170,7 @@ const LandingPageV4: React.FC = () => {
             Live performances, music direction, digital products, community choir, and more.
           </p>
           <Button asChild size="lg" className="text-lg px-12 py-7 rounded-full">
-            <Link to="/projects">View Projects & Resources</Link>
+            <Link to="/projects-resources">View Projects & Resources</Link>
           </Button>
         </section>
 
