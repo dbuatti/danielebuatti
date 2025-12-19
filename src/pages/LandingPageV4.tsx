@@ -183,7 +183,7 @@ const LandingPageV4: React.FC = () => {
         </section>
 
         {/* Contact – soft card */}
-        <section className="pb-20">
+        <section id="contact" className="pb-20">
           <h2 className="text-4xl font-light text-center mb-10">Get in Touch</h2>
           <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 p-10">
             <p className="text-center text-lg text-gray-600 dark:text-gray-400 mb-8 italic">
