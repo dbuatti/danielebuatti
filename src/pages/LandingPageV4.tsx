@@ -23,7 +23,7 @@ const testimonials = [
   { quote: "Daniele is an exceptional teacher, leader, and encourager...", author: "Experienced Educator", title: "Colleague" },
 ];
 
-// Inline FeaturedProgramCard – powerful, consistent, visible backgrounds
+// Brand new card design – huge background, big text, no hiding
 const FeaturedProgramCard: React.FC<{
   title: string;
   description: string;
@@ -46,37 +46,35 @@ const FeaturedProgramCard: React.FC<{
   const isInternalLink = link.startsWith("/") || link.startsWith("#");
 
   return (
-    <div className="relative h-80 rounded-3xl overflow-hidden shadow-2xl group">
-      {/* Background */}
+    <div className="relative h-[420px] rounded-3xl overflow-hidden shadow-2xl group">
+      {/* Huge visible background */}
       {hasBackgroundImage ? (
         <div
           className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
           style={{ backgroundImage: `url(${backgroundImageSrc})` }}
         />
       ) : hasSolidBackgroundWithLogo ? (
-        <div className={`absolute inset-0 flex items-center justify-center p-12 ${backgroundColorClass}`}>
-          <DynamicImage
-            src={logoSrc!}
-            alt={title}
-            className="max-w-full max-h-full object-contain opacity-30"
-            width={800}
-            height={400}
-          />
+        <div className={`absolute inset-0 flex items-center justify-center p-16 ${backgroundColorClass}`}>
+          <DynamicImage src={logoSrc!} alt={title} className="max-w-full max-h-full object-contain opacity-40" width={800} height={400} />
         </div>
       ) : null}
 
-      {/* Dark overlay – lighter for visibility, darkens on hover */}
-      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors duration-500" />
+      {/* Very light overlay – background always visible */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent group-hover:via-black/30 transition-all duration-500" />
 
-      {/* Content */}
-      <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-8">
-        <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 drop-shadow-lg">
+      {/* Massive centered content */}
+      <div className="relative z-10 h-full flex flex-col items-center justify-end pb-12 px-8 text-center">
+        <h3 className="text-4xl md:text-5xl font-extrabold text-white mb-6 drop-shadow-2xl leading-tight">
           {title}
         </h3>
-        <p className="text-lg md:text-xl text-white/90 mb-8 max-w-md drop-shadow-md">
+        <p className="text-xl md:text-2xl text-white/95 mb-10 max-w-xl drop-shadow-xl">
           {description}
         </p>
-        <Button asChild size="lg" className="bg-white/20 hover:bg-white/30 backdrop-blur-md text-white border border-white/30 text-lg px-10 py-6 rounded-full shadow-xl">
+        <Button
+          asChild
+          size="lg"
+          className="bg-white/30 hover:bg-white/40 backdrop-blur-lg text-white border border-white/40 text-xl px-12 py-8 rounded-full shadow-2xl transform hover:scale-105 transition-all"
+        >
           {isInternalLink ? (
             <Link to={link}>{linkText}</Link>
           ) : (
@@ -275,27 +273,13 @@ const LandingPage: React.FC = () => {
                   backgroundColorClass="bg-[#2596be]"
                   logoSrc="/pianobackingslogo.png"
                 />
-                {/* Resonance Choir Card - Full Original Style Inline */}
-                <div className="relative h-80 rounded-3xl overflow-hidden shadow-2xl group">
-                  <div
-                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                    style={{ backgroundImage: "url(/conduct.jpeg)" }}
-                  />
-                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors duration-500" />
-                  <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-8">
-                    <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 drop-shadow-lg">
-                      Resonance with Daniele: A Joyful Pop-Up Choir for All Voices
-                    </h3>
-                    <p className="text-lg md:text-xl text-white/90 mb-8 max-w-md drop-shadow-md">
-                      Join a welcoming community to sing, connect, and shine, with no experience needed.
-                    </p>
-                    <Button asChild size="lg" className="bg-white/20 hover:bg-white/30 backdrop-blur-md text-white border border-white/30 text-lg px-10 py-6 rounded-full shadow-xl">
-                      <a href="https://resonance-with-daniele.vercel.app" target="_blank" rel="noopener noreferrer">
-                        Join Resonance Choir
-                      </a>
-                    </Button>
-                  </div>
-                </div>
+                <FeaturedProgramCard
+                  title="Resonance with Daniele: A Joyful Pop-Up Choir for All Voices"
+                  description="Join a welcoming community to sing, connect, and shine, with no experience needed."
+                  link="https://resonance-with-daniele.vercel.app"
+                  linkText="Join Resonance Choir"
+                  backgroundImageSrc="/conduct.jpeg"
+                />
               </div>
             </div>
           </div>
