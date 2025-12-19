@@ -9,14 +9,9 @@ import { useActiveSection } from "@/hooks/use-active-section";
 import { cn } from "@/lib/utils";
 import DynamicImage from "@/components/DynamicImage";
 import { useTheme } from "next-themes";
-// Removed unused DropdownMenu imports:
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuTrigger,
-//   DropdownMenuSeparator,
-// } from "@/components/ui/dropdown-menu";
+
+// Import navLinks
+import { navLinks } from "@/config/navLinks";
 
 const Navbar = () => {
   const activeSection = useActiveSection();
@@ -83,7 +78,7 @@ const Navbar = () => {
           />
         </Link>
         <nav className="hidden md:flex items-center space-x-6">
-          {navLinks.map((link) => renderNavLink(link))}
+          {navLinks.map((link: typeof navLinks[0]) => renderNavLink(link))}
           <Button asChild size="sm" className="h-9 px-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
             <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
               Book Now
@@ -108,7 +103,7 @@ const Navbar = () => {
             <SheetOverlay className="bg-black/60 dark:bg-black/90" />
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-brand-light dark:bg-brand-dark">
               <nav className="flex flex-col gap-4 pt-6">
-                {navLinks.map((link) => renderNavLink(link, true))} {/* Render direct links for mobile */}
+                {navLinks.map((link: typeof navLinks[0]) => renderNavLink(link, true))} {/* Render direct links for mobile */}
 
                 <Button asChild size="lg" className="h-12 px-6 py-3 bg-brand-primary hover:bg-brand-primary/90 text-brand-light mt-4">
                   <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer" onClick={() => setIsSheetOpen(false)}>

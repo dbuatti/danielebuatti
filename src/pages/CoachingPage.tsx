@@ -6,25 +6,24 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Mic, Leaf, Megaphone, Users, DollarSign } from 'lucide-react';
 import DynamicImage from '@/components/DynamicImage';
-import Navbar from '@/components/Navbar'; // Import Navbar
-import Footer from '@/components/Footer'; // Import Footer
-import SectionHeading from '@/components/SectionHeading'; // Import SectionHeading
-import { Separator } from '@/components/ui/separator'; // Import Separator
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import SectionHeading from '@/components/SectionHeading';
+import { Separator } from '@/components/ui/separator';
+import WhyWorkWithMeSection from '@/components/pages/landing-page-v3/WhyWorkWithMeSection';
+import WhoIWorkWithSection from '@/components/pages/landing-page-v3/WhoIWorkWithSection';
 
 const CoachingPage: React.FC = () => {
-  // Removed useEffect for scrolling, as ScrollToTop component now handles all scroll logic.
-
   const pageTitle = "My Coaching Services";
   const subtitle = "Your Three-Pillar Journey to Performance Freedom.";
 
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
-      <Navbar /> {/* Add Navbar */}
+      <Navbar />
       <main className="container mx-auto px-4 pt-8 pb-8">
         <div className="text-center space-y-4 mb-8">
           <SectionHeading>{pageTitle}</SectionHeading>
           {subtitle && <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70">{subtitle}</p>}
-          {/* Removed Separator here */}
         </div>
 
         <section className="max-w-4xl mx-auto space-y-8">
@@ -57,19 +56,16 @@ const CoachingPage: React.FC = () => {
               </Link>
             </Button>
           </section>
-          {/* Removed Separator here */}
 
           {/* Reintroduced: Why Work With Me? */}
           <div className="py-8">
             <WhyWorkWithMeSection />
           </div>
-          {/* Removed Separator here */}
 
           {/* Reintroduced: Who I Work With */}
           <div className="py-8">
             <WhoIWorkWithSection />
           </div>
-          {/* Removed Separator here */}
 
           {/* Coaching Pillars Section */}
           <div className="space-y-8">
@@ -160,8 +156,6 @@ const CoachingPage: React.FC = () => {
             </Card>
           </div>
 
-          {/* Removed Separator here */}
-
           {/* NEW: Pricing & Packages Section (Moved up) */}
           <section id="pricing" className="max-w-4xl mx-auto space-y-6 py-8">
             <SectionHeading>Pricing & Packages</SectionHeading>
@@ -213,7 +207,6 @@ const CoachingPage: React.FC = () => {
               </Button>
             </div>
           </section>
-          {/* Removed Separator here */}
 
           {/* NEW: Call-out to Projects & Resources */}
           <div className="bg-brand-blue/10 dark:bg-brand-blue/20 p-6 rounded-xl shadow-lg text-center space-y-4 my-8">
