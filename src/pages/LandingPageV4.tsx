@@ -209,7 +209,7 @@ const LandingPage: React.FC = () => {
 
                 {/* Piano Backings with Square Blue Background */}
                 <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-md overflow-hidden flex flex-col">
-                  <div className="flex-1 flex items-center justify-center bg-[#2596be] p-8">
+                  <div className="flex-1 flex items-center justify-center bg-[#ff00b3] p-8">
                     <DynamicImage 
                       src="/pianobackingslogo.png" 
                       alt="Piano Backing Tracks" 
