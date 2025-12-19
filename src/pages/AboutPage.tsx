@@ -6,13 +6,15 @@ import Footer from "@/components/Footer";
 import DynamicImage from "@/components/DynamicImage";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { Calendar } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel";  // Assuming you have shadcn/ui carousel installed
+} from "@/components/ui/carousel";
+import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 
 const images = [
   {
@@ -35,6 +37,8 @@ const images = [
 ];
 
 const AboutPage: React.FC = () => {
+  const wheelGestures = WheelGesturesPlugin();
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
       <Navbar />
@@ -113,15 +117,16 @@ const AboutPage: React.FC = () => {
           </div>
         </section>
 
-        {/* Improved Image Gallery – modern carousel with swipe/drag support */}
+        {/* Improved Image Gallery – carousel with trackpad two-finger swipe */}
         <section className="mb-32">
           <h2 className="text-4xl md:text-5xl font-light text-center mb-12">Moments from My Work</h2>
           <Carousel
             opts={{
               align: "center",
               loop: true,
-              dragFree: true,  // Enables trackpad/mouse drag & touch swipe
+              dragFree: true,
             }}
+            plugins={[wheelGestures]}  // Enables two-finger trackpad swipe
             className="w-full max-w-4xl mx-auto"
           >
             <CarouselContent className="-ml-4">
