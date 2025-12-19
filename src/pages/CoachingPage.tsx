@@ -14,8 +14,8 @@ const CoachingPage: React.FC = () => {
       <Navbar />
 
       <main className="max-w-5xl mx-auto px-6 py-16">
-        {/* Hero – calm, authoritative, full image */}
-        <section className="mb-24 text-center">
+        {/* Hero – calm, authoritative */}
+        <section className="text-center mb-20">
           <h1 className="text-5xl md:text-6xl font-light mb-8">Coaching</h1>
           <p className="text-2xl md:text-3xl text-gray-700 dark:text-gray-300 mb-10 max-w-4xl mx-auto">
             Voice. Presence. Musical Authority.
@@ -42,18 +42,19 @@ const CoachingPage: React.FC = () => {
           </Button>
         </section>
 
-        <div className="mb-24 -mx-6">
+        {/* Hero Image – refined crop, elegant */}
+        <div className="mb-28 -mx-6">
           <DynamicImage
             src="/danielecalmatpiano.jpeg"
             alt="Daniele Buatti in flow at the piano"
-            className="w-full h-[650px] object-cover shadow-2xl"
-            style={{ objectPosition: "center 7%" }}
+            className="w-full h-[700px] object-cover shadow-2xl"
+            style={{ objectPosition: "center 7%" }}  // fine-tuned for your head + piano
             width={1400}
             height={800}
           />
         </div>
 
-        {/* The Work – elevated, no bullet lists */}
+        {/* The Work – calm, spacious, no bullets */}
         <section className="mb-32">
           <h2 className="text-4xl font-light text-center mb-20">The Work</h2>
           <div className="grid md:grid-cols-3 gap-16">
@@ -93,34 +94,19 @@ const CoachingPage: React.FC = () => {
               </p>
             </div>
           </div>
-          
-          {/* Booking CTA */}
-          <div className="text-center pt-16">
-            <p className="text-lg text-gray-600 dark:text-gray-400 mb-10">
-              Sessions available in person (Toorak, Melbourne) or online via Zoom.
-            </p>
-            <Button asChild size="lg" className="text-lg px-14 py-8 rounded-full shadow-2xl">
-              <a
-                href="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:1:1%20Coaching:%20Voice,%20Piano%20%26%20Performance"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Calendar className="w-7 h-7 inline mr-4" />
-                Check availability & book
-              </a>
-            </Button>
-          </div>
         </section>
 
-        {/* Additional Services */}
+        {/* Sessions & Rates – removed (duplicated CTA already in hero) */}
+        {/* Group Workshops – removed (now on projects page) */}
+
+        {/* Additional Services – simple, elegant */}
         <section className="py-20 bg-white dark:bg-gray-900 rounded-3xl text-center">
-          <h2 className="text-4xl font-light mb-8">Additional Musical Services</h2>
-          <p className="text-xl max-w-3xl mx-auto text-gray-600 dark:text-gray-400 mb-10 leading-relaxed">
-            Alongside coaching, I work professionally as a pianist, music director, and arranger.<br />
-            This includes live piano performance, music direction, AMEB accompaniment, custom sheet music, and backing tracks.
+          <h2 className="text-4xl font-light mb-10">Additional Musical Services</h2>
+          <p className="text-xl max-w-3xl mx-auto text-gray-600 dark:text-gray-400 mb-12 leading-relaxed">
+            Alongside coaching, I work professionally as a pianist, music director, and arranger — including live performance, music direction, AMEB accompaniment, custom sheet music, and backing tracks.
           </p>
-          <Button asChild size="lg" variant="outline" className="border-2 text-lg px-12 py-7">
-            <Link to="/projects-resources">View all services</Link>
+          <Button asChild size="lg" variant="outline" className="border-2 text-lg px-14 py-8 rounded-full">
+            <Link to="/projects-resources">Explore all services</Link>
           </Button>
         </section>
       </main>
