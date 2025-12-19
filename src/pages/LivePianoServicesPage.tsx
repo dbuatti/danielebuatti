@@ -370,13 +370,13 @@ const LivePianoServicesPage: React.FC = () => {
                 )} />
 
                 <Button
-                  type="submit"
-                  size="lg"
-                  disabled={loading}
-                  className="w-full bg-gradient-to-r from-gold-600 to-amber-600 hover:from-gold-500 hover:to-amber-500 text-black font-semibold text-xl py-8 rounded-full shadow-2xl shadow-gold-600/30 transition-all duration-300"
-                >
-                  {loading ? "Sending Inquiry..." : "Send Your Inquiry"}
-                </Button>
+  type="submit"
+  size="lg"
+  disabled={loading}
+  className="w-full bg-gradient-to-r from-yellow-500 to-yellow-400 hover:from-yellow-400 hover:to-yellow-300 text-black font-semibold text-xl py-8 rounded-full shadow-2xl shadow-yellow-500/30 transition-all duration-300"
+>
+  {loading ? "Sending Inquiry..." : "Send Your Inquiry"}
+</Button>
               </form>
             </Form>
           </Card>
