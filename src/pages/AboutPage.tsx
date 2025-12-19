@@ -6,7 +6,6 @@ import Footer from "@/components/Footer";
 import DynamicImage from "@/components/DynamicImage";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Calendar } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
