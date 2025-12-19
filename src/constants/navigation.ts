@@ -1,9 +1,10 @@
 export const navLinks = [
   { name: "Home", href: "/" },
-  { name: "About", href: "/about" }, // Moved About page link
-  { name: "Coaching", href: "/coaching" }, // New direct link for coaching services
-  { name: "Projects & Resources", href: "/projects-resources" }, // Renamed from 'Programs'
-  { name: "Contact", href: "/contact" }, // Updated to dedicated page
+  { name: "Coaching", href: "/coaching" },
+  { name: "Live Piano", href: "/live-piano-services" }, // Adding the premium service directly
+  { name: "Resources", href: "/projects-resources" }, // Shortened for cleaner UI
+  { name: "About", href: "/about" }, // Moved to the end
+  { name: "Contact", href: "/contact" },
 ];
 
-// Note: The 'Book a session' CTA is handled directly in Navbar.tsx and will be updated there.
+// Note: The 'Book Now' CTA remains handled in Navbar.tsx for high-contrast visibility.
