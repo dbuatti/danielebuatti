@@ -138,26 +138,6 @@ const LivePianoServicesPage: React.FC = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative w-full h-[80vh] md:h-[90vh] overflow-hidden">
-        <img
-          src="/blacktie.avif"
-          alt="Daniele Buatti playing piano at a formal event"
-          className="absolute inset-0 w-full h-full object-cover z-0"
-        />
-        <div className="absolute inset-0 bg-black/50 z-10"></div>
-        <div className="relative z-20 flex items-center justify-center h-full">
-          <div className="text-center">
-            <h2 className="text-6xl md:text-8xl font-libre-baskerville font-bold text-livePiano-light mb-4 leading-tight">
-              DANIELE BUATTI
-            </h2>
-            <p className="text-2xl md:text-3xl font-libre-baskerville text-livePiano-light/90 max-w-3xl mx-auto mb-8">
-              Indulge in the elegance of live piano music and elevate your wedding, corporate event, or private party to new heights with the incomparable talent of Daniele Buatti.
-            </p>
-          </div>
-        </div>
-      </section>
-
       <main className="max-w-7xl mx-auto px-4 py-12 space-y-16">
         {/* Large Image Display */}
         <section className="py-0">
