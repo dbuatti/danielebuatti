@@ -137,7 +137,7 @@ const LivePianoServicesPage: React.FC = () => {
           <p className="text-2xl md:text-4xl font-libre-baskerville italic text-white">
             Pianist & Vocalist
           </p>
-          <p className="text-lg md:text-xl mt-4 text-gray-300 max-w-2xl mx-auto">Sophisticated live music for discerning events</p>
+          <p className="text-lg md:text-xl mt-4 text-gray-300 max-w-2xl mx-auto">Live piano and vocals for elegant, considered events</p>
         </motion.div>
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
           <div className="w-8 h-12 border-2 border-white/50 rounded-full flex justify-center">
