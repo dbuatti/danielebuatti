@@ -23,58 +23,39 @@ const testimonials = [
   { quote: "Daniele is an exceptional teacher, leader, and encourager...", author: "Experienced Educator", title: "Colleague" },
 ];
 
-// Brand new card design – huge background, big text, no hiding
-const FeaturedProgramCard: React.FC<{
+// New horizontal card with gradient overlay – clean, readable, powerful
+const HorizontalProgramCard: React.FC<{
   title: string;
   description: string;
   link: string;
   linkText: string;
-  backgroundImageSrc?: string;
-  backgroundColorClass?: string;
-  logoSrc?: string;
-}> = ({
-  title,
-  description,
-  link,
-  linkText,
-  backgroundImageSrc,
-  backgroundColorClass,
-  logoSrc,
-}) => {
-  const hasBackgroundImage = !!backgroundImageSrc;
-  const hasSolidBackgroundWithLogo = !!backgroundColorClass && !!logoSrc;
+  imageSrc: string;
+}> = ({ title, description, link, linkText, imageSrc }) => {
   const isInternalLink = link.startsWith("/") || link.startsWith("#");
 
   return (
-    <div className="relative h-[420px] rounded-3xl overflow-hidden shadow-2xl group">
-      {/* Huge visible background */}
-      {hasBackgroundImage ? (
-        <div
-          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-          style={{ backgroundImage: `url(${backgroundImageSrc})` }}
-        />
-      ) : hasSolidBackgroundWithLogo ? (
-        <div className={`absolute inset-0 flex items-center justify-center p-16 ${backgroundColorClass}`}>
-          <DynamicImage src={logoSrc!} alt={title} className="max-w-full max-h-full object-contain opacity-40" width={800} height={400} />
-        </div>
-      ) : null}
+    <div className="group relative h-96 rounded-3xl overflow-hidden shadow-2xl">
+      {/* Image */}
+      <DynamicImage
+        src={imageSrc}
+        alt={title}
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        width={1200}
+        height={600}
+      />
 
-      {/* Very light overlay – background always visible */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent group-hover:via-black/30 transition-all duration-500" />
+      {/* Gradient overlay – dark at bottom for readability */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-      {/* Massive centered content */}
-      <div className="relative z-10 h-full flex flex-col items-center justify-end pb-12 px-8 text-center">
-        <h3 className="text-4xl md:text-5xl font-extrabold text-white mb-6 drop-shadow-2xl leading-tight">
+      {/* Content – aligned to bottom left */}
+      <div className="relative z-10 h-full flex flex-col justify-end p-10 text-left">
+        <h3 className="text-4xl font-bold text-white mb-4 drop-shadow-2xl">
           {title}
         </h3>
-        <p className="text-xl md:text-2xl text-white/95 mb-10 max-w-xl drop-shadow-xl">
+        <p className="text-xl text-white/95 mb-8 max-w-2xl drop-shadow-lg">
           {description}
         </p>
-        <Button
-          asChild
-          size="lg"
-          className="bg-white/30 hover:bg-white/40 backdrop-blur-lg text-white border border-white/40 text-xl px-12 py-8 rounded-full shadow-2xl transform hover:scale-105 transition-all"
-        >
+        <Button asChild size="lg" className="w-fit bg-white hover:bg-gray-100 text-gray-900 text-lg px-10 py-6 rounded-full shadow-xl">
           {isInternalLink ? (
             <Link to={link}>{linkText}</Link>
           ) : (
@@ -82,6 +63,34 @@ const FeaturedProgramCard: React.FC<{
               {linkText}
             </a>
           )}
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+// Special card for Piano Backing Tracks (solid color + logo)
+const PianoBackingsCard: React.FC = () => {
+  return (
+    <div className="group relative h-96 rounded-3xl overflow-hidden shadow-2xl bg-[#2596be] flex flex-col justify-end p-10 text-left">
+      <DynamicImage
+        src="/pianobackingslogo.png"
+        alt="Piano Backing Tracks"
+        className="absolute inset-0 w-full h-full object-contain opacity-30"
+        width={1200}
+        height={600}
+      />
+      <div className="relative z-10">
+        <h3 className="text-4xl font-bold text-white mb-4 drop-shadow-2xl">
+          Piano Backing Tracks
+        </h3>
+        <p className="text-xl text-white/95 mb-8 max-w-2xl drop-shadow-lg">
+          Professional tracks for singers
+        </p>
+        <Button asChild size="lg" className="bg-white hover:bg-gray-100 text-gray-900 text-lg px-10 py-6 rounded-full shadow-xl">
+          <a href="https://pianobackingsbydaniele.vercel.app" target="_blank" rel="noopener noreferrer">
+            Explore
+          </a>
         </Button>
       </div>
     </div>
@@ -229,27 +238,27 @@ const LandingPage: React.FC = () => {
             {/* Specialised Services */}
             <div>
               <h3 className="text-3xl font-medium text-center mb-12">Specialised Services</h3>
-              <div className="grid md:grid-cols-3 gap-8">
-                <FeaturedProgramCard
+              <div className="space-y-12">
+                <HorizontalProgramCard
                   title="Music Director & Pianist"
                   description="Music theatre direction, vocal coaching, and performance."
                   link="/music-director-pianist"
                   linkText="View profile"
-                  backgroundImageSrc="/daniele-conducting.jpeg"
+                  imageSrc="/daniele-conducting.jpeg"
                 />
-                <FeaturedProgramCard
+                <HorizontalProgramCard
                   title="Live Piano Services"
                   description="Weddings, events, and private functions."
                   link="/live-piano-services"
                   linkText="Enquire"
-                  backgroundImageSrc="/blacktie.avif"
+                  imageSrc="/blacktie.avif"
                 />
-                <FeaturedProgramCard
+                <HorizontalProgramCard
                   title="AMEB Accompanying"
                   description="Exam day and rehearsal accompaniment."
                   link="/ameb-accompanying"
                   linkText="Book"
-                  backgroundImageSrc="/ameb-placeholder.jpg"
+                  imageSrc="/ameb-placeholder.jpg"
                 />
               </div>
             </div>
@@ -257,28 +266,21 @@ const LandingPage: React.FC = () => {
             {/* Digital & Community */}
             <div>
               <h3 className="text-3xl font-medium text-center mb-12">Digital Products & Community</h3>
-              <div className="grid md:grid-cols-3 gap-8">
-                <FeaturedProgramCard
+              <div className="space-y-12">
+                <HorizontalProgramCard
                   title="Buattiverse"
                   description="Sheet music and backing tracks"
                   link="https://buattiverse.gumroad.com/"
                   linkText="Visit store"
-                  backgroundImageSrc="/sheetmusic.png"
+                  imageSrc="/sheetmusic.png"
                 />
-                <FeaturedProgramCard
-                  title="Piano Backing Tracks"
-                  description="Professional tracks for singers"
-                  link="https://pianobackingsbydaniele.vercel.app"
-                  linkText="Explore"
-                  backgroundColorClass="bg-[#2596be]"
-                  logoSrc="/pianobackingslogo.png"
-                />
-                <FeaturedProgramCard
+                <PianoBackingsCard />
+                <HorizontalProgramCard
                   title="Resonance with Daniele: A Joyful Pop-Up Choir for All Voices"
                   description="Join a welcoming community to sing, connect, and shine, with no experience needed."
                   link="https://resonance-with-daniele.vercel.app"
                   linkText="Join Resonance Choir"
-                  backgroundImageSrc="/conduct.jpeg"
+                  imageSrc="/conduct.jpeg"
                 />
               </div>
             </div>
