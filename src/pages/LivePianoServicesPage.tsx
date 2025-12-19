@@ -48,8 +48,8 @@ const LivePianoServicesPage: React.FC = () => {
     { type: "image", src: "/blacktie1.avif" },
     { type: "image", src: "/blacktie3.avif" },
     { type: "image", src: "/blacktie4.avif" },
-    { type: "video", src: "/IMG_5103.mov" },
-    { type: "video", src: "/IMG_4436.MOV" },
+{ type: "video", src: "/IMG_5103.mov", poster: "/IMG_5103-poster.jpg" },
+  { type: "video", src: "/IMG_4436.MOV", poster: "/IMG_4436-poster.jpg" },
   ];
 
   const form = useForm<z.infer<typeof formSchema>>({
