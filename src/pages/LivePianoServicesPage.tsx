@@ -84,18 +84,26 @@ const LivePianoServicesPage: React.FC = () => {
   const handleContactSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
     const loadingToastId = toast.loading("Sending your inquiry...");
+    
+    const messageBody = `
+      Event Description: ${values.eventDescription}
+      Piano Type: ${values.pianoType || 'Not specified'}
+      Phone: ${values.phone || 'Not provided'}
+      Suburb: ${values.suburb || 'Not provided'}
+    `;
+
     try {
-      const { error } = await supabase.from('contact_messages').insert([{
-        name: `${values.firstName} ${values.lastName}`,
-        email: values.email,
-        message: `
-          Event Description: ${values.eventDescription}
-          Piano Type: ${values.pianoType || 'Not specified'}
-          Phone: ${values.phone || 'Not provided'}
-          Suburb: ${values.suburb || 'Not provided'}
-        `,
-      }]);
+      // Use the secure Edge Function to submit the contact message
+      const { error } = await supabase.functions.invoke('submit-contact-message', {
+        body: {
+          name: `${values.firstName} ${values.lastName}`,
+          email: values.email,
+          message: messageBody,
+        },
+      });
+
       if (error) throw error;
+      
       toast.success('Thank you! Daniele will contact you shortly.', { id: loadingToastId });
       form.reset();
     } catch (error) {
