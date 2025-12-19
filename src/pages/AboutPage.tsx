@@ -35,13 +35,13 @@ const AboutPage: React.FC = () => {
           </div>
           <div className="space-y-6 text-lg leading-relaxed">
             <p>
-              I’ve spent over 12 years working as a music director, pianist, arranger, vocal coach, and educator in music theatre and performance.
+              I’ve spent over fifteen years working across music theatre and performance as a music director, pianist, arranger, vocal coach, and educator.
             </p>
             <p>
-              Alongside that, I trained in kinesiology and draw from yoga and somatic practices. This combination lets me help performers connect their body, breath, and voice in a practical, grounded way.
+Alongside this, I trained in kinesiology and draw from yoga and somatic practices, allowing me to work with performers in a way that integrates body, breath, and voice — not as separate skills, but as a single, responsive system.
             </p>
             <p>
-              My work focuses on removing tension, building awareness, and letting authentic expression come through naturally — whether on stage, in the studio, or in everyday communication.
+My work centres on reducing unnecessary tension, increasing awareness, and creating the conditions for authentic expression to emerge naturally — whether on stage, in the studio, or in everyday communication.
             </p>
           </div>
         </section>
