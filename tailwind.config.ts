@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import type { PluginAPI } from "tailwindcss/types/config";
 
 export default {
   darkMode: ["class"],
@@ -21,8 +22,8 @@ export default {
       fontFamily: {
         sans: ["Outfit", "sans-serif"],
         display: ["Roboto Slab", "serif"],
-        montserrat: ["Montserrat", "sans-serif"], // Added Montserrat
-        "libre-baskerville": ["Libre Baskerville", "serif"], // Added Libre Baskerville
+        montserrat: ["Montserrat", "sans-serif"],
+        "libre-baskerville": ["Libre Baskerville", "serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -78,6 +79,7 @@ export default {
           magenta: "hsl(var(--brand-magenta))",
           yellow: "hsl(var(--brand-yellow))",
           "dark-alt": "hsl(var(--brand-dark-alt))",
+          champagne: "#C5B358", // Added champagne gold color
         },
         // New color palette specifically for Live Piano Services page
         livePiano: {
@@ -119,7 +121,7 @@ export default {
   },
   plugins: [
     require("tailwindcss-animate"),
-    function ({ addUtilities }) {
+    function ({ addUtilities }: { addUtilities: PluginAPI['addUtilities'] }) {
       addUtilities({
         '.text-shadow-sm': {
           'text-shadow': '1px 1px 2px rgba(0, 0, 0, 0.6)',
@@ -133,7 +135,7 @@ export default {
         '.text-shadow-none': {
           'text-shadow': 'none',
         },
-      }, ['responsive', 'hover']);
+      });
     },
   ],
 } satisfies Config;

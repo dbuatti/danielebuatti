@@ -6,7 +6,7 @@ import RootLayout from './layouts/RootLayout';
 import AdminLayout from './pages/admin/AdminLayout';
 import { SessionContextProvider } from './components/SessionContextProvider';
 import ScrollToTop from './components/ScrollToTop';
-import FaviconManager from './components/FaviconManager'; // Import FaviconManager
+import FaviconManager from './components/FaviconManager';
 
 // Public Pages
 import LandingPageV3 from './pages/LandingPageV3';
@@ -24,6 +24,7 @@ import EmbodimentSomaticBookingPage from './pages/EmbodimentSomaticBookingPage';
 import PresenceCommunicationBookingPage from './pages/PresenceCommunicationBookingPage';
 import DynamicQuotePage from './pages/DynamicQuotePage';
 import QuoteConfirmationPage from './pages/QuoteConfirmationPage';
+import RepertoirePage from './pages/RepertoirePage'; // Added repertoire page
 
 // Admin Pages
 import Login from './pages/Login';
@@ -35,7 +36,6 @@ import AdminEditQuotePage from './pages/admin/AdminEditQuotePage';
 import AdminAmebBookingsPage from './pages/admin/AdminAmebBookingsPage';
 import AdminAmebBookingDetailsPage from './pages/admin/AdminAmebBookingDetailsPage';
 import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage';
-
 
 function App() {
   return (
@@ -50,6 +50,7 @@ function App() {
             <Route path="coaching" element={<CoachingPage />} />
             <Route path="projects-resources" element={<ProjectsResourcesPage />} />
             <Route path="live-piano-services" element={<LivePianoServicesPage />} />
+            <Route path="repertoire" element={<RepertoirePage />} /> {/* Added repertoire page */}
             <Route path="ameb-accompanying" element={<AmebAccompanyingPage />} />
             <Route path="music-director-pianist" element={<MusicDirectorPianistPage />} />
             <Route path="archive" element={<ArchivePage />} />
