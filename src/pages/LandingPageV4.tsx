@@ -73,9 +73,10 @@ const LandingPageV4: React.FC = () => {
         </Button>
       </div>
 
-      <main className="max-w-5xl mx-auto px-6 py-16">
+      {/* Spacing Adjustment: Tightened bottom padding */}
+      <main className="max-w-5xl mx-auto px-6 pt-16 pb-8">
         
-        {/* Hero Section */}
+        {/* 1. HERO SECTION */}
         <section className="grid md:grid-cols-2 gap-16 items-center mb-24">
           <div className="space-y-8">
             <h1 className="text-5xl md:text-6xl font-light leading-tight text-gray-900 dark:text-white">Daniele Buatti</h1>
@@ -106,52 +107,106 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* Expertise Section */}
+        {/* 2. EXPERTISE SECTION */}
         <section className="mb-24">
           <h2 className="text-4xl font-light text-center mb-16">My Expertise</h2>
           <div className="grid md:grid-cols-3 gap-12 text-center">
             <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
               <Mic2 className="w-16 h-16 mx-auto mb-6 text-gray-400 dark:text-gray-600" />
-              <h3 className="text-2xl font-medium mb-4">Voice & Piano</h3>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+              <h3 className="text-2xl font-medium mb-4 text-left md:text-center">Voice & Piano</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-left md:text-center">
                 Technique, repertoire, theory, audition prep, and expressive performance.
               </p>
             </div>
             <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
               <Leaf className="w-16 h-16 mx-auto mb-6 text-gray-400 dark:text-gray-600" />
-              <h3 className="text-2xl font-medium mb-4">Body & Breath</h3>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+              <h3 className="text-2xl font-medium mb-4 text-left md:text-center">Body & Breath</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-left md:text-center">
                 Kinesiology and somatic work to release tension and support natural resonance.
               </p>
             </div>
             <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
               <Megaphone className="w-16 h-16 mx-auto mb-6 text-gray-400 dark:text-gray-600" />
-              <h3 className="text-2xl font-medium mb-4">Presence & Communication</h3>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+              <h3 className="text-2xl font-medium mb-4 text-left md:text-center">Presence & Communication</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-left md:text-center">
                 Public speaking, on-camera work, and building calm, authentic presence.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Approach Section */}
-        <section className="grid md:grid-cols-2 gap-20 items-center mb-24">
-          <DynamicImage src="/pinkcarpet.jpg" alt="Daniele Buatti" className="w-full rounded-3xl shadow-xl" width={600} height={600} />
-          <div className="space-y-8 text-left">
-            <h2 className="text-4xl font-light">My Approach</h2>
-            <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
-              I help performers connect body, breath, and voice so they can express themselves with freedom and ease.
-            </p>
-            <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
-              With over 12 years as a music director, pianist, vocal coach, and educator, I combine music theatre expertise with kinesiology and somatic practices.
-            </p>
-            <Button asChild size="lg" variant="outline" className="border-2 rounded-full">
-              <Link to="/coaching">Read more about my approach</Link>
-            </Button>
+        {/* 3. CLIENT FEEDBACK (Moved Up for Social Proof) */}
+        <section className="mb-24 relative">
+          <div className="flex items-end justify-between mb-12 px-2 text-left">
+            <div>
+              <h2 className="text-4xl font-light">Client Feedback</h2>
+              <p className="text-gray-500 mt-2">Stories from the studio and stage</p>
+            </div>
+            <div className="hidden md:flex gap-3">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                onClick={() => api?.scrollPrev()}
+                className="rounded-full border-gray-200 dark:border-gray-800 hover:bg-white dark:hover:bg-gray-900 transition-all"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="icon" 
+                onClick={() => api?.scrollNext()}
+                className="rounded-full border-gray-200 dark:border-gray-800 hover:bg-white dark:hover:bg-gray-900 transition-all"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
+
+          <div className="relative pb-12">
+            <Carousel
+              opts={{ align: "start", loop: true }}
+              plugins={[WheelGesturesPlugin()]}
+              setApi={setApi}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-4 items-stretch">
+                {testimonials.map((t, i) => (
+                  <CarouselItem key={i} className="pl-4 md:basis-1/2 lg:basis-1/3 flex">
+                    <div className="group h-full flex flex-col justify-between bg-white/70 dark:bg-gray-900/60 backdrop-blur-md p-10 rounded-[2rem] border border-gray-200/50 dark:border-gray-800/50 shadow-sm hover:shadow-xl hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-500 w-full h-full flex-1">
+                      <div className="text-left">
+                        <div className="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                          <Quote className="w-5 h-5 text-gray-400" />
+                        </div>
+                        <p className="text-lg italic text-gray-700 dark:text-gray-300 leading-relaxed mb-8">
+                          "{t.quote}"
+                        </p>
+                      </div>
+                      <div className="pt-6 border-t border-gray-100 dark:border-gray-800 text-left">
+                        <p className="font-semibold text-gray-900 dark:text-white">{t.author}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-widest mt-1">{t.title}</p>
+                      </div>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+          </div>
+
+          <div className="flex justify-center gap-2">
+            {Array.from({ length: count }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => api?.scrollTo(i)}
+                className={`transition-all duration-500 rounded-full ${
+                  current === i ? "w-8 h-1.5 bg-gray-400 dark:bg-gray-500" : "w-1.5 h-1.5 bg-gray-200 dark:bg-gray-800"
+                }`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
           </div>
         </section>
 
-        {/* Who I Work With Section */}
+        {/* 4. WHO I WORK WITH (Moved Up for Identification) */}
         <section className="mb-24">
           <h2 className="text-4xl font-light text-center mb-16 text-gray-900 dark:text-white">Who I Work With</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -170,7 +225,24 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* Why Work With Me Section */}
+        {/* 5. APPROACH SECTION */}
+        <section className="grid md:grid-cols-2 gap-20 items-center mb-24">
+          <DynamicImage src="/pinkcarpet.jpg" alt="Daniele Buatti" className="w-full rounded-3xl shadow-xl" width={600} height={600} />
+          <div className="space-y-8 text-left">
+            <h2 className="text-4xl font-light">My Approach</h2>
+            <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
+              I help performers connect body, breath, and voice so they can express themselves with freedom and ease.
+            </p>
+            <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
+              With over 12 years as a music director, pianist, vocal coach, and educator, I combine music theatre expertise with kinesiology and somatic practices.
+            </p>
+            <Button asChild size="lg" variant="outline" className="border-2 rounded-full">
+              <Link to="/coaching">Read more about my approach</Link>
+            </Button>
+          </div>
+        </section>
+
+        {/* 6. WHY WORK WITH ME SECTION */}
         <section className="mb-24 max-w-4xl mx-auto">
           <h2 className="text-4xl font-light text-center mb-16">Why Work With Me</h2>
           <div className="grid md:grid-cols-2 gap-8">
@@ -188,81 +260,7 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
- {/* Testimonial Carousel */}
-<section className="mb-24 relative">
-  <div className="flex items-end justify-between mb-12 px-2 text-left">
-    <div>
-      <h2 className="text-4xl font-light">Client Feedback</h2>
-      <p className="text-gray-500 mt-2">Stories from the studio and stage</p>
-    </div>
-    <div className="hidden md:flex gap-3">
-      <Button 
-        variant="outline" 
-        size="icon" 
-        onClick={() => api?.scrollPrev()}
-        className="rounded-full border-gray-200 dark:border-gray-800 hover:bg-white dark:hover:bg-gray-900 transition-all"
-      >
-        <ChevronLeft className="w-5 h-5" />
-      </Button>
-      <Button 
-        variant="outline" 
-        size="icon" 
-        onClick={() => api?.scrollNext()}
-        className="rounded-full border-gray-200 dark:border-gray-800 hover:bg-white dark:hover:bg-gray-900 transition-all"
-      >
-        <ChevronRight className="w-5 h-5" />
-      </Button>
-    </div>
-  </div>
-
-  <div className="relative pb-12">
-    <Carousel
-      opts={{ align: "start", loop: true }}
-      plugins={[WheelGesturesPlugin()]}
-      setApi={setApi}
-      className="w-full"
-    >
-      {/* 1. Added 'items-stretch' to the content row */}
-      <CarouselContent className="-ml-4 items-stretch">
-        {testimonials.map((t, i) => (
-          /* 2. Added 'flex' to the item container */
-          <CarouselItem key={i} className="pl-4 md:basis-1/2 lg:basis-1/3 flex">
-            {/* 3. 'h-full' and 'flex-1' ensure the card expands to fill the flex container */}
-            <div className="group flex flex-col justify-between bg-white/70 dark:bg-gray-900/60 backdrop-blur-md p-10 rounded-[2rem] border border-gray-200/50 dark:border-gray-800/50 shadow-sm hover:shadow-xl hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-500 w-full h-full flex-1">
-              <div className="text-left">
-                <div className="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                  <Quote className="w-5 h-5 text-gray-400" />
-                </div>
-                <p className="text-lg italic text-gray-700 dark:text-gray-300 leading-relaxed mb-8">
-                  "{t.quote}"
-                </p>
-              </div>
-              <div className="pt-6 border-t border-gray-100 dark:border-gray-800 text-left">
-                <p className="font-semibold text-gray-900 dark:text-white">{t.author}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-widest mt-1">{t.title}</p>
-              </div>
-            </div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-    </Carousel>
-  </div>
-
-  <div className="flex justify-center gap-2">
-    {Array.from({ length: count }).map((_, i) => (
-      <button
-        key={i}
-        onClick={() => api?.scrollTo(i)}
-        className={`transition-all duration-500 rounded-full ${
-          current === i ? "w-8 h-1.5 bg-gray-400 dark:bg-gray-500" : "w-1.5 h-1.5 bg-gray-200 dark:bg-gray-800"
-        }`}
-        aria-label={`Go to slide ${i + 1}`}
-      />
-    ))}
-  </div>
-</section>
-
-        {/* Signature Service Portal - The Definitive Conclusion */}
+        {/* 7. SIGNATURE SERVICE PORTAL (Final Conclusion) */}
         <section className="mb-12 px-2">
           <Link to="/live-piano-services" className="group block relative overflow-hidden rounded-[2.5rem] bg-black shadow-2xl transition-all duration-500 hover:scale-[1.01]">
             <div className="absolute inset-0 bg-[url('/blacktie.avif')] bg-cover bg-center opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />
