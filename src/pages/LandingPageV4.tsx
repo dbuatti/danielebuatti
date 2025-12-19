@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import { Mic2, Leaf, Megaphone, CheckCircle2 } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import CalEmbed from "@/components/CalEmbed";
+import { Button } from "@/components/ui/button"; // Import Button
 
 // Testimonials
 const testimonials = [
