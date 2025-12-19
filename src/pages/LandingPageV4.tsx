@@ -4,107 +4,197 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
+import SeoStructuredData from "@/components/SeoStructuredData";
 import SeoMetadata from "@/components/SeoMetadata";
-import ContactForm from "@/components/ContactForm";
-import CalEmbed from "@/components/CalEmbed";
+import DynamicImage from "@/components/DynamicImage";
+import { Link } from "react-router-dom";
+import { Mic2, Leaf, Megaphone, CheckCircle2, Mail } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import CalEmbed from "@/components/CalEmbed";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, MapPin, Calendar, MessageSquare } from "lucide-react";
 
-const ContactPage: React.FC = () => {
+const testimonials = [
+  { quote: "Daniele's clear, direct, and thoughtful communication is truly exceptional...", author: "Em", title: "Creative Collaborator" },
+  { quote: "This program has been eye-opening; I've grown leaps and bounds as an artist...", author: "Ben", title: "Emerging Artist" },
+  { quote: "Daniele has a wonderfully positive aura and a very friendly, engaging presence...", author: "Helge Hansmann", title: "Participant" },
+  { quote: "Daniele is an awesome Music Director, guiding us with such thought and care...", author: "Joanne Duckworth & Anna Robinson", title: "Choir Members" },
+  { quote: "The show was awesome! Daniele's energy and piano playing were amazing...", author: "Alex Glenk", title: "Audience Member" },
+  { quote: "Daniele is an exceptional teacher, leader, and encourager...", author: "Experienced Educator", title: "Colleague" },
+];
+
+const LandingPageV4: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200 relative">
+      <SeoStructuredData />
       <SeoMetadata 
-        title="Contact Daniele Buatti"
-        description="Get in touch with Daniele Buatti for coaching, performance bookings, or general inquiries."
-        url={`${window.location.origin}/contact`}
+        title="Daniele Buatti - Pianist & Vocal Coach"
+        description="Professional coaching in voice, piano, performance, and embodiment."
+        url={`${window.location.origin}`}
       />
       <Navbar />
 
+      {/* Floating Enquiry Button for Mobile accessibility */}
+      <div className="fixed bottom-8 right-8 z-50 md:hidden">
+        <Button asChild size="icon" className="h-14 w-14 rounded-full shadow-2xl bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900">
+          <Link to="/contact">
+            <Mail className="h-6 w-6" />
+          </Link>
+        </Button>
+      </div>
+
       <main className="max-w-5xl mx-auto px-6 py-16">
-        <header className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-light mb-6">Let's Connect</h1>
-          <p className="text-xl max-w-2xl mx-auto text-gray-600 dark:text-gray-400">
-            Have a question about coaching, a performance inquiry, or a collaboration idea? I’d love to hear from you.
-          </p>
-        </header>
-
-        <div className="grid md:grid-cols-2 gap-12 items-start">
-          {/* Left Column: Contact Details & Scheduling */}
+        {/* Hero */}
+        <section className="grid md:grid-cols-2 gap-16 items-center mb-24">
           <div className="space-y-8">
-            <div className="p-8 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
-              <h2 className="text-2xl font-medium mb-6 flex items-center gap-2">
-                <MessageSquare className="w-6 h-6" /> Studio Details
-              </h2>
-              <div className="space-y-6">
-                <div className="flex items-center space-x-4 group">
-                  <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-2xl group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 transition-colors">
-                    <Mail className="w-6 h-6 text-gray-700 dark:text-gray-300" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">Email</p>
-                    <a href="mailto:info@danielebuatti.com" className="text-lg hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                      info@danielebuatti.com
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-4 group">
-                  <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-2xl group-hover:bg-green-50 dark:group-hover:bg-green-900/30 transition-colors">
-                    <Phone className="w-6 h-6 text-gray-700 dark:text-gray-300" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">WhatsApp</p>
-                    <a href="https://wa.me/61424174067" target="_blank" rel="noopener noreferrer" className="text-lg hover:text-green-600 dark:hover:text-green-400 transition-colors">
-                      +61 424 174 067
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-2xl">
-                    <MapPin className="w-6 h-6 text-gray-700 dark:text-gray-300" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">Location</p>
-                    <p className="text-lg">Toorak, Melbourne, VIC</p>
-                    <p className="text-sm text-gray-500">In-person and online worldwide</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Scheduling Card with Dialog Embed */}
-            <div className="p-8 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/50 rounded-3xl">
-              <h3 className="text-xl font-medium mb-4 flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-blue-600" /> Professional Discovery
-              </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Ready to dive in? Book a free 30-minute discovery call to discuss your artistic goals.
-              </p>
-              
+            <h1 className="text-5xl md:text-6xl font-light leading-tight">Daniele Buatti</h1>
+            <p className="text-2xl text-gray-700 dark:text-gray-300">
+              Pianist • Vocal Coach • Music Director • Embodiment Practitioner
+            </p>
+            <p className="text-xl leading-relaxed text-gray-600 dark:text-gray-400">
+              I help singers, performers, and speakers connect body, breath, and voice for authentic and easeful expression.
+            </p>
+            
+            <div className="flex flex-wrap gap-4">
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button size="lg" className="w-full text-lg py-7 rounded-full shadow-lg">
-                    Book a discovery call
-                  </Button>
+                  <Button size="lg" className="text-lg px-8 py-7 rounded-full">Book a discovery call</Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-4xl h-[90vh] p-0">
                   <CalEmbed calLink="danielebuatti/30min" />
                 </DialogContent>
               </Dialog>
+              
+              <Button asChild variant="outline" size="lg" className="text-lg px-8 py-7 rounded-full border-2">
+                <Link to="/contact">Make an Enquiry</Link>
+              </Button>
             </div>
           </div>
-
-          {/* Right Column: Contact Form */}
-          <div className="p-8 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
-            <h2 className="text-2xl font-medium mb-2">Send a Message</h2>
-            <p className="text-gray-500 dark:text-gray-400 mb-8">
-              For general enquiries or performance bookings, please fill out the form below.
-            </p>
-            <ContactForm />
+          <div className="flex justify-center">
+            <DynamicImage src="/headshot.jpeg" alt="Daniele Buatti" className="w-full max-w-lg rounded-3xl shadow-2xl" width={600} height={600} />
           </div>
-        </div>
+        </section>
+
+        {/* Expertise */}
+        <section className="mb-24">
+          <h2 className="text-4xl font-light text-center mb-16">My Expertise</h2>
+          <div className="grid md:grid-cols-3 gap-12">
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
+              <Mic2 className="w-16 h-16 mx-auto mb-6 text-gray-700 dark:text-gray-300 opacity-80" />
+              <h3 className="text-2xl font-medium text-center mb-4">Voice & Piano</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Technique, repertoire, theory, audition prep, and expressive performance.
+              </p>
+            </div>
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
+              <Leaf className="w-16 h-16 mx-auto mb-6 text-gray-700 dark:text-gray-300 opacity-80" />
+              <h3 className="text-2xl font-medium text-center mb-4">Body & Breath</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Kinesiology and somatic work to release tension and support natural resonance.
+              </p>
+            </div>
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
+              <Megaphone className="w-16 h-16 mx-auto mb-6 text-gray-700 dark:text-gray-300 opacity-80" />
+              <h3 className="text-2xl font-medium text-center mb-4">Presence & Communication</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Public speaking, on-camera work, and building calm, authentic presence.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Approach */}
+        <section className="grid md:grid-cols-2 gap-20 items-center mb-24">
+          <DynamicImage src="/pinkcarpet.jpg" alt="Daniele Buatti" className="w-full rounded-3xl shadow-xl" width={600} height={600} />
+          <div className="space-y-8">
+            <h2 className="text-4xl font-light">My Approach</h2>
+            <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
+              I help performers connect body, breath, and voice so they can express themselves with freedom and ease.
+            </p>
+            <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
+              With over 12 years as a music director, pianist, vocal coach, and educator, I combine music theatre expertise with kinesiology and somatic practices.
+            </p>
+            <Button asChild size="lg" variant="outline" className="border-2 rounded-full">
+              <Link to="/coaching">Read more about my approach</Link>
+            </Button>
+          </div>
+        </section>
+
+        {/* Who I Work With */}
+        <section className="mb-24">
+          <h2 className="text-4xl font-light text-center mb-16">Who I Work With</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-8 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 text-center">
+              <Mic2 className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300 opacity-80" />
+              <h3 className="text-xl font-medium mb-2">Singers & Musicians</h3>
+              <p className="text-gray-600 dark:text-gray-400">Technical skill and expressive freedom</p>
+            </div>
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-8 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 text-center">
+              <Megaphone className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300 opacity-80" />
+              <h3 className="text-xl font-medium mb-2">Public Speakers</h3>
+              <p className="text-gray-600 dark:text-gray-400">Confident and impactful communication</p>
+            </div>
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-8 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 text-center">
+              <Leaf className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300 opacity-80" />
+              <h3 className="text-xl font-medium mb-2">Film & Streaming</h3>
+              <p className="text-gray-600 dark:text-gray-400">Nuanced presence on camera</p>
+            </div>
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-8 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 text-center">
+              <CheckCircle2 className="w-14 h-14 mx-auto mb-4 text-gray-700 dark:text-gray-300 opacity-80" />
+              <h3 className="text-xl font-medium mb-2">Professionals</h3>
+              <p className="text-gray-600 dark:text-gray-400">Sustainable long-term practice</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Why Work With Me */}
+        <section className="mb-24">
+          <h2 className="text-4xl font-light text-center mb-16">Why Work With Me</h2>
+          <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 flex items-start gap-6">
+              <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1 opacity-80" />
+              <p className="text-lg text-gray-700 dark:text-gray-300"><strong>Holistic expertise</strong> — voice, piano, presence, kinesiology, and mindset.</p>
+            </div>
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 flex items-start gap-6">
+              <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1 opacity-80" />
+              <p className="text-lg text-gray-700 dark:text-gray-300"><strong>Embodiment-based</strong> — build skill without tension or burnout.</p>
+            </div>
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 flex items-start gap-6">
+              <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1 opacity-80" />
+              <p className="text-lg text-gray-700 dark:text-gray-300"><strong>Results-focused</strong> — leave sessions more confident and capable.</p>
+            </div>
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50 flex items-start gap-6">
+              <CheckCircle2 className="w-10 h-10 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1 opacity-80" />
+              <p className="text-lg text-gray-700 dark:text-gray-300"><strong>Creative freedom</strong> — technique meets artistry and authentic expression.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Testimonials */}
+        <section className="mb-24">
+          <h2 className="text-4xl font-light text-center mb-16">Client Feedback</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {testimonials.map((t, i) => (
+              <div key={i} className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
+                <p className="text-lg italic mb-6 text-gray-700 dark:text-gray-300">"{t.quote}"</p>
+                <p className="font-medium">— {t.author}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{t.title}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Teaser - Final CTA Section */}
+        <section className="mb-32 text-center">
+          <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm py-20 px-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
+            <h2 className="text-4xl font-light mb-6">Explore My Other Work</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">
+              Live performances, music direction, digital products, community choir, and more.
+            </p>
+            <Button asChild size="lg" className="text-lg px-12 py-7 rounded-full">
+              <Link to="/projects-resources">View Projects & Resources</Link>
+            </Button>
+          </div>
+        </section>
       </main>
 
       <Footer />
@@ -113,4 +203,4 @@ const ContactPage: React.FC = () => {
   );
 };
 
-export default ContactPage;
+export default LandingPageV4;
