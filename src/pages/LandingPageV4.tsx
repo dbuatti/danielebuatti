@@ -19,7 +19,7 @@ const LandingPageV4: React.FC = () => {
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-6 py-20 min-h-[60vh] text-center">
-        <h1 className="text-4xl font-bold text-brand-primary">Welcome to Landing Page V4</h1>
+        <h1 className="text-4xl font-bold text-brand-primary">Hello</h1>
         <p className="mt-4 text-lg text-brand-dark/80 dark:text-brand-light/80">
           This is an empty template ready for new content.
         </p>
