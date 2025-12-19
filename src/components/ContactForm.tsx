@@ -46,6 +46,7 @@ const ContactForm: React.FC = () => {
     const loadingToastId = toast.loading("Sending your message...");
 
     try {
+      // Ensure we are inserting into the correct table and handling the response correctly
       const { error } = await supabase
         .from("contact_messages")
         .insert([
@@ -54,7 +55,8 @@ const ContactForm: React.FC = () => {
             email: values.email,
             message: values.message,
           },
-        ]);
+        ])
+        .select(); // Use .select() to ensure the trigger fires correctly and we get a response
 
       if (error) throw error;
 
