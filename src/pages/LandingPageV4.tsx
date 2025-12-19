@@ -15,15 +15,39 @@ import CalEmbed from "@/components/CalEmbed";
 
 // Testimonials
 const testimonials = [
-  { quote: "Daniele's clear, direct, and thoughtful communication is truly exceptional...", author: "Em", title: "Creative Collaborator" },
-  { quote: "This program has been eye-opening; I've grown leaps and bounds as an artist...", author: "Ben", title: "Emerging Artist" },
-  { quote: "Daniele has a wonderfully positive aura and a very friendly, engaging presence...", author: "Helge Hansmann", title: "Participant" },
-  { quote: "Daniele is an awesome Music Director, guiding us with such thought and care...", author: "Joanne Duckworth & Anna Robinson", title: "Choir Members" },
-  { quote: "The show was awesome! Daniele's energy and piano playing were amazing...", author: "Alex Glenk", title: "Audience Member" },
-  { quote: "Daniele is an exceptional teacher, leader, and encourager...", author: "Experienced Educator", title: "Colleague" },
+  {
+    quote: "Daniele's clear, direct, and thoughtful communication is truly exceptional...",
+    author: "Em",
+    title: "Creative Collaborator",
+  },
+  {
+    quote: "This program has been eye-opening; I've grown leaps and bounds as an artist...",
+    author: "Ben",
+    title: "Emerging Artist",
+  },
+  {
+    quote: "Daniele has a wonderfully positive aura and a very friendly, engaging presence...",
+    author: "Helge Hansmann",
+    title: "Participant",
+  },
+  {
+    quote: "Daniele is an awesome Music Director, guiding us with such thought and care...",
+    author: "Joanne Duckworth & Anna Robinson",
+    title: "Choir Members",
+  },
+  {
+    quote: "The show was awesome! Daniele's energy and piano playing were amazing...",
+    author: "Alex Glenk",
+    title: "Audience Member",
+  },
+  {
+    quote: "Daniele is an exceptional teacher, leader, and encourager...",
+    author: "Experienced Educator",
+    title: "Colleague",
+  },
 ];
 
-// Rebuilt FeaturedProgramCard – powerful, consistent, visible backgrounds
+// Inline FeaturedProgramCard – powerful, consistent, visible backgrounds
 const FeaturedProgramCard: React.FC<{
   title: string;
   description: string;
@@ -54,7 +78,7 @@ const FeaturedProgramCard: React.FC<{
           style={{ backgroundImage: `url(${backgroundImageSrc})` }}
         />
       ) : hasSolidBackgroundWithLogo ? (
-        <div className={cn("absolute inset-0 flex items-center justify-center p-12", backgroundColorClass)}>
+        <div className={`absolute inset-0 flex items-center justify-center p-12 ${backgroundColorClass}`}>
           <DynamicImage
             src={logoSrc!}
             alt={title}
@@ -65,7 +89,7 @@ const FeaturedProgramCard: React.FC<{
         </div>
       ) : null}
 
-      {/* Dark overlay – lighter for better visibility */}
+      {/* Dark overlay – lighter for visibility, darkens on hover */}
       <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors duration-500" />
 
       {/* Content */}
