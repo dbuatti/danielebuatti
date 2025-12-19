@@ -95,7 +95,6 @@ const CoachingPage: React.FC = () => {
           </div>
         </section>
 
-
             {/* Booking CTA */}
             <div className="text-center">
               <p className="text-lg text-gray-600 dark:text-gray-400 mb-10">
