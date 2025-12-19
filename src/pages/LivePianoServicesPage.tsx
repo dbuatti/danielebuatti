@@ -241,7 +241,7 @@ const LivePianoServicesPage: React.FC = () => {
               Performance Style
             </h3>
             <p className="text-lg md:text-xl text-white/90 leading-relaxed max-w-4xl mx-auto">
-              Blending virtuoso piano performance with warm, sophisticated vocals, Daniele delivers a high-class piano bar experience... tailored impeccably to upscale weddings, luxury venues, and high-brow gatherings.
+              Blending virtuosic piano performance with warm, sophisticated vocals, Daniele delivers a refined piano-bar experience — tailored impeccably to upscale weddings, luxury venues, and high-brow gatherings.
             </p>
           </div>
         </motion.div>
