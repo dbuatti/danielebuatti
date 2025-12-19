@@ -175,7 +175,7 @@ const LandingPageV4: React.FC = () => {
         </section>
 
         {/* Contact – clean, single CTA with subtle AMEB note */}
-        <section className="py-12">
+        <section className="py-16">
           <h2 className="text-4xl font-light text-center mb-10">Get in Touch</h2>
           <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10">
             <p className="text-center text-lg text-gray-600 dark:text-gray-400 mb-8 italic">
