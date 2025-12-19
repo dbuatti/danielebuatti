@@ -32,7 +32,6 @@ import {
 import DynamicImage from "@/components/DynamicImage";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Link } from 'react-router-dom'; // Added Link import
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required." }),
@@ -123,9 +122,7 @@ const LivePianoServicesPage: React.FC = () => {
         </video>
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
         <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.5, ease: "easeOut" }} className="relative z-10 text-center px-6">
-          <Link to="/" className="inline-block transition-opacity hover:opacity-80">
-            <DynamicImage src="/gold-36.png" alt="Daniele Buatti Logo" className="h-24 md:h-32 mx-auto mb-6 drop-shadow-2xl" width={128} height={128} />
-          </Link>
+          <DynamicImage src="/gold-36.png" alt="Daniele Buatti Logo" className="h-24 md:h-32 mx-auto mb-6 drop-shadow-2xl" width={128} height={128} />
           <h1 className="text-5xl md:text-7xl font-light tracking-widest uppercase font-montserrat text-white">
             DANIELE BUATTI
           </h1>
