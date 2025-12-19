@@ -12,7 +12,7 @@ const AdditionalProgramsSection: React.FC = () => {
         {/* FeaturedProgramCard for Music Director & Pianist */}
         <FeaturedProgramCard
           title="Music Director & Pianist"
-          description="Explore my exteasdsadnsive experience as a music director, vocal coach, pianist, and performer in music theatre."
+          description="Explore my extensive experience as a music director, vocal coach, pianist, and performer in music theatre."
           link="/music-director-pianist"
           linkText="View Profile & Inquire" // Updated CTA
           backgroundImageSrc="/daniele-conducting.jpeg"
