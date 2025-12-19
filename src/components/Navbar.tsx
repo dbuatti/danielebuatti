@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils";
 import DynamicImage from "@/components/DynamicImage";
 import { useTheme } from "next-themes";
 
-// Import navLinks
-import { navLinks } from "@/config/navLinks";
+// Import navLinks from correct path
+import { navLinks } from "@/constants/navigation";
 
 const Navbar = () => {
   const activeSection = useActiveSection();
