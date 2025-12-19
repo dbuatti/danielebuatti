@@ -66,6 +66,10 @@ const ContactForm: React.FC = () => {
       });
     }
   }
+  
+  // Define explicit classes for inputs and textareas
+  const inputClasses = "bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus-visible:ring-brand-primary";
+  const labelClasses = "text-gray-800 dark:text-gray-200";
 
   return (
     <Form {...form}>
@@ -75,12 +79,12 @@ const ContactForm: React.FC = () => {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel className={labelClasses}>Name</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Your name"
                   {...field}
-                  className="h-12 text-base"
+                  className={`h-12 text-base ${inputClasses}`}
                 />
               </FormControl>
               <FormMessage />
@@ -93,13 +97,13 @@ const ContactForm: React.FC = () => {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel className={labelClasses}>Email</FormLabel>
               <FormControl>
                 <Input
                   type="email"
                   placeholder="your@email.com"
                   {...field}
-                  className="h-12 text-base"
+                  className={`h-12 text-base ${inputClasses}`}
                 />
               </FormControl>
               <FormMessage />
@@ -112,13 +116,13 @@ const ContactForm: React.FC = () => {
           name="message"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Message</FormLabel>
+              <FormLabel className={labelClasses}>Message</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="How can I help?"
                   {...field}
                   rows={6}
-                  className="resize-none text-base"
+                  className={`resize-none text-base ${inputClasses}`}
                 />
               </FormControl>
               <FormMessage />
@@ -129,7 +133,7 @@ const ContactForm: React.FC = () => {
         <Button
           type="submit"
           size="lg"
-          className="w-full rounded-full py-7 text-lg font-medium shadow-xl transition-all duration-300 hover:scale-105"
+          className="w-full rounded-full py-7 text-lg font-medium shadow-xl transition-all duration-300 hover:scale-105 bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
           disabled={form.formState.isSubmitting}
         >
           {form.formState.isSubmitting ? "Sending..." : "Send Message"}
