@@ -16,7 +16,7 @@ const ProjectsResourcesPage: React.FC = () => {
         <header className="text-center mb-20">
           <h1 className="text-5xl md:text-6xl font-light mb-6">Projects & Resources</h1>
           <p className="text-xl max-w-3xl mx-auto text-gray-600 dark:text-gray-400">
-            A look at my other work — live performance, music products, accompaniment, and community projects.
+            A look at my other work — live performance, music products, acfasfsacompaniment, and community projects.
           </p>
         </header>
 
