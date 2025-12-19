@@ -14,81 +14,128 @@ const CoachingPage: React.FC = () => {
       <Navbar />
 
       <main className="max-w-5xl mx-auto px-6 py-16">
-        {/* Hero */}
-        <section className="mb-24 text-center">
-          <h1 className="text-5xl md:text-6xl font-light mb-8">Coaching Services</h1>
-          <p className="text-xl max-w-3xl mx-auto text-gray-600 dark:text-gray-400">
-            One-to-one work in voice, piano, performance, and embodiment.
+        {/* Hero Section – elevated, outcome-led */}
+        <section className="text-center mb-20">
+          <h1 className="text-5xl md:text-6xl font-light mb-6">Coaching</h1>
+          <p className="text-2xl md:text-3xl text-gray-700 dark:text-gray-300 mb-8 max-w-4xl mx-auto">
+            Voice. Presence. Musical Authority.
           </p>
+          <p className="text-xl leading-relaxed text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-12">
+            One-to-one work for performers, speakers, and creatives who want to communicate with clarity, depth, and ease — without forcing or over-efforting.
+          </p>
+          <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-12">
+            This work integrates voice, piano, body awareness, and somatic intelligence to support sustainable, embodied expression.
+          </p>
+          <p className="text-lg font-medium text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-12">
+            Not performance tricks. Not vocal hacks.<br />
+            This is about alignment — musical, physical, and psychological.
+          </p>
+          <Button asChild size="lg" className="text-lg px-12 py-8 rounded-full shadow-xl">
+            <a
+              href="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:1:1%20Coaching:%20Voice,%20Piano%20%26%20Performance"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Calendar className="w-6 h-6 inline mr-3" />
+              Check availability & book
+            </a>
+          </Button>
         </section>
 
-        {/* Hero Image */}
-        <div className="mb-24 -mx-6">
+        {/* Hero Image – calm, authoritative */}
+        <div className="mb-20 -mx-6">
           <DynamicImage
             src="/danielecalmatpiano.jpeg"
-            alt="Daniele Buatti playing piano"
-            className="w-full h-[500px] object-cover object-top rounded-b-3xl shadow-2xl"
-            width={1200}
-            height={600}
+            alt="Daniele Buatti in flow at the piano"
+            className="w-full h-[600px] object-cover object-center shadow-2xl"
+            width={1400}
+            height={700}
           />
         </div>
 
-        {/* What I Offer – Three Pillars */}
+        {/* Pillars – reframed as integrated philosophy */}
         <section className="mb-32">
-          <h2 className="text-4xl font-light text-center mb-16">What I Offer</h2>
-          <div className="grid md:grid-cols-3 gap-12">
-            {/* Vocal & Instrumental */}
-            <div className="text-center space-y-6">
+          <h2 className="text-4xl font-light text-center mb-16">The Work</h2>
+          <div className="grid md:grid-cols-3 gap-16">
+            {/* Voice & Piano */}
+            <div className="space-y-6">
               <Mic2 className="w-16 h-16 mx-auto text-gray-700 dark:text-gray-300" />
-              <h3 className="text-2xl font-medium">Voice & Piano</h3>
-              <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
-                Practical work on technique, repertoire, sight-reading, theory, audition preparation, and musical expression.
+              <h3 className="text-3xl font-medium text-center">Voice & Piano</h3>
+              <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400 text-center">
+                Refined, musical work grounded in real-world performance.
+              </p>
+              <ul className="text-lg text-gray-600 dark:text-gray-400 space-y-2 mt-6">
+                <li>• Vocal technique that prioritises ease and resonance</li>
+                <li>• Piano skills for singers and directors</li>
+                <li>• Repertoire, interpretation, and stylistic clarity</li>
+                <li>• Audition and performance preparation</li>
+                <li>• Sight-reading, theory, and musical literacy</li>
+              </ul>
+              <p className="text-lg italic text-gray-600 dark:text-gray-400 mt-6 text-center">
+                Always in service of expression — never mechanics for their own sake.
               </p>
             </div>
 
-            {/* Embodiment */}
-            <div className="text-center space-y-6">
+            {/* Body, Breath & Regulation */}
+            <div className="space-y-6">
               <Leaf className="w-16 h-16 mx-auto text-gray-700 dark:text-gray-300" />
-              <h3 className="text-2xl font-medium">Body & Breath</h3>
-              <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
-                Kinesiology, breath work, and somatic practices to release tension and connect body with voice.
+              <h3 className="text-3xl font-medium text-center">Body, Breath & Regulation</h3>
+              <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400 text-center">
+                Where most vocal training stops — this work begins.
+              </p>
+              <ul className="text-lg text-gray-600 dark:text-gray-400 space-y-2 mt-6">
+                <li>• Unconscious holding patterns</li>
+                <li>• Performance stress and overactivation</li>
+                <li>• Disconnection between intention and sound</li>
+              </ul>
+              <p className="text-lg italic text-gray-600 dark:text-gray-400 mt-6 text-center">
+                The aim is a voice that responds — not one that’s managed.
               </p>
             </div>
 
-            {/* Presence */}
-            <div className="text-center space-y-6">
+            {/* Presence & Communication */}
+            <div className="space-y-6">
               <Megaphone className="w-16 h-16 mx-auto text-gray-700 dark:text-gray-300" />
-              <h3 className="text-2xl font-medium">Presence & Communication</h3>
-              <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
-                Public speaking, on-camera work, acting, and building calm, clear presence in any setting.
+              <h3 className="text-3xl font-medium text-center">Presence & Communication</h3>
+              <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400 text-center">
+                For moments where clarity matters.
+              </p>
+              <ul className="text-lg text-gray-600 dark:text-gray-400 space-y-2 mt-6">
+                <li>• Public speaking and presentations</li>
+                <li>• On-camera confidence</li>
+                <li>• Acting and text delivery</li>
+                <li>• Leadership presence</li>
+              </ul>
+              <p className="text-lg italic text-gray-600 dark:text-gray-400 mt-6 text-center">
+                We focus on nervous system regulation, clarity of intention, and grounded delivery — so you’re felt, not just heard.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Sessions & Pricing */}
-        <section className="mb-32 py-16 bg-white dark:bg-gray-900 rounded-3xl">
+        {/* Sessions & Rates – premium, calm */}
+        <section className="mb-32 py-20 bg-white dark:bg-gray-900 rounded-3xl">
           <h2 className="text-4xl font-light text-center mb-16">Sessions & Rates</h2>
-          <div className="max-w-3xl mx-auto space-y-12">
+          <div className="max-w-4xl mx-auto space-y-16">
             {/* Single Sessions */}
-            <div className="text-center">
-              <h3 className="text-2xl font-medium mb-8">Single Sessions</h3>
-              <div className="grid md:grid-cols-4 gap-8 mb-12">
-                <div className="space-y-2">
+            <div>
+              <h3 className="text-2xl font-medium text-center mb-10">One-to-One Sessions</h3>
+              <div className="grid md:grid-cols-4 gap-10 text-center">
+                <div className="space-y-3">
                   <p className="text-3xl font-light">30 min</p>
-                  <p className="text-xl">$90</p>
+                  <p className="text-2xl font-semibold">$90</p>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <p className="text-3xl font-light">45 min</p>
-                  <p className="text-xl">$130</p>
+                  <p className="text-2xl font-semibold">$130</p>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <p className="text-3xl font-light">60 min</p>
-                  <p className="text-xl">$170</p>
+                  <p className="text-2xl font-semibold">$170</p>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <p className="text-3xl font-light">90 min</p>
-                  <p className="text-xl">$250</p>
+                  <p className="text-2xl font-semibold">$250</p>
                 </div>
               </div>
             </div>
@@ -96,25 +143,25 @@ const CoachingPage: React.FC = () => {
             {/* Packages */}
             <div className="text-center">
               <h3 className="text-2xl font-medium mb-8">Packages (60-minute sessions)</h3>
-              <div className="space-y-6 max-w-md mx-auto">
-                <p className="text-xl">4 sessions – $640 (save $40)</p>
-                <p className="text-xl">8 sessions – $1,240 (save $120)</p>
-                <p className="text-lg text-gray-600 dark:text-gray-400">Custom packages available on request.</p>
+              <div className="space-y-4 max-w-md mx-auto text-xl">
+                <p>4 sessions — $640</p>
+                <p>8 sessions — $1,240</p>
+                <p className="text-lg text-gray-600 dark:text-gray-400 mt-4">Custom packages available for ongoing or integrated work.</p>
               </div>
             </div>
 
-            {/* Booking */}
+            {/* Booking CTA */}
             <div className="text-center">
-              <p className="text-lg mb-8 text-gray-600 dark:text-gray-400">
-                Sessions available in-person (Toorak, Melbourne) or online via Zoom.
+              <p className="text-lg text-gray-600 dark:text-gray-400 mb-10">
+                Sessions available in person (Toorak, Melbourne) or online via Zoom.
               </p>
-              <Button asChild size="lg" className="bg-gray-800 hover:bg-gray-700 dark:bg-gray-200 dark:hover:bg-gray-300 text-white dark:text-gray-900 text-lg px-12 py-7 rounded-full">
+              <Button asChild size="lg" className="text-lg px-14 py-8 rounded-full shadow-2xl">
                 <a
                   href="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:1:1%20Coaching:%20Voice,%20Piano%20%26%20Performance"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Calendar className="w-6 h-6 inline mr-3" />
+                  <Calendar className="w-7 h-7 inline mr-4" />
                   Check availability & book
                 </a>
               </Button>
@@ -122,25 +169,27 @@ const CoachingPage: React.FC = () => {
           </div>
         </section>
 
-        {/* Group Work */}
+        {/* Group Workshops – intentional, selective */}
         <section className="mb-32 text-center">
           <Users className="w-16 h-16 mx-auto mb-8 text-gray-700 dark:text-gray-300" />
           <h2 className="text-4xl font-light mb-8">Group Workshops</h2>
-          <p className="text-lg max-w-2xl mx-auto mb-10 text-gray-600 dark:text-gray-400">
-            I also run occasional group sessions on presence, voice, and body work.
+          <p className="text-xl max-w-3xl mx-auto text-gray-600 dark:text-gray-400 mb-10 leading-relaxed">
+            Throughout the year, I offer small-group workshops exploring voice, presence, and embodied performance.<br />
+            These sessions are exploratory, practical, and designed for people who want depth — not quick fixes.
           </p>
-          <Button asChild variant="outline" size="lg" className="border-2 text-lg px-10 py-6">
-            <Link to="/projects-resources">See upcoming workshops</Link>
+          <Button asChild size="lg" variant="outline" className="border-2 text-lg px-12 py-7">
+            <Link to="/projects-resources">View upcoming workshops</Link>
           </Button>
         </section>
 
-        {/* Other Services Call-out */}
-        <section className="py-16 bg-white dark:bg-gray-900 rounded-3xl text-center">
-          <h2 className="text-4xl font-light mb-8">Other Services</h2>
-          <p className="text-lg max-w-2xl mx-auto mb-10 text-gray-600 dark:text-gray-400">
-            I also offer live piano performance, music direction, AMEB accompaniment, sheet music arrangements, and backing tracks.
+        {/* Other Services – adjacent, not “also” */}
+        <section className="py-20 bg-white dark:bg-gray-900 rounded-3xl text-center">
+          <h2 className="text-4xl font-light mb-8">Additional Musical Services</h2>
+          <p className="text-xl max-w-3xl mx-auto text-gray-600 dark:text-gray-400 mb-10 leading-relaxed">
+            Alongside coaching, I work professionally as a pianist, music director, and arranger.<br />
+            This includes live piano performance, music direction, AMEB accompaniment, custom sheet music, and backing tracks.
           </p>
-          <Button asChild size="lg" variant="outline" className="border-2 text-lg px-10 py-6">
+          <Button asChild size="lg" variant="outline" className="border-2 text-lg px-12 py-7">
             <Link to="/projects-resources">View all services</Link>
           </Button>
         </section>
