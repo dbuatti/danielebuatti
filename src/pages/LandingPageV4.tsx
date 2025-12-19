@@ -176,7 +176,7 @@ const LandingPageV4: React.FC = () => {
 
         {/* Contact – reduced top negative space */}
         <section className="pt-8 pb-20">  {/* Reduced top padding from py-16 → pt-8 */}
-          <h2 className="text-4xl font-light text-center mb-2">Get in Touch</h2>  {/* Reduced mb-10 → mb-6 */}
+          <h2 className="text-4xl font-light text-center mb-6">Get in Touch</h2>  {/* Reduced mb-10 → mb-6 */}
           <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10">
             <p className="text-center text-lg text-gray-600 dark:text-gray-400 mb-8 italic">
               For AMEB accompanying inquiries, please use the dedicated page for rates and booking.
