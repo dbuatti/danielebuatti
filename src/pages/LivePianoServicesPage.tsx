@@ -162,7 +162,7 @@ const LivePianoServicesPage: React.FC = () => {
             <CarouselContent className="-ml-4">
               {galleryImages.map((imageSrc, index) => (
                 <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                  <Card 
+                  <Card
                     className={cn(
                       "bg-livePiano-darker border-livePiano-border/30 rounded-xl overflow-hidden shadow-lg cursor-pointer",
                       selectedImageIndex === index ? "border-4 border-livePiano-primary" : ""
@@ -336,23 +336,23 @@ const LivePianoServicesPage: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer 
+      <footer
         className="relative py-16 text-center overflow-hidden"
         style={{ backgroundImage: `url(/bowtie.avif)`, backgroundSize: 'cover', backgroundPosition: 'center' }}
       >
         <div className="absolute inset-0 bg-black/60"></div> {/* Overlay for readability */}
         <div className="relative z-10 max-w-7xl mx-auto px-4">
           <p className="text-livePiano-light text-2xl font-semibold flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
-            <a 
-              href="https://wa.me/61424174067" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href="https://wa.me/61424174067"
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-2 hover:text-livePiano-primary transition-colors"
             >
               <Phone size={24} /> 0424 174 067
             </a>
-            <a 
-              href="mailto:info@danielebuatti.com" 
+            <a
+              href="mailto:info@danielebuatti.com"
               className="flex items-center gap-2 hover:text-livePiano-primary transition-colors"
             >
               <Mail size={24} /> info@danielebuatti.com
