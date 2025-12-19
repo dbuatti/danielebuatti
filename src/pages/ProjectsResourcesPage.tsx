@@ -1,30 +1,31 @@
 "use client";
 
-import React from 'react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import SectionHeading from '@/components/SectionHeading';
-import AdditionalProgramsSection from '@/components/pages/landing-page-v3/AdditionalProgramsSection';
-import BackToTopButton from '@/components/BackToTopButton';
-// Removed unused imports: Card, CardContent, DynamicImage, Button, Link
+import React from "react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import BackToTopButton from "@/components/BackToTopButton";
+import AdditionalProgramsSection from "@/components/pages/landing-page-v3/AdditionalProgramsSection";
 
 const ProjectsResourcesPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
       <Navbar />
-      <main className="container mx-auto px-4 pt-12 pb-12">
-        <div className="text-center space-y-4 mb-6">
-          <SectionHeading>My Projects & Resources</SectionHeading>
-          <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 max-w-3xl mx-auto">
-            Explore my diverse range of musical and educational ventures, from specialised services and products to community initiatives.
-          </p>
-          {/* Removed redundant Separator here */}
-        </div>
 
+      <main className="max-w-5xl mx-auto px-6 py-16">
+        {/* Page Header */}
+        <header className="text-center mb-20">
+          <h1 className="text-5xl md:text-6xl font-light mb-6">Projects & Resources</h1>
+          <p className="text-xl max-w-3xl mx-auto text-gray-600 dark:text-gray-400">
+            A look at my other work — live performance, music products, accompaniment, and community projects.
+          </p>
+        </header>
+
+        {/* Main Content */}
         <section>
           <AdditionalProgramsSection />
         </section>
       </main>
+
       <Footer />
       <BackToTopButton />
     </div>
