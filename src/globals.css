@@ -1,45 +1,135 @@
-const LivePianoServicesPage: React.FC = () => {
-  // ... state and logic ...
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  return (
-    /* APPLY THE THEME CLASS HERE */
-    <div className="live-piano-theme min-h-screen bg-background text-foreground overflow-x-hidden">
-       {/* All content inside will now use the Gold/Black variable overrides */}
-       <header className="...">...</header>
-       
-       <section id="enquire" className="...">
-          <Card className="bg-card border-border ...">
-             <Form {...form}>
-                <form className="space-y-8">
-                   {/* Inputs will now naturally be text-white with gold borders */}
-                   <FormField ... />
-                   
-                   {/* The Select component will now be readable */}
-                   <FormField
-                      control={form.control}
-                      name="pianoType"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-primary">Is there an instrument available? *</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger className="bg-input border-border text-foreground">
-                                <SelectValue placeholder="Click to select an option..." />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="grand-piano">Grand Piano</SelectItem>
-                              <SelectItem value="upright-piano">Upright Piano</SelectItem>
-                              {/* ... other items ... */}
-                            </SelectContent>
-                          </Select>
-                        </FormItem>
-                      )}
-                    />
-                </form>
-             </Form>
-          </Card>
-       </section>
-    </div>
-  );
-};
+@layer base {
+  :root {
+    --background: 0 0% 100%; /* White */
+    --foreground: 222.2 47.4% 11.2%; /* Dark Blue/Black */
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 47.4% 11.2%;
+    --radius: 0.5rem;
+
+    /* Custom Brand Colors (Default/Light Theme) */
+    --brand-primary: 325 70% 50%; /* Pink/Magenta */
+    --brand-dark: 238 100% 6%; /* Deep Blue */
+    --brand-light: 0 0% 100%; /* White */
+    --brand-secondary: 210 40% 96.1%; /* Light Gray/Border */
+    --brand-blue: 210 40% 96.1%;
+    --brand-magenta: 325 70% 50%;
+    --brand-yellow: 45 100% 50%; /* Yellow/Gold */
+    --brand-dark-alt: 238 100% 8%; /* Slightly lighter dark for cards */
+
+    /* Live Piano Theme (Black/Gold) - Used by LivePianoServicesPage */
+    --live-piano-background: 240 10% 3.9%; /* Near Black */
+    --live-piano-primary: 45 100% 50%; /* Gold */
+    --live-piano-light: 0 0% 100%; /* White */
+    --live-piano-border: 45 10% 30%; /* Dark Gold Border */
+    --live-piano-darker: 240 10% 2%; /* Even darker */
+  }
+
+  .dark {
+    --background: 238 100% 6%; /* Deep Blue (brand-dark) */
+    --foreground: 210 40% 98%; /* Off-White */
+    --card: 238 100% 8%; /* brand-dark-alt */
+    --card-foreground: 210 40% 98%;
+    --popover: 238 100% 8%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.4% 14.8%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.4% 14.8%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.4% 14.8%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.4% 14.8%;
+    --input: 217.2 32.4% 14.8%;
+    --ring: 212.7 26.8% 83.9%;
+
+    /* Custom Brand Colors (Dark Theme) */
+    --brand-primary: 325 70% 60%; /* Slightly brighter Pink/Magenta */
+    --brand-dark: 238 100% 6%;
+    --brand-light: 0 0% 100%;
+    --brand-secondary: 217.2 32.4% 14.8%; /* Darker Gray/Border */
+    --brand-blue: 217.2 32.4% 14.8%;
+    --brand-magenta: 325 70% 60%;
+    --brand-yellow: 45 100% 60%;
+    --brand-dark-alt: 238 100% 8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Outfit', sans-serif;
+  }
+  /* Custom font styles */
+  .font-display {
+    font-family: 'Roboto Slab', serif;
+  }
+  .font-montserrat {
+    font-family: 'Montserrat', sans-serif;
+  }
+  .font-libre-baskerville {
+    font-family: 'Libre Baskerville', serif;
+  }
+}
+
+/* Specific styles for Live Piano V4 page */
+.live-piano-theme {
+  /* Override standard shadcn variables for this specific theme */
+  --background: var(--live-piano-background);
+  --foreground: var(--live-piano-light);
+  --primary: var(--live-piano-primary);
+  --primary-foreground: var(--live-piano-darker);
+  --card: 240 10% 3.9%; /* Use near black for cards */
+  --card-foreground: var(--live-piano-light);
+  --border: var(--live-piano-border);
+  --input: 240 10% 2%; /* Use even darker for inputs */
+}
+
+/* Custom Gold Color Utilities (used in LivePianoServicesPage.tsx) */
+.text-gold-400 {
+  color: hsl(45 100% 60%);
+}
+.text-gold-300 {
+  color: hsl(45 100% 70%);
+}
+.text-gold-500 {
+  color: hsl(45 100% 50%);
+}
+.ring-gold-500 {
+  --tw-ring-color: hsl(45 100% 50%);
+}
+.shadow-gold-500\/30 {
+  --tw-shadow-color: hsl(45 100% 50%);
+  --tw-shadow: var(--tw-shadow-color) 0 10px 15px -3px, var(--tw-shadow-color) 0 4px 6px -4px;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.border-gold-800\/30 {
+  border-color: hsl(45 10% 30%);
+}
+.hover\:bg-gold-600:hover {
+  background-color: hsl(45 100% 40%);
+}
