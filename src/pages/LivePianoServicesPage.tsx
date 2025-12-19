@@ -42,11 +42,7 @@ const LivePianoServicesPage: React.FC = () => {
 
   // Add more images here, especially ones showing you singing/vocalizing at the piano
   const galleryImages = [
-    "/blacktie.avif",
-    "/blacktie1.avif",
-    "/blacktie3.avif",
-    "/blacktie4.avif",
-    "/other.avif",
+   
     // Add new paths like: "/daniele-singing1.avif", "/daniele-vocal-piano.avif", etc.
   ];
 
