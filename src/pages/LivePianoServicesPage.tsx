@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import { Mail, Phone, Play } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -18,7 +17,7 @@ import {
   CarouselPrevious, 
   type CarouselApi 
 } from "@/components/ui/carousel";
-import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures'; // ← NEW IMPORT
+import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -32,6 +31,7 @@ import {
 } from "@/components/ui/form";
 import DynamicImage from "@/components/DynamicImage";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils"; // Keeping cn import
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required." }),
@@ -168,7 +168,7 @@ const LivePianoServicesPage: React.FC = () => {
             dragFree: true,
           }}
           plugins={[
-            WheelGesturesPlugin() // ← Enables two-finger trackpad scrolling!
+            WheelGesturesPlugin()
           ]}
           setApi={setApi}
           className="w-full max-w-6xl mx-auto"
