@@ -130,10 +130,13 @@ const LivePianoServicesPage: React.FC = () => {
         <div className="absolute inset-0 bg-black/30 z-10"></div>
         <div className="relative z-20 flex items-end justify-center h-full pb-8">
           <div className="flex flex-col items-center">
-            <DynamicImage src="/gold-36.png" alt="Daniele Buatti Logo" className="h-16 md:h-20" width={80} height={80} />
-            <h1 className="text-xl md:text-2xl font-montserrat font-light uppercase text-livePiano-light tracking-widest mt-2">
-              Daniele Buatti
-            </h1>
+            <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent z-0"></div>
+            <div className="relative z-10 flex flex-col items-center">
+              <DynamicImage src="/gold-36.png" alt="Daniele Buatti Logo" className="h-16 md:h-20" width={80} height={80} />
+              <h1 className="text-xl md:text-2xl font-montserrat font-light uppercase text-livePiano-light tracking-widest mt-2">
+                Daniele Buatti
+              </h1>
+            </div>
           </div>
         </div>
       </header>
