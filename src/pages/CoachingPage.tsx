@@ -42,15 +42,14 @@ const CoachingPage: React.FC = () => {
           </Button>
         </section>
 
-{/* Hero Image – your head is now fully visible + beautiful */}
+{/* Hero Image – head fully visible, pushed up */}
 <div className="mb-24 -mx-6">
   <DynamicImage
     src="/danielecalmatpiano.jpeg"
     alt="Daniele Buatti in flow at the piano"
-    className="w-full h-[600px] object-cover object-top shadow-2xl"  // ← this line fixes it
+    className="w-full h-[650px] object-cover object-top shadow-2xl"
     width={1400}
     height={800}
-    priority  // loads faster, looks instant
   />
 </div>
 
