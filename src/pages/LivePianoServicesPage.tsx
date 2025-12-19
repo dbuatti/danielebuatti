@@ -41,11 +41,11 @@ const LivePianoServicesPage: React.FC = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const galleryImages = [
-    "/blacktie.avif",
-    "/blacktie1.avif",
-    "/blacktie3.avif",
-    "/blacktie4.avif",
-    "/other.avif",
+    "/placeholder-1.jpg",
+    "/placeholder-2.jpg",
+    "/placeholder-3.jpg",
+    "/placeholder-4.jpg",
+    "/placeholder-5.jpg",
   ];
 
   const form = useForm<z.infer<typeof formSchema>>({
