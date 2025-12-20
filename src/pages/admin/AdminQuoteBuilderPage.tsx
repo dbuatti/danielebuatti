@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -58,6 +58,7 @@ interface QuoteDraft {
 
 const AdminQuoteBuilderPage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // Use useLocation to access state
   const { user } = useAuth();
   const [currentQuoteId, setCurrentQuoteId] = useState<string | undefined>(undefined);
   const [currentDraftId, setCurrentDraftId] = useState<string | undefined>(undefined);
@@ -101,7 +102,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
   }, [watchedTheme, form]);
 
   // --- Data Fetching ---
-  const fetchDrafts = useCallback(async () => {
+  const fetchDrafts = useCallback(async (draftIdToLoad?: string) => {
     setIsLoadingDrafts(true);
     const { data, error } = await supabase
       .from('quote_drafts')
@@ -113,13 +114,34 @@ const AdminQuoteBuilderPage: React.FC = () => {
       showError('Failed to load drafts.');
     } else {
       setDrafts(data || []);
+      
+      // Auto-load draft if ID is provided (e.g., from navigation state)
+      if (draftIdToLoad) {
+        const draft = data.find(d => d.id === draftIdToLoad);
+        if (draft) {
+          form.reset(draft.data);
+          setCurrentDraftId(draftIdToLoad);
+          setCurrentQuoteId(undefined);
+          setCurrentQuote(null);
+          showSuccess(`Draft "${draft.title}" loaded.`);
+        }
+      }
     }
     setIsLoadingDrafts(false);
-  }, []);
+  }, [form]);
 
   useEffect(() => {
-    fetchDrafts();
-  }, [fetchDrafts]);
+    // Check if we navigated here with a draft ID in state
+    const state = location.state as { loadDraftId?: string } | null;
+    const draftIdToLoad = state?.loadDraftId;
+    
+    fetchDrafts(draftIdToLoad);
+    
+    // Clear state after loading to prevent re-loading on subsequent visits
+    if (draftIdToLoad) {
+        navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [fetchDrafts, location.state, location.pathname, navigate]);
   
   const handleClearForm = () => {
     if (window.confirm('Are you sure you want to clear the current form data?')) {
