@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import DynamicImage from "@/components/DynamicImage";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Mic2, Leaf, Megaphone, Calendar } from "lucide-react";
+import { Mic2, Leaf, Megaphone, Calendar, ExternalLink } from "lucide-react"; // Import ExternalLink
 
 const CoachingPage: React.FC = () => {
   return (
@@ -80,6 +80,11 @@ const CoachingPage: React.FC = () => {
               <p className="text-lg italic text-gray-600 dark:text-gray-400">
                 The aim is a voice that responds — not one that’s managed.
               </p>
+              <Button asChild variant="link" className="text-lg p-0 h-auto text-brand-primary hover:text-brand-primary/80">
+                <a href="https://resonance-kinesiology.vercel.app/" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center mx-auto">
+                  Book Pure Kinesiology Sessions <ExternalLink className="w-4 h-4 ml-2" />
+                </a>
+              </Button>
             </div>
 
             {/* Presence & Communication */}
