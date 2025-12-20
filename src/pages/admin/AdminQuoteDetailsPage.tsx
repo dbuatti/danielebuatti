@@ -35,7 +35,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
   const [isResetting, setIsResetting] = useState(false);
   const [isActivating, setIsActivating] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [isSendingModalOpen, setIsSendingModalOpen] = useState(false);
+  const [isSendingModalOpen, setIsSendingModal] = useState(false);
   const [, copy] = useCopyToClipboard();
 
   const fetchQuote = useCallback(async (showToast = false) => {
@@ -117,7 +117,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
     const toastId = showLoading('Resetting quote status...');
 
     try {
-      const versions = quote.details.versions;
+      const versions = quote.details.versions || [];
       const activeVersion = versions.find(v => v.is_active);
       
       if (!activeVersion) throw new Error("No active version found to reset.");
@@ -170,7 +170,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
     const toastId = showLoading(`Activating version ${versionId}...`);
     
     try {
-        const versions = quote.details.versions;
+        const versions = quote.details.versions || [];
         let newActiveVersion: QuoteVersion | undefined;
 
         // 1. Update versions array: set selected version to active, others to inactive
@@ -221,7 +221,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
   const handleQuoteSent = () => {
     // Update status locally after successful send
     // We need to find the active version and update its status to 'Sent'
-    const updatedVersions = quote?.details.versions.map(v => {
+    const updatedVersions = quote?.details.versions?.map(v => {
         if (v.is_active) {
             return { ...v, status: 'Sent' as QuoteVersion['status'] };
         }
@@ -269,7 +269,8 @@ const AdminQuoteDetailsPage: React.FC = () => {
     );
   }
 
-  const versions = quote.details.versions.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+  // Defensive check added here
+  const versions = quote.details.versions ? [...quote.details.versions].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()) : [];
   const activeVersion = versions.find(v => v.is_active);
   
   // Fallback for display if active version is somehow missing (shouldn't happen)
