@@ -8,7 +8,7 @@ import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, Download, Edit, Trash2, Copy, Clock, Eye, Send, CheckCircle, XCircle } from 'lucide-react';
+import { Loader2, Download, Edit, Trash2, Copy, Clock, Eye, Send, CheckCircle, XCircle, Wrench } from 'lucide-react';
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -34,8 +34,9 @@ const AdminQuoteDetailsPage: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const [isActivating, setIsActivating] = useState(false);
+  const [isMigrating, setIsMigrating] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [isSendingModalOpen, setIsSendingModal] = useState(false); // FIX: Renamed setter to match usage
+  const [isSendingModalOpen, setIsSendingModal] = useState(false);
   const [, copy] = useCopyToClipboard();
 
   const fetchQuote = useCallback(async (showToast = false) => {
@@ -78,6 +79,36 @@ const AdminQuoteDetailsPage: React.FC = () => {
   useEffect(() => {
     fetchQuote(true);
   }, [fetchQuote]);
+
+  const handleMigrateData = async () => {
+    if (!quote || !id) return;
+
+    if (!window.confirm('This action will attempt to fix corrupted quote data by creating a new version structure based on existing fields. Proceed?')) {
+      return;
+    }
+
+    setIsMigrating(true);
+    const toastId = showLoading('Migrating quote data...');
+
+    try {
+      const { data, error } = await supabase.functions.invoke('migrate-quote-version', {
+        body: { invoice_id: id },
+      });
+
+      if (error) throw error;
+      if (data.error) throw new Error(data.error);
+
+      showSuccess(data.message || 'Quote data successfully migrated!', { id: toastId });
+      await fetchQuote(false); // Refetch to load the fixed structure
+
+    } catch (error: any) {
+      console.error('Migration Error:', error);
+      showError(`Failed to migrate data: ${error.message || 'Unknown error occurred'}`, { id: toastId });
+    } finally {
+      setIsMigrating(false);
+      dismissToast(toastId);
+    }
+  };
 
   const handleDelete = async () => {
     if (!quote || !user) return;
@@ -294,7 +325,17 @@ const AdminQuoteDetailsPage: React.FC = () => {
       return (
           <Alert variant="destructive">
               <AlertTitle>Error: Corrupted Quote Data</AlertTitle>
-              <AlertDescription>Quote data is corrupted: No versions found in quote details. Please delete this quote and recreate it.</AlertDescription>
+              <AlertDescription className="space-y-4">
+                <p>Quote data is corrupted: No versions found in quote details. This usually happens with older records created before versioning was implemented.</p>
+                <Button 
+                  onClick={handleMigrateData} 
+                  disabled={isMigrating}
+                  className="bg-yellow-600 hover:bg-yellow-700 text-white"
+                >
+                  {isMigrating ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Wrench className="h-4 w-4 mr-2" />}
+                  Fix Data Structure (Migrate)
+                </Button>
+              </AlertDescription>
           </Alert>
       );
   }
