@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { Quote } from '@/types/quote';
+import { Quote, QuoteVersion } from '@/types/quote';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, Download, Edit, Trash2, Copy, Clock, Eye, Send } from 'lucide-react';
+import { Loader2, Download, Edit, Trash2, Copy, Clock, Eye, Send, CheckCircle, XCircle } from 'lucide-react';
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -18,6 +18,7 @@ import { format } from 'date-fns';
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 import QuoteSendingModal from '@/components/admin/QuoteSendingModal';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 // Extend Quote interface locally to include the new status field
 interface QuoteWithStatus extends Quote {
@@ -32,15 +33,16 @@ const AdminQuoteDetailsPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
+  const [isActivating, setIsActivating] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isSendingModalOpen, setIsSendingModalOpen] = useState(false);
   const [, copy] = useCopyToClipboard();
 
-  const fetchQuote = useCallback(async () => {
+  const fetchQuote = useCallback(async (showToast = false) => {
     if (!id) return;
 
     setIsLoading(true);
-    const toastId = showLoading('Loading quote details...');
+    const toastId = showToast ? showLoading('Loading quote details...') : undefined;
 
     try {
       const { data, error } = await supabase
@@ -53,37 +55,26 @@ const AdminQuoteDetailsPage: React.FC = () => {
 
       // Map data to QuoteWithStatus type
       const fetchedQuote: QuoteWithStatus = {
-        id: data.id,
-        slug: data.slug,
-        client_name: data.client_name,
-        client_email: data.client_email,
-        event_title: data.event_title,
-        invoice_type: data.invoice_type,
-        event_date: data.event_date,
-        event_location: data.event_location,
-        prepared_by: data.prepared_by,
-        total_amount: data.total_amount,
-        accepted_at: data.accepted_at,
-        rejected_at: data.rejected_at,
-        created_at: data.created_at,
-        details: data.details,
-        status: data.status || 'Pending',
+        ...data,
+        total_amount: parseFloat(data.total_amount),
+        details: data.details as Quote['details'],
+        status: data.status || 'Created',
       };
 
       setQuote(fetchedQuote);
-      showSuccess('Quote loaded.', { id: toastId });
+      if (showToast) showSuccess('Quote loaded.', { id: toastId });
     } catch (error: any) {
       console.error('Error fetching quote:', error);
       showError(`Failed to load quote: ${error.message || 'Unknown error occurred'}`, { id: toastId });
       setQuote(null);
     } finally {
       setIsLoading(false);
-      dismissToast(toastId);
+      if (toastId) dismissToast(toastId);
     }
   }, [id]);
 
   useEffect(() => {
-    fetchQuote();
+    fetchQuote(true);
   }, [fetchQuote]);
 
   const handleDelete = async () => {
@@ -118,7 +109,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
   const handleResetStatus = async () => {
     if (!quote || !user) return;
 
-    if (!window.confirm(`Are you sure you want to reset the status of the quote for "${quote.event_title}" back to Created? This will clear acceptance/rejection dates and set status to 'Created'.`)) {
+    if (!window.confirm(`Are you sure you want to reset the status of the ACTIVE version back to Created? This will clear acceptance/rejection dates and set status to 'Created'.`)) {
       return;
     }
 
@@ -126,26 +117,97 @@ const AdminQuoteDetailsPage: React.FC = () => {
     const toastId = showLoading('Resetting quote status...');
 
     try {
+      const versions = quote.details.versions;
+      const activeVersion = versions.find(v => v.is_active);
+      
+      if (!activeVersion) throw new Error("No active version found to reset.");
+
+      // Update the active version
+      const updatedVersions = versions.map(v => {
+        if (v.versionId === activeVersion.versionId) {
+          return {
+            ...v,
+            accepted_at: null,
+            rejected_at: null,
+            status: 'Created' as QuoteVersion['status'],
+          };
+        }
+        return v;
+      });
+      
+      // Update the main invoice record
       const { error } = await supabase
         .from('invoices')
         .update({
           accepted_at: null,
           rejected_at: null,
           status: 'Created',
+          details: { versions: updatedVersions },
         })
         .eq('id', quote.id);
 
       if (error) throw error;
 
-      showSuccess('Quote status reset to Created!', { id: toastId });
-      // Manually update state to reflect change without full refetch
-      setQuote(prev => prev ? { ...prev, accepted_at: null, rejected_at: null, status: 'Created' } : null);
+      showSuccess('Active version status reset to Created!', { id: toastId });
+      await fetchQuote(false);
     } catch (error: any) {
       console.error('Error resetting quote status:', error);
       showError(`Failed to reset quote status: ${error.message || 'Unknown error occurred'}`, { id: toastId });
     } finally {
       setIsResetting(false);
       dismissToast(toastId);
+    }
+  };
+  
+  const handleActivateVersion = async (versionId: string) => {
+    if (!quote || !user) return;
+    
+    if (!window.confirm(`Are you sure you want to set version ${versionId} as the ACTIVE version? This will be the version the client sees.`)) {
+        return;
+    }
+    
+    setIsActivating(true);
+    const toastId = showLoading(`Activating version ${versionId}...`);
+    
+    try {
+        const versions = quote.details.versions;
+        let newActiveVersion: QuoteVersion | undefined;
+
+        // 1. Update versions array: set selected version to active, others to inactive
+        const updatedVersions = versions.map(v => {
+            const isActive = v.versionId === versionId;
+            if (isActive) {
+                newActiveVersion = { ...v, is_active: true };
+                return newActiveVersion;
+            }
+            return { ...v, is_active: false };
+        });
+        
+        if (!newActiveVersion) throw new Error("Version not found.");
+
+        // 2. Update the main invoice record (top-level fields must reflect the new active version)
+        const { error } = await supabase
+            .from('invoices')
+            .update({
+                total_amount: newActiveVersion.total_amount,
+                status: newActiveVersion.status,
+                accepted_at: newActiveVersion.accepted_at,
+                rejected_at: newActiveVersion.rejected_at,
+                details: { versions: updatedVersions },
+            })
+            .eq('id', quote.id);
+
+        if (error) throw error;
+
+        showSuccess(`Version ${versionId} successfully set as active!`, { id: toastId });
+        await fetchQuote(false);
+        
+    } catch (error: any) {
+        console.error('Error activating version:', error);
+        showError(`Failed to activate version: ${error.message || 'Unknown error occurred'}`, { id: toastId });
+    } finally {
+        setIsActivating(false);
+        dismissToast(toastId);
     }
   };
 
@@ -158,7 +220,19 @@ const AdminQuoteDetailsPage: React.FC = () => {
   
   const handleQuoteSent = () => {
     // Update status locally after successful send
-    setQuote(prev => prev ? { ...prev, status: 'Sent' } : null);
+    // We need to find the active version and update its status to 'Sent'
+    const updatedVersions = quote?.details.versions.map(v => {
+        if (v.is_active) {
+            return { ...v, status: 'Sent' as QuoteVersion['status'] };
+        }
+        return v;
+    }) || [];
+    
+    setQuote(prev => prev ? { 
+        ...prev, 
+        status: 'Sent', // Update top-level status
+        details: { versions: updatedVersions } 
+    } : null);
   };
   
   const getStatusBadgeVariant = (status: string) => {
@@ -195,11 +269,18 @@ const AdminQuoteDetailsPage: React.FC = () => {
     );
   }
 
-  const { details, accepted_at, rejected_at } = quote;
-  const theme = details.theme;
-  const isFinalized = !!accepted_at || !!rejected_at;
-  const currentStatus = accepted_at ? 'Accepted' : rejected_at ? 'Rejected' : quote.status;
+  const versions = quote.details.versions.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+  const activeVersion = versions.find(v => v.is_active);
+  
+  // Fallback for display if active version is somehow missing (shouldn't happen)
+  const displayVersion = activeVersion || versions[versions.length - 1]; 
+  
+  const isFinalized = !!displayVersion?.accepted_at || !!displayVersion?.rejected_at;
+  const currentStatus = displayVersion?.accepted_at ? 'Accepted' : displayVersion?.rejected_at ? 'Rejected' : displayVersion?.status || 'Pending';
   const isSendable = !isFinalized;
+  
+  // Use active version data for top-level display
+  const { total_amount, accepted_at, rejected_at, theme } = displayVersion;
 
   return (
     <div className="space-y-8">
@@ -220,17 +301,17 @@ const AdminQuoteDetailsPage: React.FC = () => {
             </Button>
           )}
           <Button variant="outline" onClick={() => navigate(`/admin/quotes/edit/${quote.id}`)}>
-            <Edit className="h-4 w-4 mr-2" /> Edit
+            <Edit className="h-4 w-4 mr-2" /> Edit Active Version
           </Button>
           <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
             {isDeleting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Trash2 className="h-4 w-4 mr-2" />}
-            Delete
+            Delete Quote
           </Button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Status Card */}
+        {/* Status & Actions Card */}
         <Card className="lg:col-span-1 bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
           <CardHeader>
             <CardTitle className="text-xl text-brand-primary">Status & Actions</CardTitle>
@@ -238,7 +319,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
           <CardContent className="space-y-4">
             <div className="flex flex-col space-y-2">
               <Badge variant={getStatusBadgeVariant(currentStatus)} className="text-lg px-3 py-1 justify-center">
-                {currentStatus}
+                {currentStatus} ({displayVersion.versionId})
               </Badge>
               <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
                 {accepted_at ? `Accepted on ${format(new Date(accepted_at), 'PPP')}` : 
@@ -287,21 +368,75 @@ const AdminQuoteDetailsPage: React.FC = () => {
               <p className="text-lg">{quote.prepared_by}</p>
             </div>
             <div className="flex flex-col">
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Amount</p>
-              <p className="text-lg font-bold">{details.currencySymbol}{quote.total_amount.toFixed(2)}</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Amount (Active)</p>
+              <p className="text-lg font-bold">{displayVersion.currencySymbol}{total_amount.toFixed(2)}</p>
             </div>
             <div className="flex flex-col">
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Quote Theme</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Quote Theme (Active)</p>
               <p className="text-lg">{theme === 'black-gold' ? 'Black & Gold' : 'Default (White/Pink)'}</p>
             </div>
           </CardContent>
         </Card>
       </div>
+      
+      {/* Version History Card */}
+      <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
+        <CardHeader>
+          <CardTitle className="text-xl text-brand-primary">Version History</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {versions.map((version) => (
+              <div 
+                key={version.versionId} 
+                className={cn(
+                    "p-4 rounded-lg border transition-all duration-300 cursor-pointer",
+                    version.is_active 
+                        ? "border-brand-primary ring-2 ring-brand-primary/50 bg-brand-secondary/20 dark:bg-brand-dark/50"
+                        : "border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/30"
+                )}
+                onClick={() => handleActivateVersion(version.versionId)}
+              >
+                <div className="flex justify-between items-center mb-2">
+                    <h4 className="font-semibold text-lg text-brand-dark dark:text-brand-light">{version.versionName}</h4>
+                    {version.is_active && <Badge className="bg-green-500 hover:bg-green-600 text-white">Active</Badge>}
+                </div>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Created: {format(new Date(version.created_at), 'PPP')}
+                </p>
+                <p className="text-sm font-bold mt-1 text-brand-primary">
+                    Total: {version.currencySymbol}{version.total_amount.toFixed(2)}
+                </p>
+                <div className="mt-2 flex items-center gap-2 text-sm">
+                    {version.accepted_at ? (
+                        <span className="text-green-600 dark:text-green-400 flex items-center"><CheckCircle className="h-4 w-4 mr-1" /> Accepted</span>
+                    ) : version.rejected_at ? (
+                        <span className="text-red-600 dark:text-red-400 flex items-center"><XCircle className="h-4 w-4 mr-1" /> Rejected</span>
+                    ) : (
+                        <span className="text-gray-500 dark:text-gray-400">Status: {version.status}</span>
+                    )}
+                </div>
+                {!version.is_active && (
+                    <Button 
+                        variant="link" 
+                        size="sm" 
+                        onClick={(e) => { e.stopPropagation(); handleActivateVersion(version.versionId); }}
+                        disabled={isActivating}
+                        className="p-0 h-auto mt-2 text-brand-primary"
+                    >
+                        {isActivating ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : 'Set as Active'}
+                    </Button>
+                )}
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Preview Section */}
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-xl text-brand-primary">Live Preview</CardTitle>
+          <CardTitle className="text-xl text-brand-primary">Live Preview (Active Version: {displayVersion.versionId})</CardTitle>
           <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
             <DialogTrigger asChild>
               <Button variant="outline">
@@ -325,6 +460,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
         <CardContent>
           <div className="border rounded-lg overflow-hidden">
             <div className="scale-[0.7] origin-top-left w-[142%] h-[142%]">
+              {/* Pass the entire quote object, QuoteDisplay will find the active version */}
               <QuoteDisplay quote={quote as Quote} />
             </div>
           </div>

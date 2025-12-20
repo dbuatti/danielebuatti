@@ -5,7 +5,6 @@ import { QuoteItem } from '@/types/quote';
 import { formatCurrency } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Minus, Plus } from 'lucide-react';
-// Removed unused import: import { cn } from '@/lib/utils';
 
 interface QuoteItemMobileListProps {
   items: QuoteItem[];
@@ -15,7 +14,6 @@ interface QuoteItemMobileListProps {
   isFinalized: boolean;
   isOptionalSection: boolean;
   onQuantityChange?: (itemId: string, delta: number) => void;
-  // Removed global visibility props
 }
 
 // Helper function to parse simple markdown lists (using - or *)
@@ -80,7 +78,6 @@ const QuoteItemMobileList: React.FC<QuoteItemMobileListProps> = ({
   isFinalized,
   isOptionalSection,
   onQuantityChange,
-  // Removed global visibility props
 }) => {
   return (
     <div className="space-y-4">

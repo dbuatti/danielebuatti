@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Quote, QuoteItem } from '@/types/quote';
+import { Quote, QuoteItem, QuoteVersion } from '@/types/quote';
 import { formatCurrency } from '@/lib/utils';
 import {
   Table,
@@ -13,11 +13,11 @@ import {
 } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
 import DynamicImage from '../DynamicImage';
-import QuoteItemMobileList from './QuoteItemMobileList'; // Import the new component
-import { cn } from '@/lib/utils'; // Import cn for utility classes
-import { Button } from '@/components/ui/button'; // Import Button
-import { Minus, Plus, FileText } from 'lucide-react'; // Import Plus and Minus icons
-import { format } from 'date-fns'; // Import format for date consistency
+import QuoteItemMobileList from './QuoteItemMobileList';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Minus, Plus, FileText } from 'lucide-react';
+import { format } from 'date-fns';
 
 interface QuoteDisplayProps {
   quote: Quote;
@@ -213,15 +213,59 @@ const QuoteItemRow: React.FC<{
 };
 
 const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false, onQuantityChange, mutableAddOns }) => {
-  const { details, total_amount, accepted_at, rejected_at, event_title, event_date, event_location, prepared_by } = quote;
-  const currencySymbol = details.currencySymbol || '£';
+  
+  // --- 1. Extract Active Version Data ---
+  const activeVersion = quote.details.versions.find(v => v.is_active);
+  
+  if (!activeVersion) {
+    // Fallback if no active version is set (e.g., in Admin Preview mode where we pass a single version)
+    if (quote.details.versions.length === 1) {
+        // Use the single version provided (e.g., from getPreviewData)
+        const singleVersion = quote.details.versions[0];
+        if (singleVersion.versionId === 'v-preview') {
+            // If it's a preview, we treat it as pending/draft
+            singleVersion.status = 'Draft';
+            singleVersion.accepted_at = null;
+            singleVersion.rejected_at = null;
+        }
+        // Temporarily treat this single version as the active one for rendering
+        Object.assign(quote, { 
+            total_amount: singleVersion.total_amount,
+            accepted_at: singleVersion.accepted_at,
+            rejected_at: singleVersion.rejected_at,
+            status: singleVersion.status,
+        });
+    } else {
+        return <div className="p-8 text-center text-red-500">Error: No active quote version found.</div>;
+    }
+  }
+  
+  const version = activeVersion || quote.details.versions[0]; // Use the found active version or the first one as fallback
+
+  const { 
+    total_amount, 
+    accepted_at, 
+    rejected_at, 
+    depositPercentage, 
+    theme, 
+    currencySymbol, 
+    eventTime, 
+    headerImageUrl, 
+    headerImagePosition, 
+    preparationNotes, 
+    paymentTerms, 
+    bankDetails, 
+    compulsoryItems, 
+    addOns, 
+    client_selected_add_ons,
+    scopeOfWorkUrl,
+  } = version;
+  
+  const { event_title, event_date, event_location, prepared_by } = quote;
 
   const isAccepted = !!accepted_at;
   const isRejected = !!rejected_at;
   const isFinalized = isAccepted || isRejected;
-
-  // Destructure only used fields from details
-  const { depositPercentage, theme, scopeOfWorkUrl } = details;
 
   // Determine which list of add-ons to display and calculate totals
   let optionalItemsToDisplay: QuoteItem[];
@@ -229,16 +273,16 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
   if (isClientView && !isFinalized && mutableAddOns) {
       // Client view, pending: use mutable state for display and calculation
       optionalItemsToDisplay = mutableAddOns;
-  } else if (isAccepted && details.client_selected_add_ons) {
+  } else if (isAccepted && client_selected_add_ons) {
       // Finalized (Accepted): use the final selected list
-      optionalItemsToDisplay = details.client_selected_add_ons || []; // Defensive check
+      optionalItemsToDisplay = client_selected_add_ons || []; // Defensive check
   } else {
       // Admin preview or Rejected: use original addOns list
-      optionalItemsToDisplay = details.addOns || []; // Defensive check
+      optionalItemsToDisplay = addOns || []; // Defensive check
   }
 
   // Calculate totals based on the items being displayed/calculated
-  const compulsoryTotal = (details.compulsoryItems || []).reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
+  const compulsoryTotal = (compulsoryItems || []).reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
   const addOnTotal = optionalItemsToDisplay.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
 
   // If accepted, the total_amount from the DB is the final total. Otherwise, calculate based on current proposal/selection.
@@ -291,10 +335,10 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         image2: undefined,
       };
 
-  const headerImagePositionClass = details.headerImagePosition || 'object-center';
+  const headerImagePositionClass = headerImagePosition || 'object-center';
 
   // Determine header visibility based on the first compulsory item (or default to false)
-  const firstCompulsoryItem = details.compulsoryItems?.[0];
+  const firstCompulsoryItem = compulsoryItems?.[0];
   const headerShowScheduleDates = firstCompulsoryItem?.showScheduleDates ?? false;
   const headerShowQuantity = firstCompulsoryItem?.showQuantity ?? true;
   const headerShowRate = firstCompulsoryItem?.showRate ?? true;
@@ -309,10 +353,10 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
     <div className={`p-4 sm:p-8 max-w-4xl mx-auto space-y-8 ${themeClasses.bg} ${themeClasses.text}`}>
 
       {/* Header Image */}
-      {details.headerImageUrl && (
+      {headerImageUrl && (
         <div className="mb-4">
           <DynamicImage
-            src={details.headerImageUrl}
+            src={headerImageUrl}
             alt="Quote Header"
             className={cn(
               `w-full h-48 object-cover rounded-lg shadow-xl`,
@@ -333,7 +377,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         <div className="text-right mt-4 sm:mt-0">
           <h2 className="text-2xl font-semibold font-display">{event_title}</h2>
           {/* Date Formatting Consistency Fix */}
-          <p className="mt-1 text-sm">{formatDate(event_date)} {details.eventTime}</p>
+          <p className="mt-1 text-sm">{formatDate(event_date)} {eventTime}</p>
           <p className="text-sm">{event_location}</p>
         </div>
       </div>
@@ -374,7 +418,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         {/* Mobile List View (Hidden on md and up) */}
         <div className="md:hidden space-y-6">
             <QuoteItemMobileList
-                items={details.compulsoryItems || []} // Defensive check
+                items={compulsoryItems || []}
                 currencySymbol={currencySymbol}
                 themeClasses={themeClasses}
                 isClientView={isClientView}
@@ -382,7 +426,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
                 isOptionalSection={false}
             />
 
-            {details.addOns && details.addOns.length > 0 && (
+            {addOns && addOns.length > 0 && (
                 <>
                     <h4 className={`text-lg font-bold ${themeClasses.primary} pt-4`}>Optional Add-Ons</h4>
                     <QuoteItemMobileList
@@ -412,7 +456,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
             </TableHeader>
             <TableBody>
               {/* Compulsory Items */}
-              {(details.compulsoryItems || []).map((item) => (
+              {(compulsoryItems || []).map((item) => (
                 <QuoteItemRow
                   key={item.id}
                   item={item}
@@ -426,11 +470,11 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
               ))}
 
               {/* Add-Ons (Optional Items) */}
-              {details.addOns && details.addOns.length > 0 && (
+              {addOns && addOns.length > 0 && (
                 <TableRow className={`${themeClasses.tableHeaderBg} hover:${themeClasses.tableHeaderBg}`}>
                   <TableCell colSpan={visibleColumns} className={`font-bold ${themeClasses.primary} py-3`}>
                     Optional Add-Ons {isClientView && !isFinalized && <span className="text-sm font-normal"> (Select Quantity Below)</span>}
-                    {isAccepted && `(Client Selected: ${optionalItemsToDisplay.filter(i => i.quantity > 0).length} of ${details.addOns.length})`}
+                    {isAccepted && `(Client Selected: ${optionalItemsToDisplay.filter(i => i.quantity > 0).length} of ${addOns.length})`}
                   </TableCell>
                 </TableRow>
               )}
@@ -479,17 +523,17 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       )}
 
       {/* NEW: Image Section for Default Theme (Only renders if images are explicitly set) */}
-      {!isBlackGoldTheme && details.headerImageUrl && (
+      {!isBlackGoldTheme && headerImageUrl && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
           <DynamicImage
-            src={details.headerImageUrl}
+            src={headerImageUrl}
             alt="Daniele Buatti playing piano"
             className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
             width={400}
             height={256}
           />
           <DynamicImage
-            src={details.headerImageUrl}
+            src={headerImageUrl}
             alt="Daniele Buatti performing live"
             className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
             width={400}
@@ -507,7 +551,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
           </div>
 
           {/* Display Add-on total if applicable */}
-          {details.addOns && details.addOns.length > 0 && (
+          {addOns && addOns.length > 0 && (
             <div className="flex justify-between font-medium text-sm">
               <span>Selected Add-ons Total:</span>
               <span>{formatCurrency(addOnTotal, currencySymbol)}</span>
@@ -538,22 +582,22 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       </div>
 
       {/* Preparation Notes */}
-      {details.preparationNotes && (
+      {preparationNotes && (
         <div className={`pt-4 border-t border-current/20`}>
           <h3 className={`text-xl font-semibold mb-2 ${themeClasses.primary}`}>Preparation & Service Notes</h3>
           <div className={`text-sm ${themeClasses.secondary}`}>
-            {renderRichText(details.preparationNotes, themeClasses)}
+            {renderRichText(preparationNotes, themeClasses)}
           </div>
         </div>
       )}
 
       {/* Payment Terms */}
-      {details.paymentTerms && (
+      {paymentTerms && (
         <div className={`pt-4 border-t border-current/20`}>
           <h3 className={`text-xl font-semibold mb-2 ${themeClasses.primary}`}>Payment Terms</h3>
-          <p className={`whitespace-pre-wrap text-sm ${themeClasses.secondary}`}>{details.paymentTerms}</p>
+          <p className={`whitespace-pre-wrap text-sm ${themeClasses.secondary}`}>{paymentTerms}</p>
           <p className={`text-sm ${themeClasses.secondary} mt-2`}>
-            Bank Details: BSB {details.bankDetails.bsb}, ACC {details.bankDetails.acc}
+            Bank Details: BSB {bankDetails.bsb}, ACC {bankDetails.acc}
           </p>
         </div>
       )}

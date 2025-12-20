@@ -33,7 +33,7 @@ serve(async (req: Request) => {
       });
     }
 
-    // 1. Fetch existing quote details to get compulsory items and other metadata
+    // 1. Fetch existing quote details
     const { data: existingQuote, error: fetchError } = await supabaseClient
       .from('invoices')
       .select('*')
@@ -44,23 +44,46 @@ serve(async (req: Request) => {
       console.error('Supabase fetch error:', fetchError);
       throw new Error(`Quote not found or failed to fetch: ${fetchError?.message}`);
     }
+    
+    const versions = existingQuote.details.versions || [];
+    const activeVersion = versions.find(v => v.is_active);
 
-    // 2. Update the invoice record
-    const updatedDetails = {
-      ...existingQuote.details,
-      final_total_amount: finalTotal,
-      client_selected_add_ons: finalSelectedAddOns,
-    };
+    if (!activeVersion) {
+        throw new Error('No active version found for this quote.');
+    }
 
+    const acceptedAt = new Date().toISOString();
+
+    // 2. Update the active version within the versions array
+    const updatedVersions = versions.map(v => {
+        if (v.versionId === activeVersion.versionId) {
+            return {
+                ...v,
+                accepted_at: acceptedAt,
+                rejected_at: null,
+                status: 'Accepted',
+                total_amount: finalTotal, // Update total amount based on client selection
+                client_selected_add_ons: finalSelectedAddOns,
+            };
+        }
+        return v;
+    });
+    
+    const updatedActiveVersion = updatedVersions.find(v => v.is_active);
+    if (!updatedActiveVersion) throw new Error("Active version lost during update.");
+
+
+    // 3. Update the main invoice record
     const { data: updatedRecord, error: updateError } = await supabaseClient
       .from('invoices')
       .update({
-        accepted_at: new Date().toISOString(),
-        client_name: clientName, // Update client name
-        client_email: clientEmail, // Update client email
-        total_amount: finalTotal,
-        details: updatedDetails,
-        rejected_at: null,
+        accepted_at: acceptedAt, // Update top-level accepted_at
+        rejected_at: null, // Clear top-level rejected_at
+        status: 'Accepted', // Update top-level status
+        client_name: clientName,
+        client_email: clientEmail,
+        total_amount: finalTotal, // Update top-level total
+        details: { versions: updatedVersions }, // Save the updated versions array
       })
       .eq('id', quoteId)
       .select()
@@ -71,7 +94,7 @@ serve(async (req: Request) => {
       throw new Error(`Failed to update quote acceptance: ${updateError?.message}`);
     }
 
-    // 3. Send Admin Notification Email (Existing logic remains)
+    // 4. Send Admin Notification Email
     const EMAIL_SERVICE_API_KEY = Deno.env.get('EMAIL_SERVICE_API_KEY');
     const CONTACT_FORM_RECIPIENT_EMAIL = Deno.env.get('CONTACT_FORM_RECIPIENT_EMAIL');
     const EMAIL_SERVICE_ENDPOINT = Deno.env.get('EMAIL_SERVICE_ENDPOINT');
@@ -87,19 +110,22 @@ serve(async (req: Request) => {
     const adminQuoteLink = `https://danielebuatti.com/admin/quotes/${updatedRecord.id}`;
     const subject = `🎉 Quote Accepted: ${updatedRecord.event_title || updatedRecord.invoice_type} from ${clientName}`;
     
-    const compulsoryList = (updatedRecord.details?.compulsoryItems || [])
-      .map((item: any) => `<li>${item.name}: £${(item.price * item.quantity).toFixed(2)}</li>`)
+    // Use data from the updated active version for email content
+    const compulsoryList = (updatedActiveVersion.compulsoryItems || [])
+      .map((item: any) => `<li>${item.name}: ${updatedActiveVersion.currencySymbol}${(item.price * item.quantity).toFixed(2)}</li>`)
       .join('');
       
     const addOnList = finalSelectedAddOns.length > 0 
-      ? finalSelectedAddOns.map((a: any) => `<li>${a.name} (Qty: ${a.quantity}, Cost: £${(a.price * a.quantity).toFixed(2)})</li>`).join('')
+      ? finalSelectedAddOns.map((a: any) => `<li>${a.name} (Qty: ${a.quantity}, Cost: ${updatedActiveVersion.currencySymbol}${(a.price * a.quantity).toFixed(2)})</li>`).join('')
       : '<li>None selected.</li>';
+      
+    const depositAmount = finalTotal * (updatedActiveVersion.depositPercentage / 100);
 
     const emailHtml = `
       <div style="font-family: 'Outfit', sans-serif; color: #1b1b1b; background-color: #F8F8F8; padding: 20px; border-radius: 8px;">
         <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
           <h2 style="color: #fdb813; text-align: center; margin-bottom: 20px;">Quote Accepted!</h2>
-          <p style="font-size: 16px; line-height: 1.6;">A client has accepted your quote proposal:</p>
+          <p style="font-size: 16px; line-height: 1.6;">A client has accepted your quote proposal (Version ${updatedActiveVersion.versionId}):</p>
           <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Client Name:</td>
@@ -123,11 +149,11 @@ serve(async (req: Request) => {
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">FINAL TOTAL:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">£${finalTotal.toFixed(2)}</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${updatedActiveVersion.currencySymbol}${finalTotal.toFixed(2)}</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Accepted On:</td>
-              <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;">${new Date().toLocaleString()}</td>
+              <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;">${new Date(acceptedAt).toLocaleString()}</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Admin Link:</td>
@@ -155,15 +181,15 @@ serve(async (req: Request) => {
       }),
     });
     
-    // 4. Send Client Confirmation Email (Updated logic)
+    // 5. Send Client Confirmation Email
     const clientSubject = `Booking Confirmed: ${updatedRecord.event_title || updatedRecord.invoice_type}`;
     
-    const compulsoryListClient = (updatedRecord.details?.compulsoryItems || [])
-      .map((item: any) => `<li>${item.name}: £${(item.price * item.quantity).toFixed(2)}</li>`)
+    const compulsoryListClient = (updatedActiveVersion.compulsoryItems || [])
+      .map((item: any) => `<li>${item.name}: ${updatedActiveVersion.currencySymbol}${(item.price * item.quantity).toFixed(2)}</li>`)
       .join('');
       
     const addOnListClient = finalSelectedAddOns.length > 0 
-      ? finalSelectedAddOns.map((a: any) => `<li>${a.name} (Qty: ${a.quantity}, Cost: £${(a.price * a.quantity).toFixed(2)})</li>`).join('')
+      ? finalSelectedAddOns.map((a: any) => `<li>${a.name} (Qty: ${a.quantity}, Cost: ${updatedActiveVersion.currencySymbol}${(a.price * a.quantity).toFixed(2)})</li>`).join('')
       : '<li>None selected.</li>';
 
     const clientEmailHtml = `
@@ -171,7 +197,7 @@ serve(async (req: Request) => {
         <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
           <h2 style="color: #DB4CA3; text-align: center; margin-bottom: 20px;">Booking Confirmed!</h2>
           <p style="font-size: 16px; line-height: 1.6;">Dear ${clientName},</p>
-          <p style="font-size: 16px; line-height: 1.6;">Thank you for accepting the quote for your event, <strong>${updatedRecord.event_title || updatedRecord.invoice_type}</strong>. Your booking is now confirmed!</p>
+          <p style="font-size: 16px; line-height: 1.6;">Thank you for accepting the quote (Version ${updatedActiveVersion.versionId}) for your event, <strong>${updatedRecord.event_title || updatedRecord.invoice_type}</strong>. Your booking is now confirmed!</p>
           
           <h3 style="color: #DB4CA3; margin-top: 20px; font-size: 18px;">Booking Summary:</h3>
           <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px;">
@@ -185,7 +211,7 @@ serve(async (req: Request) => {
             </tr>
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">FINAL TOTAL:</td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">£${finalTotal.toFixed(2)}</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${updatedActiveVersion.currencySymbol}${finalTotal.toFixed(2)}</td>
             </tr>
           </table>
 
@@ -201,7 +227,7 @@ serve(async (req: Request) => {
           </ul>
 
           <h3 style="color: #DB4CA3; margin-top: 20px; font-size: 18px;">Next Steps:</h3>
-          <p style="font-size: 16px; line-height: 1.6;">Daniele will be in touch shortly to finalise the deposit payment (£${(finalTotal * (updatedRecord.details.depositPercentage / 100)).toFixed(2)}) and all remaining details.</p>
+          <p style="font-size: 16px; line-height: 1.6;">Daniele will be in touch shortly to finalise the deposit payment (${updatedActiveVersion.currencySymbol}${(depositAmount).toFixed(2)}) and all remaining details.</p>
           
           <p style="font-size: 14px; color: #666666; text-align: center; margin-top: 30px;">
             This is an automated confirmation.

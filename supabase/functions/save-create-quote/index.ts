@@ -32,10 +32,10 @@ serve(async (req: Request) => {
       eventDate,
       eventLocation,
       preparedBy,
-      totalAmount,
-      details,
+      totalAmount, // This is the total of the ACTIVE version
+      details, // This now contains { versions: QuoteVersion[] }
       slug,
-      status, // New: 'Draft' or 'Created'
+      status, // This is the status of the ACTIVE version
     } = await req.json();
 
     if (!clientName || !clientEmail || !invoiceType || !eventTitle || !eventDate || !eventLocation || !preparedBy || totalAmount === undefined || !details || !slug || !status) {
@@ -44,7 +44,10 @@ serve(async (req: Request) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-
+    
+    // Find the active version to set top-level accepted/rejected dates
+    const activeVersion = details.versions.find(v => v.is_active);
+    
     const quoteData = {
       client_name: clientName,
       client_email: clientEmail,
@@ -54,11 +57,11 @@ serve(async (req: Request) => {
       event_location: eventLocation,
       prepared_by: preparedBy,
       total_amount: totalAmount,
-      details: details,
+      details: details, // Save the full versions array
       slug: slug,
-      status: status, // Set the new status
-      accepted_at: null,
-      rejected_at: null,
+      status: status,
+      accepted_at: activeVersion?.accepted_at || null,
+      rejected_at: activeVersion?.rejected_at || null,
     };
 
     let result;

@@ -7,7 +7,7 @@ import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast
 import { Card, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
-import { Quote, QuoteItem } from '@/types/quote';
+import { Quote, QuoteItem, QuoteVersion } from '@/types/quote';
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
@@ -23,32 +23,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import SeoMetadata from '@/components/SeoMetadata'; // Import SeoMetadata
+import SeoMetadata from '@/components/SeoMetadata';
 
 // Define favicon paths
 const BRAND_FAVICON_PATH = '/blue-pink-ontrans.png?v=1';
 const GOLD_FAVICON_PATH = '/gold-36.png';
 
-// Define the structure for the data fetched from Supabase (which includes the JSONB details)
-interface QuoteData extends Omit<Quote, 'details'> {
-  details: {
-    depositPercentage: number;
-    paymentTerms: string;
-    bankDetails: {
-      bsb: string;
-      acc: string;
-    };
-    addOns: QuoteItem[]; // Original optional items list
-    compulsoryItems: QuoteItem[];
-    currencySymbol: string;
-    eventTime: string;
-    theme: 'default' | 'black-gold';
-    headerImageUrl: string;
-    headerImagePosition?: string;
-    preparationNotes: string;
-    client_selected_add_ons?: QuoteItem[]; // Final selected items list
-  };
-}
+// Define the structure for the data fetched from Supabase
+interface QuoteData extends Quote {}
 
 // Define schema for acceptance form
 const acceptanceSchema = z.object({
@@ -78,12 +60,15 @@ const DynamicQuotePage: React.FC = () => {
   // --- Favicon Management ---
   useEffect(() => {
     if (!quote) return;
+    
+    const activeVersion = quote.details.versions.find(v => v.is_active);
+    const theme = activeVersion?.theme || 'default';
 
-    const isBlackGoldTheme = quote.details.theme === 'black-gold';
+    const isBlackGoldTheme = theme === 'black-gold';
     const faviconPath = isBlackGoldTheme ? GOLD_FAVICON_PATH : BRAND_FAVICON_PATH;
 
     const updateFavicon = (rel: string, path: string) => {
-      let link: HTMLLinkElement | null = document.querySelector(`link[rel*='${rel}']`) as HTMLLinkElement;
+      let link: HTMLLinkElement | null = document.querySelector(`link[rel*='${rel}']`) as HTMLAnchorElement;
       
       if (!link) {
         link = document.createElement('link');
@@ -91,7 +76,6 @@ const DynamicQuotePage: React.FC = () => {
         document.getElementsByTagName('head')[0].appendChild(link);
       }
       
-      // Only update if the path is different to avoid unnecessary DOM manipulation
       if (link.getAttribute('href') !== path) {
           link.href = path;
       }
@@ -129,6 +113,9 @@ const DynamicQuotePage: React.FC = () => {
           };
           setQuote(quoteData);
           
+          const activeVersion = quoteData.details.versions.find(v => v.is_active);
+          if (!activeVersion) throw new Error("No active version found for this quote.");
+          
           // Reset acceptance form with client data
           acceptanceForm.reset({
             clientName: quoteData.client_name,
@@ -136,12 +123,12 @@ const DynamicQuotePage: React.FC = () => {
           });
 
           // Initialize mutable state for quantity controls
-          if (quoteData.accepted_at && quoteData.details.client_selected_add_ons) {
+          if (activeVersion.accepted_at && activeVersion.client_selected_add_ons) {
             // If accepted, use the final selected list for display (though controls will be disabled)
-            setCurrentOptionalAddOns(quoteData.details.client_selected_add_ons);
+            setCurrentOptionalAddOns(activeVersion.client_selected_add_ons);
           } else {
             // If pending/rejected, use the original optional list, ensuring quantity is initialized
-            setCurrentOptionalAddOns(quoteData.details.addOns.map(item => ({
+            setCurrentOptionalAddOns(activeVersion.addOns.map(item => ({
                 ...item,
                 quantity: item.quantity || 0 // Default to 0 if not set
             })));
@@ -162,7 +149,9 @@ const DynamicQuotePage: React.FC = () => {
   }, [slug, acceptanceForm]);
 
   const handleQuantityChange = (itemId: string, delta: number) => {
-    if (isFinalized) return;
+    if (!quote) return;
+    const activeVersion = quote.details.versions.find(v => v.is_active);
+    if (!activeVersion || activeVersion.accepted_at || activeVersion.rejected_at) return;
 
     setCurrentOptionalAddOns(prev => 
         prev.map(item => {
@@ -177,6 +166,8 @@ const DynamicQuotePage: React.FC = () => {
 
   const handleAcceptQuote = acceptanceForm.handleSubmit(async (values) => {
     if (!quote) return;
+    const activeVersion = quote.details.versions.find(v => v.is_active);
+    if (!activeVersion) return;
 
     setIsAccepting(true);
     const toastId = showLoading('Accepting quote...');
@@ -186,15 +177,15 @@ const DynamicQuotePage: React.FC = () => {
       const finalAddOns = currentOptionalAddOns.filter(item => item.quantity > 0);
       
       // Ensure compulsoryTotal is calculated here for the payload
-      const compulsoryTotal = quote.details.compulsoryItems.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0) || 0;
+      const compulsoryTotal = activeVersion.compulsoryItems.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0) || 0;
       const addOnTotal = finalAddOns.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
       const finalTotal = compulsoryTotal + addOnTotal;
 
       // 2. Prepare data for Edge Function
       const acceptancePayload = {
         quoteId: quote.id,
-        clientName: values.clientName, // Use form value
-        clientEmail: values.clientEmail, // Use form value
+        clientName: values.clientName,
+        clientEmail: values.clientEmail,
         finalTotal: finalTotal,
         finalSelectedAddOns: finalAddOns,
       };
@@ -222,22 +213,47 @@ const DynamicQuotePage: React.FC = () => {
 
   const handleRejectQuote = async () => {
     if (!quote) return;
+    const activeVersion = quote.details.versions.find(v => v.is_active);
+    if (!activeVersion) return;
 
     const toastId = showLoading('Rejecting quote...');
 
     try {
+      const rejectedAt = new Date().toISOString();
+      
+      // 1. Update the active version within the versions array
+      const updatedVersions = quote.details.versions.map(v => {
+          if (v.is_active) {
+              return {
+                  ...v,
+                  rejected_at: rejectedAt,
+                  accepted_at: null,
+                  status: 'Rejected' as QuoteVersion['status'],
+              };
+          }
+          return v;
+      });
+
+      // 2. Update the main invoice record
       const { error } = await supabase
         .from('invoices')
         .update({
-          rejected_at: new Date().toISOString(),
+          rejected_at: rejectedAt,
           accepted_at: null,
+          status: 'Rejected',
+          details: { versions: updatedVersions },
         })
         .eq('id', quote.id);
 
       if (error) throw error;
 
       showSuccess('Quote rejected.', { id: toastId });
-      setQuote(prev => prev ? { ...prev, rejected_at: new Date().toISOString() } : null);
+      // Manually update state to reflect rejection
+      setQuote(prev => {
+          if (!prev) return null;
+          const newVersions = prev.details.versions.map(v => v.is_active ? { ...v, rejected_at: rejectedAt, accepted_at: null, status: 'Rejected' as QuoteVersion['status'] } : v);
+          return { ...prev, rejected_at: rejectedAt, accepted_at: null, status: 'Rejected', details: { versions: newVersions } };
+      });
     } catch (err: any) {
       console.error('Error rejecting quote:', err);
       showError(`Failed to reject quote: ${err.message || 'Unknown error'}`, { id: toastId });
@@ -253,9 +269,7 @@ const DynamicQuotePage: React.FC = () => {
   }
 
   if (error || !quote) {
-    const themeClasses = quote?.details.theme === 'black-gold' 
-      ? { bg: 'bg-brand-dark', text: 'text-brand-light' } 
-      : { bg: 'bg-brand-light', text: 'text-brand-dark' };
+    const themeClasses = { bg: 'bg-brand-light', text: 'text-brand-dark' };
       
     return (
       <div className={`min-h-screen flex flex-col items-center justify-center ${themeClasses.bg} ${themeClasses.text} p-8`}>
@@ -271,12 +285,18 @@ const DynamicQuotePage: React.FC = () => {
       </div>
     );
   }
+  
+  const activeVersion = quote.details.versions.find(v => v.is_active);
+  if (!activeVersion) {
+      // Should be caught by fetchQuote, but defensive check here
+      return <div className="p-8 text-center text-red-500">Error: No active version available for this quote.</div>;
+  }
 
-  const isAccepted = !!quote.accepted_at;
-  const isRejected = !!quote.rejected_at;
+  const isAccepted = !!activeVersion.accepted_at;
+  const isRejected = !!activeVersion.rejected_at;
   const isFinalized = isAccepted || isRejected;
   
-  const { depositPercentage, theme } = quote.details;
+  const { depositPercentage, theme, currencySymbol } = activeVersion;
 
   // Theme setup (copied from QuoteDisplay for the wrapper elements)
   const isBlackGoldTheme = theme === 'black-gold';
@@ -318,7 +338,7 @@ const DynamicQuotePage: React.FC = () => {
       
   // SEO Metadata for Quote Page
   const quoteTitle = `${quote.invoice_type} for ${quote.client_name} - ${quote.event_title}`;
-  const quoteDescription = `Review your personalized quote proposal for ${quote.event_title} on ${quote.event_date}. Total: ${quote.details.currencySymbol}${quote.total_amount.toFixed(2)}.`;
+  const quoteDescription = `Review your personalized quote proposal (Version ${activeVersion.versionId}) for ${quote.event_title} on ${quote.event_date}. Total: ${currencySymbol}${activeVersion.total_amount.toFixed(2)}.`;
   const quoteImage = isBlackGoldTheme ? `${window.location.origin}/blackgoldquoteimage1.jpg` : `${window.location.origin}/whitepinkquoteimage1.jpeg`;
   const quoteUrl = `${window.location.origin}/quotes/${quote.slug}`;
 
@@ -335,7 +355,7 @@ const DynamicQuotePage: React.FC = () => {
           
           {/* Use QuoteDisplay for the main content area */}
           <QuoteDisplay 
-            quote={quote as Quote} // Cast to Quote interface
+            quote={quote as Quote}
             isClientView={true}
             onQuantityChange={handleQuantityChange}
             mutableAddOns={currentOptionalAddOns}
@@ -346,7 +366,7 @@ const DynamicQuotePage: React.FC = () => {
             
             <div className={`p-8 rounded-xl text-center shadow-2xl border ${themeClasses.border} ${themeClasses.acceptBoxBg}`}>
               <h2 className={`text-3xl font-extrabold mb-8 ${themeClasses.primary}`}>
-                {isFinalized ? 'Booking Status' : 'Accept Your Quote'}
+                {isFinalized ? 'Booking Status' : `Accept Quote (Version ${activeVersion.versionId})`}
               </h2>
               
               <Form {...acceptanceForm}>
@@ -402,7 +422,7 @@ const DynamicQuotePage: React.FC = () => {
                     // Display status message if finalized
                     <div className={`mt-4 p-4 rounded-md font-semibold flex flex-col sm:flex-row items-center justify-center space-x-2 ${isAccepted ? `${themeClasses.statusAcceptedBg} ${themeClasses.statusAcceptedText}` : `${themeClasses.statusRejectedBg} ${themeClasses.statusRejectedText}`}`}>
                         {isAccepted ? <CheckCircle className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
-                        <span className="mt-2 sm:mt-0">This quote was {isAccepted ? 'ACCEPTED' : 'REJECTED'} on {format(new Date(quote.accepted_at || quote.rejected_at!), 'PPP')}.</span>
+                        <span className="mt-2 sm:mt-0">This quote was {isAccepted ? 'ACCEPTED' : 'REJECTED'} on {format(new Date(activeVersion.accepted_at || activeVersion.rejected_at!), 'PPP')}.</span>
                     </div>
                   )}
 

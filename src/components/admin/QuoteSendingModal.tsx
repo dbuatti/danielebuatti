@@ -14,7 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Loader2, Send, Eye, Copy } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
-import { Quote, QuoteTheme } from '@/types/quote';
+import { Quote, QuoteTheme, QuoteVersion } from '@/types/quote';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
@@ -56,14 +56,21 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
   const [isSending, setIsSending] = useState(false);
   const [recipientEmail, setRecipientEmail] = useState(quote.client_email);
   const [emailSubject, setEmailSubject] = useState(`Quote Proposal: ${quote.event_title}`);
-  const [emailTheme, setEmailTheme] = useState<QuoteTheme>(quote.details.theme);
+  const [emailTheme, setEmailTheme] = useState<QuoteTheme>(quote.details.versions.find(v => v.is_active)?.theme || 'default');
   const [htmlBody, setHtmlBody] = useState('');
   const [isHtmlLoading, setIsHtmlLoading] = useState(true);
   const [isFullPreviewOpen, setIsFullPreviewOpen] = useState(false);
   const [, copy] = useCopyToClipboard();
+  
+  const activeVersion = quote.details.versions.find(v => v.is_active);
+  const versionId = activeVersion?.versionId || 'N/A';
+  const totalAmount = activeVersion?.total_amount || quote.total_amount;
+  const currencySymbol = activeVersion?.currencySymbol || '£';
 
   // Function to generate the HTML body based on the selected theme
   const generateHtmlBody = useCallback((theme: QuoteTheme) => {
+    if (!activeVersion) return;
+    
     const themeConfig = emailThemes[theme];
     const quoteUrl = `${window.location.origin}/quotes/${quote.slug}`;
 
@@ -88,7 +95,7 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
         <div style="max-width: 600px; margin: 0 auto; background-color: ${themeConfig.cardBg}; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
           <h2 style="color: ${themeConfig.primaryColor}; text-align: center; margin-bottom: 20px;">Your Quote Proposal is Ready!</h2>
           <p style="font-size: 16px; line-height: 1.6; color: ${themeConfig.secondaryColor};">Dear ${quote.client_name},</p>
-          <p style="font-size: 16px; line-height: 1.6; color: ${themeConfig.secondaryColor};">Please find attached your <strong style="color: ${themeConfig.primaryColor};">personalised</strong> quote proposal for <strong>${quote.event_title}</strong> on ${quote.event_date}.</p>
+          <p style="font-size: 16px; line-height: 1.6; color: ${themeConfig.secondaryColor};">Please find attached your <strong style="color: ${themeConfig.primaryColor};">personalised</strong> quote proposal (Version ${versionId}) for <strong>${quote.event_title}</strong> on ${quote.event_date}.</p>
 
           <div style="text-align: center; margin: 30px 0;">
             <a href="${quoteUrl}" style="background-color: ${themeConfig.primaryColor}; color: ${themeConfig.cardBg}; padding: 12px 24px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; display: inline-block;">
@@ -96,7 +103,7 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
             </a>
           </div>
 
-          <p style="font-size: 16px; line-height: 1.6; color: ${themeConfig.secondaryColor};">The total proposed amount is <strong>${quote.details.currencySymbol}${quote.total_amount.toFixed(2)}</strong>. You can review the full details and select any optional add-ons directly on the quote page.</p>
+          <p style="font-size: 16px; line-height: 1.6; color: ${themeConfig.secondaryColor};">The total proposed amount is <strong>${currencySymbol}${totalAmount.toFixed(2)}</strong>. You can review the full details and select any optional add-ons directly on the quote page.</p>
 
           <p style="font-size: 14px; color: ${themeConfig.secondaryColor}99; text-align: center; margin-top: 30px;">
             If you have any questions, please reply to this email.
@@ -109,16 +116,16 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
 
     setHtmlBody(html);
     setIsHtmlLoading(false);
-  }, [quote]);
+  }, [quote, activeVersion, versionId, totalAmount, currencySymbol]);
 
   useEffect(() => {
     if (isOpen) {
       setRecipientEmail(quote.client_email);
-      setEmailSubject(`Quote Proposal: ${quote.event_title}`);
-      setEmailTheme(quote.details.theme); // Set initial theme from quote details
-      generateHtmlBody(quote.details.theme);
+      setEmailSubject(`Quote Proposal: ${quote.event_title} (Version ${versionId})`);
+      setEmailTheme(activeVersion?.theme || 'default');
+      generateHtmlBody(activeVersion?.theme || 'default');
     }
-  }, [isOpen, quote, generateHtmlBody]);
+  }, [isOpen, quote, activeVersion, versionId, generateHtmlBody]);
 
   // Re-generate HTML whenever the selected email theme changes
   useEffect(() => {
@@ -128,8 +135,8 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
   }, [emailTheme, isOpen, generateHtmlBody]);
 
   const handleSendQuote = async () => {
-    if (!recipientEmail || !emailSubject || !htmlBody) {
-      showError('Email content is incomplete.');
+    if (!recipientEmail || !emailSubject || !htmlBody || !activeVersion) {
+      showError('Email content is incomplete or active version is missing.');
       return;
     }
 
@@ -137,7 +144,7 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
     const toastId = showLoading('Dispatching quote email...');
 
     try {
-      // Invoke the new Edge Function to send the email and update status
+      // 1. Invoke the Edge Function to send the email and update status
       const { error: invokeError } = await supabase.functions.invoke('send-quote', {
         body: {
           quoteId: quote.id,
@@ -148,6 +155,24 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
       });
 
       if (invokeError) throw invokeError;
+      
+      // 2. Manually update the active version status to 'Sent' in the database
+      const updatedVersions = quote.details.versions.map(v => {
+          if (v.is_active) {
+              return { ...v, status: 'Sent' as QuoteVersion['status'] };
+          }
+          return v;
+      });
+      
+      const { error: updateError } = await supabase
+        .from('invoices')
+        .update({
+            status: 'Sent', // Update top-level status
+            details: { versions: updatedVersions },
+        })
+        .eq('id', quote.id);
+        
+      if (updateError) throw updateError;
 
       showSuccess('Quote sent successfully!', { id: toastId });
       onQuoteSent(quote.slug); // Notify parent component
@@ -171,9 +196,9 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[90vw] w-[90vw] h-[90vh] p-0 bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50">
         <DialogHeader className="p-6 pb-0">
-          <DialogTitle className="text-brand-primary text-2xl">Send Quote: {quote.event_title}</DialogTitle>
+          <DialogTitle className="text-brand-primary text-2xl">Send Quote: {quote.event_title} (Version {versionId})</DialogTitle>
           <DialogDescription className="text-brand-dark/70 dark:text-brand-light/70">
-            Final confirmation before sending the quote to the client. The quote status will be updated to 'Sent'.
+            Final confirmation before sending the quote to the client. The active version status will be updated to 'Sent'.
           </DialogDescription>
         </DialogHeader>
 
@@ -265,8 +290,8 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
                   <Loader2 className="h-8 w-8 animate-spin text-brand-primary" />
                 </div>
               ) : (
-                // Pass the selected email theme to QuoteDisplay for accurate preview styling
-                <QuoteDisplay quote={{ ...quote, details: { ...quote.details, theme: emailTheme } }} isClientView={false} />
+                // Pass the entire quote object, QuoteDisplay will find the active version
+                <QuoteDisplay quote={{ ...quote, details: { ...quote.details, versions: quote.details.versions.map(v => v.is_active ? { ...v, theme: emailTheme } : v) } }} isClientView={false} />
               )}
             </ScrollArea>
           </div>
@@ -280,8 +305,8 @@ const QuoteSendingModal: React.FC<QuoteSendingModalProps> = ({
             <DialogTitle className="text-brand-primary text-2xl">Full Screen Quote Preview</DialogTitle>
           </DialogHeader>
           <ScrollArea className="h-[calc(95vh-70px)]">
-            {/* Pass the selected email theme to QuoteDisplay for accurate preview styling */}
-            <QuoteDisplay quote={{ ...quote, details: { ...quote.details, theme: emailTheme } }} isClientView={false} />
+            {/* Pass the entire quote object, QuoteDisplay will find the active version */}
+            <QuoteDisplay quote={{ ...quote, details: { ...quote.details, versions: quote.details.versions.map(v => v.is_active ? { ...v, theme: emailTheme } : v) } }} isClientView={false} />
           </ScrollArea>
         </DialogContent>
       </Dialog>

@@ -11,14 +11,14 @@ import { supabase } from '@/integrations/supabase/client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Quote, QuoteItem } from '@/types/quote';
+import { Quote, QuoteItem, QuoteVersion } from '@/types/quote';
 import AIQuoteExtractor from '@/components/admin/AIQuoteExtractor';
 import { useGeminiQuoteGenerator } from '@/hooks/use-gemini-quote-generator';
 import DraftLoader from '@/components/admin/DraftLoader';
 import QuoteSendingModal from '@/components/admin/QuoteSendingModal';
 import { createSlug } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth'; // Import useAuth
+import { useAuth } from '@/hooks/useAuth';
 
 // Default values for a new quote
 const defaultQuoteValues: QuoteFormValues = {
@@ -58,7 +58,7 @@ interface QuoteDraft {
 
 const AdminQuoteBuilderPage: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuth(); // Get user from auth context
+  const { user } = useAuth();
   const [currentQuoteId, setCurrentQuoteId] = useState<string | undefined>(undefined);
   const [currentDraftId, setCurrentDraftId] = useState<string | undefined>(undefined);
   const [currentQuote, setCurrentQuote] = useState<Quote | null>(null);
@@ -87,18 +87,14 @@ const AdminQuoteBuilderPage: React.FC = () => {
     
     let newImageUrl = currentImageUrl;
 
-    // Check if the current image is empty OR if it matches the default for the *other* theme
     const isCurrentEmptyOrDefault = !currentImageUrl || currentImageUrl === defaultWhitePink || currentImageUrl === defaultBlackGold;
 
     if (watchedTheme === 'black-gold' && isCurrentEmptyOrDefault) {
       newImageUrl = defaultBlackGold;
     } else if (watchedTheme === 'default' && isCurrentEmptyOrDefault) {
-      // If the user cleared the field, we respect the empty string.
-      // We only set the default if the field is currently empty.
       newImageUrl = currentImageUrl || ''; 
     }
     
-    // If the current image is NOT empty and NOT a default, we leave it alone.
     if (newImageUrl !== currentImageUrl) {
         form.setValue('headerImageUrl', newImageUrl, { shouldDirty: true });
     }
@@ -107,7 +103,6 @@ const AdminQuoteBuilderPage: React.FC = () => {
   // --- Data Fetching ---
   const fetchDrafts = useCallback(async () => {
     setIsLoadingDrafts(true);
-    // Note: RLS should ensure only the current user's drafts are returned if user_id is set.
     const { data, error } = await supabase
       .from('quote_drafts')
       .select('id, title, updated_at, data')
@@ -138,10 +133,10 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
   // --- Handlers ---
 
-  const mapFormValuesToQuote = (values: QuoteFormValues, id?: string, slug?: string, status: Quote['status'] = 'Created'): Quote => {
+  const mapFormValuesToVersion = (values: QuoteFormValues): Omit<QuoteVersion, 'versionId' | 'versionName' | 'created_at' | 'is_active' | 'status' | 'accepted_at' | 'rejected_at' | 'client_selected_add_ons'> => {
     const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1), 0);
     const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
-      sum + ((addOn.price ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
+      sum + ((addOn.price ?? 0) * (addOn.quantity ?? 0)), 0) || 0;
     const totalAmount = compulsoryTotal + addOnTotal;
 
     const mapItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number, scheduleDates?: string, showScheduleDates?: boolean, showQuantity?: boolean, showRate?: boolean }): QuoteItem => ({
@@ -150,83 +145,49 @@ const AdminQuoteBuilderPage: React.FC = () => {
       description: item.description || '',
       quantity: item.quantity ?? 1,
       price: item.price ?? 0,
-      scheduleDates: item.scheduleDates || '', // Preserve empty string
-      showScheduleDates: item.showScheduleDates ?? false, // Use false default
+      scheduleDates: item.scheduleDates || '',
+      showScheduleDates: item.showScheduleDates ?? false,
       showQuantity: item.showQuantity ?? true,
       showRate: item.showRate ?? true,
     });
 
     return {
-      id: id || Math.random().toString(36).substring(2, 11),
-      slug: slug || createSlug(`${values.eventTitle}-${values.clientName}`),
-      client_name: values.clientName,
-      client_email: values.clientEmail,
-      event_title: values.eventTitle,
-      invoice_type: values.invoiceType,
-      event_date: values.eventDate,
-      event_location: values.eventLocation,
-      prepared_by: values.preparedBy,
       total_amount: totalAmount,
-      accepted_at: null,
-      rejected_at: null,
-      created_at: new Date().toISOString(),
-      details: {
-        depositPercentage: values.depositPercentage,
-        paymentTerms: values.paymentTerms || '', // Preserve empty string
-        bankDetails: {
-          bsb: values.bankBSB ?? '',
-          acc: values.bankACC ?? '',
-        },
-        addOns: values.addOns?.map(mapItem) || [],
-        compulsoryItems: values.compulsoryItems.map(mapItem),
-        currencySymbol: values.currencySymbol,
-        eventTime: values.eventTime ?? '',
-        theme: values.theme,
-        headerImageUrl: values.headerImageUrl || '', // Preserve empty string
-        headerImagePosition: values.headerImagePosition || '', // Preserve empty string
-        preparationNotes: values.preparationNotes || '',
-        scopeOfWorkUrl: values.scopeOfWorkUrl || '', // NEW FIELD
+      depositPercentage: values.depositPercentage,
+      paymentTerms: values.paymentTerms || '',
+      bankDetails: {
+        bsb: values.bankBSB ?? '',
+        acc: values.bankACC ?? '',
       },
-      status: status,
+      addOns: values.addOns?.map(mapItem) || [],
+      compulsoryItems: values.compulsoryItems.map(mapItem),
+      currencySymbol: values.currencySymbol,
+      eventTime: values.eventTime ?? '',
+      theme: values.theme,
+      headerImageUrl: values.headerImageUrl || '',
+      headerImagePosition: values.headerImagePosition || '',
+      preparationNotes: values.preparationNotes || '',
+      scopeOfWorkUrl: values.scopeOfWorkUrl || '',
     };
   };
 
-  const handleSaveCreateQuote = async (values: QuoteFormValues, status: Quote['status']): Promise<Quote | null> => {
+  const handleSaveCreateQuote = async (values: QuoteFormValues, status: QuoteVersion['status']): Promise<Quote | null> => {
     setIsSubmitting(true);
     const action = status === 'Draft' ? (currentDraftId ? 'Updating Draft' : 'Saving Draft') : (currentQuoteId ? 'Updating Quote' : 'Creating Quote');
     const toastId = showLoading(`${action}...`);
 
     try {
-      const quoteData = mapFormValuesToQuote(values, currentQuoteId, currentQuote?.slug, status);
-      
-      // Prepare payload for Edge Function
-      const payload = {
-        id: status === 'Draft' ? currentDraftId : currentQuoteId, // Use draft ID for drafts, quote ID for quotes
-        clientName: quoteData.client_name,
-        clientEmail: quoteData.client_email,
-        invoiceType: quoteData.invoice_type,
-        eventTitle: quoteData.event_title,
-        eventDate: quoteData.event_date,
-        eventLocation: quoteData.event_location,
-        preparedBy: quoteData.prepared_by,
-        totalAmount: quoteData.total_amount,
-        details: quoteData.details,
-        slug: quoteData.slug,
-        status: status,
-      };
-
-      let result;
       if (status === 'Draft') {
         // Handle Draft saving/updating
         const draftPayload = {
           id: currentDraftId,
-          user_id: user?.id, // Include user ID for RLS
+          user_id: user?.id,
           title: values.eventTitle || 'Untitled Draft',
           data: values,
         };
         
+        let result;
         if (currentDraftId) {
-          // Update existing draft
           result = await supabase
             .from('quote_drafts')
             .update(draftPayload)
@@ -234,7 +195,6 @@ const AdminQuoteBuilderPage: React.FC = () => {
             .select()
             .single();
         } else {
-          // Insert new draft
           result = await supabase
             .from('quote_drafts')
             .insert(draftPayload)
@@ -245,12 +205,47 @@ const AdminQuoteBuilderPage: React.FC = () => {
         if (result.error) throw result.error;
         
         setCurrentDraftId(result.data.id);
-        await fetchDrafts(); // Refresh draft list
+        await fetchDrafts();
         showSuccess(`${action} saved successfully!`, { id: toastId });
-        return null; // Return null for drafts
+        return null;
         
       } else {
         // Handle Quote creation/update via Edge Function
+        const versionData = mapFormValuesToVersion(values);
+        
+        // For a new quote, we create the first version (v1)
+        const newVersion: QuoteVersion = {
+            versionId: 'v1',
+            versionName: 'Initial Proposal',
+            created_at: new Date().toISOString(),
+            is_active: true,
+            status: status,
+            accepted_at: null,
+            rejected_at: null,
+            ...versionData,
+        };
+        
+        const payload = {
+          id: currentQuoteId, // Will be undefined for new quotes
+          clientName: values.clientName,
+          clientEmail: values.clientEmail,
+          invoiceType: values.invoiceType,
+          eventTitle: values.eventTitle,
+          eventDate: values.eventDate,
+          eventLocation: values.eventLocation,
+          preparedBy: values.preparedBy,
+          
+          // Top-level fields reflect the active version (v1)
+          totalAmount: newVersion.total_amount,
+          status: newVersion.status,
+          
+          // Details now contains the versions array
+          details: {
+              versions: [newVersion]
+          },
+          slug: currentQuote?.slug || createSlug(`${values.eventTitle}-${values.clientName}`),
+        };
+
         const { data: invokeData, error: invokeError } = await supabase.functions.invoke('save-create-quote', {
           body: payload,
         });
@@ -271,7 +266,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         const finalQuote: Quote = {
           ...fetchedQuote,
           total_amount: parseFloat(fetchedQuote.total_amount),
-          details: fetchedQuote.details,
+          details: fetchedQuote.details as Quote['details'],
           status: fetchedQuote.status,
         };
 
@@ -280,13 +275,12 @@ const AdminQuoteBuilderPage: React.FC = () => {
         
         // If it was a draft, clear the draft ID
         if (currentDraftId) {
-            await handleDeleteDraft(currentDraftId, false); // Delete draft silently
+            await handleDeleteDraft(currentDraftId, false);
             setCurrentDraftId(undefined);
         }
         
         showSuccess(`${action} successful!`, { id: toastId });
         return finalQuote;
-
       }
     } catch (error: any) {
       console.error(`Error during ${action}:`, error);
@@ -303,7 +297,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
     if (draft) {
       form.reset(draft.data);
       setCurrentDraftId(draftId);
-      setCurrentQuoteId(undefined); // Clear quote ID when loading a draft
+      setCurrentQuoteId(undefined);
       setCurrentQuote(null);
       showSuccess(`Draft "${draft.title}" loaded.`);
     }
@@ -352,10 +346,10 @@ const AdminQuoteBuilderPage: React.FC = () => {
         id: Math.random().toString(36).substring(2, 11),
         name: item.name,
         description: item.description || '',
-        price: item.amount, // Use 'amount' as 'price' for compulsory items
+        price: item.amount,
         quantity: 1,
-        scheduleDates: extractedContent.eventDate, // Default schedule date to event date
-        showScheduleDates: false, // Use new default
+        scheduleDates: extractedContent.eventDate,
+        showScheduleDates: false,
         showQuantity: true,
         showRate: true,
       }));
@@ -364,15 +358,14 @@ const AdminQuoteBuilderPage: React.FC = () => {
         id: Math.random().toString(36).substring(2, 11),
         name: item.name,
         description: item.description || '',
-        price: item.cost, // Use 'cost' as 'price' for add-ons
-        quantity: 0, // Default to 0 quantity for add-ons
+        price: item.cost,
+        quantity: 0,
         scheduleDates: '',
-        showScheduleDates: false, // Use new default
+        showScheduleDates: false,
         showQuantity: true,
         showRate: true,
       }));
       
-      // Merge extracted data with default values, prioritizing extracted data
       const newValues: QuoteFormValues = {
         ...defaultQuoteValues,
         clientName: extractedContent.clientName || defaultQuoteValues.clientName,
@@ -386,10 +379,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
         preparationNotes: extractedContent.preparationNotes || defaultQuoteValues.preparationNotes,
         compulsoryItems: compulsoryItems.length > 0 ? compulsoryItems : defaultQuoteValues.compulsoryItems,
         addOns: addOns,
-        // Ensure header image fields are preserved if AI didn't touch them, or use defaults
         headerImageUrl: defaultQuoteValues.headerImageUrl,
         headerImagePosition: defaultQuoteValues.headerImagePosition,
-        scopeOfWorkUrl: defaultQuoteValues.scopeOfWorkUrl, // NEW DEFAULT
+        scopeOfWorkUrl: defaultQuoteValues.scopeOfWorkUrl,
       };
       
       form.reset(newValues);
@@ -398,46 +390,32 @@ const AdminQuoteBuilderPage: React.FC = () => {
   }, [extractedContent, form]);
 
   const handleCreateAndSend = async (values: QuoteFormValues) => {
-    // 1. Create/Update the quote (status: 'Created')
     const finalQuote = await handleSaveCreateQuote(values, 'Created');
     
-    // 2. If successful, open the sending modal
     if (finalQuote) {
-      setCurrentQuote(finalQuote); // Ensure state is updated before opening modal
+      setCurrentQuote(finalQuote);
       setIsSendingModalOpen(true);
     }
   };
   
   const handleQuoteSent = () => {
-    // Navigate to the details page after successful send
     navigate(`/admin/quotes/${currentQuoteId}`);
   };
 
   // Transform form values into Quote interface structure for preview
   const getPreviewData = (values: QuoteFormValues): Quote => {
-    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1), 0);
-    const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
-      sum + ((addOn.price ?? 0) * (addOn.quantity ?? 1)), 0) || 0;
-    const totalAmount = compulsoryTotal + addOnTotal;
-
-    // Helper function to map form item to QuoteItem structure
-    const mapFormItemToQuoteItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number, scheduleDates?: string, showScheduleDates?: boolean, showQuantity?: boolean, showRate?: boolean }): QuoteItem => {
-      const quantity = item.quantity ?? 1;
-      const price = item.price ?? 0;
-      
-      return {
-        id: item.id || Math.random().toString(36).substring(2, 11),
-        name: item.name,
-        description: item.description || '',
-        quantity: quantity,
-        price: price,
-        scheduleDates: item.scheduleDates || '',
-        showScheduleDates: item.showScheduleDates ?? false,
-        showQuantity: item.showQuantity ?? true,
-        showRate: item.showRate ?? true,
-      };
+    const versionData = mapFormValuesToVersion(values);
+    const previewVersion: QuoteVersion = {
+        versionId: 'v-preview',
+        versionName: 'Live Preview',
+        created_at: new Date().toISOString(),
+        is_active: true,
+        status: 'Draft',
+        accepted_at: null,
+        rejected_at: null,
+        ...versionData,
     };
-
+    
     return {
       id: currentQuoteId || Math.random().toString(36).substring(2, 11),
       slug: currentQuote?.slug || 'preview-slug',
@@ -448,26 +426,12 @@ const AdminQuoteBuilderPage: React.FC = () => {
       event_date: values.eventDate,
       event_location: values.eventLocation,
       prepared_by: values.preparedBy,
-      total_amount: totalAmount,
+      total_amount: previewVersion.total_amount,
       accepted_at: null,
       rejected_at: null,
       created_at: currentQuote?.created_at || new Date().toISOString(),
       details: {
-        depositPercentage: values.depositPercentage,
-        paymentTerms: values.paymentTerms || '',
-        bankDetails: {
-          bsb: values.bankBSB ?? '',
-          acc: values.bankACC ?? '',
-        },
-        addOns: values.addOns?.map(item => mapFormItemToQuoteItem(item)) || [],
-        compulsoryItems: values.compulsoryItems.map(item => mapFormItemToQuoteItem(item)),
-        currencySymbol: values.currencySymbol,
-        eventTime: values.eventTime ?? '',
-        theme: values.theme,
-        headerImageUrl: values.headerImageUrl || '',
-        headerImagePosition: values.headerImagePosition || '',
-        preparationNotes: values.preparationNotes || '',
-        scopeOfWorkUrl: values.scopeOfWorkUrl || '', // NEW FIELD
+        versions: [previewVersion],
       },
       status: currentQuote?.status || 'Draft',
     };

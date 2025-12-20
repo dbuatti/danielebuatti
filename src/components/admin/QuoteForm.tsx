@@ -12,7 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import { cn, formatCurrency } from '@/lib/utils';
 import { useMemo } from 'react';
 import PillToggle from './PillToggle';
-import RichTextPreview from './RichTextPreview'; // Import RichTextPreview
+import RichTextPreview from './RichTextPreview';
 
 // Define the schema for a single item (compulsory or add-on)
 const ItemSchema = z.object({
@@ -63,10 +63,11 @@ interface QuoteFormProps {
   onPreview: (values: QuoteFormValues) => void;
   onSaveDraft?: (values: QuoteFormValues) => Promise<void>;
   isQuoteCreated?: boolean;
-  onClearForm?: () => void; // New prop for clearing the form
+  onClearForm?: () => void;
+  submitButtonText?: string; // NEW: Custom submit button text
 }
 
-const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitting, onPreview, onSaveDraft, isQuoteCreated = false, onClearForm }) => {
+const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitting, onPreview, onSaveDraft, isQuoteCreated = false, onClearForm, submitButtonText }) => {
   const { control, handleSubmit, getValues, watch, formState: { isValid } } = form;
 
   const { fields: compulsoryFields, append: appendCompulsory, remove: removeCompulsory } = useFieldArray({
@@ -112,9 +113,11 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
     onCreateAndSend(values);
   };
 
-  const submitButtonText = isQuoteCreated
+  const defaultSubmitText = isQuoteCreated
     ? (onSaveDraft ? 'Create & Send Quote' : 'Update Quote')
     : 'Create & Send Quote';
+    
+  const finalSubmitButtonText = submitButtonText || defaultSubmitText;
 
   const inputClasses = "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary";
 
@@ -122,7 +125,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
     <Form {...form}>
       <form onSubmit={handleSubmit(handleFinalSubmit)} className="space-y-8">
 
-        {/* Action Buttons & Totals (unchanged) */}
+        {/* Action Buttons & Totals */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-4 bg-brand-secondary/10 dark:bg-brand-dark/50 rounded-lg border border-brand-secondary/30">
             <div className="space-y-1">
                 <p className="text-sm font-medium text-brand-dark/70 dark:text-brand-light/70">Current Total (Compulsory + Add-ons):</p>
@@ -155,7 +158,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                         isQuoteCreated && !onSaveDraft ? "bg-green-600 hover:bg-green-700" : ""
                     )}
                 >
-                    <Send className="h-4 w-4 mr-2" /> {submitButtonText}
+                    {finalSubmitButtonText.includes('Send') ? <Send className="h-4 w-4 mr-2" /> : null}
+                    {finalSubmitButtonText}
                 </Button>
             </div>
         </div>
