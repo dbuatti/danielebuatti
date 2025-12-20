@@ -3,15 +3,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { Quote, QuoteVersion } from '@/types/quote';
+import { Quote } from '@/types/quote';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, Trash2, Edit, Copy, Clock, Eye, Send, CheckCircle, XCircle } from 'lucide-react';
+import { Loader2, Trash2, Edit, Copy, Eye, Send } from 'lucide-react';
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { useAuth } from '@/hooks/useAuth';
 import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
@@ -31,8 +31,6 @@ const AdminQuoteDetailsPage: React.FC = () => {
   const [quote, setQuote] = useState<QuoteWithStatus | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isResetting, setIsResetting] = useState(false);
-  const [isActivating, setIsActivating] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isSendingModalOpen, setIsSendingModalOpen] = useState(false);
   const [, copy] = useCopyToClipboard();
@@ -99,7 +97,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
 
   const handleActivateVersion = async (versionId: string) => {
     if (!quote) return;
-    setIsActivating(true);
+    // Removed isActivating state management as it was unused and simplified the logic
     try {
       const updatedVersions = versions.map(v => ({ ...v, is_active: v.versionId === versionId }));
       const newActive = updatedVersions.find(v => v.is_active);
@@ -115,7 +113,6 @@ const AdminQuoteDetailsPage: React.FC = () => {
       await fetchQuote(false);
       showSuccess('Version activated.');
     } catch (error: any) { showError(error.message); }
-    finally { setIsActivating(false); }
   };
 
   const handleCopyLink = () => {
@@ -123,6 +120,12 @@ const AdminQuoteDetailsPage: React.FC = () => {
     copy(`${window.location.origin}/quotes/${quote.slug}`);
     showSuccess('Link copied!');
   };
+  
+  // Fix for TS2322: Create a wrapper function that matches the expected signature
+  const handleQuoteSent = useCallback(() => {
+    fetchQuote(true);
+  }, [fetchQuote]);
+
 
   if (isLoading) return <div className="flex justify-center p-12"><Loader2 className="animate-spin" /></div>;
   if (!quote || !displayVersion) return <Alert variant="destructive"><AlertTitle>Error</AlertTitle><AlertDescription>Quote or Versions missing.</AlertDescription></Alert>;
@@ -212,7 +215,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
         </CardContent>
       </Card>
 
-      <QuoteSendingModal isOpen={isSendingModalOpen} onClose={() => setIsSendingModalOpen(false)} quote={quote} onQuoteSent={fetchQuote} />
+      <QuoteSendingModal isOpen={isSendingModalOpen} onClose={() => setIsSendingModalOpen(false)} quote={quote} onQuoteSent={handleQuoteSent} />
     </div>
   );
 };
