@@ -35,7 +35,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
   const [isResetting, setIsResetting] = useState(false);
   const [isActivating, setIsActivating] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [isSendingModalOpen, setIsSendingModalOpen] = useState(false); // FIX: Renamed setter to match usage
+  const [isSendingModalOpen, setIsSendingModal] = useState(false); // FIX: Renamed setter to match usage
   const [, copy] = useCopyToClipboard();
 
   const fetchQuote = useCallback(async (showToast = false) => {
@@ -118,7 +118,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
     const toastId = showLoading('Resetting quote status...');
 
     try {
-      const versions = quote.details.versions || [];
+      const versions = quote.details?.versions || [];
       const activeVersion = versions.find(v => v.is_active);
 
       if (!activeVersion) throw new Error("No active version found to reset.");
@@ -172,7 +172,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
     const toastId = showLoading(`Activating version ${versionId}...`);
 
     try {
-      const versions = quote.details.versions || [];
+      const versions = quote.details?.versions || [];
       let newActiveVersion: QuoteVersion | undefined;
 
       // 1. Update versions array: set selected version to active, others to inactive
@@ -225,7 +225,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
   const handleQuoteSent = () => {
     // Update status locally after successful send
     // We need to find the active version and update its status to 'Sent'
-    const updatedVersions = quote?.details.versions?.map(v => {
+    const updatedVersions = quote?.details?.versions?.map(v => {
       if (v.is_active) {
         return { ...v, status: 'Sent' as QuoteVersion['status'] };
       }
@@ -280,7 +280,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
 
 
   // Defensive check added here
-  const versions = quote.details.versions ? [...quote.details.versions].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()) : [];
+  const versions = quote.details?.versions ? [...quote.details.versions].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()) : [];
 
   const activeVersion = versions.find(v => v.is_active);
 
@@ -293,7 +293,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
       return (
           <Alert variant="destructive">
               <AlertTitle>Error</AlertTitle>
-              <AlertDescription>Quote data is corrupted: No versions found in quote details.</AlertDescription>
+              <AlertDescription>Quote data is corrupted: No versions found in quote details. Please delete this quote and recreate it.</AlertDescription>
           </Alert>
       );
   }
@@ -413,7 +413,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
 
             {isSendable && (
 
-              <Button onClick={() => setIsSendingModalOpen(true)} className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+              <Button onClick={() => setIsSendingModal(true)} className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
 
                 <Send className="h-4 w-4 mr-2" /> {currentStatus === 'Sent' ? 'Resend Quote' : 'Send Quote'}
 
@@ -688,7 +688,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
 
           isOpen={isSendingModalOpen}
 
-          onClose={() => setIsSendingModalOpen(false)}
+          onClose={() => setIsSendingModal(false)}
 
           quote={quote as Quote}
 

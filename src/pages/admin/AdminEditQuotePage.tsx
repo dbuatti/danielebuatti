@@ -161,18 +161,24 @@ const AdminEditQuotePage: React.FC = () => {
       setQuote(fetchedQuote);
       
       // Determine the active version to load into the form
-      const activeVersion = fetchedQuote.details.versions.find(v => v.is_active);
+      const versions = fetchedQuote.details?.versions || [];
+      const activeVersion = versions.find(v => v.is_active);
       
       if (activeVersion) {
         const defaultValues = mapVersionToFormValues(fetchedQuote, activeVersion);
         form.reset(defaultValues);
         setActiveVersionId(activeVersion.versionId);
-      } else if (fetchedQuote.details.versions.length > 0) {
+      } else if (versions.length > 0) {
         // Fallback: load the latest version if no active one is marked
-        const latestVersion = fetchedQuote.details.versions.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
+        const latestVersion = versions.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
         const defaultValues = mapVersionToFormValues(fetchedQuote, latestVersion);
         form.reset(defaultValues);
         setActiveVersionId(latestVersion.versionId);
+      } else {
+          // If no versions exist, treat as not found/corrupted data
+          console.error(`Quote ${fetchedQuote.id} loaded but contains no versions.`);
+          showError('Quote data is corrupted: No versions found.');
+          setQuote(null);
       }
 
       if (showToast) showSuccess('Quote loaded.', { id: toastId });
@@ -377,7 +383,7 @@ const AdminEditQuotePage: React.FC = () => {
     return (
       <div className="p-8 text-center">
         <h3 className="text-xl font-semibold">Quote Not Found</h3>
-        <p className="text-gray-500">Could not load quote details for editing.</p>
+        <p className="text-gray-500">Could not load quote details for editing. This may be due to corrupted data (missing versions).</p>
       </div>
     );
   }
