@@ -4,7 +4,7 @@ import React from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
 import { useSession } from '@/components/SessionContextProvider';
 import { Button } from '@/components/ui/button';
-import { LogOut, LayoutDashboard, FileText, Home, Music, MailOpen } from 'lucide-react'; // Removed PlusCircle
+import { LogOut, LayoutDashboard, FileText, Home, Music, MailOpen, ExternalLink, HeartHandshake } from 'lucide-react'; // Added ExternalLink and HeartHandshake
 import { supabase } from '@/integrations/supabase/client';
 import { useTheme } from 'next-themes';
 import DynamicImage from '@/components/DynamicImage';
@@ -84,6 +84,19 @@ const AdminLayout: React.FC = () => {
             <MailOpen className="h-5 w-5" />
             Email Templates
           </Link>
+          
+          <Separator className="bg-brand-secondary/50 my-4" />
+          
+          {/* Kinesiology External Link */}
+          <a 
+            href="https://resonance-kinesiology.vercel.app/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 p-3 rounded-md text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark/50 transition-colors"
+          >
+            <HeartHandshake className="h-5 w-5 text-pink-500" />
+            Kinesiology Site <ExternalLink className="h-4 w-4 ml-auto opacity-70" />
+          </a>
         </nav>
         <div className="mt-auto space-y-2">
           <Separator className="bg-brand-secondary/50 my-4" />
