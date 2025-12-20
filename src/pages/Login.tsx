@@ -15,6 +15,11 @@ const Login: React.FC = () => {
 
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
+  
+  // Use window.location.protocol and window.location.host to explicitly construct the origin,
+  // ensuring the redirect points to the current environment (e.g., localhost:32127).
+  const currentOrigin = window.location.protocol + '//' + window.location.host;
+  const redirectUrl = currentOrigin + '/admin';
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light p-4">
@@ -88,7 +93,7 @@ const Login: React.FC = () => {
             },
           }}
           theme={theme === 'dark' ? 'dark' : 'light'}
-          redirectTo={window.location.origin + '/admin'}
+          redirectTo={redirectUrl}
         />
       </div>
     </div>
