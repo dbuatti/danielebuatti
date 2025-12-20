@@ -3,30 +3,16 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns';
-import { 
-  Loader2, 
-  ExternalLink, 
-  Trash2, 
-  PlusCircle, 
-  FileText, 
-  Copy, 
-  Eye, 
-  PencilLine 
-} from 'lucide-react';
-import { showError, showSuccess } from '@/utils/toast';
+import { Loader2, ExternalLink, Trash2, PlusCircle, FileText } from 'lucide-react';
+import { showError } from '@/utils/toast';
 import { Button } from '@/components/ui/button';
-import { Quote } from '@/types/quote';
+import { toast } from 'sonner';
+import { Quote } from '@/types/quote'; // Import Quote interface
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-
-interface QuoteWithStatus extends Quote {
-  status: 'Draft' | 'Created' | 'Sent' | 'Accepted' | 'Rejected';
-}
 
 interface Draft {
   id: string;
@@ -56,10 +42,9 @@ interface CombinedQuoteItem {
 const AdminQuotesPage: React.FC = () => {
   const [combinedItems, setCombinedItems] = useState<CombinedQuoteItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [, copy] = useCopyToClipboard();
 
   const calculateDraftTotal = (draft: Draft): number => {
-    const compulsoryTotal = draft.data.compulsoryItems?.reduce((sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1), 0) || 0;
+    const compulsoryTotal = draft.data.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1), 0);
     const addOnTotal = draft.data.addOns?.reduce((sum: number, addOn) => 
       sum + ((addOn.price ?? 0) * (addOn.quantity ?? 0)), 0) || 0;
     return compulsoryTotal + addOnTotal;
@@ -68,6 +53,7 @@ const AdminQuotesPage: React.FC = () => {
   const fetchQuotesAndDrafts = async () => {
     setIsLoading(true);
     try {
+      // 1. Fetch finalized quotes (invoices)
       const { data: quotesData, error: quotesError } = await supabase
         .from('invoices')
         .select('*')
@@ -75,22 +61,25 @@ const AdminQuotesPage: React.FC = () => {
 
       if (quotesError) throw quotesError;
 
+      const quotes: Quote[] = quotesData as Quote[] || [];
+
+      // 2. Fetch drafts
       const { data: draftsData, error: draftsError } = await supabase
         .from('quote_drafts')
         .select('id, title, data, updated_at');
 
       if (draftsError) throw draftsError;
 
-      const quotes = (quotesData as any[]) || [];
-      const drafts = (draftsData as any[]) || [];
+      const drafts: Draft[] = draftsData as Draft[] || [];
 
+      // 3. Combine and map data
       const mappedQuotes: CombinedQuoteItem[] = quotes.map(quote => ({
         id: quote.id,
         type: 'quote',
         client_name: quote.client_name,
         invoice_type: quote.invoice_type,
         event_date: quote.event_date || null,
-        total_amount: parseFloat(quote.total_amount),
+        total_amount: quote.total_amount,
         status: quote.accepted_at ? 'Accepted' : quote.rejected_at ? 'Rejected' : quote.status || 'Pending',
         created_at: quote.created_at,
         slug: quote.slug,
@@ -104,7 +93,7 @@ const AdminQuotesPage: React.FC = () => {
         event_date: draft.data.eventDate || null,
         total_amount: calculateDraftTotal(draft),
         status: 'Draft',
-        created_at: draft.updated_at,
+        created_at: draft.updated_at, // Use updated_at for drafts for sorting relevance
       }));
 
       const combined = [...mappedQuotes, ...mappedDrafts].sort((a, b) => 
@@ -112,8 +101,9 @@ const AdminQuotesPage: React.FC = () => {
       );
 
       setCombinedItems(combined);
+
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching quotes/drafts:', error);
       showError('Failed to load proposals.');
     } finally {
       setIsLoading(false);
@@ -124,177 +114,158 @@ const AdminQuotesPage: React.FC = () => {
     fetchQuotesAndDrafts();
   }, []);
 
-  const handleCopyLink = (slug: string) => {
-    const url = `${window.location.origin}/quotes/${slug}`;
-    copy(url);
-    showSuccess('Client link copied to clipboard!');
-  };
-
-  const openClientLink = (slug: string) => {
-    window.open(`${window.location.origin}/quotes/${slug}`, '_blank');
-  };
-
   const handleDeleteItem = async (itemId: string, itemType: 'quote' | 'draft') => {
-    if (!window.confirm(`Are you sure you want to delete this ${itemType}?`)) return;
-    
-    try {
-      const table = itemType === 'quote' ? 'invoices' : 'quote_drafts';
-      const { error } = await supabase.from(table).delete().eq('id', itemId);
-      if (error) throw error;
-      
-      setCombinedItems(prev => prev.filter(item => item.id !== itemId));
-      showSuccess(`${itemType === 'quote' ? 'Quote' : 'Draft'} deleted.`);
-    } catch (err) {
-      showError(`Failed to delete ${itemType}.`);
-    }
+    toast.promise(
+      async () => {
+        let error;
+        if (itemType === 'quote') {
+          const result = await supabase
+            .from('invoices')
+            .delete()
+            .eq('id', itemId);
+          error = result.error;
+        } else {
+          const result = await supabase
+            .from('quote_drafts')
+            .delete()
+            .eq('id', itemId);
+          error = result.error;
+        }
+
+        if (error) throw error;
+        
+        // Optimistically update the UI
+        setCombinedItems(prevItems => prevItems.filter(item => item.id !== itemId));
+        return `${itemType === 'quote' ? 'Quote' : 'Draft'} deleted successfully!`;
+      },
+      {
+        loading: `Deleting ${itemType}...`,
+        success: (message) => message,
+        error: (err) => {
+          console.error(`Error deleting ${itemType}:`, err);
+          return `Failed to delete ${itemType}.`;
+        },
+        action: {
+          label: 'Confirm Delete',
+          onClick: () => { /* The promise handles the actual deletion */ },
+        },
+        description: `Are you sure you want to delete this ${itemType}? This action cannot be undone.`,
+      }
+    );
   };
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
-      case 'Accepted': return 'default';
-      case 'Rejected': return 'destructive';
-      case 'Sent': return 'secondary';
-      case 'Draft': return 'outline';
-      default: return 'outline';
+      case 'Accepted':
+        return 'default';
+      case 'Rejected':
+        return 'destructive';
+      case 'Sent':
+        return 'secondary';
+      case 'Draft':
+        return 'outline';
+      case 'Created':
+      default:
+        return 'default';
     }
   };
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 space-y-4">
+      <div className="flex items-center justify-center h-64">
         <Loader2 className="h-10 w-10 animate-spin text-brand-primary" />
-        <p className="text-brand-dark/60 animate-pulse">Synchronizing quotes...</p>
+        <span className="sr-only">Loading proposals...</span>
       </div>
     );
   }
 
   return (
-    <TooltipProvider>
-      <div className="space-y-8">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Proposals</h2>
-            <p className="text-brand-dark/60 dark:text-brand-light/60">Manage your active quotes and saved drafts.</p>
-          </div>
-          <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light shadow-lg shadow-brand-primary/20">
-            <Link to="/admin/create-quote">
-              <PlusCircle className="mr-2 h-4 w-4" /> New Quote
-            </Link>
-          </Button>
-        </div>
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Manage Quotes & Drafts</h2>
+        <Button asChild className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+          <Link to="/admin/create-quote">
+            <PlusCircle className="mr-2 h-4 w-4" /> Create New Quote
+          </Link>
+        </Button>
+      </div>
+      <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
+        View and manage all quote proposals and saved drafts.
+      </p>
 
-        <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-xl border-brand-secondary/20">
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow className="hover:bg-transparent border-b border-brand-secondary/10">
-                  <TableHead className="w-[200px] py-4">Client</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Event Date</TableHead>
-                  <TableHead className="text-right">Amount</TableHead>
-                  <TableHead className="text-center">Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {combinedItems.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center py-12 text-muted-foreground">
-                      No proposals found. Start by creating a new quote.
-                    </TableCell>
+      <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
+        <div className="p-6 border-b border-brand-secondary/50">
+          <h3 className="text-xl font-semibold text-brand-primary">All Proposals</h3>
+        </div>
+        <CardContent>
+          {combinedItems.length === 0 ? (
+            <p className="text-center text-brand-dark/70 dark:text-brand-light/70">No quote proposals or drafts found yet.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-brand-secondary/10 dark:bg-brand-dark/50">
+                    <TableHead className="text-brand-primary">Client Name</TableHead>
+                    <TableHead className="text-brand-primary">Type</TableHead>
+                    <TableHead className="text-brand-primary">Event Date</TableHead>
+                    <TableHead className="text-brand-primary text-right">Total Amount</TableHead>
+                    <TableHead className="text-brand-primary">Status</TableHead>
+                    <TableHead className="text-brand-primary">Created/Updated On</TableHead>
+                    <TableHead className="text-brand-primary text-center">Actions</TableHead>
                   </TableRow>
-                ) : (
-                  combinedItems.map((item) => (
-                    <TableRow key={item.id} className="group border-b border-brand-secondary/5">
-                      <TableCell className="font-semibold py-4">
+                </TableHeader>
+                <TableBody>
+                  {combinedItems.map((item) => (
+                    <TableRow key={item.id} className="hover:bg-brand-secondary/5 dark:hover:bg-brand-dark/30">
+                      <TableCell className="font-medium text-brand-dark dark:text-brand-light">
                         {item.client_name}
                       </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2 text-sm">
-                          <FileText className={cn("h-4 w-4", item.type === 'draft' ? 'text-muted-foreground' : 'text-brand-primary')} />
+                      <TableCell className="text-brand-dark/80 dark:text-brand-light/80">
+                        <div className="flex items-center gap-1">
+                          <FileText className={cn("h-4 w-4", item.type === 'draft' ? 'text-gray-500' : 'text-brand-primary')} />
                           {item.invoice_type}
                         </div>
                       </TableCell>
-                      <TableCell className="text-sm">
-                        {item.event_date ? format(new Date(item.event_date), 'dd MMM yyyy') : '—'}
+                      <TableCell className="text-brand-dark/80 dark:text-brand-light/80">
+                        {item.event_date && format(new Date(item.event_date), 'EEEE d MMMM yyyy') || 'N/A'}
                       </TableCell>
-                      <TableCell className="text-right font-mono font-medium">
-                        A${item.total_amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <Badge variant={getStatusBadgeVariant(item.status)} className="capitalize">
-                          {item.status.toLowerCase()}
+                      <TableCell className="text-right font-semibold text-brand-primary">A${item.total_amount.toFixed(2)}</TableCell>
+                      <TableCell>
+                        <Badge variant={getStatusBadgeVariant(item.status)} className="min-w-[80px] justify-center">
+                          {item.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          
-                          {item.type === 'quote' && (
-                            <>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button variant="ghost" size="icon" className="h-8 w-8 text-brand-primary" onClick={() => openClientLink(item.slug!)}>
-                                    <ExternalLink className="h-4 w-4" />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>Open Client Link</TooltipContent>
-                              </Tooltip>
-
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button variant="ghost" size="icon" className="h-8 w-8 text-brand-primary" onClick={() => handleCopyLink(item.slug!)}>
-                                    <Copy className="h-4 w-4" />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>Copy URL</TooltipContent>
-                              </Tooltip>
-
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-brand-primary">
-                                    <Link to={`/admin/quotes/${item.id}`}>
-                                      <Eye className="h-4 w-4" />
-                                    </Link>
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>View Details</TooltipContent>
-                              </Tooltip>
-                            </>
-                          )}
-
-                          {item.type === 'draft' && (
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-brand-primary">
-                                  <Link to="/admin/create-quote" state={{ loadDraftId: item.id }}>
-                                    <PencilLine className="h-4 w-4" />
-                                  </Link>
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>Edit Draft</TooltipContent>
-                            </Tooltip>
-                          )}
-
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50" onClick={() => handleDeleteItem(item.id, item.type)}>
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Delete</TooltipContent>
-                          </Tooltip>
-
-                        </div>
+                      <TableCell className="text-brand-dark/70 dark:text-brand-light/70">
+                        {format(new Date(item.created_at), 'PPP p')}
+                      </TableCell>
+                      <TableCell className="text-center flex gap-2 justify-center">
+                        {item.type === 'quote' ? (
+                          <Link to={`/admin/quotes/${item.id}`} className="text-brand-primary hover:underline flex items-center justify-center">
+                            View Details <ExternalLink className="ml-1 h-4 w-4" />
+                          </Link>
+                        ) : (
+                          <Link to="/admin/create-quote" state={{ loadDraftId: item.id }} className="text-brand-primary hover:underline flex items-center justify-center">
+                            Edit Draft <ExternalLink className="ml-1 h-4 w-4" />
+                          </Link>
+                        )}
+                        <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDeleteItem(item.id, item.type)}
+                            className="bg-red-600 hover:bg-red-700 text-white"
+                        >
+                            <Trash2 className="h-4 w-4" />
+                        </Button>
                       </TableCell>
                     </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </div>
-    </TooltipProvider>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
