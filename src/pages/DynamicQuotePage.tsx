@@ -68,7 +68,7 @@ const DynamicQuotePage: React.FC = () => {
     const faviconPath = isBlackGoldTheme ? GOLD_FAVICON_PATH : BRAND_FAVICON_PATH;
 
     const updateFavicon = (rel: string, path: string) => {
-      let link: HTMLLinkElement | null = document.querySelector(`link[rel*='${rel}']`) as HTMLAnchorElement;
+      let link: HTMLLinkElement | null = document.querySelector(`link[rel*='${rel}']`) as HTMLLinkElement;
       
       if (!link) {
         link = document.createElement('link');
@@ -223,7 +223,7 @@ const DynamicQuotePage: React.FC = () => {
       
       // 1. Update the active version within the versions array
       const updatedVersions = quote.details.versions.map(v => {
-          if (v.is_active) {
+          if (v.versionId === activeVersion.versionId) {
               return {
                   ...v,
                   rejected_at: rejectedAt,

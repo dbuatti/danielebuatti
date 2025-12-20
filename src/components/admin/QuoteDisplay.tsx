@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Quote, QuoteItem, QuoteVersion } from '@/types/quote';
+import { Quote, QuoteItem } from '@/types/quote';
 import { formatCurrency } from '@/lib/utils';
 import {
   Table,

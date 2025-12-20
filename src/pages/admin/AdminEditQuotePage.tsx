@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import QuoteForm, { QuoteFormSchema, QuoteFormValues } from '@/components/admin/QuoteForm';
@@ -16,7 +16,6 @@ import { Loader2, ArrowLeft, PlusCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
 
 // Helper to map QuoteVersion back to QuoteFormValues
 const mapVersionToFormValues = (quote: Quote, version: QuoteVersion): QuoteFormValues => {
@@ -99,7 +98,6 @@ const mapFormValuesToVersionData = (values: QuoteFormValues): Omit<QuoteVersion,
 
 const AdminEditQuotePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const [quote, setQuote] = useState<Quote | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);

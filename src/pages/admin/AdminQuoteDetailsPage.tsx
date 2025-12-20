@@ -300,8 +300,10 @@ const AdminQuoteDetailsPage: React.FC = () => {
               Reset Status
             </Button>
           )}
-          <Button variant="outline" onClick={() => navigate(`/admin/quotes/edit/${quote.id}`)}>
-            <Edit className="h-4 w-4 mr-2" /> Edit Active Version
+          <Button asChild variant="outline" className="text-brand-dark dark:text-brand-light border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50">
+            <Link to={`/admin/quotes/edit/${quote.id}`}>
+              <Edit className="h-4 w-4 mr-2" /> Edit Active Version
+            </Link>
           </Button>
           <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
             {isDeleting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Trash2 className="h-4 w-4 mr-2" />}
