@@ -373,7 +373,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
 
         <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">
 
-          {quote.invoice_type} Details: {quote.event_title}
+          {quote.invoice_type} Details: {quote.event_title} ({quote.client_name})
 
         </h2>
 

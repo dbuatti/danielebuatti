@@ -409,7 +409,7 @@ const AdminEditQuotePage: React.FC = () => {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Edit Quote: {quote.event_title}</h2>
+        <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Edit Quote: {quote.event_title} ({quote.client_name})</h2>
         <Button asChild variant="outline" className="text-brand-dark dark:text-brand-light border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50">
           <Link to={`/admin/quotes/${id}`}>
             <ArrowLeft className="h-4 w-4 mr-2" /> Back to Details
