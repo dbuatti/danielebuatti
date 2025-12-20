@@ -8,7 +8,7 @@ import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, Download, Edit, Trash2, Copy, Clock, Eye, Send, CheckCircle, XCircle, Wrench } from 'lucide-react';
+import { Loader2, Download, Edit, Trash2, Copy, Clock, Eye, Send, CheckCircle, XCircle, Wrench, ExternalLink } from 'lucide-react';
 import QuoteDisplay from '@/components/admin/QuoteDisplay';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -259,6 +259,12 @@ const AdminQuoteDetailsPage: React.FC = () => {
     copy(quoteUrl);
     showSuccess('Quote link copied to clipboard!');
   };
+  
+  const handleOpenLink = () => {
+    if (!quote) return;
+    const quoteUrl = `${window.location.origin}/quotes/${quote.slug}`;
+    window.open(quoteUrl, '_blank');
+  };
 
 
   const handleQuoteSent = () => {
@@ -467,13 +473,16 @@ const AdminQuoteDetailsPage: React.FC = () => {
               </Button>
 
             )}
+            
+            <div className="flex gap-2">
+              <Button onClick={handleOpenLink} variant="secondary" className="flex-1">
+                <ExternalLink className="h-4 w-4 mr-2" /> Open Client Link
+              </Button>
+              <Button onClick={handleCopyLink} variant="outline" size="icon" className="text-brand-dark dark:text-brand-light border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50">
+                <Copy className="h-4 w-4" />
+              </Button>
+            </div>
 
-
-            <Button onClick={handleCopyLink} variant="secondary" className="w-full">
-
-              <Copy className="h-4 w-4 mr-2" /> Copy Client Link
-
-            </Button>
 
             <Button variant="outline" className="w-full" disabled>
 
@@ -659,7 +668,6 @@ const AdminQuoteDetailsPage: React.FC = () => {
         </CardContent>
 
       </Card>
-
 
 
       {/* Preview Section */}
