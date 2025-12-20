@@ -20,7 +20,7 @@ const ItemSchema = z.object({
   name: z.string().min(1, 'Item name is required.'),
   description: z.string().optional(),
   price: z.number().min(0, 'Price must be non-negative.'), // Consolidated field
-  quantity: z.number().min(0, 'Quantity must be non-negative.').optional(), // Used for add-ons
+  quantity: z.number().min(1, 'Quantity must be at least 1.').optional(), // Made optional here, but enforced below for compulsory items
   scheduleDates: z.string().optional(), // NEW: Schedule/Dates field
   // NEW: Item-level visibility toggles
   showScheduleDates: z.boolean().default(false), // Default to false
@@ -50,8 +50,15 @@ export const QuoteFormSchema = z.object({
   preparationNotes: z.string().optional(),
   scopeOfWorkUrl: z.string().url('Must be a valid URL.').optional().or(z.literal('')), // NEW FIELD
 
-  compulsoryItems: z.array(ItemSchema).min(1, 'At least one compulsory item is required.'),
-  addOns: z.array(ItemSchema),
+  // Ensure compulsory items have a quantity of at least 1
+  compulsoryItems: z.array(ItemSchema.extend({
+    quantity: z.number().min(1, 'Quantity must be at least 1.'),
+  })).min(1, 'At least one compulsory item is required.'),
+  
+  // Add-ons can have a quantity of 0
+  addOns: z.array(ItemSchema.extend({
+    quantity: z.number().min(0, 'Quantity must be non-negative.'),
+  })),
 });
 
 export type QuoteFormValues = z.infer<typeof QuoteFormSchema>;
@@ -89,6 +96,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
     const currencySymbol = watchedFields[2] || '£';
     const depositPercentage = watchedFields[3] || 0;
 
+    // Calculation now correctly uses quantity for compulsory items
     const compulsoryTotal = compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1), 0);
     const addOnTotal = addOns.reduce((sum: number, addOn) =>
       sum + ((addOn.price ?? 0) * (addOn.quantity ?? 0)), 0) || 0;
@@ -464,25 +472,46 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={control}
-                  name={`compulsoryItems.${index}.price`}
-                  render={({ field: itemField }) => (
-                    <FormItem>
-                      <FormLabel>Price</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="1000"
-                          {...itemField}
-                          onChange={e => itemField.onChange(parseFloat(e.target.value) || 0)}
-                          className={inputClasses}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={control}
+                    name={`compulsoryItems.${index}.price`}
+                    render={({ field: itemField }) => (
+                      <FormItem>
+                        <FormLabel>Rate (per unit)</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="1000"
+                            {...itemField}
+                            onChange={e => itemField.onChange(parseFloat(e.target.value) || 0)}
+                            className={inputClasses}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={control}
+                    name={`compulsoryItems.${index}.quantity`}
+                    render={({ field: itemField }) => (
+                      <FormItem>
+                        <FormLabel>Quantity *</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="1"
+                            {...itemField}
+                            onChange={e => itemField.onChange(parseInt(e.target.value) || 1)}
+                            className={inputClasses}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
 
               {/* Item Toggles and Delete Button */}
