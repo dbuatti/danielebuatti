@@ -35,7 +35,7 @@ const AdminQuoteDetailsPage: React.FC = () => {
   const [isResetting, setIsResetting] = useState(false);
   const [isActivating, setIsActivating] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [isSendingModalOpen, setIsSendingModal] = useState(false);
+  const [isSendingModalOpen, setIsSendingModalOpen] = useState(false); // FIX: Renamed setter to match usage
   const [, copy] = useCopyToClipboard();
 
   const fetchQuote = useCallback(async (showToast = false) => {
@@ -246,7 +246,6 @@ const AdminQuoteDetailsPage: React.FC = () => {
       case 'Created':
         return 'outline';
       case 'Draft':
-        return 'outline';
       default:
         return 'outline';
     }
