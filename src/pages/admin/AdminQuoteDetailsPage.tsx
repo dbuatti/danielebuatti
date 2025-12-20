@@ -52,6 +52,8 @@ const AdminQuoteDetailsPage: React.FC = () => {
         .single();
 
       if (error) throw error;
+      
+      console.log('Fetched Quote Data:', data);
 
       // Map data to QuoteWithStatus type
       const fetchedQuote: QuoteWithStatus = {
@@ -118,7 +120,10 @@ const AdminQuoteDetailsPage: React.FC = () => {
     const toastId = showLoading('Resetting quote status...');
 
     try {
+      // Defensive check for details and versions
       const versions = quote.details?.versions || [];
+      if (versions.length === 0) throw new Error("No versions found in quote details.");
+      
       const activeVersion = versions.find(v => v.is_active);
 
       if (!activeVersion) throw new Error("No active version found to reset.");
@@ -172,7 +177,10 @@ const AdminQuoteDetailsPage: React.FC = () => {
     const toastId = showLoading(`Activating version ${versionId}...`);
 
     try {
+      // Defensive check for details and versions
       const versions = quote.details?.versions || [];
+      if (versions.length === 0) throw new Error("No versions found in quote details.");
+      
       let newActiveVersion: QuoteVersion | undefined;
 
       // 1. Update versions array: set selected version to active, others to inactive
@@ -279,25 +287,23 @@ const AdminQuoteDetailsPage: React.FC = () => {
 
 
 
-  // Defensive check added here
+  // Defensive check added here: Ensure details and versions exist
   const versions = quote.details?.versions ? [...quote.details.versions].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()) : [];
 
-  const activeVersion = versions.find(v => v.is_active);
-
-
-  // Fallback for display if active version is somehow missing (shouldn't happen)
-  const displayVersion = activeVersion || versions[versions.length - 1];
-
-  // Check if displayVersion is valid before destructuring
-  if (!displayVersion) {
+  if (versions.length === 0) {
       return (
           <Alert variant="destructive">
-              <AlertTitle>Error</AlertTitle>
+              <AlertTitle>Error: Corrupted Quote Data</AlertTitle>
               <AlertDescription>Quote data is corrupted: No versions found in quote details. Please delete this quote and recreate it.</AlertDescription>
           </Alert>
       );
   }
+  
+  const activeVersion = versions.find(v => v.is_active);
 
+
+  // Fallback for display if active version is somehow missing (shouldn't happen if creation logic is correct)
+  const displayVersion = activeVersion || versions[versions.length - 1];
 
   const isFinalized = !!displayVersion?.accepted_at || !!displayVersion?.rejected_at;
 

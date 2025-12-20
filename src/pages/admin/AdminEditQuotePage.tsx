@@ -162,23 +162,27 @@ const AdminEditQuotePage: React.FC = () => {
       
       // Determine the active version to load into the form
       const versions = fetchedQuote.details?.versions || [];
+      
+      if (versions.length === 0) {
+          // If no versions exist, treat as not found/corrupted data
+          console.error(`Quote ${fetchedQuote.id} loaded but contains no versions.`);
+          showError('Quote data is corrupted: No versions found.');
+          setQuote(null);
+          return;
+      }
+      
       const activeVersion = versions.find(v => v.is_active);
       
       if (activeVersion) {
         const defaultValues = mapVersionToFormValues(fetchedQuote, activeVersion);
         form.reset(defaultValues);
         setActiveVersionId(activeVersion.versionId);
-      } else if (versions.length > 0) {
+      } else {
         // Fallback: load the latest version if no active one is marked
         const latestVersion = versions.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
         const defaultValues = mapVersionToFormValues(fetchedQuote, latestVersion);
         form.reset(defaultValues);
         setActiveVersionId(latestVersion.versionId);
-      } else {
-          // If no versions exist, treat as not found/corrupted data
-          console.error(`Quote ${fetchedQuote.id} loaded but contains no versions.`);
-          showError('Quote data is corrupted: No versions found.');
-          setQuote(null);
       }
 
       if (showToast) showSuccess('Quote loaded.', { id: toastId });
@@ -388,7 +392,17 @@ const AdminEditQuotePage: React.FC = () => {
     );
   }
   
-  const versions = quote.details.versions.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+  const versions = quote.details?.versions || [];
+  
+  if (versions.length === 0) {
+      return (
+          <div className="p-8 text-center">
+              <h3 className="text-xl font-semibold text-red-500">Error: Corrupted Quote Data</h3>
+              <p className="text-gray-500">Quote data is corrupted: No versions found in quote details. Please delete this quote and recreate it.</p>
+          </div>
+      );
+  }
+  
   const activeVersion = versions.find(v => v.is_active);
   const isFinalized = !!activeVersion?.accepted_at || !!activeVersion?.rejected_at;
 
