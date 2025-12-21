@@ -30,6 +30,8 @@ const mapVersionToFormValues = (quote: Quote, version: QuoteVersion): QuoteFormV
     preparedBy: quote.prepared_by,
     currencySymbol: version.currencySymbol,
     depositPercentage: version.depositPercentage,
+    discountPercentage: version.discountPercentage || 0, // NEW
+    discountAmount: version.discountAmount || 0, // NEW
     paymentTerms: version.paymentTerms || '',
     bankBSB: version.bankDetails.bsb,
     bankACC: version.bankDetails.acc,
@@ -61,7 +63,17 @@ const mapFormValuesToVersionData = (values: QuoteFormValues): Omit<QuoteVersion,
     const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1), 0);
     const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
       sum + ((addOn.price ?? 0) * (addOn.quantity ?? 0)), 0) || 0;
-    const totalAmount = compulsoryTotal + addOnTotal;
+    const preDiscountTotal = compulsoryTotal + addOnTotal;
+    
+    // Apply discount logic
+    let totalAmount = preDiscountTotal;
+    if (values.discountPercentage > 0) {
+        totalAmount *= (1 - values.discountPercentage / 100);
+    }
+    if (values.discountAmount > 0) {
+        totalAmount = totalAmount - values.discountAmount;
+    }
+    totalAmount = Math.max(0, totalAmount);
 
     const mapItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number, scheduleDates?: string, showScheduleDates?: boolean, showQuantity?: boolean, showRate?: boolean }): QuoteItem => ({
       id: item.id || Math.random().toString(36).substring(2, 11),
@@ -78,6 +90,8 @@ const mapFormValuesToVersionData = (values: QuoteFormValues): Omit<QuoteVersion,
     return {
       total_amount: totalAmount,
       depositPercentage: values.depositPercentage,
+      discountPercentage: values.discountPercentage, // NEW
+      discountAmount: values.discountAmount, // NEW
       paymentTerms: values.paymentTerms || '',
       bankDetails: {
         bsb: values.bankBSB ?? '',

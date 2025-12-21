@@ -40,6 +40,12 @@ export const QuoteFormSchema = z.object({
   preparedBy: z.string().min(1, 'Prepared By is required.'),
   currencySymbol: z.string().min(1, 'Currency symbol is required.'),
   depositPercentage: z.number().min(0).max(100, 'Deposit must be between 0 and 100.'),
+  
+  // --- Discount Fields ---
+  discountPercentage: z.number().min(0).max(100, 'Discount percentage must be between 0 and 100.').default(0),
+  discountAmount: z.number().min(0, 'Discount amount must be non-negative.').default(0),
+  // -----------------------
+  
   paymentTerms: z.string().optional(),
   bankBSB: z.string().min(1, 'BSB is required.'),
   bankACC: z.string().min(1, 'Account Number is required.'),
@@ -88,23 +94,53 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
   });
 
   // Watch all relevant fields for dynamic calculation
-  const watchedFields = watch(['compulsoryItems', 'addOns', 'currencySymbol', 'depositPercentage']);
+  const watchedFields = watch(['compulsoryItems', 'addOns', 'currencySymbol', 'depositPercentage', 'discountPercentage', 'discountAmount']);
 
-  const { totalAmount, depositAmount, currencySymbol, depositPercentage } = useMemo(() => {
+  const { totalAmount, depositAmount, currencySymbol, depositPercentage, discountPercentage, discountAmount, preDiscountTotal } = useMemo<{
+    compulsoryTotal: number;
+    addOnTotal: number;
+    preDiscountTotal: number;
+    totalAmount: number;
+    depositAmount: number;
+    currencySymbol: string;
+    depositPercentage: number;
+    discountPercentage: number;
+    discountAmount: number;
+  }>(() => {
     const compulsoryItems = watchedFields[0] || [];
     const addOns = watchedFields[1] || [];
     const currencySymbol = watchedFields[2] || '£';
     const depositPercentage = watchedFields[3] || 0;
+    const discountPercentage = watchedFields[4] || 0;
+    const discountAmount = watchedFields[5] || 0;
 
-    // Calculation now correctly uses quantity for compulsory items
+    // 1. Calculate Subtotal
     const compulsoryTotal = compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1), 0);
     const addOnTotal = addOns.reduce((sum: number, addOn) =>
       sum + ((addOn.price ?? 0) * (addOn.quantity ?? 0)), 0) || 0;
 
-    const totalAmount = compulsoryTotal + addOnTotal;
+    const preDiscountTotal = compulsoryTotal + addOnTotal;
+    
+    // 2. Apply Discount
+    let discountedTotal = preDiscountTotal;
+    
+    // Apply percentage discount
+    if (discountPercentage > 0) {
+        discountedTotal *= (1 - discountPercentage / 100);
+    }
+    
+    // Apply fixed amount discount
+    if (discountAmount > 0) {
+        discountedTotal = discountedTotal - discountAmount;
+    }
+    
+    // Ensure total is not negative
+    const totalAmount = Math.max(0, discountedTotal);
+    
+    // 3. Calculate Deposit
     const depositAmount = totalAmount * (depositPercentage / 100);
 
-    return { compulsoryTotal, addOnTotal, totalAmount, depositAmount, currencySymbol, depositPercentage };
+    return { compulsoryTotal, addOnTotal, preDiscountTotal, totalAmount, depositAmount, currencySymbol, depositPercentage, discountPercentage, discountAmount };
   }, [watchedFields]);
 
   const handlePreview = () => {
@@ -136,7 +172,20 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
         {/* Action Buttons & Totals */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-4 bg-brand-secondary/10 dark:bg-brand-dark/50 rounded-lg border border-brand-secondary/30">
             <div className="space-y-1">
-                <p className="text-sm font-medium text-brand-dark/70 dark:text-brand-light/70">Current Total (Compulsory + Add-ons):</p>
+                <p className="text-sm font-medium text-brand-dark/70 dark:text-brand-light/70">Subtotal (Pre-Discount):</p>
+                <p className="text-xl font-bold text-brand-dark/70 dark:text-brand-light/70">
+                    {formatCurrency(preDiscountTotal, currencySymbol)}
+                </p>
+                {(discountPercentage > 0 || discountAmount > 0) && (
+                    <>
+                        <p className="text-sm font-medium text-brand-dark/70 dark:text-brand-light/70">Discount Applied:</p>
+                        <p className="text-xl font-bold text-red-500">
+                            {discountPercentage > 0 && `-${discountPercentage}% `}
+                            {discountAmount > 0 && `-${formatCurrency(discountAmount, currencySymbol)}`}
+                        </p>
+                    </>
+                )}
+                <p className="text-sm font-medium text-brand-dark/70 dark:text-brand-light/70">Final Total:</p>
                 <p className="text-2xl font-bold text-brand-primary">
                     {formatCurrency(totalAmount, currencySymbol)}
                 </p>
@@ -398,7 +447,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                     className={inputClasses}
                   />
                 </FormControl>
-                <RichTextPreview text={field.value || ''} className="min-h-[100px]" />
+                <RichTextPreview text={form.watch(`preparationNotes`) || ''} />
               </div>
               <FormMessage />
             </FormItem>
@@ -420,6 +469,51 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
           )}
         />
 
+        <Separator />
+
+        {/* Discount Fields */}
+        <h3 className="text-lg font-semibold">Discount</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+                control={control}
+                name="discountPercentage"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Discount Percentage (%)</FormLabel>
+                        <FormControl>
+                            <Input
+                                type="number"
+                                placeholder="0"
+                                {...field}
+                                onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
+                                className={inputClasses}
+                            />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
+            <FormField
+                control={control}
+                name="discountAmount"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Discount Amount ({currencySymbol})</FormLabel>
+                        <FormControl>
+                            <Input
+                                type="number"
+                                placeholder="0"
+                                {...field}
+                                onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
+                                className={inputClasses}
+                            />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
+        </div>
+        
         <Separator />
 
         {/* Compulsory Items */}
@@ -542,7 +636,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
           <Button
             type="button"
             variant="outline"
-            onClick={() => appendCompulsory({ name: '', description: '', price: 0, quantity: 1, scheduleDates: '', showScheduleDates: false, showQuantity: true, showRate: true })}
+            onClick={() => appendCompulsory({ id: Math.random().toString(36).substring(2, 11), name: '', description: '', price: 0, quantity: 1, scheduleDates: '', showScheduleDates: false, showQuantity: true, showRate: true })}
             className="w-full"
           >
             <Plus className="h-4 w-4 mr-2" /> Add Compulsory Item
@@ -670,7 +764,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
           <Button
             type="button"
             variant="outline"
-            onClick={() => appendAddOn({ name: '', description: '', price: 0, quantity: 0, scheduleDates: '', showScheduleDates: false, showQuantity: true, showRate: true })}
+            onClick={() => appendAddOn({ id: Math.random().toString(36).substring(2, 11), name: '', description: '', price: 0, quantity: 0, scheduleDates: '', showScheduleDates: false, showQuantity: true, showRate: true })}
             className="w-full"
           >
             <Plus className="h-4 w-4 mr-2" /> Add Optional Add-On

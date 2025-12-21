@@ -23,7 +23,13 @@ export interface QuoteVersion {
   rejected_at: string | null;
   
   // Core content of the quote version
-  total_amount: number; // Total amount for this specific version
+  total_amount: number; // Final amount after all calculations
+  
+  // --- Discount Fields ---
+  discountPercentage: number;
+  discountAmount: number;
+  // -----------------------
+  
   depositPercentage: number;
   paymentTerms: string;
   bankDetails: {

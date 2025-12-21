@@ -32,6 +32,8 @@ const defaultQuoteValues: QuoteFormValues = {
   preparedBy: 'Daniele Buatti',
   currencySymbol: 'A$',
   depositPercentage: 50,
+  discountPercentage: 0, // NEW DEFAULT
+  discountAmount: 0, // NEW DEFAULT
   paymentTerms: 'Payment due within 7 days of acceptance.',
   bankBSB: '923100',
   bankACC: '301110875',
@@ -159,7 +161,17 @@ const AdminQuoteBuilderPage: React.FC = () => {
     const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1), 0);
     const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
       sum + ((addOn.price ?? 0) * (addOn.quantity ?? 0)), 0) || 0;
-    const totalAmount = compulsoryTotal + addOnTotal;
+    const preDiscountTotal = compulsoryTotal + addOnTotal;
+    
+    // Apply discount logic
+    let totalAmount = preDiscountTotal;
+    if (values.discountPercentage > 0) {
+        totalAmount *= (1 - values.discountPercentage / 100);
+    }
+    if (values.discountAmount > 0) {
+        totalAmount = totalAmount - values.discountAmount;
+    }
+    totalAmount = Math.max(0, totalAmount);
 
     const mapItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number, scheduleDates?: string, showScheduleDates?: boolean, showQuantity?: boolean, showRate?: boolean }): QuoteItem => ({
       id: item.id || Math.random().toString(36).substring(2, 11),
@@ -176,6 +188,8 @@ const AdminQuoteBuilderPage: React.FC = () => {
     return {
       total_amount: totalAmount,
       depositPercentage: values.depositPercentage,
+      discountPercentage: values.discountPercentage, // NEW
+      discountAmount: values.discountAmount, // NEW
       paymentTerms: values.paymentTerms || '',
       bankDetails: {
         bsb: values.bankBSB ?? '',
@@ -404,6 +418,8 @@ const AdminQuoteBuilderPage: React.FC = () => {
         headerImageUrl: defaultQuoteValues.headerImageUrl,
         headerImagePosition: defaultQuoteValues.headerImagePosition,
         scopeOfWorkUrl: defaultQuoteValues.scopeOfWorkUrl,
+        discountPercentage: 0, // Reset discounts on AI extraction
+        discountAmount: 0, // Reset discounts on AI extraction
       };
       
       form.reset(newValues);

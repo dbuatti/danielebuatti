@@ -94,6 +94,26 @@ serve(async (req: Request) => {
       throw new Error(`Failed to update quote acceptance: ${updateError?.message}`);
     }
 
+    // --- Calculation for Email Content ---
+    
+    // Calculate pre-discount subtotal (based on compulsory items + selected add-ons)
+    const compulsoryTotal = (updatedActiveVersion.compulsoryItems || [])
+      .reduce((sum: number, item: any) => sum + item.price * item.quantity, 0) || 0;
+    const addOnTotal = finalSelectedAddOns.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0);
+    const preDiscountTotal = compulsoryTotal + addOnTotal;
+
+    // Calculate discount amount applied
+    const discountPercentage = updatedActiveVersion.discountPercentage || 0;
+    const discountAmountFixed = updatedActiveVersion.discountAmount || 0;
+    const totalDiscountApplied = preDiscountTotal - finalTotal;
+    
+    const discountRowHtml = (totalDiscountApplied > 0.01) ? `
+        <tr>
+          <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px; color: #FF0000;">Discount Applied:</td>
+          <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; color: #FF0000;">-${updatedActiveVersion.currencySymbol}${totalDiscountApplied.toFixed(2)}</td>
+        </tr>
+    ` : '';
+    
     // 4. Send Admin Notification Email
     const EMAIL_SERVICE_API_KEY = Deno.env.get('EMAIL_SERVICE_API_KEY');
     const CONTACT_FORM_RECIPIENT_EMAIL = Deno.env.get('CONTACT_FORM_RECIPIENT_EMAIL');
@@ -147,6 +167,11 @@ serve(async (req: Request) => {
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Selected Add-Ons:</td>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;"><ul>${addOnList}</ul></td>
             </tr>
+            <tr>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Pre-Discount Total:</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${updatedActiveVersion.currencySymbol}${preDiscountTotal.toFixed(2)}</td>
+            </tr>
+            ${discountRowHtml}
             <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">FINAL TOTAL:</td>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${updatedActiveVersion.currencySymbol}${finalTotal.toFixed(2)}</td>
@@ -210,6 +235,11 @@ serve(async (req: Request) => {
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${updatedRecord.event_location}</td>
             </tr>
             <tr>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Pre-Discount Total:</td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${updatedActiveVersion.currencySymbol}${preDiscountTotal.toFixed(2)}</td>
+            </tr>
+            ${discountRowHtml}
+            <tr>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">FINAL TOTAL:</td>
               <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${updatedActiveVersion.currencySymbol}${finalTotal.toFixed(2)}</td>
             </tr>
@@ -257,7 +287,6 @@ serve(async (req: Request) => {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
-
   } catch (error: unknown) {
     console.error('Edge Function error:', (error as Error).message);
     return new Response(JSON.stringify({ error: (error as Error).message }), {

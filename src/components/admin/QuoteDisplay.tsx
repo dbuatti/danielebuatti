@@ -259,6 +259,8 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
     addOns, 
     client_selected_add_ons,
     scopeOfWorkUrl,
+    discountPercentage, // NEW
+    discountAmount, // NEW
   } = version;
   
   const { event_title, event_date, event_location, prepared_by } = quote;
@@ -285,12 +287,26 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
   const compulsoryTotal = (compulsoryItems || []).reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
   const addOnTotal = optionalItemsToDisplay.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
 
-  // If accepted, the total_amount from the DB is the final total. Otherwise, calculate based on current proposal/selection.
-  const subtotal = isAccepted ? total_amount : (compulsoryTotal + addOnTotal);
+  // Calculate pre-discount subtotal
+  const preDiscountTotal = compulsoryTotal + addOnTotal;
+
+  // Apply discount logic
+  let finalTotal = preDiscountTotal;
+  if (discountPercentage > 0) {
+      finalTotal *= (1 - discountPercentage / 100);
+  }
+  if (discountAmount > 0) {
+      finalTotal = finalTotal - discountAmount;
+  }
+  finalTotal = Math.max(0, finalTotal);
+
+  // If accepted, use the total_amount from the DB (which should be the final total). Otherwise, use calculated finalTotal.
+  const finalDisplayTotal = isAccepted ? total_amount : finalTotal;
+  const totalDiscountApplied = preDiscountTotal - finalDisplayTotal;
 
   // Calculate deposit amount
-  const depositAmount = subtotal * (depositPercentage / 100);
-  const remainingBalance = subtotal - depositAmount;
+  const depositAmount = finalDisplayTotal * (depositPercentage / 100);
+  const remainingBalance = finalDisplayTotal - depositAmount;
 
   // Theme setup (unchanged)
   const isBlackGoldTheme = theme === 'black-gold';
@@ -546,9 +562,19 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       <div className="flex justify-end">
         <div className="w-full max-w-sm space-y-2">
           <div className="flex justify-between font-medium">
-            <span>Compulsory Subtotal:</span>
-            <span>{formatCurrency(compulsoryTotal, currencySymbol)}</span>
+            <span>Subtotal (Pre-Discount):</span>
+            <span>{formatCurrency(preDiscountTotal, currencySymbol)}</span>
           </div>
+          
+          {/* Discount Row */}
+          {totalDiscountApplied > 0.01 && (
+            <div className="flex justify-between font-medium text-red-500 dark:text-red-400">
+              <span>Discount ({discountPercentage > 0 ? `${discountPercentage}%` : ''}{discountPercentage > 0 && discountAmount > 0 ? ' + ' : ''}{discountAmount > 0 ? formatCurrency(discountAmount, currencySymbol) : ''}):</span>
+              <span>
+                - {formatCurrency(totalDiscountApplied, currencySymbol)}
+              </span>
+            </div>
+          )}
 
           {/* Display Add-on total if applicable */}
           {addOns && addOns.length > 0 && (
@@ -561,8 +587,8 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
           <Separator className={themeClasses.separator} />
 
           <div className={`flex justify-between font-bold text-xl p-2 ${themeClasses.totalBoxBg} rounded-md`}>
-            <span className={themeClasses.totalBoxText}>Total Quote:</span>
-            <span className={themeClasses.totalBoxText}>{formatCurrency(subtotal, currencySymbol)}</span>
+            <span className={themeClasses.totalBoxText}>Final Total:</span>
+            <span className={themeClasses.totalBoxText}>{formatCurrency(finalDisplayTotal, currencySymbol)}</span>
           </div>
 
           <Separator className={themeClasses.separator} />
