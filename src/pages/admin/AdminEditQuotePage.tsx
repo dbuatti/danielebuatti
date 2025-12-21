@@ -16,6 +16,7 @@ import { Loader2, ArrowLeft, PlusCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
+import { calculateQuoteTotal } from '@/lib/quote-utils'; // Assuming you moved this to a shared util
 
 // Helper to map QuoteVersion back to QuoteFormValues
 const mapVersionToFormValues = (quote: Quote, version: QuoteVersion): QuoteFormValues => {
@@ -30,8 +31,8 @@ const mapVersionToFormValues = (quote: Quote, version: QuoteVersion): QuoteFormV
     preparedBy: quote.prepared_by,
     currencySymbol: version.currencySymbol,
     depositPercentage: version.depositPercentage,
-    discountPercentage: version.discountPercentage || 0, // NEW
-    discountAmount: version.discountAmount || 0, // NEW
+    discountPercentage: version.discountPercentage || 0,
+    discountAmount: version.discountAmount || 0,
     paymentTerms: version.paymentTerms || '',
     bankBSB: version.bankDetails.bsb,
     bankACC: version.bankDetails.acc,
@@ -40,15 +41,14 @@ const mapVersionToFormValues = (quote: Quote, version: QuoteVersion): QuoteFormV
     headerImagePosition: version.headerImagePosition || '',
     preparationNotes: version.preparationNotes || '',
     scopeOfWorkUrl: version.scopeOfWorkUrl || '',
-    
-    compulsoryItems: version.compulsoryItems.map(item => ({
+    compulsoryItems: version.compulsoryItems.map((item) => ({
       ...item,
       scheduleDates: item.scheduleDates || '',
       showScheduleDates: item.showScheduleDates ?? false,
       showQuantity: item.showQuantity ?? true,
       showRate: item.showRate ?? true,
     })),
-    addOns: version.addOns.map(item => ({
+    addOns: version.addOns.map((item) => ({
       ...item,
       scheduleDates: item.scheduleDates || '',
       showScheduleDates: item.showScheduleDates ?? false,
@@ -58,57 +58,43 @@ const mapVersionToFormValues = (quote: Quote, version: QuoteVersion): QuoteFormV
   };
 };
 
-// Helper to map QuoteFormValues to a partial QuoteVersion
+// Helper to map form values to version data
 const mapFormValuesToVersionData = (values: QuoteFormValues): Omit<QuoteVersion, 'versionId' | 'versionName' | 'created_at' | 'is_active' | 'status' | 'accepted_at' | 'rejected_at' | 'client_selected_add_ons'> => {
-    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1), 0);
-    const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
-      sum + ((addOn.price ?? 0) * (addOn.quantity ?? 0)), 0) || 0;
-    const preDiscountTotal = compulsoryTotal + addOnTotal;
-    
-    // Apply discount logic
-    let totalAmount = preDiscountTotal;
-    if (values.discountPercentage > 0) {
-        totalAmount *= (1 - values.discountPercentage / 100);
-    }
-    if (values.discountAmount > 0) {
-        totalAmount = totalAmount - values.discountAmount;
-    }
-    totalAmount = Math.max(0, totalAmount);
+  const totalAmount = calculateQuoteTotal(values);
 
-    const mapItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number, scheduleDates?: string, showScheduleDates?: boolean, showQuantity?: boolean, showRate?: boolean }): QuoteItem => ({
-      id: item.id || Math.random().toString(36).substring(2, 11),
-      name: item.name,
-      description: item.description || '',
-      quantity: item.quantity ?? 1,
-      price: item.price ?? 0,
-      scheduleDates: item.scheduleDates || '',
-      showScheduleDates: item.showScheduleDates ?? false,
-      showQuantity: item.showQuantity ?? true,
-      showRate: item.showRate ?? true,
-    });
+  const mapItem = (item: any): QuoteItem => ({
+    id: item.id || Math.random().toString(36).substring(2, 11),
+    name: item.name,
+    description: item.description || '',
+    quantity: item.quantity ?? 1,
+    price: item.price ?? 0,
+    scheduleDates: item.scheduleDates || '',
+    showScheduleDates: item.showScheduleDates ?? false,
+    showQuantity: item.showQuantity ?? true,
+    showRate: item.showRate ?? true,
+  });
 
-    return {
-      total_amount: totalAmount,
-      depositPercentage: values.depositPercentage,
-      discountPercentage: values.discountPercentage, // NEW
-      discountAmount: values.discountAmount, // NEW
-      paymentTerms: values.paymentTerms || '',
-      bankDetails: {
-        bsb: values.bankBSB ?? '',
-        acc: values.bankACC ?? '',
-      },
-      addOns: values.addOns?.map(mapItem) || [],
-      compulsoryItems: values.compulsoryItems.map(mapItem),
-      currencySymbol: values.currencySymbol,
-      eventTime: values.eventTime ?? '',
-      theme: values.theme,
-      headerImageUrl: values.headerImageUrl || '',
-      headerImagePosition: values.headerImagePosition || '',
-      preparationNotes: values.preparationNotes || '',
-      scopeOfWorkUrl: values.scopeOfWorkUrl || '',
-    };
+  return {
+    total_amount: totalAmount,
+    depositPercentage: values.depositPercentage,
+    discountPercentage: values.discountPercentage,
+    discountAmount: values.discountAmount,
+    paymentTerms: values.paymentTerms || '',
+    bankDetails: {
+      bsb: values.bankBSB ?? '',
+      acc: values.bankACC ?? '',
+    },
+    addOns: values.addOns?.map(mapItem) || [],
+    compulsoryItems: values.compulsoryItems.map(mapItem),
+    currencySymbol: values.currencySymbol,
+    eventTime: values.eventTime ?? '',
+    theme: values.theme,
+    headerImageUrl: values.headerImageUrl || '',
+    headerImagePosition: values.headerImagePosition || '',
+    preparationNotes: values.preparationNotes || '',
+    scopeOfWorkUrl: values.scopeOfWorkUrl || '',
+  };
 };
-
 
 const AdminEditQuotePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -123,46 +109,28 @@ const AdminEditQuotePage: React.FC = () => {
     resolver: zodResolver(QuoteFormSchema),
     mode: 'onChange',
   });
-  
+
   const watchedTheme = form.watch('theme');
 
-  // Update header image URL based on theme selection
+  // Improved theme header image handling
   useEffect(() => {
-    if (!isLoading) {
-      const currentImageUrl = form.getValues('headerImageUrl');
-      const defaultWhitePink = '/whitepinkquoteimage1.jpeg';
-      const defaultBlackGold = '/blackgoldquoteimage1.jpg';
-      
-      let newImageUrl = currentImageUrl;
+    const currentImageUrl = form.getValues('headerImageUrl');
+    const defaultBlackGold = '/blackgoldquoteimage1.jpg';
+    const defaultWhitePink = '/whitepinkquoteimage1.jpeg';
 
-      const isCurrentEmptyOrDefault = !currentImageUrl || currentImageUrl === defaultWhitePink || currentImageUrl === defaultBlackGold;
-
-      if (watchedTheme === 'black-gold' && isCurrentEmptyOrDefault) {
-        newImageUrl = defaultBlackGold;
-      } else if (watchedTheme === 'default' && isCurrentEmptyOrDefault) {
-        newImageUrl = currentImageUrl || ''; 
-      }
-      
-      if (newImageUrl !== currentImageUrl) {
-          form.setValue('headerImageUrl', newImageUrl, { shouldDirty: true });
-      }
+    if (watchedTheme === 'black-gold' && (!currentImageUrl || currentImageUrl === defaultWhitePink)) {
+      form.setValue('headerImageUrl', defaultBlackGold, { shouldDirty: true });
     }
-  }, [watchedTheme, form, isLoading]);
-
+    // Do nothing for 'default' — preserve user choice
+  }, [watchedTheme, form]);
 
   const fetchQuote = useCallback(async (showToast = false) => {
     if (!id) return;
-
     setIsLoading(true);
-    const toastId = showToast ? showLoading('Loading quote for editing...') : undefined;
+    const toastId = showToast ? showLoading('Loading quote...') : undefined;
 
     try {
-      const { data, error } = await supabase
-        .from('invoices')
-        .select('*')
-        .eq('id', id)
-        .single();
-
+      const { data, error } = await supabase.from('invoices').select('*').eq('id', id).single();
       if (error) throw error;
 
       const fetchedQuote: Quote = {
@@ -173,36 +141,22 @@ const AdminEditQuotePage: React.FC = () => {
       };
 
       setQuote(fetchedQuote);
-      
-      // Determine the active version to load into the form
+
       const versions = fetchedQuote.details?.versions || [];
-      
       if (versions.length === 0) {
-          // If no versions exist, treat as not found/corrupted data
-          console.error(`Quote ${fetchedQuote.id} loaded but contains no versions.`);
-          showError('Quote data is corrupted: No versions found.');
-          setQuote(null);
-          return;
+        throw new Error('No versions found in quote');
       }
-      
-      const activeVersion = versions.find(v => v.is_active);
-      
-      if (activeVersion) {
-        const defaultValues = mapVersionToFormValues(fetchedQuote, activeVersion);
-        form.reset(defaultValues);
-        setActiveVersionId(activeVersion.versionId);
-      } else {
-        // Fallback: load the latest version if no active one is marked
-        const latestVersion = versions.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
-        const defaultValues = mapVersionToFormValues(fetchedQuote, latestVersion);
-        form.reset(defaultValues);
-        setActiveVersionId(latestVersion.versionId);
-      }
+
+      const activeVersion = versions.find((v) => v.is_active) || versions.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
+
+      const defaultValues = mapVersionToFormValues(fetchedQuote, activeVersion);
+      form.reset(defaultValues);
+      setActiveVersionId(activeVersion.versionId);
 
       if (showToast) showSuccess('Quote loaded.', { id: toastId });
     } catch (error: any) {
       console.error('Error fetching quote:', error);
-      showError(`Failed to load quote: ${error.message || 'Unknown error occurred'}`, { id: toastId });
+      showError(`Failed to load quote: ${error.message || 'Unknown error'}`);
       setQuote(null);
     } finally {
       setIsLoading(false);
@@ -213,10 +167,18 @@ const AdminEditQuotePage: React.FC = () => {
   useEffect(() => {
     fetchQuote(true);
   }, [fetchQuote]);
-  
-  const handleVersionChange = useCallback((versionId: string) => {
+
+  const handleVersionChange = useCallback(async (versionId: string) => {
     if (!quote) return;
-    const selectedVersion = quote.details.versions.find(v => v.versionId === versionId);
+
+    // Check if form is dirty
+    if (form.formState.isDirty) {
+      if (!window.confirm('You have unsaved changes. Switching versions will discard them. Continue?')) {
+        return;
+      }
+    }
+
+    const selectedVersion = quote.details.versions.find((v) => v.versionId === versionId);
     if (selectedVersion) {
       const defaultValues = mapVersionToFormValues(quote, selectedVersion);
       form.reset(defaultValues);
@@ -224,66 +186,76 @@ const AdminEditQuotePage: React.FC = () => {
       showSuccess(`Switched to version ${versionId}.`);
     }
   }, [quote, form]);
-  
+
   const handleCreateNewVersion = async () => {
     if (!quote || !activeVersionId) return;
-    
-    if (!window.confirm('Are you sure you want to create a new version? The current active version will be marked inactive.')) {
-        return;
+
+    if (!window.confirm('Create a new version? The current active version will be marked inactive.')) {
+      return;
     }
-    
+
     setIsSubmitting(true);
     const toastId = showLoading('Creating new version...');
-    
-    try {
-        const currentValues = form.getValues();
-        const newVersionData = mapFormValuesToVersionData(currentValues);
-        
-        const versions = quote.details.versions;
-        const nextVersionNumber = versions.length + 1;
-        const newVersionId = `v${nextVersionNumber}`;
-        
-        // 1. Deactivate all existing versions
-        const updatedVersions = versions.map(v => ({ ...v, is_active: false }));
-        
-        // 2. Create the new version based on current form data
-        const newVersion: QuoteVersion = {
-            versionId: newVersionId,
-            versionName: `Revision ${nextVersionNumber}`,
-            created_at: new Date().toISOString(),
-            is_active: true,
-            status: 'Draft',
-            accepted_at: null,
-            rejected_at: null,
-            ...newVersionData,
-        };
-        
-        updatedVersions.push(newVersion);
-        
-        // 3. Update the database
-        const { error } = await supabase
-            .from('invoices')
-            .update({
-                details: { versions: updatedVersions },
-                // Update top-level fields to reflect the new active version (Draft status)
-                total_amount: newVersion.total_amount,
-                status: newVersion.status,
-                accepted_at: null,
-                rejected_at: null,
-            })
-            .eq('id', quote.id);
 
-        if (error) throw error;
-        
-        showSuccess(`New version ${newVersionId} created and set as active!`, { id: toastId });
-        await fetchQuote(false); // Refetch to update state and form
-        
+    try {
+      const currentValues = form.getValues();
+      const newVersionData = mapFormValuesToVersionData(currentValues);
+
+      const versions = [...quote.details.versions];
+      const nextVersionNumber = versions.length + 1;
+      const newVersionId = `v${nextVersionNumber}`;
+
+      // Deactivate all existing versions
+      const updatedVersions = versions.map((v) => ({ ...v, is_active: false }));
+
+      // Create new active version
+      const newVersion: QuoteVersion = {
+        versionId: newVersionId,
+        versionName: `Revision ${nextVersionNumber}`,
+        created_at: new Date().toISOString(),
+        is_active: true,
+        status: 'Draft',
+        accepted_at: null,
+        rejected_at: null,
+        ...newVersionData,
+      };
+
+      updatedVersions.push(newVersion);
+
+      // Optimistic update
+      setQuote((prev) =>
+        prev
+          ? {
+              ...prev,
+              details: { versions: updatedVersions },
+              total_amount: newVersion.total_amount,
+              status: newVersion.status,
+            }
+          : null
+      );
+
+      const { error } = await supabase
+        .from('invoices')
+        .update({
+          details: { versions: updatedVersions },
+          total_amount: newVersion.total_amount,
+          status: newVersion.status,
+          accepted_at: null,
+          rejected_at: null,
+        })
+        .eq('id', quote.id);
+
+      if (error) throw error;
+
+      showSuccess(`New version ${newVersionId} created!`, { id: toastId });
+      await fetchQuote(false); // Sync with server
     } catch (error: any) {
-        console.error('Error creating new version:', error);
-        showError(`Failed to create new version: ${error.message || 'Unknown error occurred'}`, { id: toastId });
+      console.error('Error creating new version:', error);
+      showError(`Failed to create new version: ${error.message}`);
+      await fetchQuote(false); // Revert on error
     } finally {
-        setIsSubmitting(false);
-        dismissToast(toastId);
+      setIsSubmitting(false);
+      dismissToast(toastId);
     }
   };
 
@@ -296,30 +268,38 @@ const AdminEditQuotePage: React.FC = () => {
     if (!quote || !activeVersionId) return;
 
     setIsSubmitting(true);
-    const toastId = showLoading('Updating active version...');
+    const toastId = showLoading('Updating version...');
 
     try {
       const versionData = mapFormValuesToVersionData(values);
-      
-      // 1. Update the specific active version in the versions array
-      const updatedVersions = quote.details.versions.map(v => {
-        if (v.versionId === activeVersionId) {
-          // Only update editable fields, preserve status/acceptance dates
-          return {
-            ...v,
-            ...versionData,
-            // Ensure status is 'Draft' if it was previously 'Draft' or 'Created'
-            status: (v.status === 'Draft' || v.status === 'Created') ? 'Draft' : v.status,
-            total_amount: versionData.total_amount,
-          };
-        }
-        return v;
-      });
-      
-      const updatedActiveVersion = updatedVersions.find(v => v.versionId === activeVersionId);
-      if (!updatedActiveVersion) throw new Error("Active version not found after update.");
 
-      // 2. Update the main invoice record
+      const updatedVersions = quote.details.versions.map((v) =>
+        v.versionId === activeVersionId
+          ? {
+              ...v,
+              ...versionData,
+              total_amount: versionData.total_amount,
+              status: v.status === 'Draft' || v.status === 'Created' ? 'Draft' : v.status,
+            }
+          : v
+      );
+
+      const updatedActiveVersion = updatedVersions.find((v) => v.versionId === activeVersionId)!;
+
+      // Optimistic update
+      setQuote((prev) =>
+        prev
+          ? {
+              ...prev,
+              details: { versions: updatedVersions },
+              total_amount: updatedActiveVersion.total_amount,
+              status: updatedActiveVersion.status,
+              accepted_at: updatedActiveVersion.accepted_at,
+              rejected_at: updatedActiveVersion.rejected_at,
+            }
+          : null
+      );
+
       const { error } = await supabase
         .from('invoices')
         .update({
@@ -329,47 +309,43 @@ const AdminEditQuotePage: React.FC = () => {
           event_date: values.eventDate,
           event_location: values.eventLocation,
           prepared_by: values.preparedBy,
-          
-          // Update top-level fields to reflect the active version's data
           total_amount: updatedActiveVersion.total_amount,
           status: updatedActiveVersion.status,
           accepted_at: updatedActiveVersion.accepted_at,
           rejected_at: updatedActiveVersion.rejected_at,
-          
           details: { versions: updatedVersions },
         })
         .eq('id', quote.id);
 
       if (error) throw error;
 
-      showSuccess('Active quote version updated successfully!', { id: toastId });
-      await fetchQuote(false); 
-      
+      showSuccess('Version updated successfully!', { id: toastId });
+      await fetchQuote(false);
     } catch (error: any) {
-      console.error('Error updating quote version:', error);
-      showError(`Failed to update quote version: ${error.message || 'Unknown error occurred'}`, { id: toastId });
+      console.error('Error updating version:', error);
+      showError(`Failed to update version: ${error.message}`);
+      await fetchQuote(false); // Revert on error
     } finally {
       setIsSubmitting(false);
       dismissToast(toastId);
     }
   };
 
-  // Transform form values into Quote interface structure for preview
   const getPreviewData = (values: QuoteFormValues): Quote => {
     const versionData = mapFormValuesToVersionData(values);
     const previewVersion: QuoteVersion = {
-        versionId: activeVersionId || 'v-preview',
-        versionName: 'Live Preview',
-        created_at: new Date().toISOString(),
-        is_active: true,
-        status: 'Draft',
-        accepted_at: null,
-        rejected_at: null,
-        ...versionData,
+      versionId: activeVersionId || 'v-preview',
+      versionName: 'Live Preview',
+      created_at: new Date().toISOString(),
+      is_active: true,
+      status: 'Draft',
+      accepted_at: null,
+      rejected_at: null,
+      ...versionData,
     };
-    
+
     return {
-      id: quote?.id || Math.random().toString(36).substring(2, 11),
+      id: quote?.id || 'preview',
       slug: quote?.slug || 'preview-slug',
       client_name: values.clientName,
       client_email: values.clientEmail,
@@ -382,9 +358,7 @@ const AdminEditQuotePage: React.FC = () => {
       accepted_at: quote?.accepted_at || null,
       rejected_at: quote?.rejected_at || null,
       created_at: quote?.created_at || new Date().toISOString(),
-      details: {
-        versions: [previewVersion],
-      },
+      details: { versions: [previewVersion] },
       status: quote?.status || 'Created',
     };
   };
@@ -397,88 +371,79 @@ const AdminEditQuotePage: React.FC = () => {
     );
   }
 
-  if (!quote) {
+  if (!quote || !quote.details?.versions?.length) {
     return (
       <div className="p-8 text-center">
-        <h3 className="text-xl font-semibold">Quote Not Found</h3>
-        <p className="text-gray-500">Could not load quote details for editing. This may be due to corrupted data (missing versions).</p>
+        <h3 className="text-xl font-semibold text-red-500">Quote Not Found or Corrupted</h3>
+        <p className="text-gray-500">No versions found. Please delete and recreate this quote.</p>
       </div>
     );
   }
-  
-  const versions = quote.details?.versions || [];
-  
-  if (versions.length === 0) {
-      return (
-          <div className="p-8 text-center">
-              <h3 className="text-xl font-semibold text-red-500">Error: Corrupted Quote Data</h3>
-              <p className="text-gray-500">Quote data is corrupted: No versions found in quote details. Please delete this quote and recreate it.</p>
-          </div>
-      );
-  }
-  
-  const activeVersion = versions.find(v => v.is_active);
-  const isFinalized = !!activeVersion?.accepted_at || !!activeVersion?.rejected_at;
+
+  const activeVersion = quote.details.versions.find((v) => v.is_active) || quote.details.versions[0];
+  const isFinalized = !!activeVersion.accepted_at || !!activeVersion.rejected_at;
 
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Edit Quote: {quote.event_title} ({quote.client_name})</h2>
-        <Button asChild variant="outline" className="text-brand-dark dark:text-brand-light border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50">
+        <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">
+          Edit Quote: {quote.event_title} ({quote.client_name})
+        </h2>
+        <Button asChild variant="outline">
           <Link to={`/admin/quotes/${id}`}>
             <ArrowLeft className="h-4 w-4 mr-2" /> Back to Details
           </Link>
         </Button>
       </div>
+
       <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
-        Modify the details of the <span className="font-semibold text-brand-primary">{activeVersionId}</span> version.
+        Editing version <span className="font-semibold text-brand-primary">{activeVersionId}</span>
       </p>
-      
-      {/* Version Control Tab */}
+
+      {/* Version Control */}
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
         <CardHeader>
           <CardTitle className="text-xl text-brand-primary">Version History</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-3 items-center">
-            {versions.map((version) => (
+            {quote.details.versions.map((version) => (
               <Button
                 key={version.versionId}
                 variant={version.versionId === activeVersionId ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => handleVersionChange(version.versionId)}
+                disabled={isSubmitting}
                 className={cn(
-                    "transition-colors",
-                    version.versionId === activeVersionId 
-                        ? "bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
-                        : "border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50"
+                  version.versionId === activeVersionId && 'bg-brand-primary text-brand-light hover:bg-brand-primary/90',
+                  version.accepted_at && 'border-green-500 bg-green-50 dark:bg-green-900/20',
+                  version.rejected_at && 'border-red-500 bg-red-50 dark:bg-red-900/20'
                 )}
               >
-                {version.versionId}
-                <span className="ml-2 text-xs font-normal opacity-80">
-                    {version.is_active ? '(Active)' : ''}
-                    {version.accepted_at ? ' (Accepted)' : version.rejected_at ? ' (Rejected)' : ''}
-                </span>
+                {version.versionName || version.versionId}
+                {version.is_active && <span className="ml-2 text-xs opacity-80">(Active)</span>}
+                {version.accepted_at && <span className="ml-2 text-xs text-green-600">Accepted</span>}
+                {version.rejected_at && <span className="ml-2 text-xs text-red-600">Rejected</span>}
               </Button>
             ))}
             <Button
-              type="button"
-              variant="secondary"
+              variant="default"
               onClick={handleCreateNewVersion}
               disabled={isSubmitting || isFinalized}
               className="bg-green-600 hover:bg-green-700 text-white"
             >
-              <PlusCircle className="h-4 w-4 mr-2" /> Create New Version
+              <PlusCircle className="h-4 w-4 mr-2" />
+              New Version
             </Button>
             {isFinalized && (
-                <p className="text-sm text-red-500 flex items-center gap-2">
-                    <Clock className="h-4 w-4" /> Cannot create new version: Active version is finalized.
-                </p>
+              <p className="text-sm text-red-500 flex items-center gap-2">
+                <Clock className="h-4 w-4" /> Active version is finalized — create a new version to edit.
+              </p>
             )}
           </div>
-          <Separator className="my-4 bg-brand-secondary/50" />
+          <Separator className="my-4" />
           <p className="text-sm text-brand-dark/70 dark:text-brand-light/70">
-            Editing the form below will modify the currently active version ({activeVersionId}).
+            Changes will apply to the active version ({activeVersionId}).
           </p>
         </CardContent>
       </Card>
@@ -489,14 +454,13 @@ const AdminEditQuotePage: React.FC = () => {
         </CardHeader>
         <CardContent>
           <FormProvider {...form}>
-            <QuoteForm 
+            <QuoteForm
               form={form}
-              onCreateAndSend={handleUpdateQuote} // Use update handler
-              isSubmitting={isSubmitting} 
-              onPreview={handlePreviewQuote} 
+              onCreateAndSend={handleUpdateQuote}
+              isSubmitting={isSubmitting}
+              onPreview={handlePreviewQuote}
               isQuoteCreated={true}
-              // Hide draft saving/sending buttons on edit page, only show update button
-              onSaveDraft={undefined} 
+              onSaveDraft={undefined}
               submitButtonText="Update Active Version"
             />
           </FormProvider>
@@ -504,18 +468,12 @@ const AdminEditQuotePage: React.FC = () => {
       </Card>
 
       <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-        <DialogContent className="sm:max-w-[90vw] w-[90vw] h-[90vh] p-0 bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50">
+        <DialogContent className="sm:max-w-[90vw] w-[90vw] h-[90vh] p-0">
           <DialogHeader className="p-6 pb-0">
             <DialogTitle className="text-brand-primary text-2xl">Quote Preview</DialogTitle>
           </DialogHeader>
           <ScrollArea className="h-[calc(90vh-70px)]">
-            {previewData ? (
-              <QuoteDisplay 
-                quote={getPreviewData(previewData)} 
-              />
-            ) : (
-              <div className="p-8 text-center">No preview data available.</div>
-            )}
+            {previewData ? <QuoteDisplay quote={getPreviewData(previewData)} /> : <div className="p-8 text-center">No preview data.</div>}
           </ScrollArea>
         </DialogContent>
       </Dialog>
