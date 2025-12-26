@@ -49,6 +49,7 @@ const extractionSchema = {
     },
     discountPercentage: { type: "number", description: "Optional discount percentage (0-100) if mentioned. Default to 0 if not found." },
     discountAmount: { type: "number", description: "Optional fixed discount amount if mentioned. Default to 0 if not found." },
+    scopeOfWorkUrl: { type: "string", description: "Optional URL for a scope of work document." },
   },
   required: ["clientName", "clientEmail", "invoiceType", "eventTitle", "eventDate", "eventLocation", "paymentTerms", "preparationNotes", "compulsoryItems", "addOns"],
 };

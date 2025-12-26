@@ -24,4 +24,5 @@ export interface ExtractedQuoteContent {
   addOns: ExtractedAddOnItem[];
   discountPercentage?: number; // NEW: Optional discount percentage
   discountAmount?: number;    // NEW: Optional discount amount
+  scopeOfWorkUrl?: string; // NEW: Optional scope of work URL
 }
