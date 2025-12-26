@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import SeoMetadata from '@/components/SeoMetadata';
+import { calculatePreDiscountTotal } from '@/lib/quote-utils'; // Import calculatePreDiscountTotal
 
 // Define favicon paths
 const BRAND_FAVICON_PATH = '/blue-pink-ontrans.png?v=1';
@@ -179,7 +180,18 @@ const DynamicQuotePage: React.FC = () => {
       // Ensure compulsoryTotal is calculated here for the payload
       const compulsoryTotal = activeVersion.compulsoryItems.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0) || 0;
       const addOnTotal = finalAddOns.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
-      const finalTotal = compulsoryTotal + addOnTotal;
+      const preDiscountTotal = compulsoryTotal + addOnTotal;
+
+      // Apply discount logic from the active version
+      let finalTotal = preDiscountTotal;
+      if (activeVersion.discountPercentage > 0) {
+          finalTotal *= (1 - activeVersion.discountPercentage / 100);
+      }
+      if (activeVersion.discountAmount > 0) {
+          finalTotal = finalTotal - activeVersion.discountAmount;
+      }
+      finalTotal = Math.max(0, finalTotal);
+
 
       // 2. Prepare data for Edge Function
       const acceptancePayload = {
@@ -322,7 +334,7 @@ const DynamicQuotePage: React.FC = () => {
         bg: 'bg-brand-light',
         cardBg: 'bg-white',
         text: 'text-brand-dark',
-        primary: 'text-brand-primary',
+        primary: 'text-brand-primary', // Pink
         secondary: 'text-brand-dark/70',
         border: 'border-brand-primary/50',
         acceptButton: 'bg-brand-primary text-white hover:bg-brand-primary/90',

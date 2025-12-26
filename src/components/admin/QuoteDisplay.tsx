@@ -16,8 +16,9 @@ import DynamicImage from '../DynamicImage';
 import QuoteItemMobileList from './QuoteItemMobileList';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Minus, Plus, FileText } from 'lucide-react';
+import { Minus, Plus, FileText, Tag } from 'lucide-react'; // Added Tag icon for discount badge
 import { format } from 'date-fns';
+import { Badge } from '@/components/ui/badge'; // Import Badge
 
 interface QuoteDisplayProps {
   quote: Quote;
@@ -303,6 +304,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
   // If accepted, use the total_amount from the DB (which should be the final total). Otherwise, use calculated finalTotal.
   const finalDisplayTotal = isAccepted ? total_amount : finalTotal;
   const totalDiscountApplied = preDiscountTotal - finalDisplayTotal;
+  const hasDiscount = totalDiscountApplied > 0.01; // Check if a meaningful discount was applied
 
   // Calculate deposit amount
   const depositAmount = finalDisplayTotal * (depositPercentage / 100);
@@ -567,7 +569,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
           </div>
           
           {/* Discount Row */}
-          {totalDiscountApplied > 0.01 && (
+          {hasDiscount && (
             <div className="flex justify-between font-medium text-red-500 dark:text-red-400">
               <span>Discount ({discountPercentage > 0 ? `${discountPercentage}%` : ''}{discountPercentage > 0 && discountAmount > 0 ? ' + ' : ''}{discountAmount > 0 ? formatCurrency(discountAmount, currencySymbol) : ''}):</span>
               <span>
@@ -590,6 +592,15 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
             <span className={themeClasses.totalBoxText}>Final Total:</span>
             <span className={themeClasses.totalBoxText}>{formatCurrency(finalDisplayTotal, currencySymbol)}</span>
           </div>
+          
+          {hasDiscount && isClientView && (
+            <Badge className={cn(
+              "flex items-center justify-center gap-1 mt-2 text-sm font-semibold py-2",
+              isBlackGoldTheme ? "bg-brand-yellow/20 text-brand-yellow" : "bg-brand-primary/20 text-brand-primary"
+            )}>
+              <Tag className="h-4 w-4" /> Special Applied: Revised Pricing
+            </Badge>
+          )}
 
           <Separator className={themeClasses.separator} />
 

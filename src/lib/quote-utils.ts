@@ -1,4 +1,5 @@
 import { QuoteFormValues } from '@/components/admin/QuoteForm';
+import { QuoteItem } from '@/types/quote'; // Import QuoteItem
 
 /**
  * Calculates the final total amount for a quote based on items and discounts.
@@ -25,4 +26,19 @@ export const calculateQuoteTotal = (values: QuoteFormValues): number => {
 
   // Round to 2 decimal places
   return Math.max(0, Math.round(total * 100) / 100);
+};
+
+/**
+ * Calculates the pre-discount subtotal for a quote.
+ */
+export const calculatePreDiscountTotal = (compulsoryItems: QuoteItem[], addOns: QuoteItem[]): number => {
+  const compulsoryTotal = compulsoryItems.reduce(
+    (sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1),
+    0
+  );
+  const addOnTotal = addOns.reduce(
+    (sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 0),
+    0
+  );
+  return compulsoryTotal + addOnTotal;
 };

@@ -103,8 +103,6 @@ serve(async (req: Request) => {
     const preDiscountTotal = compulsoryTotal + addOnTotal;
 
     // Calculate discount amount applied
-    const discountPercentage = updatedActiveVersion.discountPercentage || 0;
-    const discountAmountFixed = updatedActiveVersion.discountAmount || 0;
     const totalDiscountApplied = preDiscountTotal - finalTotal;
     
     const discountRowHtml = (totalDiscountApplied > 0.01) ? `

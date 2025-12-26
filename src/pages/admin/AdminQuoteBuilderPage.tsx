@@ -19,6 +19,7 @@ import QuoteSendingModal from '@/components/admin/QuoteSendingModal';
 import { createSlug } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { calculateQuoteTotal } from '@/lib/quote-utils'; // Import calculateQuoteTotal
 
 // Default values for a new quote
 const defaultQuoteValues: QuoteFormValues = {
@@ -154,20 +155,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
   // --- Handlers ---
 
   const mapFormValuesToVersion = (values: QuoteFormValues): Omit<QuoteVersion, 'versionId' | 'versionName' | 'created_at' | 'is_active' | 'status' | 'accepted_at' | 'rejected_at' | 'client_selected_add_ons'> => {
-    const compulsoryTotal = values.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1), 0);
-    const addOnTotal = values.addOns?.reduce((sum: number, addOn) => 
-      sum + ((addOn.price ?? 0) * (addOn.quantity ?? 0)), 0) || 0;
-    const preDiscountTotal = compulsoryTotal + addOnTotal;
     
-    // Apply discount logic
-    let totalAmount = preDiscountTotal;
-    if (values.discountPercentage > 0) {
-        totalAmount *= (1 - values.discountPercentage / 100);
-    }
-    if (values.discountAmount > 0) {
-        totalAmount = totalAmount - values.discountAmount;
-    }
-    totalAmount = Math.max(0, totalAmount);
+    // Use utility function for total calculation
+    const totalAmount = calculateQuoteTotal(values);
 
     const mapItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number, scheduleDates?: string, showScheduleDates?: boolean, showQuantity?: boolean, showRate?: boolean }): QuoteItem => ({
       id: item.id || Math.random().toString(36).substring(2, 11),

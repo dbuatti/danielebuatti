@@ -13,6 +13,7 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { useMemo } from 'react';
 import PillToggle from './PillToggle';
 import RichTextPreview from './RichTextPreview';
+import { calculateQuoteTotal, calculatePreDiscountTotal } from '@/lib/quote-utils'; // Import both calculation utilities
 
 // Define the schema for a single item (compulsory or add-on)
 const ItemSchema = z.object({
@@ -96,9 +97,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
   // Watch all relevant fields for dynamic calculation
   const watchedFields = watch(['compulsoryItems', 'addOns', 'currencySymbol', 'depositPercentage', 'discountPercentage', 'discountAmount']);
 
-  const { totalAmount, depositAmount, currencySymbol, depositPercentage, discountPercentage, discountAmount, preDiscountTotal } = useMemo<{
-    compulsoryTotal: number;
-    addOnTotal: number;
+  const { totalAmount, depositAmount, currencySymbol, depositPercentage, discountPercentage, discountAmount, preDiscountTotal, totalDiscountApplied } = useMemo<{
     preDiscountTotal: number;
     totalAmount: number;
     depositAmount: number;
@@ -106,42 +105,21 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
     depositPercentage: number;
     discountPercentage: number;
     discountAmount: number;
+    totalDiscountApplied: number;
   }>(() => {
-    const compulsoryItems = watchedFields[0] || [];
-    const addOns = watchedFields[1] || [];
-    const currencySymbol = watchedFields[2] || '£';
-    const depositPercentage = watchedFields[3] || 0;
-    const discountPercentage = watchedFields[4] || 0;
-    const discountAmount = watchedFields[5] || 0;
+    const values = getValues(); // Get current form values for calculation
+    const currencySymbol = values.currencySymbol || '£';
+    const depositPercentage = values.depositPercentage || 0;
+    const discountPercentage = values.discountPercentage || 0;
+    const discountAmount = values.discountAmount || 0;
 
-    // 1. Calculate Subtotal
-    const compulsoryTotal = compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1), 0);
-    const addOnTotal = addOns.reduce((sum: number, addOn) =>
-      sum + ((addOn.price ?? 0) * (addOn.quantity ?? 0)), 0) || 0;
-
-    const preDiscountTotal = compulsoryTotal + addOnTotal;
-    
-    // 2. Apply Discount
-    let discountedTotal = preDiscountTotal;
-    
-    // Apply percentage discount
-    if (discountPercentage > 0) {
-        discountedTotal *= (1 - discountPercentage / 100);
-    }
-    
-    // Apply fixed amount discount
-    if (discountAmount > 0) {
-        discountedTotal = discountedTotal - discountAmount;
-    }
-    
-    // Ensure total is not negative
-    const totalAmount = Math.max(0, discountedTotal);
-    
-    // 3. Calculate Deposit
+    const preDiscountTotal = calculatePreDiscountTotal(values.compulsoryItems, values.addOns);
+    const totalAmount = calculateQuoteTotal(values);
     const depositAmount = totalAmount * (depositPercentage / 100);
+    const totalDiscountApplied = preDiscountTotal - totalAmount;
 
-    return { compulsoryTotal, addOnTotal, preDiscountTotal, totalAmount, depositAmount, currencySymbol, depositPercentage, discountPercentage, discountAmount };
-  }, [watchedFields]);
+    return { preDiscountTotal, totalAmount, depositAmount, currencySymbol, depositPercentage, discountPercentage, discountAmount, totalDiscountApplied };
+  }, [watchedFields, getValues]); // Recalculate when watched fields change
 
   const handlePreview = () => {
     onPreview(getValues());
@@ -176,12 +154,11 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                 <p className="text-xl font-bold text-brand-dark/70 dark:text-brand-light/70">
                     {formatCurrency(preDiscountTotal, currencySymbol)}
                 </p>
-                {(discountPercentage > 0 || discountAmount > 0) && (
+                {totalDiscountApplied > 0.01 && (
                     <>
                         <p className="text-sm font-medium text-brand-dark/70 dark:text-brand-light/70">Discount Applied:</p>
                         <p className="text-xl font-bold text-red-500">
-                            {discountPercentage > 0 && `-${discountPercentage}% `}
-                            {discountAmount > 0 && `-${formatCurrency(discountAmount, currencySymbol)}`}
+                            - {formatCurrency(totalDiscountApplied, currencySymbol)}
                         </p>
                     </>
                 )}
