@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import SeoMetadata from '@/components/SeoMetadata';
-import { calculatePreDiscountTotal } from '@/lib/quote-utils'; // Import calculatePreDiscountTotal
+// Removed unused import: import { calculatePreDiscountTotal } from '@/lib/quote-utils'; // Import calculatePreDiscountTotal
 
 // Define favicon paths
 const BRAND_FAVICON_PATH = '/blue-pink-ontrans.png?v=1';

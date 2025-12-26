@@ -17,7 +17,7 @@ import { calculateQuoteTotal, calculatePreDiscountTotal } from '@/lib/quote-util
 
 // Define the schema for a single item (compulsory or add-on)
 const ItemSchema = z.object({
-  id: z.string().optional(),
+  id: z.string().min(1, 'ID is required.'), // Changed to required string
   name: z.string().min(1, 'Item name is required.'),
   description: z.string().optional(),
   price: z.number().min(0, 'Price must be non-negative.'), // Consolidated field
