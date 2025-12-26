@@ -17,9 +17,9 @@ import { calculateQuoteTotal, calculatePreDiscountTotal } from '@/lib/quote-util
 
 // Define the schema for a single item (compulsory or add-on)
 const ItemSchema = z.object({
-  id: z.string().optional(),
+  id: z.string().min(1, 'ID is required.'), // Changed to required string
   name: z.string().min(1, 'Item name is required.'),
-  description: z.string().optional(), // Made optional here
+  description: z.string().optional(),
   price: z.number().min(0, 'Price must be non-negative.'), // Consolidated field
   quantity: z.number().min(1, 'Quantity must be at least 1.').optional(), // Made optional here, but enforced below for compulsory items
   scheduleDates: z.string().optional(), // NEW: Schedule/Dates field
@@ -108,6 +108,9 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
     const values = getValues(); // Get current form values for calculation
     const currencySymbol = values.currencySymbol || '£';
     const depositPercentage = values.depositPercentage || 0;
+    // Removed local declarations of discountPercentage and discountAmount
+    // const discountPercentage = values.discountPercentage || 0;
+    // const discountAmount = values.discountAmount || 0;
 
     const preDiscountTotal = calculatePreDiscountTotal(values.compulsoryItems, values.addOns);
     const totalAmount = calculateQuoteTotal(values);

@@ -1,9 +1,9 @@
 export type QuoteTheme = 'default' | 'black-gold';
 
 export interface QuoteItem {
-  id?: string; // Made optional to align with form schema
+  id: string;
   name: string;
-  description?: string; // Made optional
+  description?: string; // Changed to optional
   quantity: number;
   price: number; // Unit price/cost (replaces 'amount' and 'cost' from form context)
   scheduleDates?: string; // NEW: Schedule/Dates field
