@@ -204,7 +204,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             name="clientName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Client Name</FormLabel>
+                <FormLabel>Client Name *</FormLabel>
                 <FormControl>
                   <Input placeholder="John Doe" {...field} className={inputClasses} />
                 </FormControl>
@@ -217,7 +217,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             name="clientEmail"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Client Email</FormLabel>
+                <FormLabel>Client Email *</FormLabel>
                 <FormControl>
                   <Input placeholder="john.doe@example.com" {...field} className={inputClasses} />
                 </FormControl>
@@ -236,7 +236,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             name="eventTitle"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Event Title</FormLabel>
+                <FormLabel>Event Title *</FormLabel>
                 <FormControl>
                   <Input placeholder="Wedding Reception" {...field} className={inputClasses} />
                 </FormControl>
@@ -249,7 +249,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             name="eventDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Event Date</FormLabel>
+                <FormLabel>Event Date *</FormLabel>
                 <FormControl>
                   <Input type="date" {...field} className={inputClasses} />
                 </FormControl>
@@ -277,7 +277,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
           name="eventLocation"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Event Location</FormLabel>
+              <FormLabel>Event Location *</FormLabel>
               <FormControl>
                 <Input placeholder="The Grand Ballroom, City" {...field} className={inputClasses} />
               </FormControl>
@@ -295,7 +295,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             name="invoiceType"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Document Type</FormLabel>
+                <FormLabel>Document Type *</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger className={inputClasses}>
@@ -316,7 +316,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             name="preparedBy"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Prepared By</FormLabel>
+                <FormLabel>Prepared By *</FormLabel>
                 <FormControl>
                   <Input placeholder="Your Name" {...field} className={inputClasses} />
                 </FormControl>
@@ -329,7 +329,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             name="currencySymbol"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Currency Symbol</FormLabel>
+                <FormLabel>Currency Symbol *</FormLabel>
                 <FormControl>
                   <Input placeholder="£" {...field} className={inputClasses} />
                 </FormControl>
@@ -346,7 +346,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             name="theme"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Quote Theme</FormLabel>
+                <FormLabel>Quote Theme *</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger className={inputClasses}>
@@ -493,7 +493,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
         <Separator />
 
         {/* Compulsory Items */}
-        <h3 className="text-lg font-semibold">Compulsory Items (Fixed Fees)</h3>
+        <h3 className="text-lg font-semibold">Compulsory Items (Fixed Fees) *</h3>
         <div className="space-y-4">
           {compulsoryFields.map((field, index) => (
             <div key={field.id} className="flex flex-col space-y-4 p-4 border rounded-md bg-brand-secondary/5 dark:bg-brand-dark/30">
@@ -503,7 +503,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                   name={`compulsoryItems.${index}.name`}
                   render={({ field: itemField }) => (
                     <FormItem>
-                      <FormLabel>Item Name</FormLabel>
+                      <FormLabel>Item Name *</FormLabel>
                       <FormControl>
                         <Input placeholder="Service Fee" {...itemField} className={inputClasses} />
                       </FormControl>
@@ -548,7 +548,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                     name={`compulsoryItems.${index}.price`}
                     render={({ field: itemField }) => (
                       <FormItem>
-                        <FormLabel>Rate (per unit)</FormLabel>
+                        <FormLabel>Rate (per unit) *</FormLabel>
                         <FormControl>
                           <Input
                             type="number"
@@ -632,7 +632,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                   name={`addOns.${index}.name`}
                   render={({ field: itemField }) => (
                     <FormItem>
-                      <FormLabel>Item Name</FormLabel>
+                      <FormLabel>Item Name *</FormLabel>
                       <FormControl>
                         <Input placeholder="Extra Hour" {...itemField} className={inputClasses} />
                       </FormControl>
@@ -677,7 +677,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
                     name={`addOns.${index}.price`}
                     render={({ field: itemField }) => (
                       <FormItem>
-                        <FormLabel>Rate (per unit)</FormLabel>
+                        <FormLabel>Rate (per unit) *</FormLabel>
                         <FormControl>
                           <Input
                             type="number"
@@ -757,7 +757,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             name="depositPercentage"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Deposit Percentage (%)</FormLabel>
+                <FormLabel>Deposit Percentage (%) *</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -776,7 +776,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             name="bankBSB"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Bank BSB</FormLabel>
+                <FormLabel>Bank BSB *</FormLabel>
                 <FormControl>
                   <Input placeholder="923100" {...field} className={inputClasses} />
                 </FormControl>
@@ -789,7 +789,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
             name="bankACC"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Bank Account Number</FormLabel>
+                <FormLabel>Bank Account Number *</FormLabel>
                 <FormControl>
                   <Input placeholder="301110875" {...field} className={inputClasses} />
                 </FormControl>
