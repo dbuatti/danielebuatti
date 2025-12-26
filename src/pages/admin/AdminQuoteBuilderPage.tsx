@@ -403,9 +403,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
         addOns: addOns,
         headerImageUrl: defaultQuoteValues.headerImageUrl,
         headerImagePosition: defaultQuoteValues.headerImagePosition,
-        scopeOfWorkUrl: defaultQuoteValues.scopeOfWorkUrl,
-        discountPercentage: 0, // Reset discounts on AI extraction
-        discountAmount: 0, // Reset discounts on AI extraction
+        scopeOfWorkUrl: extractedContent.scopeOfWorkUrl || defaultQuoteValues.scopeOfWorkUrl, // Ensure scopeOfWorkUrl is handled
+        discountPercentage: extractedContent.discountPercentage ?? 0, // Apply extracted discount percentage
+        discountAmount: extractedContent.discountAmount ?? 0,       // Apply extracted discount amount
       };
       
       form.reset(newValues);

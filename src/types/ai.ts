@@ -22,4 +22,6 @@ export interface ExtractedQuoteContent {
   preparationNotes: string;
   compulsoryItems: ExtractedQuoteItem[];
   addOns: ExtractedAddOnItem[];
+  discountPercentage?: number; // NEW: Optional discount percentage
+  discountAmount?: number;    // NEW: Optional discount amount
 }

@@ -47,6 +47,8 @@ const extractionSchema = {
         required: ["name", "cost"],
       },
     },
+    discountPercentage: { type: "number", description: "Optional discount percentage (0-100) if mentioned. Default to 0 if not found." },
+    discountAmount: { type: "number", description: "Optional fixed discount amount if mentioned. Default to 0 if not found." },
   },
   required: ["clientName", "clientEmail", "invoiceType", "eventTitle", "eventDate", "eventLocation", "paymentTerms", "preparationNotes", "compulsoryItems", "addOns"],
 };
@@ -59,7 +61,7 @@ const BACKUP_KEY = Deno.env.get('GEMINI_API_KEY_BACKUP');
 const runExtraction = async (apiKey: string, emailContent: string) => {
   const ai = new GoogleGenAI({ apiKey });
 
-  const prompt = `You are an expert quote extraction service. Analyze the following raw text input, which contains structured quote details. Extract all fields into a single JSON object strictly following the provided JSON schema. Ensure all dates are in YYYY-MM-DD format and times are in HH:MM format. If a field is missing, use a reasonable default or an empty string/array, but ensure the output strictly adheres to the schema.
+  const prompt = `You are an expert quote extraction service. Analyze the following raw text input, which contains structured quote details. Extract all fields into a single JSON object strictly following the provided JSON schema. Ensure all dates are in YYYY-MM-DD format and times are in HH:MM format. If a field is missing, use a reasonable default or an empty string/array, but ensure the output strictly adheres to the schema. For discountPercentage and discountAmount, if not explicitly mentioned, default to 0.
 
 Raw Quote Details:
 ---
