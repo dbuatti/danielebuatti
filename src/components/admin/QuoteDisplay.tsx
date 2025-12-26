@@ -173,7 +173,7 @@ const QuoteItemRow: React.FC<{
                     type="button" 
                     variant="ghost" 
                     size="icon" 
-                    onClick={() => onQuantityChange!(item.id, -1)}
+                    onClick={() => onQuantityChange!(item.id as string, -1)}
                     disabled={item.quantity <= 0}
                     className={`h-7 w-7 ${themeClasses.primaryText} ${themeClasses.primaryHoverBg} p-0 rounded-full`}
                 >
@@ -186,7 +186,7 @@ const QuoteItemRow: React.FC<{
                     type="button" 
                     variant="ghost" 
                     size="icon" 
-                    onClick={() => onQuantityChange!(item.id, 1)}
+                    onClick={() => onQuantityChange!(item.id as string, 1)}
                     className={`h-7 w-7 ${themeClasses.primaryText} ${themeClasses.primaryHoverBg} p-0 rounded-full`}
                 >
                     <Plus className="h-3 w-3" />

@@ -17,9 +17,9 @@ import { calculateQuoteTotal, calculatePreDiscountTotal } from '@/lib/quote-util
 
 // Define the schema for a single item (compulsory or add-on)
 const ItemSchema = z.object({
-  id: z.string().min(1, 'ID is required.'), // Changed to required string
+  id: z.string().optional(),
   name: z.string().min(1, 'Item name is required.'),
-  description: z.string().optional(),
+  description: z.string().optional(), // Made optional here
   price: z.number().min(0, 'Price must be non-negative.'), // Consolidated field
   quantity: z.number().min(1, 'Quantity must be at least 1.').optional(), // Made optional here, but enforced below for compulsory items
   scheduleDates: z.string().optional(), // NEW: Schedule/Dates field
@@ -97,28 +97,24 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
   // Watch all relevant fields for dynamic calculation
   const watchedFields = watch(['compulsoryItems', 'addOns', 'currencySymbol', 'depositPercentage', 'discountPercentage', 'discountAmount']);
 
-  const { totalAmount, depositAmount, currencySymbol, depositPercentage, discountPercentage, discountAmount, preDiscountTotal, totalDiscountApplied } = useMemo<{
+  const { totalAmount, depositAmount, currencySymbol, depositPercentage, preDiscountTotal, totalDiscountApplied } = useMemo<{
     preDiscountTotal: number;
     totalAmount: number;
     depositAmount: number;
     currencySymbol: string;
     depositPercentage: number;
-    discountPercentage: number;
-    discountAmount: number;
     totalDiscountApplied: number;
   }>(() => {
     const values = getValues(); // Get current form values for calculation
     const currencySymbol = values.currencySymbol || '£';
     const depositPercentage = values.depositPercentage || 0;
-    const discountPercentage = values.discountPercentage || 0;
-    const discountAmount = values.discountAmount || 0;
 
     const preDiscountTotal = calculatePreDiscountTotal(values.compulsoryItems, values.addOns);
     const totalAmount = calculateQuoteTotal(values);
     const depositAmount = totalAmount * (depositPercentage / 100);
     const totalDiscountApplied = preDiscountTotal - totalAmount;
 
-    return { preDiscountTotal, totalAmount, depositAmount, currencySymbol, depositPercentage, discountPercentage, discountAmount, totalDiscountApplied };
+    return { preDiscountTotal, totalAmount, depositAmount, currencySymbol, depositPercentage, totalDiscountApplied };
   }, [watchedFields, getValues]); // Recalculate when watched fields change
 
   const handlePreview = () => {
