@@ -2,7 +2,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
 import Stripe from 'https://esm.sh/stripe@16.2.0?target=deno'; // Import Stripe for webhook verification
-import { generateGiftCardCode } from '../../src/lib/utils.ts'; // Import your utility function
+import { generateGiftCardCode } from '../_shared/utils.ts'; // Updated import path
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -63,7 +63,6 @@ serve(async (req: Request) => {
       const giftCardName = session.metadata?.giftCardName || session.line_items?.data[0]?.description || "Gift Card";
       const value = (session.amount_total ?? 0) / 100; // Convert cents to AUD
       const buyerEmail = session.customer_details?.email;
-      // Removed unused variable: const stripePaymentId = session.payment_intent as string;
       const stripeCheckoutSessionId = session.id;
 
       // Determine gift card type based on metadata or name (you might need to refine this logic)
