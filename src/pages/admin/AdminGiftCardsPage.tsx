@@ -32,7 +32,9 @@ interface GiftCard {
   amount_redeemed: number; // NEW
   expiration_date: string | null; // NEW
   notes: string | null; // NEW
+  stripe_product_id: string | null; // NEW
   stripe_payment_link: string | null; // NEW
+  stripe_checkout_session_id: string | null; // NEW
   manual_redeemed: boolean; // NEW
 }
 
@@ -83,7 +85,8 @@ const AdminGiftCardsPage: React.FC = () => {
       card.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
       card.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       card.session_booked?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      card.notes?.toLowerCase().includes(searchTerm.toLowerCase());
+      card.notes?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      card.stripe_checkout_session_id?.toLowerCase().includes(searchTerm.toLowerCase()); // NEW: Search by session ID
       
     return matchesStatus && matchesType && matchesPaymentStatus && matchesRedemptionStatus && matchesSearch;
   });
@@ -365,6 +368,7 @@ const AdminGiftCardsPage: React.FC = () => {
                     <TableHead className="text-brand-primary">Remaining</TableHead>
                     <TableHead className="text-brand-primary">Session Booked</TableHead>
                     <TableHead className="text-brand-primary">Notes</TableHead>
+                    <TableHead className="text-brand-primary">Stripe Session ID</TableHead> {/* NEW COLUMN */}
                     <TableHead className="text-brand-primary text-center">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -400,6 +404,13 @@ const AdminGiftCardsPage: React.FC = () => {
                         {card.manual_redeemed && (
                           <Badge variant="outline" className="mt-1 text-xs">Manually Redeemed</Badge>
                         )}
+                      </TableCell>
+                      <TableCell className="text-brand-dark/80 dark:text-brand-light/80">
+                        {card.stripe_checkout_session_id ? (
+                          <span title={card.stripe_checkout_session_id}>
+                            {card.stripe_checkout_session_id.substring(0, 8)}...
+                          </span>
+                        ) : 'N/A'}
                       </TableCell>
                       <TableCell className="text-center flex gap-2 justify-center">
                         {card.redemption_status !== 'redeemed' && (
@@ -457,6 +468,7 @@ const AdminGiftCardsPage: React.FC = () => {
                 // Ensure nullable fields are undefined if null for Zod's optional()
                 notes: editingGiftCard.notes || undefined,
                 stripe_payment_link: editingGiftCard.stripe_payment_link || undefined,
+                stripe_checkout_session_id: editingGiftCard.stripe_checkout_session_id || undefined, // Ensure this is passed
               }}
               onSubmit={handleSaveEdit}
               isSubmitting={isUpdating}

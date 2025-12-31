@@ -36,6 +36,7 @@ const formSchema = z.object({
   notes: z.string().optional(),
   stripe_payment_link: z.string().url('Must be a valid URL.').optional().or(z.literal('')),
   manual_redeemed: z.boolean().default(false),
+  stripe_checkout_session_id: z.string().optional(), // NEW: Added stripe_checkout_session_id
 });
 
 export type GiftCardFormValues = z.infer<typeof formSchema>;
@@ -65,6 +66,7 @@ const GiftCardForm: React.FC<GiftCardFormProps> = ({ onSubmit, isSubmitting, onC
       notes: '',
       stripe_payment_link: '',
       manual_redeemed: false,
+      stripe_checkout_session_id: '', // Initialize new field
     },
   });
 
@@ -79,6 +81,7 @@ const GiftCardForm: React.FC<GiftCardFormProps> = ({ onSubmit, isSubmitting, onC
         // Ensure nullable fields are undefined if null for Zod's optional()
         notes: initialData.notes || undefined,
         stripe_payment_link: initialData.stripe_payment_link || undefined,
+        stripe_checkout_session_id: initialData.stripe_checkout_session_id || undefined, // Ensure this is passed
       });
     }
   }, [initialData, form]);
@@ -330,6 +333,23 @@ const GiftCardForm: React.FC<GiftCardFormProps> = ({ onSubmit, isSubmitting, onC
                 <Input
                   type="url"
                   placeholder="https://dashboard.stripe.com/payments/..."
+                  className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="stripe_checkout_session_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-brand-dark dark:text-brand-light">Stripe Checkout Session ID (Optional)</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="cs_live_..."
                   className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
                   {...field}
                 />
