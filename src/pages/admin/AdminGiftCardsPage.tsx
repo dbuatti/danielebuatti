@@ -5,14 +5,14 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns';
-import { Loader2, Gift, CheckCircle, Edit, Trash2, PlusCircle, Link as LinkIcon } from 'lucide-react'; // Removed CalendarDays
+import { Loader2, Gift, CheckCircle, Edit, Trash2, PlusCircle, Link as LinkIcon } from 'lucide-react';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'; // Removed DialogFooter, Label
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import GiftCardForm, { GiftCardFormValues } from '@/components/admin/GiftCardForm'; // Import the new form
 
 interface GiftCard {
@@ -266,7 +266,7 @@ const AdminGiftCardsPage: React.FC = () => {
               <PlusCircle className="mr-2 h-4 w-4" /> Create New Gift Card
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[500px] bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50">
+          <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50">
             <DialogHeader>
               <DialogTitle className="text-brand-primary">Create New Gift Card</DialogTitle>
             </DialogHeader>
@@ -443,7 +443,7 @@ const AdminGiftCardsPage: React.FC = () => {
 
       {/* Edit Gift Card Modal */}
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-        <DialogContent className="sm:max-w-[500px] bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50">
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50">
           <DialogHeader>
             <DialogTitle className="text-brand-primary">Edit Gift Card</DialogTitle>
           </DialogHeader>
