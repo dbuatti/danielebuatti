@@ -83,7 +83,7 @@ serve(async (req: Request) => {
           <p style="font-size: 16px; line-height: 1.6; margin-bottom: 10px;">Dear Customer,</p>
           ${giftCardDetailsHtml}
           <p style="font-size: 16px; line-height: 1.6; margin-top: 20px;">
-            To redeem your gift card, please visit my booking page or contact me directly with your redemption code.
+            To redeem your gift card, please visit my <a href="https://danielebuatti.as.me/" style="color: #DB4CA3; text-decoration: none;">booking page</a> and enter your redemption code in the 'Gift Card / Promo Code' field during checkout.
           </p>
           <p style="font-size: 14px; color: #666666; text-align: center; margin-top: 30px;">
             If you have any questions, please reply to this email.
