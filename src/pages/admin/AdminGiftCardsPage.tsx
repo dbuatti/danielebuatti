@@ -5,15 +5,16 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns';
-import { Loader2, Gift, CheckCircle, Edit, Trash2 } from 'lucide-react';
+import { Loader2, Gift, CheckCircle, Edit, Trash2, PlusCircle } from 'lucide-react';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import GiftCardForm, { GiftCardFormValues } from '@/components/admin/GiftCardForm'; // Import the new form
 
 interface GiftCard {
   id: string;
@@ -41,6 +42,9 @@ const AdminGiftCardsPage: React.FC = () => {
   const [editSessionBooked, setEditSessionBooked] = useState<string>('');
   const [editRemainingBalance, setEditRemainingBalance] = useState<string>('');
   const [isUpdating, setIsUpdating] = useState(false);
+  
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false); // State for create modal
+  const [isCreating, setIsCreating] = useState(false); // State for create submission
 
   const fetchGiftCards = async () => {
     setIsLoading(true);
@@ -170,6 +174,37 @@ const AdminGiftCardsPage: React.FC = () => {
       dismissToast(toastId);
     }
   };
+  
+  const handleCreateGiftCard = async (values: GiftCardFormValues) => {
+    setIsCreating(true);
+    const toastId = showLoading('Creating new gift card...');
+
+    try {
+      const { error } = await supabase
+        .from('gift_cards')
+        .insert({
+          name: values.name,
+          type: values.type,
+          value: values.value,
+          code: values.code,
+          email: values.email,
+          status: 'active', // New gift cards are always active
+          remaining_balance: values.type === 'open' ? values.value : null, // Set initial balance for open type
+        });
+
+      if (error) throw error;
+
+      showSuccess('Gift card created successfully!', { id: toastId });
+      setIsCreateModalOpen(false);
+      fetchGiftCards(); // Refresh the list
+    } catch (error: any) {
+      console.error('Error creating gift card:', error);
+      showError(`Failed to create gift card: ${error.message}`, { id: toastId });
+    } finally {
+      setIsCreating(false);
+      dismissToast(toastId);
+    }
+  };
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
@@ -184,7 +219,26 @@ const AdminGiftCardsPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Gift Card Management</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Gift Card Management</h2>
+        <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+              <PlusCircle className="mr-2 h-4 w-4" /> Create New Gift Card
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[500px] bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50">
+            <DialogHeader>
+              <DialogTitle className="text-brand-primary">Create New Gift Card</DialogTitle>
+            </DialogHeader>
+            <GiftCardForm
+              onSubmit={handleCreateGiftCard}
+              isSubmitting={isCreating}
+              onClose={() => setIsCreateModalOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
+      </div>
       <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
         Track all purchased gift cards, their redemption status, and remaining balances.
       </p>
