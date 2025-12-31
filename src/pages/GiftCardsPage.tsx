@@ -27,7 +27,7 @@ const giftCards: GiftCardItem[] = [
     description: "A 90-minute one-to-one kinesiology session for regulation, clarity, and integration of the body and nervous system. Includes gentle muscle testing, energy balancing, and intuitive inquiry.",
     price: 100,
     duration: "90 minutes",
-    stripeLink: "https://buy.stripe.com/8x200lfmagH81vS4PU53O05",
+    stripeLink: "YOUR_STRIPE_TEST_LINK_HERE", // PASTE YOUR TEST LINK HERE
     type: "session"
   },
   {
