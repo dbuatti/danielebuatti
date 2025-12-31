@@ -37,6 +37,7 @@ import AdminEditQuotePage from './pages/admin/AdminEditQuotePage';
 import AdminAmebBookingsPage from './pages/admin/AdminAmebBookingsPage';
 import AdminAmebBookingDetailsPage from './pages/admin/AdminAmebBookingDetailsPage';
 import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage';
+import AdminGiftCardsPage from './pages/admin/AdminGiftCardsPage'; // NEW: Import AdminGiftCardsPage
 
 
 function App() {
@@ -79,6 +80,7 @@ function App() {
               <Route path="ameb-bookings" element={<AdminAmebBookingsPage />} />
               <Route path="ameb-bookings/:id" element={<AdminAmebBookingDetailsPage />} />
               <Route path="email-templates" element={<AdminEmailTemplatesPage />} />
+              <Route path="gift-cards" element={<AdminGiftCardsPage />} /> {/* NEW: Gift Cards Route */}
             </Route>
 
             {/* 404 Route */}
