@@ -8,7 +8,7 @@ import SeoMetadata from "@/components/SeoMetadata";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Gift, Clock } from "lucide-react";
+import { Gift, CalendarDays } from "lucide-react"; // Removed Clock, Added CalendarDays
 import SectionHeading from "@/components/SectionHeading";
 // import { cn } from "@/lib/utils"; // Removed unused import
 
@@ -93,7 +93,7 @@ const GiftCardsPage: React.FC = () => {
                 <p>{card.description}</p>
                 {card.duration && (
                   <p className="flex items-center gap-2 text-sm font-medium">
-                    <Clock className="h-4 w-4 text-brand-secondary" />
+                    <CalendarDays className="h-4 w-4 text-brand-secondary" />
                     Duration: {card.duration}
                   </p>
                 )}
