@@ -35,7 +35,6 @@ serve(async (req: Request) => {
     let event: Stripe.Event;
 
     try {
-      // FIX: Use constructEventAsync and await it
       event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
     } catch (err: any) {
       console.error(`[stripe-webhook] Webhook signature verification failed: ${err.message}`);
@@ -101,6 +100,7 @@ serve(async (req: Request) => {
             stripe_checkout_session_id: stripeCheckoutSessionId, // Store the checkout session ID
             expiration_date: expirationDate,
             notes: `Purchased via Stripe Checkout Session ${stripeCheckoutSessionId}`,
+            status: 'active', // FIX: Explicitly set status to 'active'
           },
         ])
         .select()
