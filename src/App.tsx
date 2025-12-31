@@ -25,7 +25,8 @@ import EmbodimentSomaticBookingPage from './pages/EmbodimentSomaticBookingPage';
 import PresenceCommunicationBookingPage from './pages/PresenceCommunicationBookingPage';
 import DynamicQuotePage from './pages/DynamicQuotePage';
 import QuoteConfirmationPage from './pages/QuoteConfirmationPage';
-import ContactPage from './pages/ContactPage'; // Import new ContactPage
+import ContactPage from './pages/ContactPage';
+import GiftCardsPage from './pages/GiftCardsPage'; // NEW: Import GiftCardsPage
 
 // Admin Pages
 import Login from './pages/Login';
@@ -37,7 +38,7 @@ import AdminEditQuotePage from './pages/admin/AdminEditQuotePage';
 import AdminAmebBookingsPage from './pages/admin/AdminAmebBookingsPage';
 import AdminAmebBookingDetailsPage from './pages/admin/AdminAmebBookingDetailsPage';
 import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage';
-import AdminGiftCardsPage from './pages/admin/AdminGiftCardsPage'; // NEW: Import AdminGiftCardsPage
+import AdminGiftCardsPage from './pages/admin/AdminGiftCardsPage';
 
 
 function App() {
@@ -65,7 +66,8 @@ function App() {
             <Route path="book-presence-communication" element={<PresenceCommunicationBookingPage />} />
             <Route path="quotes/:slug" element={<DynamicQuotePage />} />
             <Route path="live-piano-services/quote-confirmation" element={<QuoteConfirmationPage />} />
-            <Route path="contact" element={<ContactPage />} /> {/* NEW Contact Route */}
+            <Route path="contact" element={<ContactPage />} />
+            <Route path="gift-cards" element={<GiftCardsPage />} /> {/* NEW: Gift Cards Route */}
 
             {/* Auth Route */}
             <Route path="login" element={<Login />} />
@@ -80,7 +82,7 @@ function App() {
               <Route path="ameb-bookings" element={<AdminAmebBookingsPage />} />
               <Route path="ameb-bookings/:id" element={<AdminAmebBookingDetailsPage />} />
               <Route path="email-templates" element={<AdminEmailTemplatesPage />} />
-              <Route path="gift-cards" element={<AdminGiftCardsPage />} /> {/* NEW: Gift Cards Route */}
+              <Route path="gift-cards" element={<AdminGiftCardsPage />} />
             </Route>
 
             {/* 404 Route */}
