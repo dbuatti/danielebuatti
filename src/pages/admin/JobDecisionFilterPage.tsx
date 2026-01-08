@@ -339,9 +339,11 @@ const JobDecisionFilterPage: React.FC = () => {
           ) : (
             <div className="space-y-4">
               {savedDecisions.map((decision) => (
-                <div key={decision.id} className="flex items-center justify-between p-3 border border-brand-secondary/30 rounded-md bg-brand-secondary/10 dark:bg-brand-dark/30">
+                <div key={decision.id} className={cn(
+                  "flex items-center justify-between p-3 border rounded-md bg-brand-secondary/10 dark:bg-brand-dark/30",
+                  currentDecisionId === decision.id ? "border-brand-primary ring-2 ring-brand-primary/50" : "border-brand-secondary/30"
+                )}>
                   <div>
-                    {/* FIX 12: Use job_name from DB */}
                     <h3 className="font-semibold text-lg text-brand-primary">{decision.job_name}</h3>
                     <p className="text-sm text-brand-dark/80 dark:text-brand-light/80">
                       Score: {decision.total_score} / 18 &bull; Decision: {decision.decision_output}
@@ -391,7 +393,6 @@ const JobDecisionFilterPage: React.FC = () => {
                   <FormItem>
                     <FormLabel className="text-brand-dark dark:text-brand-light">Job Name *</FormLabel>
                     <FormControl>
-                      {/* FIX 13: Add Input import */}
                       <Input
                         placeholder="e.g., Christmas Carols Gig"
                         className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
