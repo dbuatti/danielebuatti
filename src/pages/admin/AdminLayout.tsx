@@ -4,7 +4,7 @@ import React from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
 import { useSession } from '@/components/SessionContextProvider';
 import { Button } from '@/components/ui/button';
-import { LogOut, LayoutDashboard, FileText, Home, Music, MailOpen, Gift } from 'lucide-react'; // NEW: Import Gift icon
+import { LogOut, LayoutDashboard, FileText, Home, Music, MailOpen, Gift, ClipboardList } from 'lucide-react'; // NEW: Import Gift and ClipboardList icons
 import { supabase } from '@/integrations/supabase/client';
 import { useTheme } from 'next-themes';
 import DynamicImage from '@/components/DynamicImage';
@@ -91,6 +91,13 @@ const AdminLayout: React.FC = () => {
             <Gift className="h-5 w-5" /> {/* NEW: Gift Cards Link */}
             Gift Cards
           </Link>
+          <Link to="/admin/job-decision-filter" className={cn(
+            "flex items-center gap-3 p-3 rounded-md text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark/50 transition-colors",
+            location.pathname.startsWith('/admin/job-decision-filter') ? 'bg-brand-secondary/30 dark:bg-brand-dark/60 font-semibold text-brand-primary' : ''
+          )}>
+            <ClipboardList className="h-5 w-5" /> {/* NEW: Job Decision Filter Link */}
+            Job Decision Filter
+          </Link>
         </nav>
         <div className="mt-auto space-y-2">
           <Separator className="bg-brand-secondary/50 my-4" />
@@ -115,7 +122,8 @@ const AdminLayout: React.FC = () => {
              location.pathname.startsWith('/admin/quotes') ? 'Quotes' :
              location.pathname.startsWith('/admin/ameb-bookings') ? 'AMEB Bookings' :
              location.pathname.startsWith('/admin/email-templates') ? 'Email Templates' :
-             location.pathname.startsWith('/admin/gift-cards') ? 'Gift Cards' : 'Admin'} {/* NEW: Update header for Gift Cards */}
+             location.pathname.startsWith('/admin/gift-cards') ? 'Gift Cards' :
+             location.pathname.startsWith('/admin/job-decision-filter') ? 'Job Decision Filter' : 'Admin'} {/* NEW: Update header for Job Decision Filter */}
           </h1>
           <div className="flex items-center gap-4">
             <span className="text-brand-dark/80 dark:text-brand-light/80 text-sm">

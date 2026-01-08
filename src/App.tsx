@@ -39,6 +39,7 @@ import AdminAmebBookingsPage from './pages/admin/AdminAmebBookingsPage';
 import AdminAmebBookingDetailsPage from './pages/admin/AdminAmebBookingDetailsPage';
 import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage';
 import AdminGiftCardsPage from './pages/admin/AdminGiftCardsPage';
+import JobDecisionFilterPage from './pages/admin/JobDecisionFilterPage'; // NEW: Import JobDecisionFilterPage
 
 
 function App() {
@@ -83,6 +84,7 @@ function App() {
               <Route path="ameb-bookings/:id" element={<AdminAmebBookingDetailsPage />} />
               <Route path="email-templates" element={<AdminEmailTemplatesPage />} />
               <Route path="gift-cards" element={<AdminGiftCardsPage />} />
+              <Route path="job-decision-filter" element={<JobDecisionFilterPage />} /> {/* NEW: Job Decision Filter Route */}
             </Route>
 
             {/* 404 Route */}
