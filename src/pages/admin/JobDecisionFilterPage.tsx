@@ -10,125 +10,94 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { Calculator, DollarSign, Brain, Clock, TrendingUp, HeartHandshake, Sun, Save, Loader2, Trash2, FolderOpen } from 'lucide-react';
+import { Calculator, DollarSign, Brain, Clock, TrendingUp, HeartHandshake, Sun, Shield, Frown, Layers, Save, Loader2, Trash2, FolderOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { useSession } from '@/components/SessionContextProvider';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
-import { toast } from 'sonner'; // For promise-based toast
-import { Input } from '@/components/ui/input'; // NEW: Added Input import
+import { toast } from 'sonner';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+
+// --- 1. SCHEMA & TYPES ---
 
 const scoreSchema = z.coerce.number().min(0).max(3, 'Score must be between 0 and 3.');
+const detailsSchema = z.string().optional();
+
+const filterSchema = z.object({
+  score: scoreSchema,
+  details: detailsSchema,
+});
 
 const formSchema = z.object({
-  id: z.string().optional(), // Added for editing existing decisions
-  jobName: z.string().min(1, 'Job Name is required.'), // New field for job name
-  effortToMoney: scoreSchema,
-  nervousSystemImpact: scoreSchema,
-  timeContainment: scoreSchema,
-  trajectoryValue: scoreSchema,
-  identityAlignment: scoreSchema,
-  energyTiming: scoreSchema,
+  id: z.string().optional(),
+  jobName: z.string().min(1, 'Job Name is required.'),
+  emr: filterSchema,
+  nsi: filterSchema,
+  tc: filterSchema,
+  tv: filterSchema,
+  ia: filterSchema,
+  et: filterSchema,
+  frs: filterSchema,
+  er: filterSchema,
+  cc: filterSchema,
 });
 
 type JobDecisionFormValues = z.infer<typeof formSchema>;
 
-// UPDATED: Interface to match database snake_case for fetched data
+// FIX 2: Correct interface for DB data (snake_case)
 interface SavedJobDecision {
   id: string;
   user_id: string;
-  job_name: string; // Matches DB column
-  effort_to_money: number; // Matches DB column
-  nervous_system_impact: number; // Matches DB column
-  time_containment: number; // Matches DB column
-  trajectory_value: number; // Matches DB column
-  identity_alignment: number; // Matches DB column
-  energy_timing: number; // Matches DB column
+  job_name: string;
+  emr_score: number;
+  nsi_score: number;
+  tc_score: number;
+  tv_score: number;
+  ia_score: number;
+  et_score: number;
+  frs_score: number;
+  er_score: number;
+  cc_score: number;
+  emr_details: string | null;
+  nsi_details: string | null;
+  tc_details: string | null;
+  tv_details: string | null;
+  ia_details: string | null;
+  et_details: string | null;
+  frs_details: string | null;
+  er_details: string | null;
+  cc_details: string | null;
   total_score: number;
   decision_output: string;
   created_at: string;
   updated_at: string;
 }
 
-const criteria = [
-  {
-    name: 'effortToMoney',
-    label: '1. 💰 Effort-to-Money Ratio',
-    question: 'Does this pay well for the actual energy it costs me?',
-    scores: [
-      { value: 3, label: 'High pay / low–moderate effort' },
-      { value: 2, label: 'Fair pay / effort matches' },
-      { value: 1, label: 'Low pay / high effort' },
-      { value: 0, label: 'Insulting (Auto-No)' },
-    ],
-    icon: DollarSign,
-  },
-  {
-    name: 'nervousSystemImpact',
-    label: '2. 🧠 Nervous System Impact',
-    question: 'After doing this, do I feel regulated or wrung out?',
-    scores: [
-      { value: 3, label: 'Regulating / grounding / spacious' },
-      { value: 2, label: 'Neutral / contained' },
-      { value: 1, label: 'Draining but tolerable' },
-      { value: 0, label: 'Dysregulating / shame / panic / overdrive (Premium Pay or Decline)' },
-    ],
-    icon: Brain,
-  },
-  {
-    name: 'timeContainment',
-    label: '3. 🕰 Time Containment',
-    question: 'Is the time footprint clean and predictable?',
-    scores: [
-      { value: 3, label: 'Fixed hours, minimal prep, clear end' },
-      { value: 2, label: 'Some prep but bounded' },
-      { value: 1, label: 'Bleeds into other days' },
-      { value: 0, label: 'Vague, last-minute, or ongoing (No 0s Jan–Mar)' },
-    ],
-    icon: Clock,
-  },
-  {
-    name: 'trajectoryValue',
-    label: '4. 🌱 Trajectory Value',
-    question: 'Does this move me toward the kind of work I want more of?',
-    scores: [
-      { value: 3, label: 'Directly builds desired future' },
-      { value: 2, label: 'Indirect skill or network value' },
-      { value: 1, label: 'Keeps lights on only' },
-      { value: 0, label: 'Actively pulls me backward (Exceptional Pay to Override)' },
-    ],
-    icon: TrendingUp,
-  },
-  {
-    name: 'identityAlignment',
-    label: '5. 🧩 Identity Alignment',
-    question: 'Does this match who I’m becoming — not who I used to be?',
-    scores: [
-      { value: 3, label: 'Feels aligned, clean, adult' },
-      { value: 2, label: 'Slight compromise but acceptable' },
-      { value: 1, label: 'Old pattern / people-pleasing' },
-      { value: 0, label: 'Self-betrayal (Relief if cancelling = 1 or 0)' },
-    ],
-    icon: HeartHandshake,
-  },
-  {
-    name: 'energyTiming',
-    label: '6. 🔋 Energy Timing',
-    question: 'Does this land in a part of the day/week where I actually have capacity?',
-    scores: [
-      { value: 3, label: 'Ideal timing' },
-      { value: 2, label: 'Manageable' },
-      { value: 1, label: 'Poor timing' },
-      { value: 0, label: 'Sabotages rest or recovery (Post-7pm needs 3 elsewhere)' },
-    ],
-    icon: Sun,
-  },
+// --- 2. FILTER CONFIGURATION ---
+
+interface FilterConfig {
+  key: keyof JobDecisionFormValues;
+  label: string;
+  icon: React.ElementType;
+  description: string;
+  subFactors: string[];
+  weight: number;
+}
+
+const filters: FilterConfig[] = [
+  { key: 'emr', label: 'Effort-to-Money Ratio', icon: DollarSign, description: 'Time, physical, and cognitive load vs. pay.', subFactors: ['Time invested vs pay', 'Physical effort', 'Emotional/cognitive load', 'Hidden costs (travel, prep)'], weight: 1 },
+  { key: 'nsi', label: 'Nervous System Impact', icon: Brain, description: 'Predicted effect on stress, regulation, and recovery.', subFactors: ['Stress/anxiety', 'Rest/grounding', 'Emotional volatility', 'Post-task recovery'], weight: 1.5 },
+  { key: 'tc', label: 'Time Containment', icon: Clock, description: 'Predictability and cleanliness of the time footprint.', subFactors: ['Fixed hours', 'Prep/teardown time', 'Buffer/bleed into other tasks', 'Scheduling ambiguity'], weight: 1 },
+  { key: 'tv', label: 'Trajectory Value', icon: TrendingUp, description: 'Long-term skill, network, and earning potential.', subFactors: ['Direct skill growth', 'Network/opportunity growth', 'Long-term earning potential', 'Alignment with clinic/entertainment goals'], weight: 2 },
+  { key: 'ia', label: 'Identity Alignment', icon: HeartHandshake, description: 'Alignment with current self, values, and boundaries.', subFactors: ['Career/personal goals', 'Self-perception/adult boundaries', 'Values alignment', 'Avoids people-pleasing/self-betrayal'], weight: 1 },
+  { key: 'et', label: 'Energy Timing', icon: Sun, description: 'Fit with circadian rhythm and weekly load.', subFactors: ['Time of day (optimal window)', 'Weekly load fit', 'Recovery vs exertion', 'Sleep/cycle impact'], weight: 1 },
+  { key: 'frs', label: 'Financial Risk / Stability', icon: Shield, description: 'Upfront cost, ROI, and cashflow impact.', subFactors: ['Upfront cost', 'Potential ROI', 'Cashflow impact', 'Risk level'], weight: 1 },
+  { key: 'er', label: 'Emotional Reward', icon: Frown, description: 'Fun, satisfaction, and motivation.', subFactors: ['Fun/stimulation', 'Satisfaction/fulfillment', 'Motivation boost', 'Adherence factor'], weight: 1 },
+  { key: 'cc', label: 'Compounding Complexity', icon: Layers, description: 'Cascade overload and stacked stress.', subFactors: ['Dependent tasks', 'Overlap with other projects', 'Scheduling conflicts', 'Cascade potential'], weight: 1 },
 ];
 
-interface DecisionOutput {
-  text: string;
-  variant: 'default' | 'destructive' | 'outline' | 'secondary';
-}
+// --- 3. COMPONENT ---
 
 const JobDecisionFilterPage: React.FC = () => {
   const { session } = useSession();
@@ -140,42 +109,53 @@ const JobDecisionFilterPage: React.FC = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       jobName: '',
-      effortToMoney: 0,
-      nervousSystemImpact: 0,
-      timeContainment: 0,
-      trajectoryValue: 0,
-      identityAlignment: 0,
-      energyTiming: 0,
+      emr: { score: 0, details: '' },
+      nsi: { score: 0, details: '' },
+      tc: { score: 0, details: '' },
+      tv: { score: 0, details: '' },
+      ia: { score: 0, details: '' },
+      et: { score: 0, details: '' },
+      frs: { score: 0, details: '' },
+      er: { score: 0, details: '' },
+      cc: { score: 0, details: '' },
     },
     mode: 'onChange',
   });
 
-  const watchedScores = form.watch();
   const currentDecisionId = form.watch('id');
 
-  const totalScore = useMemo(() => {
-    // FIX 1: Ensure sum is always a number and only sum numeric scores
-    return Object.values(watchedScores).reduce((sum: number, score) => {
-      if (typeof score === 'number') {
-        return sum + score;
+  // --- CALCULATIONS ---
+  // FIX 4 & 5: Correctly type the values and filterValue
+  const { totalScore, normalizedScore, decisionOutput } = useMemo(() => {
+    const values = form.getValues();
+    let weightedSum = 0;
+    let totalWeight = 0;
+
+    filters.forEach(filter => {
+      const filterValue = values[filter.key];
+      if (filterValue && typeof filterValue === 'object' && 'score' in filterValue && typeof filterValue.score === 'number') {
+        weightedSum += filterValue.score * filter.weight;
+        totalWeight += filter.weight;
       }
-      return sum;
-    }, 0); // Initialize sum as 0
-  }, [watchedScores]);
+    });
 
-  const decisionOutput: DecisionOutput = useMemo(() => {
-    // FIX 2 & 3: totalScore is now guaranteed to be a number
-    if (totalScore === 18) {
-      return { text: 'Yes, don’t overthink', variant: 'default' };
-    } else if (totalScore >= 14) {
-      return { text: 'Yes with boundaries or renegotiate', variant: 'secondary' };
-    } else if (totalScore >= 10) {
-      return { text: 'No, unless pay increases', variant: 'outline' };
-    } else {
-      return { text: 'No. Stop negotiating with yourself.', variant: 'destructive' };
-    }
-  }, [totalScore]);
+    const calculatedTotal = totalWeight > 0 ? Math.round((weightedSum / totalWeight) * 100) / 100 : 0;
+    const normalized = Math.round(calculatedTotal * 3);
 
+    // FIX 6-9: Define output type correctly
+    type DecisionVariant = 'default' | 'destructive' | 'outline' | 'secondary';
+    let output: { text: string; variant: DecisionVariant } = { text: 'Insufficient Data', variant: 'outline' };
+    
+    if (normalized >= 24) output = { text: 'Yes — Clear Go', variant: 'default' };
+    else if (normalized >= 21) output = { text: 'Yes — Go with Boundaries', variant: 'secondary' };
+    else if (normalized >= 18) output = { text: 'Yes — Negotiate / Minor Tweaks', variant: 'outline' };
+    else if (normalized >= 15) output = { text: 'Conditional — Only if Pay/Schedule Improved', variant: 'secondary' };
+    else if (normalized >= 0) output = { text: 'No — Reject / Drop', variant: 'destructive' };
+
+    return { totalScore: calculatedTotal, normalizedScore: normalized, decisionOutput: output };
+  }, [form]);
+
+  // --- DATA HANDLING ---
   const fetchSavedDecisions = useCallback(async () => {
     if (!session) {
       setSavedDecisions([]);
@@ -185,11 +165,8 @@ const JobDecisionFilterPage: React.FC = () => {
 
     setIsLoadingDecisions(true);
     try {
-      // Invoke the Edge Function to fetch decisions
       const { data, error } = await supabase.functions.invoke('fetch-job-decisions');
-
       if (error) throw error;
-
       setSavedDecisions(data as SavedJobDecision[] || []);
     } catch (error: any) {
       console.error('Error fetching saved decisions:', error);
@@ -206,13 +183,16 @@ const JobDecisionFilterPage: React.FC = () => {
   const handleReset = () => {
     form.reset({
       jobName: '',
-      effortToMoney: 0,
-      nervousSystemImpact: 0,
-      timeContainment: 0,
-      trajectoryValue: 0,
-      identityAlignment: 0,
-      energyTiming: 0,
-      id: undefined, // Clear the ID to indicate a new decision
+      emr: { score: 0, details: '' },
+      nsi: { score: 0, details: '' },
+      tc: { score: 0, details: '' },
+      tv: { score: 0, details: '' },
+      ia: { score: 0, details: '' },
+      et: { score: 0, details: '' },
+      frs: { score: 0, details: '' },
+      er: { score: 0, details: '' },
+      cc: { score: 0, details: '' },
+      id: undefined,
     });
   };
 
@@ -227,19 +207,11 @@ const JobDecisionFilterPage: React.FC = () => {
 
     try {
       const payload = {
-        id: values.id, // Pass ID for update, or undefined for insert
-        jobName: values.jobName,
-        effortToMoney: values.effortToMoney,
-        nervousSystemImpact: values.nervousSystemImpact,
-        timeContainment: values.timeContainment,
-        trajectoryValue: values.trajectoryValue,
-        identityAlignment: values.identityAlignment,
-        energyTiming: values.energyTiming,
+        ...values,
         totalScore: totalScore,
         decisionOutput: decisionOutput.text,
       };
 
-      // Invoke the Edge Function to save/update decision
       const { data, error } = await supabase.functions.invoke('save-job-decision', {
         body: payload,
       });
@@ -247,8 +219,8 @@ const JobDecisionFilterPage: React.FC = () => {
       if (error) throw error;
 
       showSuccess(values.id ? 'Decision updated successfully!' : 'Decision saved successfully!', { id: toastId });
-      form.setValue('id', (data as SavedJobDecision).id); // Update form with new ID if it was an insert
-      await fetchSavedDecisions(); // Refresh the list of saved decisions
+      form.setValue('id', (data as SavedJobDecision).id);
+      await fetchSavedDecisions();
     } catch (error: any) {
       console.error('Error saving decision:', error);
       showError(`Failed to save decision: ${error.message}`, { id: toastId });
@@ -261,18 +233,21 @@ const JobDecisionFilterPage: React.FC = () => {
   const handleLoadDecision = (decisionId: string) => {
     const decisionToLoad = savedDecisions.find(d => d.id === decisionId);
     if (decisionToLoad) {
-      // FIX 4-11: Map snake_case from DB to camelCase for form
+      // FIX 10-28: Map snake_case from DB to camelCase for form
       form.reset({
         id: decisionToLoad.id,
         jobName: decisionToLoad.job_name,
-        effortToMoney: decisionToLoad.effort_to_money,
-        nervousSystemImpact: decisionToLoad.nervous_system_impact,
-        timeContainment: decisionToLoad.time_containment,
-        trajectoryValue: decisionToLoad.trajectory_value,
-        identityAlignment: decisionToLoad.identity_alignment,
-        energyTiming: decisionToLoad.energy_timing,
+        emr: { score: decisionToLoad.emr_score, details: decisionToLoad.emr_details || '' },
+        nsi: { score: decisionToLoad.nsi_score, details: decisionToLoad.nsi_details || '' },
+        tc: { score: decisionToLoad.tc_score, details: decisionToLoad.tc_details || '' },
+        tv: { score: decisionToLoad.tv_score, details: decisionToLoad.tv_details || '' },
+        ia: { score: decisionToLoad.ia_score, details: decisionToLoad.ia_details || '' },
+        et: { score: decisionToLoad.et_score, details: decisionToLoad.et_details || '' },
+        frs: { score: decisionToLoad.frs_score, details: decisionToLoad.frs_details || '' },
+        er: { score: decisionToLoad.er_score, details: decisionToLoad.er_details || '' },
+        cc: { score: decisionToLoad.cc_score, details: decisionToLoad.cc_details || '' },
       });
-      // FIX 12: Use job_name from DB
+      // FIX 29: Use job_name from DB
       showSuccess(`Loaded decision for "${decisionToLoad.job_name}".`);
     }
   };
@@ -288,7 +263,7 @@ const JobDecisionFilterPage: React.FC = () => {
         if (error) throw error;
 
         if (currentDecisionId === decisionId) {
-          handleReset(); // Clear form if the deleted decision was currently loaded
+          handleReset();
         }
         await fetchSavedDecisions();
         return 'Decision deleted successfully!';
@@ -309,19 +284,89 @@ const JobDecisionFilterPage: React.FC = () => {
     );
   };
 
+  // --- RENDER HELPERS ---
+  const renderFilterInput = (filter: FilterConfig) => {
+    // FIX 30 & 31: Use type assertion for dynamic field names
+    const scoreFieldName = `${filter.key}.score` as keyof JobDecisionFormValues;
+    const detailsFieldName = `${filter.key}.details` as keyof JobDecisionFormValues;
+
+    return (
+      <div key={filter.key} className="p-4 border border-brand-secondary/30 rounded-md bg-brand-secondary/10 dark:bg-brand-dark/30 space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold text-lg text-brand-primary flex items-center gap-2">
+            <filter.icon className="h-5 w-5" /> {filter.label}
+          </h3>
+          <Badge variant="outline" className="text-xs">Weight: {filter.weight}</Badge>
+        </div>
+        <p className="text-sm text-brand-dark/80 dark:text-brand-light/80 italic">{filter.description}</p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Score Selector */}
+          <FormField
+            control={form.control}
+            name={scoreFieldName}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-normal">Score (0-3)</FormLabel>
+                <Select onValueChange={(value) => field.onChange(parseInt(value))} value={String(field.value)}>
+                  <FormControl>
+                    <SelectTrigger className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light focus-visible:ring-brand-primary">
+                      <SelectValue placeholder="Select score" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50">
+                    {[0, 1, 2, 3].map(score => (
+                      <SelectItem key={score} value={String(score)}>{score}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Details Textarea */}
+          <FormField
+            control={form.control}
+            name={detailsFieldName}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-normal">Sub-factor Notes (Optional)</FormLabel>
+                <FormControl>
+                  {/* FIX 32: Ensure value is string for Textarea */}
+                  <Textarea
+                    placeholder="e.g., 2hr travel, high cognitive load..."
+                    className="resize-none h-10"
+                    value={field.value as string}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        {/* Sub-factors List */}
+        <div className="text-xs text-brand-dark/70 dark:text-brand-light/70 mt-2">
+          <span className="font-semibold">Sub-factors:</span> {filter.subFactors.join(', ')}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-8">
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Job Decision Filter</h2>
+        <div>
+          <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Daniele Decision Filter</h2>
+          <p className="text-sm text-brand-dark/70 dark:text-brand-light/70">Developer-style specification for opportunity evaluation.</p>
+        </div>
         <Button onClick={handleReset} variant="outline" className="text-brand-dark dark:text-brand-light border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50">
           <Calculator className="mr-2 h-4 w-4" /> {currentDecisionId ? 'New Decision' : 'Reset Scores'}
         </Button>
       </div>
-      <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
-        Use this filter to evaluate potential jobs based on Daniele's non-negotiable criteria.
-      </p>
 
-      {/* Load Existing Decisions */}
+      {/* Saved Decisions List */}
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
         <CardHeader>
           <CardTitle className="text-xl text-brand-primary flex items-center gap-2">
@@ -332,7 +377,6 @@ const JobDecisionFilterPage: React.FC = () => {
           {isLoadingDecisions ? (
             <div className="flex items-center justify-center h-24">
               <Loader2 className="h-8 w-8 animate-spin text-brand-primary" />
-              <span className="sr-only">Loading decisions...</span>
             </div>
           ) : savedDecisions.length === 0 ? (
             <p className="text-center text-brand-dark/70 dark:text-brand-light/70">No saved decisions found. Start by creating one!</p>
@@ -344,31 +388,18 @@ const JobDecisionFilterPage: React.FC = () => {
                   currentDecisionId === decision.id ? "border-brand-primary ring-2 ring-brand-primary/50" : "border-brand-secondary/30"
                 )}>
                   <div>
+                    {/* FIX 33: Use job_name from DB */}
                     <h3 className="font-semibold text-lg text-brand-primary">{decision.job_name}</h3>
                     <p className="text-sm text-brand-dark/80 dark:text-brand-light/80">
-                      Score: {decision.total_score} / 18 &bull; Decision: {decision.decision_output}
+                      Score: {decision.total_score} &bull; Decision: {decision.decision_output}
                     </p>
                     <p className="text-xs text-brand-dark/60 dark:text-brand-light/60">
                       Last updated: {new Date(decision.updated_at).toLocaleString()}
                     </p>
                   </div>
                   <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleLoadDecision(decision.id)}
-                      className="text-brand-dark dark:text-brand-light border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50"
-                    >
-                      Load
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDeleteDecision(decision.id)}
-                      className="bg-red-600 hover:bg-red-700 text-white"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleLoadDecision(decision.id)} className="text-brand-dark dark:text-brand-light border-brand-secondary/50 hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50">Load</Button>
+                    <Button variant="destructive" size="sm" onClick={() => handleDeleteDecision(decision.id)} className="bg-red-600 hover:bg-red-700 text-white"><Trash2 className="h-4 w-4" /></Button>
                   </div>
                 </div>
               ))}
@@ -377,10 +408,11 @@ const JobDecisionFilterPage: React.FC = () => {
         </CardContent>
       </Card>
 
+      {/* Main Scoring Form */}
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
         <CardHeader>
           <CardTitle className="text-xl text-brand-primary flex items-center gap-2">
-            <Calculator className="h-5 w-5" /> Score Your Job Opportunity
+            <Calculator className="h-5 w-5" /> Score Opportunity
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -391,71 +423,27 @@ const JobDecisionFilterPage: React.FC = () => {
                 name="jobName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-brand-dark dark:text-brand-light">Job Name *</FormLabel>
+                    <FormLabel className="text-brand-dark dark:text-brand-light">Opportunity Name *</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="e.g., Christmas Carols Gig"
-                        className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
-                        {...field}
-                      />
+                      <Input placeholder="e.g., Christmas Carols Gig" className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <Separator className="bg-brand-secondary/50" />
-              {criteria.map((criterion) => (
-                <div key={criterion.name} className="space-y-2 p-4 border border-brand-secondary/30 rounded-md bg-brand-secondary/10 dark:bg-brand-dark/30">
-                  <h3 className="font-semibold text-lg text-brand-primary flex items-center gap-2">
-                    <criterion.icon className="h-5 w-5" /> {criterion.label}
-                  </h3>
-                  <p className="text-brand-dark/80 dark:text-brand-light/80 italic">{criterion.question}</p>
-                  <FormField
-                    control={form.control}
-                    name={criterion.name as keyof JobDecisionFormValues}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="sr-only">Score for {criterion.label}</FormLabel>
-                        <Select onValueChange={(value) => field.onChange(parseInt(value))} value={String(field.value)}>
-                          <FormControl>
-                            <SelectTrigger className="w-full md:w-[300px] bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light focus-visible:ring-brand-primary">
-                              <SelectValue placeholder="Select a score" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent className="bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50">
-                            {criterion.scores.map((scoreOption) => (
-                              <SelectItem key={scoreOption.value} value={String(scoreOption.value)}>
-                                {scoreOption.value} - {scoreOption.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              ))}
-              <Button
-                type="submit"
-                className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
-                disabled={isSaving || !form.formState.isValid}
-              >
-                {isSaving ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
-                  </>
-                ) : (
-                  <>
-                    <Save className="mr-2 h-4 w-4" /> {currentDecisionId ? 'Update Decision' : 'Save Decision'}
-                  </>
-                )}
+              <div className="grid grid-cols-1 gap-6">
+                {filters.map(renderFilterInput)}
+              </div>
+              <Button type="submit" className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105" disabled={isSaving || !form.formState.isValid}>
+                {isSaving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</> : <><Save className="mr-2 h-4 w-4" /> {currentDecisionId ? 'Update Decision' : 'Save Decision'}</>}
               </Button>
             </form>
           </Form>
         </CardContent>
       </Card>
 
+      {/* Decision Output */}
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
         <CardHeader>
           <CardTitle className="text-xl text-brand-primary flex items-center gap-2">
@@ -463,10 +451,18 @@ const JobDecisionFilterPage: React.FC = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="text-center space-y-4">
-          <p className="text-2xl font-bold text-brand-dark dark:text-brand-light">
-            Total Score: <span className="text-brand-primary">{totalScore} / 18</span>
-          </p>
-          <Badge variant={decisionOutput.variant} className={cn("text-lg px-4 py-2", {
+          <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+            <div className="p-4 rounded-lg bg-brand-secondary/10 dark:bg-brand-dark/30">
+              <p className="text-sm text-brand-dark/70 dark:text-brand-light/70">Weighted Score</p>
+              <p className="text-2xl font-bold text-brand-primary">{totalScore}</p>
+            </div>
+            <div className="p-4 rounded-lg bg-brand-secondary/10 dark:bg-brand-dark/30">
+              <p className="text-sm text-brand-dark/70 dark:text-brand-light/70">Normalized (0-27)</p>
+              <p className="text-2xl font-bold text-brand-primary">{normalizedScore}</p>
+            </div>
+          </div>
+          {/* FIX 34-36: decisionOutput.variant is now correctly typed as 'default' | 'destructive' | 'outline' | 'secondary' */}
+          <Badge variant={decisionOutput.variant} className={cn("text-lg px-6 py-3", {
             'bg-brand-primary text-brand-light': decisionOutput.variant === 'default',
             'bg-brand-secondary text-brand-dark dark:text-brand-light': decisionOutput.variant === 'secondary',
             'bg-red-600 text-white': decisionOutput.variant === 'destructive',
@@ -474,16 +470,16 @@ const JobDecisionFilterPage: React.FC = () => {
             {decisionOutput.text}
           </Badge>
           <Separator className="max-w-xs mx-auto bg-brand-secondary my-4" />
-          <div className="text-sm text-brand-dark/70 dark:text-brand-light/70 space-y-2">
-            <p><strong>Rules Reminder:</strong></p>
-            <ul className="list-disc list-inside text-left max-w-md mx-auto">
-              <li>If Effort-to-Money score = 0, auto-no.</li>
-              <li>Any Nervous System Impact score = 0 must be paid at a premium or declined.</li>
-              <li>January–March: No Time Containment score = 0 allowed.</li>
-              <li>A Trajectory Value score = 0 requires exceptional pay to override.</li>
-              <li>If you feel relief imagining cancelling → it’s an Identity Alignment score of 1 or 0.</li>
-              <li>Anything post-7pm must score 3 elsewhere to survive Energy Timing.</li>
+          <div className="text-sm text-brand-dark/70 dark:text-brand-light/70 text-left">
+            <p className="font-semibold mb-2">Decision Logic:</p>
+            <ul className="list-disc list-inside space-y-1">
+              <li><strong>24+:</strong> Yes — clear go</li>
+              <li><strong>21–23:</strong> Yes — go with boundaries</li>
+              <li><strong>18–20:</strong> Yes — negotiate / minor tweaks</li>
+              <li><strong>15–17:</strong> Conditional — only if pay or schedule is improved</li>
+              <li><strong>&lt;15:</strong> No — reject / drop</li>
             </ul>
+            <p className="mt-3 italic">Note: Nervous System Impact (x1.5) and Trajectory Value (x2) are weighted higher.</p>
           </div>
         </CardContent>
       </Card>

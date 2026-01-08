@@ -13,7 +13,6 @@ serve(async (req: Request) => {
   }
 
   try {
-    // Authenticate the user using the JWT from the request header
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
@@ -33,7 +32,14 @@ serve(async (req: Request) => {
       });
     }
 
-    const { id, jobName, effortToMoney, nervousSystemImpact, timeContainment, trajectoryValue, identityAlignment, energyTiming, totalScore, decisionOutput } = await req.json();
+    const { 
+      id, 
+      jobName, 
+      emr_score, nsi_score, tc_score, tv_score, ia_score, et_score, frs_score, er_score, cc_score,
+      emr_details, nsi_details, tc_details, tv_details, ia_details, et_details, frs_details, er_details, cc_details,
+      totalScore, 
+      decisionOutput 
+    } = await req.json();
 
     if (!jobName || totalScore === undefined || !decisionOutput) {
       console.error("[save-job-decision] Missing required fields in payload.");
@@ -46,28 +52,23 @@ serve(async (req: Request) => {
     const decisionData = {
       user_id: user.id,
       job_name: jobName,
-      effort_to_money: effortToMoney,
-      nervous_system_impact: nervousSystemImpact,
-      time_containment: timeContainment,
-      trajectory_value: trajectoryValue,
-      identity_alignment: identityAlignment,
-      energy_timing: energyTiming,
+      emr_score, nsi_score, tc_score, tv_score, ia_score, et_score, frs_score, er_score, cc_score,
+      emr_details, nsi_details, tc_details, tv_details, ia_details, et_details, frs_details, er_details, cc_details,
       total_score: totalScore,
       decision_output: decisionOutput,
+      updated_at: new Date().toISOString(), // Manually set updated_at
     };
 
     let result;
     if (id) {
-      // Update existing decision
       result = await supabase
         .from('job_decisions')
-        .update({ ...decisionData, updated_at: new Date().toISOString() }) // Manually set updated_at
+        .update(decisionData)
         .eq('id', id)
         .select()
         .single();
       console.log(`[save-job-decision] Updated job decision ${id} for user ${user.id}.`);
     } else {
-      // Insert new decision
       result = await supabase
         .from('job_decisions')
         .insert(decisionData)

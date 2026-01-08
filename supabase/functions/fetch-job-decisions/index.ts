@@ -13,7 +13,6 @@ serve(async (req: Request) => {
   }
 
   try {
-    // Authenticate the user using the JWT from the request header
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
