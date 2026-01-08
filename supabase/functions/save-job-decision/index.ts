@@ -61,7 +61,7 @@ serve(async (req: Request) => {
       // Update existing decision
       result = await supabase
         .from('job_decisions')
-        .update(decisionData)
+        .update({ ...decisionData, updated_at: new Date().toISOString() }) // Manually set updated_at
         .eq('id', id)
         .select()
         .single();
