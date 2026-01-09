@@ -45,7 +45,7 @@ const formSchema = z.object({
 
 type JobDecisionFormValues = z.infer<typeof formSchema>;
 
-// FIX 2: Correct interface for DB data (snake_case)
+// Correct interface for DB data (snake_case)
 interface SavedJobDecision {
   id: string;
   user_id: string;
@@ -77,7 +77,7 @@ interface SavedJobDecision {
 // --- 2. FILTER CONFIGURATION ---
 
 interface FilterConfig {
-  key: keyof Omit<JobDecisionFormValues, 'id' | 'jobName'>; // Corrected key type
+  key: keyof Omit<JobDecisionFormValues, 'id' | 'jobName'>;
   label: string;
   icon: React.ElementType;
   description: string;
@@ -126,9 +126,8 @@ const JobDecisionFilterPage: React.FC = () => {
   const watchedFormValues = form.watch(); // Watch all form values for useMemo dependency
 
   // --- CALCULATIONS ---
-  // FIX 4 & 5: Correctly type the values and filterValue
   const { totalScore, normalizedScore, decisionOutput } = useMemo(() => {
-    const values = watchedFormValues; // Use watchedFormValues
+    const values = watchedFormValues;
     let weightedSum = 0;
     let totalWeight = 0;
 
@@ -141,9 +140,8 @@ const JobDecisionFilterPage: React.FC = () => {
     });
 
     const calculatedTotal = totalWeight > 0 ? Math.round((weightedSum / totalWeight) * 100) / 100 : 0;
-    const normalized = Math.round(calculatedTotal * filters.length); // FIX 2: Corrected calculation: multiply by number of filters (9)
+    const normalized = Math.round(calculatedTotal * filters.length); // Corrected calculation: multiply by number of filters (9)
 
-    // FIX 6-9: Define output type correctly
     type DecisionVariant = 'default' | 'destructive' | 'outline' | 'secondary';
     let output: { text: string; variant: DecisionVariant } = { text: 'Insufficient Data', variant: 'outline' };
     
@@ -234,7 +232,6 @@ const JobDecisionFilterPage: React.FC = () => {
   const handleLoadDecision = (decisionId: string) => {
     const decisionToLoad = savedDecisions.find(d => d.id === decisionId);
     if (decisionToLoad) {
-      // FIX 10-28: Map snake_case from DB to camelCase for form
       form.reset({
         id: decisionToLoad.id,
         jobName: decisionToLoad.job_name,
@@ -248,7 +245,6 @@ const JobDecisionFilterPage: React.FC = () => {
         er: { score: decisionToLoad.er_score, details: decisionToLoad.er_details || '' },
         cc: { score: decisionToLoad.cc_score, details: decisionToLoad.cc_details || '' },
       });
-      // FIX 29: Use job_name from DB
       showSuccess(`Loaded decision for "${decisionToLoad.job_name}".`);
     }
   };
@@ -287,7 +283,6 @@ const JobDecisionFilterPage: React.FC = () => {
 
   // --- RENDER HELPERS ---
   const renderFilterInput = (filter: FilterConfig) => {
-    // FIX 30 & 31: Use type assertion for dynamic field names
     const scoreFieldName = `${filter.key}.score` as keyof JobDecisionFormValues;
     const detailsFieldName = `${filter.key}.details` as keyof JobDecisionFormValues;
 
@@ -316,9 +311,10 @@ const JobDecisionFilterPage: React.FC = () => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50">
-                    {[0, 1, 2, 3].map(score => (
-                      <SelectItem key={score} value={String(score)}>{score}</SelectItem>
-                    ))}
+                    <SelectItem value="0">0 - Strongly Negative / Major Red Flag</SelectItem>
+                    <SelectItem value="1">1 - Slightly Negative / Minor Concern</SelectItem>
+                    <SelectItem value="2">2 - Slightly Positive / Minor Benefit</SelectItem>
+                    <SelectItem value="3">3 - Strongly Positive / Major Benefit</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -333,7 +329,6 @@ const JobDecisionFilterPage: React.FC = () => {
               <FormItem>
                 <FormLabel className="text-sm font-normal">Sub-factor Notes (Optional)</FormLabel>
                 <FormControl>
-                  {/* FIX 32: Ensure value is string for Textarea */}
                   <Textarea
                     placeholder="e.g., 2hr travel, high cognitive load..."
                     className="resize-none h-10"
@@ -389,7 +384,6 @@ const JobDecisionFilterPage: React.FC = () => {
                   currentDecisionId === decision.id ? "border-brand-primary ring-2 ring-brand-primary/50" : "border-brand-secondary/30"
                 )}>
                   <div>
-                    {/* FIX 33: Use job_name from DB */}
                     <h3 className="font-semibold text-lg text-brand-primary">{decision.job_name}</h3>
                     <p className="text-sm text-brand-dark/80 dark:text-brand-light/80">
                       Score: {decision.total_score} &bull; Decision: {decision.decision_output}
@@ -462,7 +456,6 @@ const JobDecisionFilterPage: React.FC = () => {
               <p className="text-2xl font-bold text-brand-primary">{normalizedScore}</p>
             </div>
           </div>
-          {/* FIX 34-36: decisionOutput.variant is now correctly typed as 'default' | 'destructive' | 'outline' | 'secondary' */}
           <Badge variant={decisionOutput.variant} className={cn("text-lg px-6 py-3", {
             'bg-brand-primary text-brand-light': decisionOutput.variant === 'default',
             'bg-brand-secondary text-brand-dark dark:text-brand-light': decisionOutput.variant === 'secondary',
