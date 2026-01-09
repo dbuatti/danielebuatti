@@ -12,14 +12,12 @@ serve(async (req: Request) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Log the incoming request
   console.log('[save-job-decision] Incoming request:', req.method, req.url);
 
   try {
-    // 1. Create Admin Client for secure database operations
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '', // Use Service Role for bypassing RLS
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
       {
         auth: {
           autoRefreshToken: false,
@@ -28,42 +26,28 @@ serve(async (req: Request) => {
       }
     );
 
-    // 2. Verify User Authentication
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
-      console.error('[save-job-decision] No Authorization header provided');
-      return new Response(JSON.stringify({ error: 'Unauthorized: No token provided' }), {
+      console.error('[save-job-decision] No Authorization header');
+      return new Response(JSON.stringify({ error: 'Unauthorized: No token' }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
     const token = authHeader.replace('Bearer ', '');
-    console.log('[save-job-decision] Token received, length:', token.length);
-    
     const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
     
-    if (authError) {
-      console.error('[save-job-decision] Auth error:', authError.message, authError.status);
-      return new Response(JSON.stringify({ error: 'Unauthorized: Invalid token', details: authError.message }), {
+    if (authError || !user) {
+      console.error('[save-job-decision] Auth failed:', authError?.message);
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    if (!user) {
-      console.error('[save-job-decision] No user found for token');
-      return new Response(JSON.stringify({ error: 'Unauthorized: No user found' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    console.log('[save-job-decision] User authenticated:', user.id);
-
-    // 3. Parse and Validate Payload
     const payload = await req.json();
-    console.log(`[save-job-decision] Payload received for user ${user.id}:`, JSON.stringify(payload));
+    console.log(`[save-job-decision] User ${user.id} payload:`, JSON.stringify(payload));
 
     const { 
       id, 
@@ -73,10 +57,9 @@ serve(async (req: Request) => {
       decisionOutput 
     } = payload;
 
-    // Validate required fields
     if (!jobName || totalScore === undefined || !decisionOutput) {
-      console.error("[save-job-decision] Missing required fields:", { jobName, totalScore, decisionOutput });
-      return new Response(JSON.stringify({ error: 'Missing required fields: jobName, totalScore, or decisionOutput' }), {
+      console.error("[save-job-decision] Missing fields:", { jobName, totalScore, decisionOutput });
+      return new Response(JSON.stringify({ error: 'Missing required fields' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -84,9 +67,7 @@ serve(async (req: Request) => {
 
     // Helper to safely extract score and details
     const parseFilterData = (filterData: any) => {
-      // Ensure score is a number, default to 0 if invalid
       const score = typeof filterData?.score === 'number' ? filterData.score : 0;
-      // Ensure details is a string, default to empty string if null/undefined
       const details = filterData?.details ? String(filterData.details) : '';
       return { score, details };
     };
@@ -101,7 +82,7 @@ serve(async (req: Request) => {
     const erData = parseFilterData(er);
     const ccData = parseFilterData(cc);
 
-    // 4. Prepare Database Data (Snake Case)
+    // Prepare data with explicit null handling for details
     const decisionData = {
       user_id: user.id,
       job_name: jobName,
@@ -114,51 +95,43 @@ serve(async (req: Request) => {
       frs_score: frsData.score,
       er_score: erData.score,
       cc_score: ccData.score,
-      emr_details: emrData.details,
-      nsi_details: nsiData.details,
-      tc_details: tcData.details,
-      tv_details: tvData.details,
-      ia_details: iaData.details,
-      et_details: etData.details,
-      frs_details: frsData.details,
-      er_details: erData.details,
-      cc_details: ccData.details,
+      emr_details: emrData.details || null,
+      nsi_details: nsiData.details || null,
+      tc_details: tcData.details || null,
+      tv_details: tvData.details || null,
+      ia_details: iaData.details || null,
+      et_details: etData.details || null,
+      frs_details: frsData.details || null,
+      er_details: erData.details || null,
+      cc_details: ccData.details || null,
       total_score: totalScore,
       decision_output: decisionOutput,
       updated_at: new Date().toISOString(),
     };
 
-    console.log('[save-job-decision] Prepared data:', JSON.stringify(decisionData));
-
-    // 5. Perform Database Operation
     let result;
     if (id) {
-      // Update existing
-      console.log('[save-job-decision] Attempting to update record:', id);
+      console.log('[save-job-decision] Updating record:', id);
       result = await supabaseAdmin
         .from('job_decisions')
         .update(decisionData)
         .eq('id', id)
-        .eq('user_id', user.id) // Security check: ensure user owns this record
+        .eq('user_id', user.id)
         .select()
         .single();
-      console.log(`[save-job-decision] Updated job decision ${id} for user ${user.id}.`);
     } else {
-      // Insert new
-      // Add created_at for new records
+      console.log('[save-job-decision] Inserting new record');
       decisionData.created_at = new Date().toISOString();
-      console.log('[save-job-decision] Attempting to insert new record');
       result = await supabaseAdmin
         .from('job_decisions')
         .insert(decisionData)
         .select()
         .single();
-      console.log(`[save-job-decision] Inserted new job decision for user ${user.id}.`);
     }
 
     if (result.error) {
-      console.error("[save-job-decision] Supabase operation error:", result.error.message, result.error);
-      throw new Error(`Failed to save job decision: ${result.error.message}`);
+      console.error("[save-job-decision] Database error:", result.error);
+      throw new Error(`Database error: ${result.error.message}`);
     }
 
     console.log('[save-job-decision] Success:', result.data);
