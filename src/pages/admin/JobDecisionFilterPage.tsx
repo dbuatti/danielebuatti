@@ -77,7 +77,7 @@ interface SavedJobDecision {
 // --- 2. FILTER CONFIGURATION ---
 
 interface FilterConfig {
-  key: keyof JobDecisionFormValues;
+  key: keyof Omit<JobDecisionFormValues, 'id' | 'jobName'>; // Corrected key type
   label: string;
   icon: React.ElementType;
   description: string;
@@ -123,11 +123,12 @@ const JobDecisionFilterPage: React.FC = () => {
   });
 
   const currentDecisionId = form.watch('id');
+  const watchedFormValues = form.watch(); // Watch all form values for useMemo dependency
 
   // --- CALCULATIONS ---
   // FIX 4 & 5: Correctly type the values and filterValue
   const { totalScore, normalizedScore, decisionOutput } = useMemo(() => {
-    const values = form.getValues();
+    const values = watchedFormValues; // Use watchedFormValues
     let weightedSum = 0;
     let totalWeight = 0;
 
@@ -140,7 +141,7 @@ const JobDecisionFilterPage: React.FC = () => {
     });
 
     const calculatedTotal = totalWeight > 0 ? Math.round((weightedSum / totalWeight) * 100) / 100 : 0;
-    const normalized = Math.round(calculatedTotal * 3);
+    const normalized = Math.round(calculatedTotal * filters.length); // FIX 2: Corrected calculation: multiply by number of filters (9)
 
     // FIX 6-9: Define output type correctly
     type DecisionVariant = 'default' | 'destructive' | 'outline' | 'secondary';
@@ -153,7 +154,7 @@ const JobDecisionFilterPage: React.FC = () => {
     else if (normalized >= 0) output = { text: 'No — Reject / Drop', variant: 'destructive' };
 
     return { totalScore: calculatedTotal, normalizedScore: normalized, decisionOutput: output };
-  }, [form]); // Added form as dependency
+  }, [watchedFormValues]); // Added watchedFormValues as dependency
 
   // --- DATA HANDLING ---
   const fetchSavedDecisions = useCallback(async () => {
