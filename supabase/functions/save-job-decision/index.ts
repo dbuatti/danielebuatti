@@ -126,6 +126,8 @@ serve(async (req: Request) => {
       console.log(`[save-job-decision] Updated job decision ${id} for user ${user.id}.`);
     } else {
       // Insert new
+      // Add created_at for new records
+      decisionData.created_at = new Date().toISOString();
       result = await supabaseAdmin
         .from('job_decisions')
         .insert(decisionData)
