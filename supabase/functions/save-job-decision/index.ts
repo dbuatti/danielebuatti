@@ -53,7 +53,7 @@ serve(async (req: Request) => {
       id, 
       jobName, 
       emr, nsi, tc, tv, ia, et, frs, er, cc,
-      totalScore, 
+      totalScore, // This is the float from the client
       decisionOutput 
     } = payload;
 
@@ -82,6 +82,9 @@ serve(async (req: Request) => {
     const erData = parseFilterData(er);
     const ccData = parseFilterData(cc);
 
+    // Ensure total_score is an integer for the database
+    const integerTotalScore = Math.round(totalScore);
+
     // Prepare data with explicit null handling for details
     const decisionData = {
       user_id: user.id,
@@ -104,7 +107,7 @@ serve(async (req: Request) => {
       frs_details: frsData.details || null,
       er_details: erData.details || null,
       cc_details: ccData.details || null,
-      total_score: totalScore,
+      total_score: integerTotalScore, // Use the rounded integer total score
       decision_output: decisionOutput,
       updated_at: new Date().toISOString(),
     };
@@ -131,6 +134,8 @@ serve(async (req: Request) => {
 
     if (result.error) {
       console.error("[save-job-decision] Database error:", result.error);
+      // Log the full error object for better debugging
+      console.error("[save-job-decision] Full Supabase error object:", JSON.stringify(result.error));
       throw new Error(`Database error: ${result.error.message}`);
     }
 
