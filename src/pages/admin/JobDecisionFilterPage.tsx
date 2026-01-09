@@ -153,7 +153,7 @@ const JobDecisionFilterPage: React.FC = () => {
     else if (normalized >= 0) output = { text: 'No — Reject / Drop', variant: 'destructive' };
 
     return { totalScore: calculatedTotal, normalizedScore: normalized, decisionOutput: output };
-  }, [form]);
+  }, [form]); // Added form as dependency
 
   // --- DATA HANDLING ---
   const fetchSavedDecisions = useCallback(async () => {
