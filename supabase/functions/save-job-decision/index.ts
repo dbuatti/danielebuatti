@@ -12,6 +12,9 @@ serve(async (req: Request) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Log the incoming request
+  console.log('[save-job-decision] Incoming request:', req.method, req.url);
+
   try {
     // 1. Create Admin Client for secure database operations
     const supabaseAdmin = createClient(
@@ -28,6 +31,7 @@ serve(async (req: Request) => {
     // 2. Verify User Authentication
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
+      console.error('[save-job-decision] No Authorization header provided');
       return new Response(JSON.stringify({ error: 'Unauthorized: No token provided' }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -35,15 +39,27 @@ serve(async (req: Request) => {
     }
 
     const token = authHeader.replace('Bearer ', '');
+    console.log('[save-job-decision] Token received, length:', token.length);
+    
     const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
     
-    if (authError || !user) {
-      console.error("[save-job-decision] Auth error:", authError?.message);
-      return new Response(JSON.stringify({ error: 'Unauthorized: Invalid token' }), {
+    if (authError) {
+      console.error('[save-job-decision] Auth error:', authError.message, authError.status);
+      return new Response(JSON.stringify({ error: 'Unauthorized: Invalid token', details: authError.message }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
+
+    if (!user) {
+      console.error('[save-job-decision] No user found for token');
+      return new Response(JSON.stringify({ error: 'Unauthorized: No user found' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    console.log('[save-job-decision] User authenticated:', user.id);
 
     // 3. Parse and Validate Payload
     const payload = await req.json();
@@ -112,10 +128,13 @@ serve(async (req: Request) => {
       updated_at: new Date().toISOString(),
     };
 
+    console.log('[save-job-decision] Prepared data:', JSON.stringify(decisionData));
+
     // 5. Perform Database Operation
     let result;
     if (id) {
       // Update existing
+      console.log('[save-job-decision] Attempting to update record:', id);
       result = await supabaseAdmin
         .from('job_decisions')
         .update(decisionData)
@@ -128,6 +147,7 @@ serve(async (req: Request) => {
       // Insert new
       // Add created_at for new records
       decisionData.created_at = new Date().toISOString();
+      console.log('[save-job-decision] Attempting to insert new record');
       result = await supabaseAdmin
         .from('job_decisions')
         .insert(decisionData)
@@ -137,9 +157,11 @@ serve(async (req: Request) => {
     }
 
     if (result.error) {
-      console.error("[save-job-decision] Supabase operation error:", result.error.message);
+      console.error("[save-job-decision] Supabase operation error:", result.error.message, result.error);
       throw new Error(`Failed to save job decision: ${result.error.message}`);
     }
+
+    console.log('[save-job-decision] Success:', result.data);
 
     return new Response(JSON.stringify(result.data), {
       status: 200,
