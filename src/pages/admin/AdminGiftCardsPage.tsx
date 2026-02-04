@@ -157,26 +157,19 @@ const AdminGiftCardsPage: React.FC = () => {
     const toastId = showLoading(`Sending confirmation email to ${card.email}...`);
 
     try {
-      const emailResponse = await fetch('/functions/v1/send-gift-card-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      // Use supabase.functions.invoke for correct Edge Function calling
+      const { error } = await supabase.functions.invoke('send-gift-card-email', {
+        body: {
           buyerEmail: card.email,
           giftCardName: card.name,
           value: card.value,
           redemptionCode: card.code,
           expirationDate: card.expiration_date || null,
           type: card.type,
-        }),
+        },
       });
 
-      if (!emailResponse.ok) {
-        const errorData = await emailResponse.json();
-        console.error('Failed to send gift card email:', errorData);
-        throw new Error(errorData.error || 'Email service error.');
-      }
+      if (error) throw error;
 
       showSuccess('Confirmation email sent successfully!', { id: toastId });
     } catch (error: any) {
@@ -264,25 +257,20 @@ const AdminGiftCardsPage: React.FC = () => {
 
       if (error) throw error;
 
-      // 2. Send the gift card email
-      const emailResponse = await fetch('/functions/v1/send-gift-card-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      // 2. Send the gift card email using invoke
+      const { error: emailError } = await supabase.functions.invoke('send-gift-card-email', {
+        body: {
           buyerEmail: values.email,
           giftCardName: values.name,
           value: values.value,
           redemptionCode: values.code,
           expirationDate: values.expiration_date || null,
           type: values.type,
-        }),
+        },
       });
 
-      if (!emailResponse.ok) {
-        const errorData = await emailResponse.json();
-        console.error('Failed to send gift card email:', errorData);
+      if (emailError) {
+        console.error('Failed to send gift card email:', emailError);
         // Log the error but don't fail the whole operation since the card is created
         showError('Gift card created, but failed to send confirmation email.', { id: toastId });
       } else {
