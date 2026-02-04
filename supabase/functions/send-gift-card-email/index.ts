@@ -31,8 +31,10 @@ serve(async (req: Request) => {
 
     const EMAIL_SERVICE_API_KEY = Deno.env.get('EMAIL_SERVICE_API_KEY');
     const EMAIL_SERVICE_ENDPOINT = Deno.env.get('EMAIL_SERVICE_ENDPOINT');
+    const CONTACT_FORM_RECIPIENT_EMAIL = Deno.env.get('CONTACT_FORM_RECIPIENT_EMAIL');
 
-    if (!EMAIL_SERVICE_API_KEY || !EMAIL_SERVICE_ENDPOINT) {
+
+    if (!EMAIL_SERVICE_API_KEY || !EMAIL_SERVICE_ENDPOINT || !CONTACT_FORM_RECIPIENT_EMAIL) {
       console.error("[send-gift-card-email] Missing email service environment variables.");
       return new Response(JSON.stringify({ error: 'Server configuration error: Missing email service credentials.' }), {
         status: 500,
@@ -83,7 +85,7 @@ serve(async (req: Request) => {
           <p style="font-size: 16px; line-height: 1.6; margin-bottom: 10px;">Dear Customer,</p>
           ${giftCardDetailsHtml}
           <p style="font-size: 16px; line-height: 1.6; margin-top: 20px;">
-            To redeem your gift card, please visit my <a href="https://danielebuatti.as.me/" style="color: #DB4CA3; text-decoration: none;">booking page</a> and enter your redemption code in the 'Gift Card / Promo Code' field during checkout.
+            To redeem your gift card, please visit my <a href="https://danielebuatti.com/booking" style="color: #DB4CA3; text-decoration: none;">booking page</a> and enter your redemption code in the 'Gift Card / Promo Code' field during checkout.
           </p>
           <p style="font-size: 14px; color: #666666; text-align: center; margin-top: 30px;">
             If you have any questions, please reply to this email.
@@ -116,6 +118,7 @@ serve(async (req: Request) => {
         to: buyerEmail,
         subject: subject,
         html: emailHtml,
+        bcc: CONTACT_FORM_RECIPIENT_EMAIL, // BCC added here
       }),
     });
 
