@@ -44,7 +44,18 @@ serve(async (req: Request) => {
 
     const subject = `Your Daniele Buatti Gift Card: ${giftCardName}`;
     const formattedValue = `A$${value.toFixed(2)}`;
-    const formattedExpiration = expirationDate ? new Date(expirationDate).toLocaleDateString('en-AU') : 'Never expires';
+    
+    let formattedExpiration = 'Never expires';
+    if (expirationDate) {
+        try {
+            const date = new Date(expirationDate);
+            if (!isNaN(date.getTime())) {
+                formattedExpiration = date.toLocaleDateString('en-AU');
+            }
+        } catch (e) {
+            // Ignore parsing error, keep default 'Never expires'
+        }
+    }
 
     let giftCardDetailsHtml = `
       <p style="font-size: 16px; line-height: 1.6; margin-bottom: 10px;">
