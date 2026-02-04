@@ -227,7 +227,31 @@ const AdminGiftCardsPage: React.FC = () => {
 
       if (error) throw error;
 
-      showSuccess('Gift card created successfully!', { id: toastId });
+      // 2. Send the gift card email
+      const emailResponse = await fetch('/functions/v1/send-gift-card-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          buyerEmail: values.email,
+          giftCardName: values.name,
+          value: values.value,
+          redemptionCode: values.code,
+          expirationDate: values.expiration_date || null,
+          type: values.type,
+        }),
+      });
+
+      if (!emailResponse.ok) {
+        const errorData = await emailResponse.json();
+        console.error('Failed to send gift card email:', errorData);
+        // Log the error but don't fail the whole operation since the card is created
+        showError('Gift card created, but failed to send confirmation email.', { id: toastId });
+      } else {
+        showSuccess('Gift card created and confirmation email sent!', { id: toastId });
+      }
+
       setIsCreateModalOpen(false);
       fetchGiftCards(); // Refresh the list
     } catch (error: any) {
