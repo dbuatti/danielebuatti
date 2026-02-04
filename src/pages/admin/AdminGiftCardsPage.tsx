@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns';
-import { Loader2, Gift, CheckCircle, Edit, Trash2, PlusCircle, Link as LinkIcon } from 'lucide-react';
+import { Loader2, Gift, CheckCircle, Edit, Trash2, PlusCircle, Link as LinkIcon, Mail } from 'lucide-react';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
@@ -153,6 +153,40 @@ const AdminGiftCardsPage: React.FC = () => {
     );
   };
 
+  const handleSendEmail = async (card: GiftCard) => {
+    const toastId = showLoading(`Sending confirmation email to ${card.email}...`);
+
+    try {
+      const emailResponse = await fetch('/functions/v1/send-gift-card-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          buyerEmail: card.email,
+          giftCardName: card.name,
+          value: card.value,
+          redemptionCode: card.code,
+          expirationDate: card.expiration_date || null,
+          type: card.type,
+        }),
+      });
+
+      if (!emailResponse.ok) {
+        const errorData = await emailResponse.json();
+        console.error('Failed to send gift card email:', errorData);
+        throw new Error(errorData.error || 'Email service error.');
+      }
+
+      showSuccess('Confirmation email sent successfully!', { id: toastId });
+    } catch (error: any) {
+      console.error('Error sending gift card email:', error);
+      showError(`Failed to send email: ${error.message}`, { id: toastId });
+    } finally {
+      dismissToast(toastId);
+    }
+  };
+
   const openEditModal = (card: GiftCard) => {
     setEditingGiftCard(card);
     setIsEditModalOpen(true);
@@ -182,6 +216,7 @@ const AdminGiftCardsPage: React.FC = () => {
           notes: values.notes || null,
           stripe_payment_link: values.stripe_payment_link || null,
           manual_redeemed: values.manual_redeemed,
+          stripe_checkout_session_id: values.stripe_checkout_session_id || null,
           // redeemed_at and session_booked are updated via specific actions or manually in the UI
         })
         .eq('id', editingGiftCard.id);
@@ -205,6 +240,7 @@ const AdminGiftCardsPage: React.FC = () => {
     const toastId = showLoading('Creating new gift card...');
 
     try {
+      // 1. Insert into DB
       const { error } = await supabase
         .from('gift_cards')
         .insert({
@@ -222,6 +258,7 @@ const AdminGiftCardsPage: React.FC = () => {
           notes: values.notes || null,
           stripe_payment_link: values.stripe_payment_link || null,
           manual_redeemed: values.manual_redeemed,
+          stripe_checkout_session_id: values.stripe_checkout_session_id || null,
           status: 'active', // New gift cards are always active
         });
 
@@ -262,8 +299,6 @@ const AdminGiftCardsPage: React.FC = () => {
       dismissToast(toastId);
     }
   };
-
-  // Removed getStatusBadgeVariant as it's no longer used directly in the table
   
   const getRedemptionStatusBadgeVariant = (status: GiftCard['redemption_status']) => {
     switch (status) {
@@ -392,7 +427,7 @@ const AdminGiftCardsPage: React.FC = () => {
                     <TableHead className="text-brand-primary">Remaining</TableHead>
                     <TableHead className="text-brand-primary">Session Booked</TableHead>
                     <TableHead className="text-brand-primary">Notes</TableHead>
-                    <TableHead className="text-brand-primary">Stripe Session ID</TableHead> {/* NEW COLUMN */}
+                    <TableHead className="text-brand-primary">Stripe Session ID</TableHead>
                     <TableHead className="text-brand-primary text-center">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -437,6 +472,15 @@ const AdminGiftCardsPage: React.FC = () => {
                         ) : 'N/A'}
                       </TableCell>
                       <TableCell className="text-center flex gap-2 justify-center">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleSendEmail(card)}
+                          className="text-blue-600 border-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900/50"
+                          title="Resend Confirmation Email"
+                        >
+                          <Mail className="h-4 w-4" />
+                        </Button>
                         {card.redemption_status !== 'redeemed' && (
                           <Button
                             variant="outline"
