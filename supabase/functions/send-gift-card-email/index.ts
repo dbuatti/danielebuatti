@@ -117,6 +117,9 @@ serve(async (req: Request) => {
         </div>
       </div>
     `;
+    
+    // Log the BCC recipient before sending
+    console.log(`[send-gift-card-email] Attempting to send email to ${buyerEmail} with BCC to ${CONTACT_FORM_RECIPIENT_EMAIL}`);
 
     const emailResponse = await fetch(EMAIL_SERVICE_ENDPOINT, {
       method: 'POST',
@@ -139,7 +142,7 @@ serve(async (req: Request) => {
       throw new Error(`Failed to send email: ${emailResponse.statusText} - ${JSON.stringify(errorData)}`);
     }
 
-    console.log(`[send-gift-card-email] Gift card confirmation email sent successfully to ${buyerEmail}!`);
+    console.log(`[send-gift-card-email] Gift card confirmation email sent successfully to ${buyerEmail} (BCC attempted).`);
 
     return new Response(JSON.stringify({ message: `Gift card confirmation email sent to ${buyerEmail}` }), {
       status: 200,
