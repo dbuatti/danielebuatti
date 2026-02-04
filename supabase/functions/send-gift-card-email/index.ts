@@ -118,8 +118,16 @@ serve(async (req: Request) => {
       </div>
     `;
     
-    // Log the BCC recipient before sending
-    console.log(`[send-gift-card-email] Attempting to send email to ${buyerEmail} with BCC to ${CONTACT_FORM_RECIPIENT_EMAIL}`);
+    const emailPayload = {
+        from: 'info@danielebuatti.com',
+        to: buyerEmail,
+        subject: subject,
+        html: emailHtml,
+        bcc: CONTACT_FORM_RECIPIENT_EMAIL,
+    };
+
+    // Log the full payload being sent (excluding HTML body for brevity)
+    console.log(`[send-gift-card-email] Sending payload to ${EMAIL_SERVICE_ENDPOINT}:`, JSON.stringify({ ...emailPayload, html: '[...html content excluded for log brevity...]' }));
 
     const emailResponse = await fetch(EMAIL_SERVICE_ENDPOINT, {
       method: 'POST',
@@ -127,13 +135,7 @@ serve(async (req: Request) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${EMAIL_SERVICE_API_KEY}`,
       },
-      body: JSON.stringify({
-        from: 'info@danielebuatti.com',
-        to: buyerEmail,
-        subject: subject,
-        html: emailHtml,
-        bcc: CONTACT_FORM_RECIPIENT_EMAIL, // BCC added here
-      }),
+      body: JSON.stringify(emailPayload),
     });
 
     if (!emailResponse.ok) {
