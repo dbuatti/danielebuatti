@@ -102,7 +102,7 @@ serve(async (req: Request) => {
             If you have any questions, please reply to this email.
           </p>
           <div style="text-align: center; padding: 20px 0; border-top: 1px solid #EEEEEE; margin-top: 20px;">
-            <img src="https://danielebuatti.com/logo-pinkwhite.png" alt="Daniele Buatti Logo" style="height: 40px; width: auto; margin-bottom: 10px; max-width: 100%; display: block; margin: 0 auto 10px auto;" />
+            <img src="https://danielebuatti.com/blue-pink-ontrans.png" alt="Daniele Buatti Logo" style="height: 40px; width: auto; margin-bottom: 10px; max-width: 100%; display: block; margin: 0 auto 10px auto;" />
             <p style="font-size: 14px; color: #666666; margin: 5px 0;">
               Embodied Coaching for Performers & Communicators
             </p>
