@@ -123,7 +123,7 @@ serve(async (req: Request) => {
         to: buyerEmail,
         subject: subject,
         html: emailHtml,
-        bcc: CONTACT_FORM_RECIPIENT_EMAIL,
+        bcc: [CONTACT_FORM_RECIPIENT_EMAIL],
     };
 
     // Log the full payload being sent (excluding HTML body for brevity)
