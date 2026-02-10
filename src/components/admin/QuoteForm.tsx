@@ -11,9 +11,9 @@ import { Plus, Trash2, Eye, Save, Send, RotateCcw } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { cn, formatCurrency } from '@/lib/utils';
 import { useMemo } from 'react';
-import PillToggle from './PillToggle';
 import RichTextPreview from './RichTextPreview';
-import { calculateQuoteTotal, calculatePreDiscountTotal } from '@/lib/quote-utils'; // Import both calculation utilities
+import { calculateQuoteTotal, calculatePreDiscountTotal } from '@/lib/quote-utils';
+import QuoteItemForm from './QuoteItemForm'; // NEW IMPORT
 
 // Define the schema for a single item (compulsory or add-on)
 const ItemSchema = z.object({
@@ -108,9 +108,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
     const values = getValues(); // Get current form values for calculation
     const currencySymbol = values.currencySymbol || '£';
     const depositPercentage = values.depositPercentage || 0;
-    // Removed local declarations of discountPercentage and discountAmount
-    // const discountPercentage = values.discountPercentage || 0;
-    // const discountAmount = values.discountAmount || 0;
 
     const preDiscountTotal = calculatePreDiscountTotal(values.compulsoryItems, values.addOns);
     const totalAmount = calculateQuoteTotal(values);
@@ -496,118 +493,13 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
         <h3 className="text-lg font-semibold">Compulsory Items (Fixed Fees) *</h3>
         <div className="space-y-4">
           {compulsoryFields.map((field, index) => (
-            <div key={field.id} className="flex flex-col space-y-4 p-4 border rounded-md bg-brand-secondary/5 dark:bg-brand-dark/30">
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 w-full">
-                <FormField
-                  control={control}
-                  name={`compulsoryItems.${index}.name`}
-                  render={({ field: itemField }) => (
-                    <FormItem>
-                      <FormLabel>Item Name *</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Service Fee" {...itemField} className={inputClasses} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={control}
-                  name={`compulsoryItems.${index}.description`}
-                  render={({ field: itemField }) => (
-                    <FormItem className="md:col-span-2">
-                      <FormLabel>Detailed Description (Optional)</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Detailed description of the service."
-                          {...itemField}
-                          rows={2}
-                          className={inputClasses}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={control}
-                  name={`compulsoryItems.${index}.scheduleDates`}
-                  render={({ field: itemField }) => (
-                    <FormItem>
-                      <FormLabel>Schedule / Dates</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g., 2025-12-11" {...itemField} className={inputClasses} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={control}
-                    name={`compulsoryItems.${index}.price`}
-                    render={({ field: itemField }) => (
-                      <FormItem>
-                        <FormLabel>Rate (per unit) *</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            placeholder="1000"
-                            {...itemField}
-                            onChange={e => itemField.onChange(parseFloat(e.target.value) || 0)}
-                            className={inputClasses}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={control}
-                    name={`compulsoryItems.${index}.quantity`}
-                    render={({ field: itemField }) => (
-                      <FormItem>
-                        <FormLabel>Quantity *</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            placeholder="1"
-                            {...itemField}
-                            onChange={e => itemField.onChange(parseInt(e.target.value) || 1)}
-                            className={inputClasses}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-
-              {/* Item Toggles and Delete Button */}
-              <div className="flex flex-col md:flex-row justify-between items-center gap-2 pt-2 border-t border-brand-secondary/20 md:border-none md:pt-0">
-                <div className="flex flex-wrap justify-start gap-2">
-                    <PillToggle name={`compulsoryItems.${index}.showScheduleDates`} label="Schedule" />
-                    <PillToggle name={`compulsoryItems.${index}.showQuantity`} label="Qty" />
-                    <PillToggle name={`compulsoryItems.${index}.showRate`} label="Rate" />
-                </div>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={() => removeCompulsory(index)}
-                  disabled={compulsoryFields.length === 1}
-                  className="w-full md:w-auto"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-
-              {/* Live Preview for Description */}
-              <div className="md:col-span-5">
-                <FormLabel className="text-sm font-normal text-brand-dark/70 dark:text-brand-light/70">Description Preview:</FormLabel>
-                <RichTextPreview text={form.watch(`compulsoryItems.${index}.description`) || ''} />
-              </div>
-            </div>
+            <QuoteItemForm
+              key={field.id}
+              index={index}
+              type="compulsoryItems"
+              onRemove={removeCompulsory}
+              isRemovable={compulsoryFields.length > 1}
+            />
           ))}
           <Button
             type="button"
@@ -625,117 +517,13 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ form, onCreateAndSend, isSubmitti
         <h3 className="text-lg font-semibold">Optional Add-Ons (Quantity/Price)</h3>
         <div className="space-y-4">
           {addOnFields.map((field, index) => (
-            <div key={field.id} className="flex flex-col space-y-4 p-4 border rounded-md bg-brand-secondary/5 dark:bg-brand-dark/30">
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 w-full">
-                <FormField
-                  control={control}
-                  name={`addOns.${index}.name`}
-                  render={({ field: itemField }) => (
-                    <FormItem>
-                      <FormLabel>Item Name *</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Extra Hour" {...itemField} className={inputClasses} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={control}
-                  name={`addOns.${index}.description`}
-                  render={({ field: itemField }) => (
-                    <FormItem className="md:col-span-2">
-                      <FormLabel>Detailed Description (Optional)</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Description of the add-on service."
-                          {...itemField}
-                          rows={2}
-                          className={inputClasses}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={control}
-                  name={`addOns.${index}.scheduleDates`}
-                  render={({ field: itemField }) => (
-                    <FormItem>
-                      <FormLabel>Schedule / Dates</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g., 2025-12-11" {...itemField} className={inputClasses} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={control}
-                    name={`addOns.${index}.price`}
-                    render={({ field: itemField }) => (
-                      <FormItem>
-                        <FormLabel>Rate (per unit) *</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            placeholder="200"
-                            {...itemField}
-                            onChange={e => itemField.onChange(parseFloat(e.target.value) || 0)}
-                            className={inputClasses}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={control}
-                    name={`addOns.${index}.quantity`}
-                    render={({ field: itemField }) => (
-                      <FormItem>
-                        <FormLabel>Quantity (Default)</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            placeholder="0"
-                            {...itemField}
-                            onChange={e => itemField.onChange(parseInt(e.target.value) || 0)}
-                            className={inputClasses}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-
-              {/* Item Toggles and Delete Button */}
-              <div className="flex flex-col md:flex-row justify-between items-center gap-2 pt-2 border-t border-brand-secondary/20 md:border-none md:pt-0">
-                <div className="flex flex-wrap justify-start gap-2">
-                    <PillToggle name={`addOns.${index}.showScheduleDates`} label="Schedule" />
-                    <PillToggle name={`addOns.${index}.showQuantity`} label="Qty" />
-                    <PillToggle name={`addOns.${index}.showRate`} label="Rate" />
-                </div>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={() => removeAddOn(index)}
-                  className="w-full md:w-auto"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-
-              {/* Live Preview for Description */}
-              <div className="md:col-span-5">
-                <FormLabel className="text-sm font-normal text-brand-dark/70 dark:text-brand-light/70">Description Preview:</FormLabel>
-                <RichTextPreview text={form.watch(`addOns.${index}.description`) || ''} />
-              </div>
-            </div>
+            <QuoteItemForm
+              key={field.id}
+              index={index}
+              type="addOns"
+              onRemove={removeAddOn}
+              isRemovable={true} // Add-ons are always removable
+            />
           ))}
           <Button
             type="button"

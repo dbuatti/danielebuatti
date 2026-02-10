@@ -13,17 +13,13 @@ import { toast } from 'sonner';
 import { Quote } from '@/types/quote'; // Import Quote interface
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { calculateQuoteTotal } from '@/lib/quote-utils'; // Import calculation utility
+import { QuoteFormValues } from '@/components/admin/QuoteForm'; // Import QuoteFormValues
 
 interface Draft {
   id: string;
   title: string;
-  data: {
-    clientName: string;
-    invoiceType: string;
-    eventDate: string;
-    compulsoryItems: { price: number; quantity: number }[];
-    addOns: { price: number; quantity: number }[];
-  };
+  data: QuoteFormValues; // Use the full QuoteFormValues type
   updated_at: string;
 }
 
@@ -44,10 +40,8 @@ const AdminQuotesPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const calculateDraftTotal = (draft: Draft): number => {
-    const compulsoryTotal = draft.data.compulsoryItems.reduce((sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1), 0);
-    const addOnTotal = draft.data.addOns?.reduce((sum: number, addOn) => 
-      sum + ((addOn.price ?? 0) * (addOn.quantity ?? 0)), 0) || 0;
-    return compulsoryTotal + addOnTotal;
+    // Use the centralized utility function for accurate total calculation (including discounts)
+    return calculateQuoteTotal(draft.data);
   };
 
   const fetchQuotesAndDrafts = async () => {

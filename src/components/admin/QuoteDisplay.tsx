@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button';
 import { Minus, Plus, FileText, Tag } from 'lucide-react'; // Added Tag icon for discount badge
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge'; // Import Badge
+import { renderQuoteRichText } from '@/lib/rich-text-utils'; // NEW IMPORT
 
 interface QuoteDisplayProps {
   quote: Quote;
@@ -37,60 +38,6 @@ const formatDate = (dateString: string | undefined, formatStr: string = 'PPP') =
     // Handle non-standard date strings (like "15–18 June")
     return dateString;
   }
-};
-
-// Helper function to parse simple markdown lists (using - or *)
-const renderRichText = (text: string, themeClasses: any) => {
-  if (!text) return null;
-
-  const lines = text.split('\n');
-  let inList = false;
-  const elements: React.ReactNode[] = [];
-  let currentListItems: React.ReactNode[] = [];
-
-  const processList = () => {
-    if (currentListItems.length > 0) {
-      elements.push(
-        <ul key={elements.length} className={`list-disc list-inside ml-4 space-y-1 ${themeClasses.secondary}`}>
-          {currentListItems}
-        </ul>
-      );
-      currentListItems = [];
-    }
-  };
-
-  lines.forEach((line, index) => {
-    const trimmedLine = line.trim();
-    const isListItem = trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ');
-
-    if (isListItem) {
-      if (!inList) {
-        inList = true;
-      }
-      const content = trimmedLine.substring(2).trim();
-      currentListItems.push(<li key={index}>{content}</li>);
-    } else {
-      if (inList) {
-        processList();
-        inList = false;
-      }
-      if (trimmedLine) {
-        // Render as a paragraph, preserving line breaks within the paragraph using pre-wrap
-        elements.push(
-          <p key={index} className={`whitespace-pre-wrap ${themeClasses.secondary}`}>
-            {line}
-          </p>
-        );
-      } else {
-        // Preserve empty lines as breaks
-        elements.push(<br key={index} />);
-      }
-    }
-  });
-
-  processList(); // Process any remaining list items
-
-  return <>{elements}</>;
 };
 
 // Helper component for rendering a single item row (used only for desktop table view)
@@ -152,7 +99,7 @@ const QuoteItemRow: React.FC<{
         {item.name}
         {item.description && (
           <div className={`text-sm mt-1`}>
-            {renderRichText(item.description, themeClasses)}
+            {renderQuoteRichText(item.description, themeClasses)}
           </div>
         )}
       </TableCell>
@@ -623,7 +570,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         <div className={`pt-4 border-t border-current/20`}>
           <h3 className={`text-xl font-semibold mb-2 ${themeClasses.primary}`}>Preparation & Service Notes</h3>
           <div className={`text-sm ${themeClasses.secondary}`}>
-            {renderRichText(preparationNotes, themeClasses)}
+            {renderQuoteRichText(preparationNotes, themeClasses)}
           </div>
         </div>
       )}
