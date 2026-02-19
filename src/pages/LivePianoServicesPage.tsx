@@ -160,15 +160,15 @@ const LivePianoServicesPage: React.FC = () => {
           </div>
 
           <DynamicImage 
-            src="/gold-36.png" 
-            alt="Daniele Buatti Logo" 
-            className="h-16 md:h-20 mx-auto mb-12 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)]" 
-            width={80} 
-            height={80} 
+            src="/logo-piano-white-44.png" 
+            alt="Daniele Buatti Piano Logo" 
+            className="h-24 md:h-32 mx-auto mb-12 drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]" 
+            width={128} 
+            height={128} 
             href="/" 
           />
           
-          <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-extralight tracking-[0.25em] uppercase text-white mb-8 whitespace-nowrap">
+          <h1 className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-extralight tracking-[0.15em] uppercase text-white mb-8 whitespace-nowrap">
             DANIELE BUATTI
           </h1>
 
