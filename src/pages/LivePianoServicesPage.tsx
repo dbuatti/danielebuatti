@@ -153,7 +153,7 @@ const LivePianoServicesPage: React.FC = () => {
             className="h-24 md:h-32 mx-auto mb-6 drop-shadow-2xl" 
             width={128} 
             height={128} 
-            href="/" // Added href prop here
+            href="/" 
           />
           <h1 className="text-5xl md:text-7xl font-light tracking-widest uppercase font-montserrat text-white">
             DANIELE BUATTI
@@ -169,7 +169,9 @@ const LivePianoServicesPage: React.FC = () => {
           <p className="text-2xl md:text-4xl font-libre-baskerville italic text-white">
             Pianist & Vocalist
           </p>
-          <p className="text-lg md:text-xl mt-4 text-gray-300 max-w-2xl mx-auto font-light">Live piano and vocals for elegant, considered events.</p>
+          <p className="text-lg md:text-xl mt-4 text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
+            Sophisticated musical curation for elegant weddings, <br className="hidden md:block" /> high-tier galas, and intimate private soirées.
+          </p>
         </motion.div>
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-[pulse_3s_ease-in-out_infinite]">
           <div className="w-8 h-12 border-2 border-white/50 rounded-full flex justify-center">
