@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
-import { Mail, Phone, Play } from 'lucide-react';
+import { Mail, Phone, Play, ArrowLeft, Music, Star } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { 
@@ -30,7 +31,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import DynamicImage from "@/components/DynamicImage";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
@@ -114,76 +115,126 @@ const LivePianoServicesPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden">
+    <div className="min-h-screen bg-black text-white overflow-x-hidden selection:bg-yellow-500/30 selection:text-yellow-200">
+      {/* Navigation Overlay */}
+      <nav className="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center pointer-events-none">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }} 
+          animate={{ opacity: 1, x: 0 }} 
+          className="pointer-events-auto"
+        >
+          <Button asChild variant="ghost" className="text-white/70 hover:text-white hover:bg-white/10 rounded-full gap-2 backdrop-blur-sm">
+            <Link to="/">
+              <ArrowLeft className="w-4 h-4" /> Back to Home
+            </Link>
+          </Button>
+        </motion.div>
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }} 
+          animate={{ opacity: 1, x: 0 }} 
+          className="pointer-events-auto"
+        >
+          <Button asChild className="bg-yellow-500 hover:bg-yellow-400 text-black font-semibold rounded-full shadow-lg shadow-yellow-500/20">
+            <a href="#enquire">Enquire Now</a>
+          </Button>
+        </motion.div>
+      </nav>
+
       {/* Hero Section */}
       <header className="relative w-full h-screen flex items-center justify-center overflow-hidden">
-        <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover brightness-75">
+        <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover brightness-[0.6]">
           <source src="/Daniele Buatti - Gatsby Event Gala 1.mov" type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-        <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.5, ease: "easeOut" }} className="relative z-10 text-center px-6">
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+        
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 1.2, ease: "easeOut" }} 
+          className="relative z-10 text-center px-6 max-w-4xl"
+        >
+          <div className="flex items-center justify-center gap-3 mb-8 opacity-80">
+            <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+            <span className="text-xs uppercase tracking-[0.4em] font-medium text-white/90">Signature Live Performance</span>
+            <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+          </div>
+
           <DynamicImage 
             src="/gold-36.png" 
             alt="Daniele Buatti Logo" 
-            className="h-24 md:h-32 mx-auto mb-6 drop-shadow-2xl" 
-            width={128} 
-            height={128} 
+            className="h-20 md:h-28 mx-auto mb-8 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)]" 
+            width={112} 
+            height={112} 
             href="/" 
           />
-          <h1 className="text-5xl md:text-7xl font-light tracking-widest uppercase font-montserrat text-white">
-            DANIELE BUATTI
+          
+          <h1 className="text-5xl md:text-8xl font-light tracking-[0.15em] uppercase font-montserrat text-white mb-4">
+            DANIELE <span className="font-bold text-yellow-500/90">BUATTI</span>
           </h1>
 
           <motion.div
             initial={{ scaleX: 0, opacity: 0 }}
             animate={{ scaleX: 1, opacity: 1 }}
             transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.6 }}
-            className="origin-center mx-auto my-6 h-[2px] w-32 md:w-48 rounded-full bg-gradient-to-r from-transparent via-yellow-400 to-transparent shadow-[0_0_20px_rgba(234,179,8,0.45)]"
+            className="origin-center mx-auto my-8 h-[1px] w-48 md:w-64 bg-gradient-to-r from-transparent via-yellow-500/50 to-transparent"
           />
 
-          <p className="text-2xl md:text-4xl font-libre-baskerville italic text-white">
+          <p className="text-2xl md:text-4xl font-libre-baskerville italic text-white/90 mb-6">
             Pianist & Vocalist
           </p>
-          <p className="text-lg md:text-xl mt-4 text-gray-300 max-w-2xl mx-auto font-light">Live piano and vocals for elegant, considered events.</p>
+          <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
+            Sophisticated musical curation for elegant weddings, <br className="hidden md:block" /> high-tier galas, and intimate private soirées.
+          </p>
         </motion.div>
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-[pulse_3s_ease-in-out_infinite]">
-          <div className="w-8 h-12 border-2 border-white/50 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white/70 rounded-full mt-3 animate-pulse" />
-          </div>
+
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 opacity-50">
+          <span className="text-[10px] uppercase tracking-[0.3em]">Scroll to explore</span>
+          <div className="w-[1px] h-12 bg-gradient-to-b from-white to-transparent" />
         </div>
       </header>
 
       {/* Gallery Section */}
-      <section className="py-24 px-4 max-w-7xl mx-auto">
-        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1 }} className="mb-16 text-center">
+      <section className="py-32 px-4 max-w-7xl mx-auto">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }} 
+          whileInView={{ opacity: 1, y: 0 }} 
+          viewport={{ once: true }} 
+          transition={{ duration: 0.8 }} 
+          className="mb-20 text-center"
+        >
           <h2 className="text-4xl md:text-6xl font-libre-baskerville text-white mb-6">Moments of Elegance</h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Captured performances at prestigious weddings, galas, and private events across Australia
+          <div className="w-20 h-[2px] bg-yellow-500/40 mx-auto mb-8" />
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto font-light">
+            A visual journey through prestigious performances across Australia's most iconic venues.
           </p>
         </motion.div>
 
-        <motion.div
-          key={selectedIndex}
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          className="relative mb-12 rounded-2xl overflow-hidden shadow-2xl bg-black"
-        >
-          {currentItem.type === "video" ? (
-            <>
-              <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover blur-3xl scale-150 opacity-60">
-                <source src={currentItem.src} type="video/mp4" />
-              </video>
-              <div className="relative flex items-center justify-center w-full h-[60vh] md:h-[80vh]">
-                <video autoPlay loop muted playsInline className="max-w-full max-h-full object-contain">
-                  <source src={currentItem.src} type="video/mp4" />
-                </video>
-              </div>
-            </>
-          ) : (
-            <img src={currentItem.src} alt="Featured performance" className="w-full h-[60vh] md:h-[80vh] object-cover" />
-          )}
-        </motion.div>
+        <div className="relative mb-16 group">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={selectedIndex}
+              initial={{ opacity: 0, scale: 0.99 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.01 }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+              className="relative rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-zinc-900 aspect-video md:aspect-auto md:h-[75vh]"
+            >
+              {currentItem.type === "video" ? (
+                <div className="relative w-full h-full flex items-center justify-center">
+                  <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-30 scale-110">
+                    <source src={currentItem.src} type="video/mp4" />
+                  </video>
+                  <video autoPlay loop muted playsInline className="relative z-10 max-w-full max-h-full object-contain shadow-2xl">
+                    <source src={currentItem.src} type="video/mp4" />
+                  </video>
+                </div>
+              ) : (
+                <img src={currentItem.src} alt="Featured performance" className="w-full h-full object-cover" />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
         <Carousel
           opts={{ align: "center", loop: true, dragFree: true }}
@@ -191,26 +242,26 @@ const LivePianoServicesPage: React.FC = () => {
           setApi={setApi}
           className="w-full max-w-6xl mx-auto"
         >
-          <CarouselContent className="-ml-2 md:-ml-4">
+          <CarouselContent className="-ml-4">
             {galleryItems.map((item, index) => (
-              <CarouselItem key={index} className="pl-2 md:pl-4 basis-1/2 md:basis-1/3 lg:basis-1/4">
+              <CarouselItem key={index} className="pl-4 basis-1/2 md:basis-1/3 lg:basis-1/4">
                 <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ y: -5 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => api?.scrollTo(index)}
                   className={cn(
-                    "relative cursor-pointer rounded-xl overflow-hidden transition-all duration-300 h-48",
+                    "relative cursor-pointer rounded-2xl overflow-hidden transition-all duration-500 h-40 border-2",
                     selectedIndex === index
-                      ? "ring-2 ring-white/40 shadow-xl shadow-black/40"
-                      : "opacity-70 hover:opacity-100"
+                      ? "border-yellow-500/60 shadow-lg shadow-yellow-500/10"
+                      : "border-transparent opacity-50 hover:opacity-100"
                   )}
                 >
                   {item.type === "video" ? (
                     <div className="relative w-full h-full">
                       <img src={item.poster || "/fallback-poster.jpg"} alt="Preview" className="w-full h-full object-cover" />
-                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="bg-black/60 rounded-full p-5 backdrop-blur-md">
-                          <Play className="w-12 h-12 text-white" fill="currentColor" />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                        <div className="bg-white/10 backdrop-blur-md rounded-full p-3 border border-white/20">
+                          <Play className="w-6 h-6 text-white fill-white" />
                         </div>
                       </div>
                     </div>
@@ -221,108 +272,147 @@ const LivePianoServicesPage: React.FC = () => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="hidden md:flex -left-12 bg-black/50 hover:bg-white/10 text-white border-white/20" />
-          <CarouselNext className="hidden md:flex -right-12 bg-black/50 hover:bg-white/10 text-white border-white/20" />
+          <CarouselPrevious className="hidden md:flex -left-16 bg-zinc-900/50 hover:bg-zinc-800 text-white border-white/10" />
+          <CarouselNext className="hidden md:flex -right-16 bg-zinc-900/50 hover:bg-zinc-800 text-white border-white/10" />
         </Carousel>
       </section>
 
       {/* About Section */}
-      <section className="py-32 px-4 bg-gradient-to-b from-black to-zinc-950">
+      <section className="py-32 px-4 bg-zinc-950">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1 }}
-          className="max-w-5xl mx-auto text-center space-y-16"
+          className="max-w-5xl mx-auto text-center space-y-20"
         >
-          <div>
-            <h2 className="text-4xl md:text-7xl font-bold font-libre-baskerville text-white mb-10 leading-tight tracking-wide uppercase break-words">
-              AN UNFORGETTABLE MUSICAL EXPERIENCE
+          <div className="space-y-8">
+            <h2 className="text-4xl md:text-6xl font-bold font-libre-baskerville text-white leading-tight tracking-tight uppercase">
+              AN UNFORGETTABLE <br /> <span className="text-yellow-500/90">MUSICAL EXPERIENCE</span>
             </h2>
-            <p className="text-xl md:text-2xl leading-relaxed text-white/90 mb-8 font-light max-w-4xl mx-auto">
-              Elevate your wedding, gala, corporate function, or intimate private soirée with the refined artistry of Daniele Buatti — a masterful pianist and captivating vocalist.
+            <p className="text-xl md:text-2xl leading-relaxed text-gray-300 font-light max-w-3xl mx-auto">
+              Elevate your event with the refined artistry of Daniele Buatti — a masterful pianist and captivating vocalist whose presence transforms any space.
             </p>
           </div>
 
-          {/* Performance Video */}
-          <div className="max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black">
+          {/* Performance Video - REDUCED SIZE */}
+          <div className="max-w-2xl mx-auto rounded-[2rem] overflow-hidden shadow-[0_0_60px_rgba(0,0,0,0.8)] border border-white/5 bg-black group relative">
             <video 
               autoPlay 
               loop 
               muted 
               playsInline 
-              className="w-full h-auto"
+              className="w-full h-auto transition-transform duration-700 group-hover:scale-[1.02]"
             >
               <source src="/live-piano-performance.MOV" />
-              Your browser does not support the video tag.
             </video>
+            <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-[2rem] pointer-events-none" />
           </div>
 
-          <div className="pt-12 border-t border-white/10">
-            <h3 className="text-3xl md:text-4xl font-libre-baskerville text-white mb-8">
-              Performance Style
-            </h3>
-            <p className="text-lg md:text-xl text-white/90 leading-relaxed max-w-4xl mx-auto">
-              Blending virtuosic piano performance with warm, sophisticated vocals, Daniele delivers a refined piano-bar experience — tailored impeccably to upscale weddings, luxury venues, and high-brow gatherings.
-            </p>
+          <div className="grid md:grid-cols-2 gap-12 text-left pt-12 border-t border-white/5">
+            <div className="space-y-4">
+              <div className="w-12 h-12 rounded-full bg-yellow-500/10 flex items-center justify-center mb-6">
+                <Music className="w-6 h-6 text-yellow-500" />
+              </div>
+              <h3 className="text-2xl font-libre-baskerville text-white">Performance Style</h3>
+              <p className="text-gray-400 leading-relaxed font-light">
+                Blending virtuosic piano performance with warm, sophisticated vocals, Daniele delivers a refined piano-bar experience — tailored impeccably to upscale weddings and luxury venues.
+              </p>
+            </div>
+            <div className="space-y-4">
+              <div className="w-12 h-12 rounded-full bg-yellow-500/10 flex items-center justify-center mb-6">
+                <Star className="w-6 h-6 text-yellow-500" />
+              </div>
+              <h3 className="text-2xl font-libre-baskerville text-white">Curated Repertoire</h3>
+              <p className="text-gray-400 leading-relaxed font-light">
+                From timeless jazz standards and classic soul to contemporary reimagined hits, every set is thoughtfully curated to complement the unique atmosphere of your gathering.
+              </p>
+            </div>
           </div>
         </motion.div>
       </section>
 
       {/* Contact Form Section */}
-      <section id="enquire" className="pt-32 pb-16 px-4 max-w-4xl mx-auto">
-        <motion.div initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1 }}>
-          <h3 className="text-4xl md:text-5xl font-libre-baskerville text-center text-white mb-12">
-            Enquire About Your Event
-          </h3>
-          <Card className="bg-zinc-950/90 border border-white/10 backdrop-blur-xl shadow-2xl rounded-2xl p-10 md:p-16">
+      <section id="enquire" className="py-32 px-4 max-w-5xl mx-auto">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }} 
+          whileInView={{ opacity: 1, y: 0 }} 
+          viewport={{ once: true }} 
+          transition={{ duration: 0.8 }}
+          className="grid lg:grid-cols-5 gap-16 items-start"
+        >
+          <div className="lg:col-span-2 space-y-8">
+            <h3 className="text-4xl md:text-5xl font-libre-baskerville text-white leading-tight">
+              Enquire About <br /> <span className="text-yellow-500/90">Your Event</span>
+            </h3>
+            <p className="text-gray-400 font-light leading-relaxed text-lg">
+              Daniele is available for select bookings across Australia and internationally. Please provide your event details to receive a tailored proposal.
+            </p>
+            
+            <div className="space-y-6 pt-8">
+              <div className="flex items-center gap-4 text-white/80 group cursor-pointer">
+                <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center group-hover:bg-yellow-500 group-hover:text-black transition-all">
+                  <Phone className="w-4 h-4" />
+                </div>
+                <span className="font-light">0424 174 067</span>
+              </div>
+              <div className="flex items-center gap-4 text-white/80 group cursor-pointer">
+                <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center group-hover:bg-yellow-500 group-hover:text-black transition-all">
+                  <Mail className="w-4 h-4" />
+                </div>
+                <span className="font-light">info@danielebuatti.com</span>
+              </div>
+            </div>
+          </div>
+
+          <Card className="lg:col-span-3 bg-zinc-900/40 border border-white/5 backdrop-blur-xl shadow-2xl rounded-3xl p-8 md:p-12">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleContactSubmit)} className="space-y-8 text-white">
-                <div className="grid md:grid-cols-2 gap-8">
+              <form onSubmit={form.handleSubmit(handleContactSubmit)} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
                   <FormField control={form.control} name="firstName" render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-white">First Name *</FormLabel>
+                      <FormLabel className="text-white/70 text-xs uppercase tracking-widest">First Name</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="First name" className="bg-black/50 border-white/20 text-white placeholder:text-white/70 focus:border-white/50 transition-colors h-12 text-lg" />
+                        <Input {...field} placeholder="First name" className="bg-black/40 border-white/10 text-white placeholder:text-white/20 focus:border-yellow-500/50 transition-all h-12 rounded-xl" />
                       </FormControl>
-                      <FormMessage className="text-red-400" />
+                      <FormMessage className="text-red-400 text-xs" />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="lastName" render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-white">Last Name *</FormLabel>
+                      <FormLabel className="text-white/70 text-xs uppercase tracking-widest">Last Name</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Last name" className="bg-black/50 border-white/20 text-white placeholder:text-white/70 focus:border-white/50 transition-colors h-12 text-lg" />
+                        <Input {...field} placeholder="Last name" className="bg-black/40 border-white/10 text-white placeholder:text-white/20 focus:border-yellow-500/50 transition-all h-12 rounded-xl" />
                       </FormControl>
-                      <FormMessage className="text-red-400" />
+                      <FormMessage className="text-red-400 text-xs" />
                     </FormItem>
                   )} />
                 </div>
 
                 <FormField control={form.control} name="email" render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-white">Email Address *</FormLabel>
+                    <FormLabel className="text-white/70 text-xs uppercase tracking-widest">Email Address</FormLabel>
                     <FormControl>
-                      <Input {...field} type="email" placeholder="your@email.com" className="bg-black/50 border-white/20 text-white placeholder:text-white/70 focus:border-white/50 h-12 text-lg" />
+                      <Input {...field} type="email" placeholder="your@email.com" className="bg-black/40 border-white/10 text-white placeholder:text-white/20 focus:border-yellow-500/50 h-12 rounded-xl" />
                     </FormControl>
-                    <FormMessage className="text-red-400" />
+                    <FormMessage className="text-red-400 text-xs" />
                   </FormItem>
                 )} />
 
-                <div className="grid md:grid-cols-2 gap-8">
+                <div className="grid md:grid-cols-2 gap-6">
                   <FormField control={form.control} name="phone" render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-white">Phone</FormLabel>
+                      <FormLabel className="text-white/70 text-xs uppercase tracking-widest">Phone</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="0424 174 067" className="bg-black/50 border-white/20 text-white placeholder:text-white/70 focus:border-white/50 h-12 text-lg" />
+                        <Input {...field} placeholder="0424 174 067" className="bg-black/40 border-white/10 text-white placeholder:text-white/20 focus:border-yellow-500/50 h-12 rounded-xl" />
                       </FormControl>
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="suburb" render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-white">Suburb / Area</FormLabel>
+                      <FormLabel className="text-white/70 text-xs uppercase tracking-widest">Suburb / Area</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="e.g. Toorak" className="bg-black/50 border-white/20 text-white placeholder:text-white/70 focus:border-white/50 h-12 text-lg" />
+                        <Input {...field} placeholder="e.g. Toorak" className="bg-black/40 border-white/10 text-white placeholder:text-white/20 focus:border-yellow-500/50 h-12 rounded-xl" />
                       </FormControl>
                     </FormItem>
                   )} />
@@ -330,31 +420,31 @@ const LivePianoServicesPage: React.FC = () => {
 
                 <FormField control={form.control} name="eventDescription" render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-white">Tell us about your event *</FormLabel>
+                    <FormLabel className="text-white/70 text-xs uppercase tracking-widest">Event Details</FormLabel>
                     <FormControl>
-                      <Textarea {...field} rows={6} placeholder="Event type, date, venue..." className="bg-black/50 border-white/20 text-white placeholder:text-white/70 focus:border-white/50 resize-none text-lg" />
+                      <Textarea {...field} rows={4} placeholder="Event type, date, venue, and any special requests..." className="bg-black/40 border-white/10 text-white placeholder:text-white/20 focus:border-yellow-500/50 resize-none rounded-xl" />
                     </FormControl>
-                    <FormMessage className="text-red-400" />
+                    <FormMessage className="text-red-400 text-xs" />
                   </FormItem>
                 )} />
 
                 <FormField control={form.control} name="pianoType" render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-white">Is there an instrument available at the venue? *</FormLabel>
+                    <FormLabel className="text-white/70 text-xs uppercase tracking-widest">Instrument Availability</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger className="bg-black/50 border-white/20 text-white h-12 text-lg focus:ring-white/50">
-                          <SelectValue placeholder="Please select an option" />
+                        <SelectTrigger className="bg-black/40 border-white/10 text-white h-12 rounded-xl focus:ring-yellow-500/50">
+                          <SelectValue placeholder="Is there a piano at the venue?" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="bg-zinc-900 border border-white/10 text-white">
-                        <SelectItem value="grand-piano" className="text-white hover:bg-white/10 cursor-pointer py-3 transition-colors">Grand Piano</SelectItem>
-                        <SelectItem value="upright-piano" className="text-white hover:bg-white/10 cursor-pointer py-3 transition-colors">Upright Piano</SelectItem>
-                        <SelectItem value="digital-piano" className="text-white hover:bg-white/10 cursor-pointer py-3 transition-colors">Digital Piano / Keyboard</SelectItem>
-                        <SelectItem value="none" className="text-white hover:bg-white/10 cursor-pointer py-3 transition-colors">None – please provide</SelectItem>
+                      <SelectContent className="bg-zinc-900 border border-white/10 text-white rounded-xl">
+                        <SelectItem value="grand-piano">Grand Piano</SelectItem>
+                        <SelectItem value="upright-piano">Upright Piano</SelectItem>
+                        <SelectItem value="digital-piano">Digital Piano / Keyboard</SelectItem>
+                        <SelectItem value="none">None – please provide</SelectItem>
                       </SelectContent>
                     </Select>
-                    <FormMessage className="text-red-400" />
+                    <FormMessage className="text-red-400 text-xs" />
                   </FormItem>
                 )} />
 
@@ -362,9 +452,9 @@ const LivePianoServicesPage: React.FC = () => {
                   type="submit"
                   size="lg"
                   disabled={loading}
-                  className="w-full bg-white text-black hover:bg-gray-200 font-semibold text-xl py-8 rounded-full shadow-2xl transition-all duration-300"
+                  className="w-full bg-yellow-500 text-black hover:bg-yellow-400 font-bold text-lg py-7 rounded-xl shadow-xl shadow-yellow-500/10 transition-all duration-300 mt-4"
                 >
-                  {loading ? "Sending Inquiry..." : "Send Inquiry"}
+                  {loading ? "Sending..." : "Send Inquiry"}
                 </Button>
               </form>
             </Form>
@@ -372,23 +462,18 @@ const LivePianoServicesPage: React.FC = () => {
         </motion.div>
       </section>
 
-      <footer className="relative pt-12 pb-24 text-center overflow-hidden">
-        <div className="absolute inset-0 -z-10 brightness-50 scale-110" style={{ backgroundImage: `url(/bowtie.avif)`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
-        <div className="relative z-10 space-y-12">
-          <DynamicImage src="/gold-36.png" alt="Logo" className="h-20 mx-auto opacity-90" width={80} height={80} />
-          <div className="space-y-6 text-2xl md:text-3xl font-light">
-            <a
-              href="https://wa.me/61424174067"
-              className="flex items-center justify-center gap-4 transition-opacity hover:opacity-80"
-            >
-              <Phone size={32} className="text-white" /> 0424 174 067
+      <footer className="relative pt-24 pb-16 text-center border-t border-white/5">
+        <div className="relative z-10 space-y-10">
+          <DynamicImage src="/gold-36.png" alt="Logo" className="h-16 mx-auto opacity-60" width={64} height={64} />
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 text-white/60 font-light">
+            <a href="https://wa.me/61424174067" className="hover:text-yellow-500 transition-colors flex items-center gap-2">
+              <Phone size={18} /> 0424 174 067
             </a>
-            <a href="mailto:info@danielebuatti.com" className="flex items-center justify-center gap-4 hover:text-white transition-colors underline-offset-8 hover:underline">
-              <Mail size={32} className="text-white" /> info@danielebuatti.com
+            <a href="mailto:info@danielebuatti.com" className="hover:text-yellow-500 transition-colors flex items-center gap-2">
+              <Mail size={18} /> info@danielebuatti.com
             </a>
           </div>
-          <p className="text-gray-400 text-lg">© {new Date().getFullYear()} Daniele Buatti. All rights reserved.</p>
+          <p className="text-zinc-600 text-xs uppercase tracking-[0.3em]">© {new Date().getFullYear()} Daniele Buatti. All rights reserved.</p>
         </div>
       </footer>
     </div>
