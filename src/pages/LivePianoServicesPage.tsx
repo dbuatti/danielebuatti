@@ -128,7 +128,7 @@ const LivePianoServicesPage: React.FC = () => {
             className="h-24 md:h-32 mx-auto mb-6 drop-shadow-2xl" 
             width={128} 
             height={128} 
-            href="/" // Added href prop here
+            href="/" 
           />
           <h1 className="text-5xl md:text-7xl font-light tracking-widest uppercase font-montserrat text-white">
             DANIELE BUATTI
@@ -243,6 +243,25 @@ const LivePianoServicesPage: React.FC = () => {
               Elevate your wedding, gala, corporate function, or intimate private soirée with the refined artistry of Daniele Buatti — a masterful pianist and captivating vocalist.
             </p>
           </div>
+
+          {/* Performance Images Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+              <img 
+                src="/live-piano-performance-1.jpg" 
+                alt="Daniele Buatti live performance close-up" 
+                className="w-full h-full object-cover aspect-[9/16]"
+              />
+            </div>
+            <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+              <img 
+                src="/live-piano-performance-2.jpg" 
+                alt="Daniele Buatti live performance wide shot" 
+                className="w-full h-full object-cover aspect-[9/16]"
+              />
+            </div>
+          </div>
+
           <div className="pt-12 border-t border-white/10">
             <h3 className="text-3xl md:text-4xl font-libre-baskerville text-white mb-8">
               Performance Style
