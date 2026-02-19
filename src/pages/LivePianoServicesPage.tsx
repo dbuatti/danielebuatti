@@ -151,7 +151,7 @@ const LivePianoServicesPage: React.FC = () => {
           initial={{ opacity: 0, y: 30 }} 
           animate={{ opacity: 1, y: 0 }} 
           transition={{ duration: 1.2, ease: "easeOut" }} 
-          className="relative z-10 text-center px-6 max-w-5xl"
+          className="relative z-10 text-center px-6 max-w-7xl"
         >
           <div className="flex items-center justify-center gap-3 mb-12 opacity-80">
             <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
@@ -168,7 +168,7 @@ const LivePianoServicesPage: React.FC = () => {
             href="/" 
           />
           
-          <h1 className="text-4xl md:text-7xl lg:text-8xl font-extralight tracking-[0.25em] uppercase text-white mb-8">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-extralight tracking-[0.25em] uppercase text-white mb-8 whitespace-nowrap">
             DANIELE BUATTI
           </h1>
 
