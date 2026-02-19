@@ -142,33 +142,20 @@ const LivePianoServicesPage: React.FC = () => {
 
       {/* Hero Section */}
       <header className="relative w-full h-screen flex items-center justify-center overflow-hidden">
-        <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover brightness-[0.6]">
+        <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover brightness-75">
           <source src="/Daniele Buatti - Gatsby Event Gala 1.mov" type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-        
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ duration: 1.2, ease: "easeOut" }} 
-          className="relative z-10 text-center px-6 max-w-7xl"
-        >
-          <div className="flex items-center justify-center gap-3 mb-12 opacity-80">
-            <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-            <span className="text-xs uppercase tracking-[0.4em] font-medium text-white/90">Signature Live Performance</span>
-            <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-          </div>
-
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+        <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.5, ease: "easeOut" }} className="relative z-10 text-center px-6">
           <DynamicImage 
-            src="/logo-piano-white-44.png" 
-            alt="Daniele Buatti Piano Logo" 
-            className="h-24 md:h-32 mx-auto mb-12 drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]" 
+            src="/gold-36.png" 
+            alt="Daniele Buatti Logo" 
+            className="h-24 md:h-32 mx-auto mb-6 drop-shadow-2xl" 
             width={128} 
             height={128} 
-            href="/" 
+            href="/" // Added href prop here
           />
-          
-          <h1 className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-extralight tracking-[0.15em] uppercase text-white mb-8 whitespace-nowrap">
+          <h1 className="text-5xl md:text-7xl font-light tracking-widest uppercase font-montserrat text-white">
             DANIELE BUATTI
           </h1>
 
@@ -176,20 +163,18 @@ const LivePianoServicesPage: React.FC = () => {
             initial={{ scaleX: 0, opacity: 0 }}
             animate={{ scaleX: 1, opacity: 1 }}
             transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.6 }}
-            className="origin-center mx-auto my-10 h-[1px] w-48 md:w-64 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+            className="origin-center mx-auto my-6 h-[2px] w-32 md:w-48 rounded-full bg-gradient-to-r from-transparent via-yellow-400 to-transparent shadow-[0_0_20px_rgba(234,179,8,0.45)]"
           />
 
-          <p className="text-xl md:text-3xl font-libre-baskerville italic text-white/80 mb-6">
+          <p className="text-2xl md:text-4xl font-libre-baskerville italic text-white">
             Pianist & Vocalist
           </p>
-          <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">
-            Sophisticated musical curation for elegant weddings, <br className="hidden md:block" /> high-tier galas, and intimate private soirées.
-          </p>
+          <p className="text-lg md:text-xl mt-4 text-gray-300 max-w-2xl mx-auto font-light">Live piano and vocals for elegant, considered events.</p>
         </motion.div>
-
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 opacity-50">
-          <span className="text-[10px] uppercase tracking-[0.3em]">Scroll to explore</span>
-          <div className="w-[1px] h-12 bg-gradient-to-b from-white to-transparent" />
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-[pulse_3s_ease-in-out_infinite]">
+          <div className="w-8 h-12 border-2 border-white/50 rounded-full flex justify-center">
+            <div className="w-1 h-3 bg-white/70 rounded-full mt-3 animate-pulse" />
+          </div>
         </div>
       </header>
 
