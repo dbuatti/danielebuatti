@@ -244,22 +244,18 @@ const LivePianoServicesPage: React.FC = () => {
             </p>
           </div>
 
-          {/* Performance Images Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/10">
-              <img 
-                src="/live-piano-performance-1.jpg" 
-                alt="Daniele Buatti live performance close-up" 
-                className="w-full h-full object-cover aspect-[9/16]"
-              />
-            </div>
-            <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/10">
-              <img 
-                src="/live-piano-performance-2.jpg" 
-                alt="Daniele Buatti live performance wide shot" 
-                className="w-full h-full object-cover aspect-[9/16]"
-              />
-            </div>
+          {/* Performance Video */}
+          <div className="max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black">
+            <video 
+              autoPlay 
+              loop 
+              muted 
+              playsInline 
+              className="w-full h-auto"
+            >
+              <source src="/live-piano-performance.MOV" />
+              Your browser does not support the video tag.
+            </video>
           </div>
 
           <div className="pt-12 border-t border-white/10">
