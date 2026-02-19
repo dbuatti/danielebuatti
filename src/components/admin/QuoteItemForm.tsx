@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Trash2 } from 'lucide-react';
 import PillToggle from './PillToggle';
 import RichTextPreview from './RichTextPreview';
-import { QuoteFormValues } from './QuoteForm'; // Import QuoteFormValues for context typing
+import { QuoteFormValues } from './QuoteForm';
 
 interface QuoteItemFormProps {
   index: number;
@@ -32,7 +32,7 @@ const QuoteItemForm: React.FC<QuoteItemFormProps> = ({ index, type, onRemove, is
         {/* Item Name */}
         <FormField
           control={control}
-          name={`${baseName}.name`}
+          name={`${baseName}.name` as any}
           render={({ field: itemField }) => (
             <FormItem>
               <FormLabel>Item Name *</FormLabel>
@@ -47,7 +47,7 @@ const QuoteItemForm: React.FC<QuoteItemFormProps> = ({ index, type, onRemove, is
         {/* Detailed Description */}
         <FormField
           control={control}
-          name={`${baseName}.description`}
+          name={`${baseName}.description` as any}
           render={({ field: itemField }) => (
             <FormItem className="md:col-span-2">
               <FormLabel>Detailed Description (Optional)</FormLabel>
@@ -67,7 +67,7 @@ const QuoteItemForm: React.FC<QuoteItemFormProps> = ({ index, type, onRemove, is
         {/* Schedule / Dates */}
         <FormField
           control={control}
-          name={`${baseName}.scheduleDates`}
+          name={`${baseName}.scheduleDates` as any}
           render={({ field: itemField }) => (
             <FormItem>
               <FormLabel>Schedule / Dates</FormLabel>
@@ -84,7 +84,7 @@ const QuoteItemForm: React.FC<QuoteItemFormProps> = ({ index, type, onRemove, is
           {/* Rate (Price) */}
           <FormField
             control={control}
-            name={`${baseName}.price`}
+            name={`${baseName}.price` as any}
             render={({ field: itemField }) => (
               <FormItem>
                 <FormLabel>Rate (per unit) *</FormLabel>
@@ -105,7 +105,7 @@ const QuoteItemForm: React.FC<QuoteItemFormProps> = ({ index, type, onRemove, is
           {/* Quantity */}
           <FormField
             control={control}
-            name={`${baseName}.quantity`}
+            name={`${baseName}.quantity` as any}
             render={({ field: itemField }) => (
               <FormItem>
                 <FormLabel>{isCompulsory ? 'Quantity *' : 'Quantity (Default)'}</FormLabel>
@@ -146,7 +146,7 @@ const QuoteItemForm: React.FC<QuoteItemFormProps> = ({ index, type, onRemove, is
       {/* Live Preview for Description */}
       <div className="md:col-span-5">
         <FormLabel className="text-sm font-normal text-brand-dark/70 dark:text-brand-light/70">Description Preview:</FormLabel>
-        <RichTextPreview text={watch(`${baseName}.description`) || ''} />
+        <RichTextPreview text={(watch(`${baseName}.description` as any) as string) || ''} />
       </div>
     </div>
   );
