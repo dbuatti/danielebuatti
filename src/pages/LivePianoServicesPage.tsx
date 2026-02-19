@@ -151,9 +151,9 @@ const LivePianoServicesPage: React.FC = () => {
           initial={{ opacity: 0, y: 30 }} 
           animate={{ opacity: 1, y: 0 }} 
           transition={{ duration: 1.2, ease: "easeOut" }} 
-          className="relative z-10 text-center px-6 max-w-4xl"
+          className="relative z-10 text-center px-6 max-w-5xl"
         >
-          <div className="flex items-center justify-center gap-3 mb-8 opacity-80">
+          <div className="flex items-center justify-center gap-3 mb-12 opacity-80">
             <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
             <span className="text-xs uppercase tracking-[0.4em] font-medium text-white/90">Signature Live Performance</span>
             <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
@@ -162,27 +162,27 @@ const LivePianoServicesPage: React.FC = () => {
           <DynamicImage 
             src="/gold-36.png" 
             alt="Daniele Buatti Logo" 
-            className="h-20 md:h-28 mx-auto mb-8 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)]" 
-            width={112} 
-            height={112} 
+            className="h-16 md:h-20 mx-auto mb-12 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)]" 
+            width={80} 
+            height={80} 
             href="/" 
           />
           
-          <h1 className="text-5xl md:text-8xl font-light tracking-[0.15em] uppercase font-montserrat text-white mb-4">
-            DANIELE <span className="font-bold text-yellow-500/90">BUATTI</span>
+          <h1 className="text-4xl md:text-7xl lg:text-8xl font-extralight tracking-[0.25em] uppercase text-white mb-8">
+            DANIELE BUATTI
           </h1>
 
           <motion.div
             initial={{ scaleX: 0, opacity: 0 }}
             animate={{ scaleX: 1, opacity: 1 }}
             transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.6 }}
-            className="origin-center mx-auto my-8 h-[1px] w-48 md:w-64 bg-gradient-to-r from-transparent via-yellow-500/50 to-transparent"
+            className="origin-center mx-auto my-10 h-[1px] w-48 md:w-64 bg-gradient-to-r from-transparent via-white/30 to-transparent"
           />
 
-          <p className="text-2xl md:text-4xl font-libre-baskerville italic text-white/90 mb-6">
+          <p className="text-xl md:text-3xl font-libre-baskerville italic text-white/80 mb-6">
             Pianist & Vocalist
           </p>
-          <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
+          <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">
             Sophisticated musical curation for elegant weddings, <br className="hidden md:block" /> high-tier galas, and intimate private soirées.
           </p>
         </motion.div>
