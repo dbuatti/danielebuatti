@@ -7,6 +7,7 @@ import BackToTopButton from "@/components/BackToTopButton";
 import SeoStructuredData from "@/components/SeoStructuredData";
 import SeoMetadata from "@/components/SeoMetadata";
 import DynamicImage from "@/components/DynamicImage";
+import ITServiceBanner from "@/components/ITServiceBanner"; // Import the new banner
 import { Link } from "react-router-dom";
 import { 
   Mic2, 
@@ -262,7 +263,12 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* 7. SIGNATURE SERVICE PORTAL (Final Conclusion) */}
+        {/* 7. IT SERVICE BANNER (NEW) */}
+        <section className="mb-24 px-2">
+          <ITServiceBanner />
+        </section>
+
+        {/* 8. SIGNATURE SERVICE PORTAL (Final Conclusion) */}
         <section className="mb-12 px-2">
           <Link to="/live-piano-services" className="group block relative overflow-hidden rounded-[2.5rem] bg-black shadow-2xl transition-all duration-500 hover:scale-[1.01]">
             <div className="absolute inset-0 bg-[url('/blacktie.avif')] bg-cover bg-center opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />

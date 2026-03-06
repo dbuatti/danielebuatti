@@ -7,6 +7,7 @@ import BackToTopButton from "@/components/BackToTopButton";
 import SeoStructuredData from "@/components/SeoStructuredData";
 import SeoMetadata from "@/components/SeoMetadata";
 import DynamicImage from "@/components/DynamicImage";
+import ITServiceBanner from "@/components/ITServiceBanner"; // Import the new banner
 
 // Horizontal card – same as landing page
 const HorizontalProgramCard: React.FC<{
@@ -114,6 +115,12 @@ const ProjectsPage: React.FC = () => {
                 imageSrc="/ameb-placeholder.jpg"
               />
             </div>
+          </section>
+
+          {/* IT Service Banner Section */}
+          <section>
+            <h2 className="text-4xl font-light text-center mb-12">Digital Architecture</h2>
+            <ITServiceBanner />
           </section>
 
           {/* Digital & Community */}
