@@ -7,19 +7,58 @@ import DynamicImage from "@/components/DynamicImage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle2, Music, Piano, ShieldCheck, Clock, PhoneCall, Star } from "lucide-react";
+import { CheckCircle2, Music, Piano, ShieldCheck, Clock, PhoneCall, Star, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import SeoMetadata from "@/components/SeoMetadata";
+import { supabase } from "@/integrations/supabase/client";
 
 const WeddingRescuePage: React.FC = () => {
   const [isAccepted, setIsAccepted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleAccept = () => {
-    setIsAccepted(true);
-    toast.success("Proposal Accepted!", {
-      description: "Daniele has been notified. He will call you shortly to finalize details.",
-    });
+  const handleAccept = async () => {
+    setIsSubmitting(true);
+    const loadingToastId = toast.loading("Confirming your booking...");
+
+    try {
+      // Send notification email to Daniele
+      const { error } = await supabase.functions.invoke('send-admin-email', {
+        body: {
+          recipientEmail: 'info@danielebuatti.com',
+          subject: "🚨 EMERGENCY WEDDING ACCEPTED: St Dominic’s Camberwell",
+          body: `
+            <div style="font-family: sans-serif; padding: 20px; border: 2px solid #fdb813; border-radius: 10px;">
+              <h2 style="color: #00022D;">New Emergency Booking Confirmed!</h2>
+              <p><strong>Event:</strong> Wedding Ceremony</p>
+              <p><strong>Location:</strong> St Dominic’s Church, Camberwell</p>
+              <p><strong>Date:</strong> March 7th (Tomorrow)</p>
+              <p><strong>Time:</strong> 1:00 PM</p>
+              <p><strong>Package:</strong> Premium Rescue ($950.00)</p>
+              <hr />
+              <p>The client has clicked "Accept & Confirm" on the rescue landing page.</p>
+              <p><strong>Action Required:</strong> Call the client/Lachlan this evening to finalize cues.</p>
+            </div>
+          `,
+        },
+      });
+
+      if (error) throw error;
+
+      setIsAccepted(true);
+      toast.success("Proposal Accepted!", {
+        id: loadingToastId,
+        description: "Daniele has been notified. He will call you shortly to finalize details.",
+      });
+    } catch (err) {
+      console.error("Error confirming booking:", err);
+      toast.error("Failed to confirm booking.", {
+        id: loadingToastId,
+        description: "Please try again or call Daniele directly at 0424 174 067.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -154,13 +193,15 @@ const WeddingRescuePage: React.FC = () => {
                 {!isAccepted ? (
                   <Button 
                     onClick={handleAccept}
+                    disabled={isSubmitting}
                     className="w-full py-8 text-lg font-bold bg-yellow-500 hover:bg-yellow-400 text-black rounded-xl shadow-lg shadow-yellow-500/20 transition-all hover:scale-[1.02]"
                   >
+                    {isSubmitting ? <Loader2 className="animate-spin mr-2" /> : null}
                     Accept & Confirm Booking
                   </Button>
                 ) : (
-                  <div className="text-center p-4 rounded-xl bg-green-500/10 border border-green-500/30 text-green-500 font-semibold">
-                    Booking Confirmed
+                  <div className="text-center p-4 rounded-xl bg-green-500/10 border border-green-500/30 text-green-500 font-semibold flex items-center justify-center gap-2">
+                    <CheckCircle2 className="w-5 h-5" /> Booking Confirmed
                   </div>
                 )}
 
