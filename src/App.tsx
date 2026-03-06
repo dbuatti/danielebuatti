@@ -6,7 +6,7 @@ import RootLayout from './layouts/RootLayout';
 import AdminLayout from './pages/admin/AdminLayout';
 import { SessionContextProvider } from './components/SessionContextProvider';
 import ScrollToTop from './components/ScrollToTop';
-import FaviconManager from './components/FaviconManager'; // Import FaviconManager
+import FaviconManager from './components/FaviconManager';
 
 // Public Pages
 import LandingPageV3 from './pages/LandingPageV3';
@@ -26,7 +26,8 @@ import PresenceCommunicationBookingPage from './pages/PresenceCommunicationBooki
 import DynamicQuotePage from './pages/DynamicQuotePage';
 import QuoteConfirmationPage from './pages/QuoteConfirmationPage';
 import ContactPage from './pages/ContactPage';
-import GiftCardsPage from './pages/GiftCardsPage'; // NEW: Import GiftCardsPage
+import GiftCardsPage from './pages/GiftCardsPage';
+import WeddingRescuePage from './pages/WeddingRescuePage'; // NEW
 
 // Admin Pages
 import Login from './pages/Login';
@@ -39,7 +40,7 @@ import AdminAmebBookingsPage from './pages/admin/AdminAmebBookingsPage';
 import AdminAmebBookingDetailsPage from './pages/admin/AdminAmebBookingDetailsPage';
 import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage';
 import AdminGiftCardsPage from './pages/admin/AdminGiftCardsPage';
-import JobDecisionFilterPage from './pages/admin/JobDecisionFilterPage'; // NEW: Import JobDecisionFilterPage
+import JobDecisionFilterPage from './pages/admin/JobDecisionFilterPage';
 
 
 function App() {
@@ -51,8 +52,8 @@ function App() {
         <Routes>
           <Route path="/" element={<RootLayout />}>
             {/* Public Routes */}
-            <Route index element={<LandingPageV4 />} /> {/* Changed index route to V4 */}
-            <Route path="landing-v3" element={<LandingPageV3 />} /> {/* V3 is now accessible via /landing-v3 */}
+            <Route index element={<LandingPageV4 />} />
+            <Route path="landing-v3" element={<LandingPageV3 />} />
             <Route path="landing-v4" element={<LandingPageV4 />} />
             <Route path="coaching" element={<CoachingPage />} />
             <Route path="projects-resources" element={<ProjectsResourcesPage />} />
@@ -68,12 +69,13 @@ function App() {
             <Route path="quotes/:slug" element={<DynamicQuotePage />} />
             <Route path="live-piano-services/quote-confirmation" element={<QuoteConfirmationPage />} />
             <Route path="contact" element={<ContactPage />} />
-            <Route path="gift-cards" element={<GiftCardsPage />} /> {/* NEW: Gift Cards Route */}
+            <Route path="gift-cards" element={<GiftCardsPage />} />
+            <Route path="wedding-rescue" element={<WeddingRescuePage />} /> {/* NEW */}
 
             {/* Auth Route */}
             <Route path="login" element={<Login />} />
 
-            {/* Admin Routes (Protected by SessionContextProvider) */}
+            {/* Admin Routes */}
             <Route path="admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboardPage />} />
               <Route path="quotes" element={<AdminQuotesPage />} />
@@ -84,7 +86,7 @@ function App() {
               <Route path="ameb-bookings/:id" element={<AdminAmebBookingDetailsPage />} />
               <Route path="email-templates" element={<AdminEmailTemplatesPage />} />
               <Route path="gift-cards" element={<AdminGiftCardsPage />} />
-              <Route path="job-decision-filter" element={<JobDecisionFilterPage />} /> {/* NEW: Job Decision Filter Route */}
+              <Route path="job-decision-filter" element={<JobDecisionFilterPage />} />
             </Route>
 
             {/* 404 Route */}
