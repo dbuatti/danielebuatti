@@ -2,10 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
-      "source": "/it/:path*",
-      "destination": "https://db-it.vercel.app/:path*"
-    },
-    {
       "source": "/sitemap.xml",
       "destination": "/sitemap.xml"
     },
