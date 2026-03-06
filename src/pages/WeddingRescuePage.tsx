@@ -37,6 +37,7 @@ const WeddingRescuePage: React.FC = () => {
               <p><strong>Package:</strong> Premium Rescue ($950.00)</p>
               <hr />
               <p>The client has clicked "Accept & Confirm" on the rescue landing page.</p>
+              <p><strong>Note:</strong> Assumes venue piano. +$100 if BYO keyboard is required.</p>
               <p><strong>Action Required:</strong> Call the client/Lachlan this evening to finalize cues.</p>
             </div>
           `,
@@ -139,14 +140,14 @@ const WeddingRescuePage: React.FC = () => {
 
             <section>
               <h2 className="text-3xl font-serif italic text-yellow-500 mb-8 flex items-center gap-3">
-                <Piano className="w-6 h-6" /> Technical Excellence
+                <Piano className="w-6 h-6" /> Performance Excellence
               </h2>
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="flex items-start gap-4">
                   <ShieldCheck className="w-6 h-6 text-yellow-500 shrink-0" />
                   <div>
-                    <h4 className="font-semibold">Professional Setup</h4>
-                    <p className="text-sm text-gray-400">High-end digital stage piano and premium PA system tailored for church acoustics.</p>
+                    <h4 className="font-semibold">Acoustic Mastery</h4>
+                    <p className="text-sm text-gray-400">Expert performance tailored specifically for the unique resonance of church acoustics.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -170,7 +171,7 @@ const WeddingRescuePage: React.FC = () => {
                 <div className="text-center">
                   <p className="text-gray-400 text-sm uppercase tracking-widest mb-2">Total Package Fee</p>
                   <p className="text-5xl font-light text-white">$950<span className="text-lg text-gray-500">.00</span></p>
-                  <p className="text-xs text-gray-500 mt-2">Includes GST, Equipment & Emergency Loading</p>
+                  <p className="text-xs text-gray-500 mt-2">Includes GST & Emergency Loading</p>
                 </div>
 
                 <Separator className="bg-white/10" />
@@ -178,9 +179,6 @@ const WeddingRescuePage: React.FC = () => {
                 <ul className="space-y-3 text-sm text-gray-300">
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-yellow-500" /> 1-Hour Ceremony Performance
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-yellow-500" /> Full Sound System & Piano
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-yellow-500" /> Repertoire Preparation
@@ -206,7 +204,7 @@ const WeddingRescuePage: React.FC = () => {
                 )}
 
                 <p className="text-[10px] text-center text-gray-500 italic">
-                  *If the church provides a tuned piano, the equipment fee can be adjusted upon arrival.
+                  *Assumes venue provides a tuned piano. +$100 equipment fee applies if a digital keyboard is required.
                 </p>
               </CardContent>
             </Card>
