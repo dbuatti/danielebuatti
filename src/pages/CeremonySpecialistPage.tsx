@@ -31,7 +31,7 @@ const CeremonySpecialistPage: React.FC = () => {
           body: `
             <div style="font-family: sans-serif; padding: 20px; border: 2px solid #fdb813; border-radius: 10px;">
               <h2 style="color: #00022D;">New Emergency Booking Enquiry!</h2>
-              <p>A client has clicked "Enquire for Emergency Booking" on your Ceremony Specialist rescue page.</p>
+              <p>A client has clicked "Emergency Enquiry" on your Ceremony Specialist rescue page.</p>
               <p><strong>Package:</strong> Premium Rescue ($950.00)</p>
               <hr />
               <p><strong>Action Required:</strong> Please check your email/WhatsApp for follow-up details or contact the lead immediately.</p>
@@ -190,7 +190,7 @@ const CeremonySpecialistPage: React.FC = () => {
                     className="w-full py-8 text-lg font-bold bg-yellow-500 hover:bg-yellow-400 text-black rounded-xl shadow-lg shadow-yellow-500/20 transition-all hover:scale-[1.02]"
                   >
                     {isSubmitting ? <Loader2 className="animate-spin mr-2" /> : null}
-                    Enquire for Emergency Booking
+                    Emergency Enquiry
                   </Button>
                 ) : (
                   <div className="text-center p-4 rounded-xl bg-green-500/10 border border-green-500/30 text-green-500 font-semibold flex items-center justify-center gap-2">
