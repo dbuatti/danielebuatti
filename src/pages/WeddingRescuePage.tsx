@@ -7,7 +7,7 @@ import DynamicImage from "@/components/DynamicImage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle2, Music, Piano, ShieldCheck, Clock, PhoneCall, Star, CreditCard } from "lucide-react";
+import { CheckCircle2, Music, Piano, ShieldCheck, Clock, PhoneCall, Star } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import SeoMetadata from "@/components/SeoMetadata";
@@ -18,7 +18,7 @@ const WeddingRescuePage: React.FC = () => {
   const handleAccept = () => {
     setIsAccepted(true);
     toast.success("Proposal Accepted!", {
-      description: "Daniele has been notified. Please proceed with the transfer to lock in the date.",
+      description: "Daniele has been notified. He will call you shortly to finalize details.",
     });
   };
 
@@ -40,7 +40,7 @@ const WeddingRescuePage: React.FC = () => {
           <div className="flex justify-center mb-6">
             <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-yellow-500/30 bg-yellow-500/5 text-yellow-500 text-xs uppercase tracking-[0.3em] font-bold">
               <Star className="w-4 h-4 fill-current" />
-              Premium Emergency Wedding Package
+              Premium Wedding Package
             </div>
           </div>
           <h1 className="text-5xl md:text-7xl font-light tracking-tight mb-6 font-montserrat">
@@ -89,7 +89,7 @@ const WeddingRescuePage: React.FC = () => {
                 <div className="p-6 rounded-2xl bg-zinc-900/50 border border-white/5 hover:border-yellow-500/30 transition-colors">
                   <h3 className="text-lg font-semibold text-white mb-2">Signing of the Registry</h3>
                   <p className="text-yellow-500 font-serif italic text-xl">"Ave Maria" — Schubert</p>
-                  <p className="text-gray-400 mt-2 text-sm">The classic Schubert arrangement, followed by one additional contemporary or classical piece to accompany the formal proceedings.</p>
+                  <p className="text-gray-400 mt-2 text-sm">Followed by one additional contemporary or classical piece to accompany the formal proceedings.</p>
                 </div>
                 <div className="p-6 rounded-2xl bg-zinc-900/50 border border-white/5 hover:border-yellow-500/30 transition-colors">
                   <h3 className="text-lg font-semibold text-white mb-2">The Recessional</h3>
@@ -106,15 +106,15 @@ const WeddingRescuePage: React.FC = () => {
                 <div className="flex items-start gap-4">
                   <ShieldCheck className="w-6 h-6 text-yellow-500 shrink-0" />
                   <div>
-                    <h4 className="font-semibold">Church-Grade Sound System</h4>
-                    <p className="text-sm text-gray-400">High-end digital stage piano and premium PA system specifically calibrated for the large-scale acoustics of St Dominic’s.</p>
+                    <h4 className="font-semibold">Professional Setup</h4>
+                    <p className="text-sm text-gray-400">High-end digital stage piano and premium PA system tailored for church acoustics.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
                   <Clock className="w-6 h-6 text-yellow-500 shrink-0" />
                   <div>
                     <h4 className="font-semibold">Short-Notice Priority</h4>
-                    <p className="text-sm text-gray-400">Immediate repertoire preparation and logistical coordination within 24 hours of the event.</p>
+                    <p className="text-sm text-gray-400">Immediate repertoire preparation and logistical coordination within 24 hours.</p>
                   </div>
                 </div>
               </div>
@@ -151,15 +151,6 @@ const WeddingRescuePage: React.FC = () => {
                   </li>
                 </ul>
 
-                <div className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2">
-                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-yellow-500">
-                    <CreditCard className="w-3 h-3" /> Payment Terms
-                  </div>
-                  <p className="text-[11px] text-gray-400 leading-relaxed">
-                    Due to the short-notice nature of this booking, full payment is required upon acceptance to secure the date and begin preparation.
-                  </p>
-                </div>
-
                 {!isAccepted ? (
                   <Button 
                     onClick={handleAccept}
@@ -168,16 +159,8 @@ const WeddingRescuePage: React.FC = () => {
                     Accept & Confirm Booking
                   </Button>
                 ) : (
-                  <div className="space-y-4">
-                    <div className="text-center p-4 rounded-xl bg-green-500/10 border border-green-500/30 text-green-500 font-semibold">
-                      Booking Confirmed
-                    </div>
-                    <div className="p-4 rounded-xl bg-zinc-800 border border-white/10 text-sm">
-                      <p className="font-bold text-white mb-2">Bank Details:</p>
-                      <p className="text-gray-400">BSB: 923100</p>
-                      <p className="text-gray-400">ACC: 301110875</p>
-                      <p className="text-gray-400 mt-2 text-xs italic">Please send a screenshot of the receipt to 0424 174 067.</p>
-                    </div>
+                  <div className="text-center p-4 rounded-xl bg-green-500/10 border border-green-500/30 text-green-500 font-semibold">
+                    Booking Confirmed
                   </div>
                 )}
 
