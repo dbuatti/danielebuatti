@@ -27,7 +27,7 @@ import DynamicQuotePage from './pages/DynamicQuotePage';
 import QuoteConfirmationPage from './pages/QuoteConfirmationPage';
 import ContactPage from './pages/ContactPage';
 import GiftCardsPage from './pages/GiftCardsPage';
-import WeddingRescuePage from './pages/WeddingRescuePage'; // NEW
+import CeremonySpecialistPage from './pages/CeremonySpecialistPage'; // UPDATED
 
 // Admin Pages
 import Login from './pages/Login';
@@ -70,7 +70,7 @@ function App() {
             <Route path="live-piano-services/quote-confirmation" element={<QuoteConfirmationPage />} />
             <Route path="contact" element={<ContactPage />} />
             <Route path="gift-cards" element={<GiftCardsPage />} />
-            <Route path="wedding-rescue" element={<WeddingRescuePage />} /> {/* NEW */}
+            <Route path="ceremony-specialist" element={<CeremonySpecialistPage />} /> {/* UPDATED */}
 
             {/* Auth Route */}
             <Route path="login" element={<Login />} />

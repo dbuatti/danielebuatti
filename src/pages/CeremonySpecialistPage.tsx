@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import SeoMetadata from "@/components/SeoMetadata";
 import { supabase } from "@/integrations/supabase/client";
 
-const WeddingRescuePage: React.FC = () => {
+const CeremonySpecialistPage: React.FC = () => {
   const [isAccepted, setIsAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -232,4 +232,4 @@ const WeddingRescuePage: React.FC = () => {
   );
 };
 
-export default WeddingRescuePage;
+export default CeremonySpecialistPage;
