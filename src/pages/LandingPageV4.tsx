@@ -7,7 +7,8 @@ import BackToTopButton from "@/components/BackToTopButton";
 import SeoStructuredData from "@/components/SeoStructuredData";
 import SeoMetadata from "@/components/SeoMetadata";
 import DynamicImage from "@/components/DynamicImage";
-import ITServiceBanner from "@/components/ITServiceBanner"; // Import the new banner
+import ITServiceBanner from "@/components/ITServiceBanner";
+import KinesiologyBanner from "@/components/KinesiologyBanner"; // Import the new banner
 import { Link } from "react-router-dom";
 import { 
   Mic2, 
@@ -74,7 +75,6 @@ const LandingPageV4: React.FC = () => {
         </Button>
       </div>
 
-      {/* Spacing Adjustment: Tightened bottom padding */}
       <main className="max-w-5xl mx-auto px-6 pt-16 pb-8">
         
         {/* 1. HERO SECTION */}
@@ -138,7 +138,7 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* 3. CLIENT FEEDBACK (Moved Up for Social Proof) */}
+        {/* 3. CLIENT FEEDBACK */}
         <section className="mb-24 relative">
           <div className="flex items-end justify-between mb-12 px-2 text-left">
             <div>
@@ -209,7 +209,12 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* 4. WHO I WORK WITH (Moved Up for Identification) */}
+        {/* 4. KINESIOLOGY BANNER (NEW) */}
+        <section className="mb-24 px-2">
+          <KinesiologyBanner />
+        </section>
+
+        {/* 5. WHO I WORK WITH */}
         <section className="mb-24">
           <h2 className="text-4xl font-light text-center mb-16 text-gray-900 dark:text-white">Who I Work With</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -228,7 +233,7 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* 5. APPROACH SECTION */}
+        {/* 6. APPROACH SECTION */}
         <section className="grid md:grid-cols-2 gap-20 items-center mb-24">
           <DynamicImage src="/pinkcarpet.jpg" alt="Daniele Buatti" className="w-full rounded-3xl shadow-xl" width={600} height={600} />
           <div className="space-y-8 text-left">
@@ -245,7 +250,7 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* 6. WHY WORK WITH ME SECTION */}
+        {/* 7. WHY WORK WITH ME SECTION */}
         <section className="mb-24 max-w-4xl mx-auto">
           <h2 className="text-4xl font-light text-center mb-16">Why Work With Me</h2>
           <div className="grid md:grid-cols-2 gap-8">
@@ -263,12 +268,12 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* 7. IT SERVICE BANNER (NEW) */}
+        {/* 8. IT SERVICE BANNER */}
         <section className="mb-24 px-2">
           <ITServiceBanner />
         </section>
 
-        {/* 8. SIGNATURE SERVICE PORTAL (Final Conclusion) */}
+        {/* 9. SIGNATURE SERVICE PORTAL */}
         <section className="mb-12 px-2">
           <Link to="/live-piano-services" className="group block relative overflow-hidden rounded-[2.5rem] bg-black shadow-2xl transition-all duration-500 hover:scale-[1.01]">
             <div className="absolute inset-0 bg-[url('/blacktie.avif')] bg-cover bg-center opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />
