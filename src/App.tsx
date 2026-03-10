@@ -27,7 +27,7 @@ import DynamicQuotePage from './pages/DynamicQuotePage';
 import QuoteConfirmationPage from './pages/QuoteConfirmationPage';
 import ContactPage from './pages/ContactPage';
 import GiftCardsPage from './pages/GiftCardsPage';
-import CeremonySpecialistPage from './pages/CeremonySpecialistPage'; // UPDATED
+import CeremonySpecialistPage from './pages/CeremonySpecialistPage';
 
 // Admin Pages
 import Login from './pages/Login';
@@ -41,6 +41,8 @@ import AdminAmebBookingDetailsPage from './pages/admin/AdminAmebBookingDetailsPa
 import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage';
 import AdminGiftCardsPage from './pages/admin/AdminGiftCardsPage';
 import JobDecisionFilterPage from './pages/admin/JobDecisionFilterPage';
+import AdminLeadsPage from './pages/admin/AdminLeadsPage'; // New
+import AdminLeadDetailsPage from './pages/admin/AdminLeadDetailsPage'; // New
 
 
 function App() {
@@ -70,7 +72,7 @@ function App() {
             <Route path="live-piano-services/quote-confirmation" element={<QuoteConfirmationPage />} />
             <Route path="contact" element={<ContactPage />} />
             <Route path="gift-cards" element={<GiftCardsPage />} />
-            <Route path="ceremony-specialist" element={<CeremonySpecialistPage />} /> {/* UPDATED */}
+            <Route path="ceremony-specialist" element={<CeremonySpecialistPage />} />
 
             {/* Auth Route */}
             <Route path="login" element={<Login />} />
@@ -78,6 +80,8 @@ function App() {
             {/* Admin Routes */}
             <Route path="admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboardPage />} />
+              <Route path="leads" element={<AdminLeadsPage />} />
+              <Route path="leads/:id" element={<AdminLeadDetailsPage />} />
               <Route path="quotes" element={<AdminQuotesPage />} />
               <Route path="quotes/:id" element={<AdminQuoteDetailsPage />} />
               <Route path="quotes/edit/:id" element={<AdminEditQuotePage />} />

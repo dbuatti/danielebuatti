@@ -4,7 +4,7 @@ import React from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
 import { useSession } from '@/components/SessionContextProvider';
 import { Button } from '@/components/ui/button';
-import { LogOut, LayoutDashboard, FileText, Home, Music, MailOpen, Gift, ClipboardList } from 'lucide-react'; // NEW: Import Gift and ClipboardList icons
+import { LogOut, LayoutDashboard, FileText, Home, Music, MailOpen, Gift, ClipboardList, Users } from 'lucide-react'; // Added Users icon
 import { supabase } from '@/integrations/supabase/client';
 import { useTheme } from 'next-themes';
 import DynamicImage from '@/components/DynamicImage';
@@ -63,6 +63,13 @@ const AdminLayout: React.FC = () => {
             <LayoutDashboard className="h-5 w-5" />
             Dashboard
           </Link>
+          <Link to="/admin/leads" className={cn(
+            "flex items-center gap-3 p-3 rounded-md text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark/50 transition-colors",
+            location.pathname.startsWith('/admin/leads') ? 'bg-brand-secondary/30 dark:bg-brand-dark/60 font-semibold text-brand-primary' : ''
+          )}>
+            <Users className="h-5 w-5" />
+            Leads
+          </Link>
           <Link to="/admin/quotes" className={cn(
             "flex items-center gap-3 p-3 rounded-md text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark/50 transition-colors",
             location.pathname.startsWith('/admin/quotes') ? 'bg-brand-secondary/30 dark:bg-brand-dark/60 font-semibold text-brand-primary' : ''
@@ -74,7 +81,7 @@ const AdminLayout: React.FC = () => {
             "flex items-center gap-3 p-3 rounded-md text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark/50 transition-colors",
             location.pathname.startsWith('/admin/ameb-bookings') ? 'bg-brand-secondary/30 dark:bg-brand-dark/60 font-semibold text-brand-primary' : ''
           )}>
-            <Music className="h-5 w-5" /> {/* Using Music icon for AMEB */}
+            <Music className="h-5 w-5" />
             AMEB Bookings
           </Link>
           <Link to="/admin/email-templates" className={cn(
@@ -88,14 +95,14 @@ const AdminLayout: React.FC = () => {
             "flex items-center gap-3 p-3 rounded-md text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark/50 transition-colors",
             location.pathname.startsWith('/admin/gift-cards') ? 'bg-brand-secondary/30 dark:bg-brand-dark/60 font-semibold text-brand-primary' : ''
           )}>
-            <Gift className="h-5 w-5" /> {/* NEW: Gift Cards Link */}
+            <Gift className="h-5 w-5" />
             Gift Cards
           </Link>
           <Link to="/admin/job-decision-filter" className={cn(
             "flex items-center gap-3 p-3 rounded-md text-brand-dark dark:text-brand-light hover:bg-brand-secondary/20 dark:hover:bg-brand-dark/50 transition-colors",
             location.pathname.startsWith('/admin/job-decision-filter') ? 'bg-brand-secondary/30 dark:bg-brand-dark/60 font-semibold text-brand-primary' : ''
           )}>
-            <ClipboardList className="h-5 w-5" /> {/* NEW: Job Decision Filter Link */}
+            <ClipboardList className="h-5 w-5" />
             Job Decision Filter
           </Link>
         </nav>
@@ -119,11 +126,12 @@ const AdminLayout: React.FC = () => {
         <header className="bg-brand-light dark:bg-brand-dark border-b border-brand-secondary/50 p-4 shadow-sm flex items-center justify-between">
           <h1 className="text-2xl font-bold text-brand-dark dark:text-brand-light">
             {location.pathname === '/admin' ? 'Admin Dashboard' :
+             location.pathname.startsWith('/admin/leads') ? 'Leads' :
              location.pathname.startsWith('/admin/quotes') ? 'Quotes' :
              location.pathname.startsWith('/admin/ameb-bookings') ? 'AMEB Bookings' :
              location.pathname.startsWith('/admin/email-templates') ? 'Email Templates' :
              location.pathname.startsWith('/admin/gift-cards') ? 'Gift Cards' :
-             location.pathname.startsWith('/admin/job-decision-filter') ? 'Job Decision Filter' : 'Admin'} {/* NEW: Update header for Job Decision Filter */}
+             location.pathname.startsWith('/admin/job-decision-filter') ? 'Job Decision Filter' : 'Admin'}
           </h1>
           <div className="flex items-center gap-4">
             <span className="text-brand-dark/80 dark:text-brand-light/80 text-sm">
@@ -132,7 +140,7 @@ const AdminLayout: React.FC = () => {
           </div>
         </header>
         <main className="flex-1 p-8 overflow-y-auto">
-          <Outlet /> {/* Renders child routes */}
+          <Outlet />
         </main>
       </div>
     </div>
