@@ -16,7 +16,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Save, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   company_name: z.string().min(1, { message: 'Company/Lead name is required.' }),
@@ -76,17 +77,18 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
     }
   }, [initialData, form]);
 
-  const inputClasses = "bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary";
+  const inputClasses = "bg-brand-secondary/10 dark:bg-brand-dark border-none h-12 rounded-xl text-brand-dark dark:text-brand-light placeholder:text-gray-500 focus-visible:ring-brand-primary";
+  const labelClasses = "text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60 mb-2 block";
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
         <FormField
           control={form.control}
           name="company_name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Company / Lead Name *</FormLabel>
+              <FormLabel className={labelClasses}>Company / Lead Name *</FormLabel>
               <FormControl>
                 <Input placeholder="e.g., The Australian Club" className={inputClasses} {...field} />
               </FormControl>
@@ -95,13 +97,13 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
           )}
         />
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             control={form.control}
             name="contact_name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Contact Person</FormLabel>
+                <FormLabel className={labelClasses}>Contact Person</FormLabel>
                 <FormControl>
                   <Input placeholder="Alexandra" className={inputClasses} {...field} />
                 </FormControl>
@@ -114,14 +116,14 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
             name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Status</FormLabel>
+                <FormLabel className={labelClasses}>Pipeline Status</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger className={inputClasses}>
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50">
+                  <SelectContent className="bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50 rounded-xl">
                     <SelectItem value="New">New</SelectItem>
                     <SelectItem value="Contacted">Contacted</SelectItem>
                     <SelectItem value="Qualified">Qualified</SelectItem>
@@ -135,13 +137,13 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel className={labelClasses}>Email Address</FormLabel>
                 <FormControl>
                   <Input type="email" placeholder="private.events@..." className={inputClasses} {...field} />
                 </FormControl>
@@ -154,9 +156,38 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Phone</FormLabel>
+                <FormLabel className={labelClasses}>Phone Number</FormLabel>
                 <FormControl>
-                  <Input placeholder="04..." className={inputClasses} {...field} />
+                  <Input placeholder="0424 174 067" className={inputClasses} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="venue"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className={labelClasses}>Venue / Location</FormLabel>
+                <FormControl>
+                  <Input placeholder="Sydney" className={inputClasses} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="source"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className={labelClasses}>Source / Referral</FormLabel>
+                <FormControl>
+                  <Input placeholder="Referral via Graham" className={inputClasses} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -166,54 +197,12 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
 
         <FormField
           control={form.control}
-          name="venue"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Venue / Location</FormLabel>
-              <FormControl>
-                <Input placeholder="Sydney" className={inputClasses} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="source"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>How connection was made (Source)</FormLabel>
-              <FormControl>
-                <Input placeholder="Referral via Graham" className={inputClasses} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
           name="outcome"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Outcome of Contact</FormLabel>
+              <FormLabel className={labelClasses}>Outcome of Contact</FormLabel>
               <FormControl>
-                <Textarea placeholder="Pianist found for this Saturday, but encouraged to email..." className={inputClasses} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="notes"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>General Notes / About</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Professional jazz/contemporary pianist based in Melbourne..." className={inputClasses} {...field} />
+                <Textarea placeholder="Summary of the conversation..." className={cn(inputClasses, "h-24 py-3 resize-none")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -225,30 +214,46 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
           name="goal"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Goal / Next Steps</FormLabel>
+              <FormLabel className={labelClasses}>Goal / Next Steps</FormLabel>
               <FormControl>
-                <Textarea placeholder="Introduce himself properly, express genuine interest..." className={inputClasses} {...field} />
+                <Textarea placeholder="What needs to happen next?" className={cn(inputClasses, "h-24 py-3 resize-none")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <div className="flex justify-end gap-2 pt-4">
-          <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>
-            Cancel
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className={labelClasses}>General Notes</FormLabel>
+              <FormControl>
+                <Textarea placeholder="Additional context..." className={cn(inputClasses, "h-24 py-3 resize-none")} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="flex justify-end gap-3 pt-6 border-t border-brand-secondary/20">
+          <Button type="button" variant="ghost" onClick={onClose} disabled={isSubmitting} className="rounded-full px-8">
+            <X className="mr-2 h-4 w-4" /> Cancel
           </Button>
           <Button
             type="submit"
-            className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
+            className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light rounded-full px-10 py-6 text-lg font-bold shadow-lg"
             disabled={isSubmitting}
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Saving...
               </>
             ) : (
-              'Save Lead'
+              <>
+                <Save className="mr-2 h-5 w-5" /> Save Lead Entry
+              </>
             )}
           </Button>
         </div>

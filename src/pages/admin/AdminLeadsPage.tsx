@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns';
-import { Loader2, UserPlus, Mail, MapPin, Trash2, ExternalLink, Search } from 'lucide-react';
+import { Loader2, UserPlus, Mail, MapPin, Trash2, ExternalLink, Search, Users, TrendingUp, CheckCircle2, Clock } from 'lucide-react';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -42,6 +42,14 @@ const AdminLeadsPage: React.FC = () => {
   useEffect(() => {
     fetchLeads();
   }, []);
+
+  const stats = useMemo(() => {
+    return {
+      total: leads.length,
+      new: leads.filter(l => l.status === 'New').length,
+      converted: leads.filter(l => l.status === 'Converted').length,
+    };
+  }, [leads]);
 
   const handleCreateLead = async (values: LeadFormValues) => {
     setIsSubmitting(true);
@@ -111,17 +119,21 @@ const AdminLeadsPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Lead Management</h2>
+      {/* Header & Stats */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="space-y-2">
+          <h2 className="text-4xl font-bold text-brand-dark dark:text-brand-light tracking-tight">Lead Management</h2>
+          <p className="text-lg text-brand-dark/60 dark:text-brand-light/60">Track and nurture your professional connections.</p>
+        </div>
         <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-              <UserPlus className="mr-2 h-4 w-4" /> Add New Lead
+            <Button className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light rounded-full px-8 py-6 text-lg shadow-lg transition-all hover:scale-105">
+              <UserPlus className="mr-2 h-5 w-5" /> Add New Lead
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50">
+          <DialogContent className="sm:max-w-[650px] max-h-[90vh] overflow-y-auto bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50 rounded-3xl">
             <DialogHeader>
-              <DialogTitle className="text-brand-primary">Add New Lead</DialogTitle>
+              <DialogTitle className="text-2xl font-bold text-brand-primary">Create New Lead Entry</DialogTitle>
             </DialogHeader>
             <LeadForm
               onSubmit={handleCreateLead}
@@ -132,83 +144,137 @@ const AdminLeadsPage: React.FC = () => {
         </Dialog>
       </div>
 
-      <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
-        <CardHeader>
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <CardTitle className="text-xl text-brand-primary">All Leads</CardTitle>
-            <div className="relative w-full md:w-72">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+      {/* Stats Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="bg-white/50 dark:bg-brand-dark-alt/50 backdrop-blur-sm border-brand-secondary/30 shadow-sm rounded-2xl">
+          <CardContent className="p-6 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary">
+              <Users className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-brand-dark/60 dark:text-brand-light/60 uppercase tracking-wider">Total Leads</p>
+              <p className="text-3xl font-bold text-brand-dark dark:text-brand-light">{stats.total}</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-white/50 dark:bg-brand-dark-alt/50 backdrop-blur-sm border-brand-secondary/30 shadow-sm rounded-2xl">
+          <CardContent className="p-6 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-600">
+              <Clock className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-brand-dark/60 dark:text-brand-light/60 uppercase tracking-wider">New Inquiries</p>
+              <p className="text-3xl font-bold text-brand-dark dark:text-brand-light">{stats.new}</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-white/50 dark:bg-brand-dark-alt/50 backdrop-blur-sm border-brand-secondary/30 shadow-sm rounded-2xl">
+          <CardContent className="p-6 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center text-green-600">
+              <CheckCircle2 className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-brand-dark/60 dark:text-brand-light/60 uppercase tracking-wider">Converted</p>
+              <p className="text-3xl font-bold text-brand-dark dark:text-brand-light">{stats.converted}</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Main Content Card */}
+      <Card className="bg-white dark:bg-brand-dark-alt shadow-xl border-brand-secondary/50 rounded-3xl overflow-hidden">
+        <CardHeader className="border-b border-brand-secondary/20 p-8">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <CardTitle className="text-2xl font-bold text-brand-primary flex items-center gap-2">
+              <TrendingUp className="h-6 w-6" /> Pipeline Overview
+            </CardTitle>
+            <div className="relative w-full md:w-96">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
               <Input
-                placeholder="Search leads..."
+                placeholder="Search by company, contact, or venue..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light"
+                className="pl-12 h-12 bg-brand-secondary/10 dark:bg-brand-dark border-none rounded-full text-brand-dark dark:text-brand-light placeholder:text-gray-500 focus-visible:ring-brand-primary"
               />
             </div>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           {isLoading ? (
-            <div className="flex items-center justify-center h-64">
-              <Loader2 className="h-10 w-10 animate-spin text-brand-primary" />
+            <div className="flex items-center justify-center h-96">
+              <Loader2 className="h-12 w-12 animate-spin text-brand-primary" />
             </div>
           ) : filteredLeads.length === 0 ? (
-            <p className="text-center text-brand-dark/70 dark:text-brand-light/70 py-12">No leads found.</p>
+            <div className="text-center py-24 space-y-4">
+              <Users className="h-16 w-16 mx-auto text-gray-300" />
+              <p className="text-xl text-brand-dark/60 dark:text-brand-light/60">No leads found matching your search.</p>
+            </div>
           ) : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-brand-secondary/10 dark:bg-brand-dark/50">
-                    <TableHead className="text-brand-primary">Company / Name</TableHead>
-                    <TableHead className="text-brand-primary">Contact</TableHead>
-                    <TableHead className="text-brand-primary">Venue</TableHead>
-                    <TableHead className="text-brand-primary">Status</TableHead>
-                    <TableHead className="text-brand-primary">Created</TableHead>
-                    <TableHead className="text-brand-primary text-center">Actions</TableHead>
+                  <TableRow className="bg-brand-secondary/5 dark:bg-brand-dark/50 border-none">
+                    <TableHead className="text-brand-primary font-bold py-6 pl-8">Company / Lead</TableHead>
+                    <TableHead className="text-brand-primary font-bold py-6">Primary Contact</TableHead>
+                    <TableHead className="text-brand-primary font-bold py-6">Venue / Location</TableHead>
+                    <TableHead className="text-brand-primary font-bold py-6">Status</TableHead>
+                    <TableHead className="text-brand-primary font-bold py-6">Added On</TableHead>
+                    <TableHead className="text-brand-primary font-bold py-6 text-center pr-8">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredLeads.map((lead) => (
-                    <TableRow key={lead.id} className="hover:bg-brand-secondary/5 dark:hover:bg-brand-dark/30">
-                      <TableCell className="font-medium text-brand-dark dark:text-brand-light">
-                        <Link to={`/admin/leads/${lead.id}`} className="hover:underline text-brand-primary">
-                          {lead.company_name}
+                    <TableRow key={lead.id} className="group hover:bg-brand-secondary/5 dark:hover:bg-brand-dark/30 transition-colors border-b border-brand-secondary/10 last:border-none">
+                      <TableCell className="py-6 pl-8">
+                        <Link to={`/admin/leads/${lead.id}`} className="block">
+                          <span className="text-lg font-bold text-brand-dark dark:text-brand-light group-hover:text-brand-primary transition-colors">
+                            {lead.company_name}
+                          </span>
+                          {lead.source && (
+                            <p className="text-xs text-brand-dark/40 dark:text-brand-light/40 mt-1 italic">Source: {lead.source}</p>
+                          )}
                         </Link>
                       </TableCell>
-                      <TableCell>
-                        <div className="flex flex-col text-sm">
-                          <span className="font-semibold">{lead.contact_name || 'N/A'}</span>
+                      <TableCell className="py-6">
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-brand-dark/80 dark:text-brand-light/80">{lead.contact_name || '—'}</span>
                           {lead.email && (
-                            <a href={`mailto:${lead.email}`} className="text-xs text-blue-500 hover:underline flex items-center gap-1">
+                            <a href={`mailto:${lead.email}`} className="text-sm text-blue-500 hover:underline flex items-center gap-1 mt-1">
                               <Mail className="h-3 w-3" /> {lead.email}
                             </a>
                           )}
                         </div>
                       </TableCell>
-                      <TableCell className="text-sm text-brand-dark/80 dark:text-brand-light/80">
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3" /> {lead.venue || 'N/A'}
+                      <TableCell className="py-6">
+                        <div className="flex items-center gap-2 text-brand-dark/70 dark:text-brand-light/70">
+                          <MapPin className="h-4 w-4 text-brand-primary/50" />
+                          <span>{lead.venue || '—'}</span>
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <Badge variant={getStatusBadgeVariant(lead.status)}>{lead.status}</Badge>
+                      <TableCell className="py-6">
+                        <Badge variant={getStatusBadgeVariant(lead.status)} className="px-3 py-1 rounded-full font-medium">
+                          {lead.status}
+                        </Badge>
                       </TableCell>
-                      <TableCell className="text-xs text-brand-dark/70 dark:text-brand-light/70">
+                      <TableCell className="py-6 text-sm text-brand-dark/50 dark:text-brand-light/50">
                         {format(new Date(lead.created_at), 'MMM d, yyyy')}
                       </TableCell>
-                      <TableCell className="text-center flex gap-2 justify-center">
-                        <Button asChild variant="outline" size="sm" className="text-brand-primary border-brand-secondary/50">
-                          <Link to={`/admin/leads/${lead.id}`}>
-                            <ExternalLink className="h-4 w-4" />
-                          </Link>
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => handleDeleteLead(lead.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                      <TableCell className="py-6 text-center pr-8">
+                        <div className="flex items-center justify-center gap-2">
+                          <Button asChild variant="ghost" size="icon" className="rounded-full hover:bg-brand-primary/10 hover:text-brand-primary">
+                            <Link to={`/admin/leads/${lead.id}`}>
+                              <ExternalLink className="h-5 w-5" />
+                            </Link>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDeleteLead(lead.id)}
+                            className="rounded-full hover:bg-red-500/10 hover:text-red-500"
+                          >
+                            <Trash2 className="h-5 w-5" />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}

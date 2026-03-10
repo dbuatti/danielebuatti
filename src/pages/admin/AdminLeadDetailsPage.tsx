@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, ArrowLeft, Mail, Phone, MapPin, Edit, Trash2, User, Info, Target, MessageSquare } from 'lucide-react';
+import { Loader2, ArrowLeft, Mail, Phone, MapPin, Edit, Trash2, User, Info, Target, MessageSquare, Calendar, Share2, Users } from 'lucide-react';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import { format } from 'date-fns';
 import { Lead } from '@/types/lead';
@@ -106,16 +106,19 @@ const AdminLeadDetailsPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-brand-primary" />
+        <Loader2 className="h-12 w-12 animate-spin text-brand-primary" />
       </div>
     );
   }
 
   if (!lead) {
     return (
-      <div className="p-6 text-center">
-        <p className="text-lg text-brand-dark dark:text-brand-light">Lead not found.</p>
-        <Button onClick={() => navigate('/admin/leads')} className="mt-4 bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+      <div className="p-12 text-center space-y-6">
+        <div className="w-20 h-20 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto text-red-500">
+          <Info className="h-10 w-10" />
+        </div>
+        <p className="text-2xl font-bold text-brand-dark dark:text-brand-light">Lead not found.</p>
+        <Button onClick={() => navigate('/admin/leads')} className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light rounded-full px-8">
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to Leads
         </Button>
       </div>
@@ -123,118 +126,153 @@ const AdminLeadDetailsPage: React.FC = () => {
   }
 
   return (
-    <div className="p-6 bg-brand-light dark:bg-brand-dark-alt min-h-screen space-y-6">
-      <div className="flex items-center justify-between">
-        <Button onClick={() => navigate('/admin/leads')} variant="outline" className="bg-brand-secondary hover:bg-brand-secondary/90 text-brand-light border-none">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Leads
+    <div className="max-w-6xl mx-auto space-y-8 pb-12">
+      {/* Top Navigation & Actions */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        <Button onClick={() => navigate('/admin/leads')} variant="ghost" className="text-brand-dark/60 dark:text-brand-light/60 hover:text-brand-primary transition-colors rounded-full">
+          <ArrowLeft className="mr-2 h-5 w-5" /> Back to Pipeline
         </Button>
-        <div className="flex gap-2">
-          <Button onClick={() => setIsEditModalOpen(true)} variant="outline" className="border-brand-secondary/50">
-            <Edit className="mr-2 h-4 w-4" /> Edit Lead
+        <div className="flex items-center gap-3">
+          <Button onClick={() => setIsEditModalOpen(true)} variant="outline" className="border-brand-secondary/50 rounded-full px-6">
+            <Edit className="mr-2 h-4 w-4" /> Edit Details
           </Button>
-          <Button onClick={handleDeleteLead} variant="destructive">
-            <Trash2 className="mr-2 h-4 w-4" /> Delete
+          <Button onClick={handleDeleteLead} variant="ghost" className="text-red-500 hover:bg-red-500/10 rounded-full px-6">
+            <Trash2 className="mr-2 h-4 w-4" /> Delete Lead
           </Button>
         </div>
       </div>
 
-      <Card className="bg-brand-card dark:bg-brand-card-dark text-brand-dark dark:text-brand-light border-brand-secondary/50 shadow-lg">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 border-b border-brand-secondary/20">
-          <div>
-            <CardTitle className="text-3xl font-bold text-brand-primary">{lead.company_name}</CardTitle>
-            <p className="text-sm text-brand-dark/60 dark:text-brand-light/60 mt-1">
-              Created on {format(new Date(lead.created_at), 'PPP p')}
-            </p>
-          </div>
-          <Badge variant={getStatusBadgeVariant(lead.status)} className="text-lg px-4 py-1">
-            {lead.status}
-          </Badge>
-        </CardHeader>
-        <CardContent className="pt-6 space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Contact Info */}
+      {/* Profile Header Card */}
+      <Card className="bg-brand-dark text-white border-none shadow-2xl rounded-[2.5rem] overflow-hidden relative">
+        <div className="absolute top-0 right-0 p-12 opacity-10 pointer-events-none">
+          <Users className="h-48 w-48" />
+        </div>
+        <CardContent className="p-10 md:p-16 relative z-10">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
             <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-brand-primary flex items-center gap-2">
-                <User className="h-5 w-5" /> Contact Information
-              </h3>
-              <div className="space-y-3 bg-brand-secondary/5 dark:bg-brand-dark/30 p-4 rounded-xl border border-brand-secondary/20">
-                <p className="flex items-center gap-3">
-                  <span className="font-semibold w-24">Name:</span> 
-                  <span>{lead.contact_name || 'N/A'}</span>
-                </p>
-                <p className="flex items-center gap-3">
-                  <span className="font-semibold w-24">Email:</span> 
-                  {lead.email ? (
-                    <a href={`mailto:${lead.email}`} className="text-brand-primary hover:underline flex items-center gap-1">
-                      <Mail className="h-4 w-4" /> {lead.email}
-                    </a>
-                  ) : 'N/A'}
-                </p>
-                <p className="flex items-center gap-3">
-                  <span className="font-semibold w-24">Phone:</span> 
-                  {lead.phone ? (
-                    <a href={`tel:${lead.phone}`} className="text-brand-primary hover:underline flex items-center gap-1">
-                      <Phone className="h-4 w-4" /> {lead.phone}
-                    </a>
-                  ) : 'N/A'}
-                </p>
-                <p className="flex items-center gap-3">
-                  <span className="font-semibold w-24">Venue:</span> 
-                  <span className="flex items-center gap-1"><MapPin className="h-4 w-4" /> {lead.venue || 'N/A'}</span>
-                </p>
-              </div>
-            </div>
-
-            {/* Source & Outcome */}
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-brand-primary flex items-center gap-2">
-                <Info className="h-5 w-5" /> Connection Details
-              </h3>
-              <div className="space-y-3 bg-brand-secondary/5 dark:bg-brand-dark/30 p-4 rounded-xl border border-brand-secondary/20">
-                <div>
-                  <p className="font-semibold text-sm uppercase tracking-wider text-brand-dark/60 dark:text-brand-light/60 mb-1">Source / Referral</p>
-                  <p>{lead.source || 'N/A'}</p>
+              <Badge variant={getStatusBadgeVariant(lead.status)} className="px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-widest bg-brand-primary text-white border-none">
+                {lead.status}
+              </Badge>
+              <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{lead.company_name}</h1>
+              <div className="flex flex-wrap items-center gap-6 text-white/70">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-5 w-5 text-brand-primary" />
+                  <span>Added {format(new Date(lead.created_at), 'MMMM d, yyyy')}</span>
                 </div>
-                <Separator className="bg-brand-secondary/20" />
-                <div>
-                  <p className="font-semibold text-sm uppercase tracking-wider text-brand-dark/60 dark:text-brand-light/60 mb-1">Outcome of Contact</p>
-                  <p className="whitespace-pre-wrap">{lead.outcome || 'N/A'}</p>
-                </div>
+                {lead.venue && (
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-5 w-5 text-brand-primary" />
+                    <span>{lead.venue}</span>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-
-          {/* Notes & Goals */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-brand-primary flex items-center gap-2">
-                <MessageSquare className="h-5 w-5" /> General Notes / About
-              </h3>
-              <div className="bg-brand-secondary/5 dark:bg-brand-dark/30 p-4 rounded-xl border border-brand-secondary/20 min-h-[150px]">
-                <p className="whitespace-pre-wrap text-brand-dark/80 dark:text-brand-light/80">
-                  {lead.notes || 'No notes provided.'}
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-brand-primary flex items-center gap-2">
-                <Target className="h-5 w-5" /> Goal / Next Steps
-              </h3>
-              <div className="bg-brand-secondary/5 dark:bg-brand-dark/30 p-4 rounded-xl border border-brand-secondary/20 min-h-[150px]">
-                <p className="whitespace-pre-wrap text-brand-dark/80 dark:text-brand-light/80">
-                  {lead.goal || 'No goals defined.'}
-                </p>
-              </div>
+            <div className="flex flex-col gap-3 w-full md:w-auto">
+              {lead.email && (
+                <Button asChild className="bg-white text-brand-dark hover:bg-white/90 rounded-full px-8 py-6 text-lg font-bold">
+                  <a href={`mailto:${lead.email}`}>
+                    <Mail className="mr-2 h-5 w-5" /> Send Email
+                  </a>
+                </Button>
+              )}
+              {lead.phone && (
+                <Button asChild variant="outline" className="border-white/20 text-white hover:bg-white/10 rounded-full px-8 py-6">
+                  <a href={`tel:${lead.phone}`}>
+                    <Phone className="mr-2 h-5 w-5" /> Call Contact
+                  </a>
+                </Button>
+              )}
             </div>
           </div>
         </CardContent>
       </Card>
 
+      {/* Information Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {/* Left Column: Contact & Context */}
+        <div className="lg:col-span-1 space-y-8">
+          <Card className="bg-white dark:bg-brand-dark-alt shadow-lg border-brand-secondary/30 rounded-3xl overflow-hidden">
+            <CardHeader className="bg-brand-secondary/5 dark:bg-brand-dark/50 border-b border-brand-secondary/10 p-6">
+              <CardTitle className="text-xl font-bold text-brand-primary flex items-center gap-2">
+                <User className="h-5 w-5" /> Primary Contact
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-8 space-y-6">
+              <div className="space-y-1">
+                <p className="text-xs uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40 font-bold">Name</p>
+                <p className="text-xl font-semibold text-brand-dark dark:text-brand-light">{lead.contact_name || '—'}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40 font-bold">Email Address</p>
+                <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 break-all">{lead.email || '—'}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40 font-bold">Phone Number</p>
+                <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">{lead.phone || '—'}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white dark:bg-brand-dark-alt shadow-lg border-brand-secondary/30 rounded-3xl overflow-hidden">
+            <CardHeader className="bg-brand-secondary/5 dark:bg-brand-dark/50 border-b border-brand-secondary/10 p-6">
+              <CardTitle className="text-xl font-bold text-brand-primary flex items-center gap-2">
+                <Share2 className="h-5 w-5" /> Connection Context
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-8 space-y-6">
+              <div className="space-y-1">
+                <p className="text-xs uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40 font-bold">Source / Referral</p>
+                <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">{lead.source || '—'}</p>
+              </div>
+              <Separator className="bg-brand-secondary/10" />
+              <div className="space-y-1">
+                <p className="text-xs uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40 font-bold">Outcome of Contact</p>
+                <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 whitespace-pre-wrap leading-relaxed">
+                  {lead.outcome || 'No outcome recorded yet.'}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right Column: Strategy & Notes */}
+        <div className="lg:col-span-2 space-y-8">
+          <Card className="bg-white dark:bg-brand-dark-alt shadow-lg border-brand-secondary/30 rounded-3xl overflow-hidden">
+            <CardHeader className="bg-brand-secondary/5 dark:bg-brand-dark/50 border-b border-brand-secondary/10 p-6">
+              <CardTitle className="text-xl font-bold text-brand-primary flex items-center gap-2">
+                <Target className="h-5 w-5" /> Goal & Next Steps
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-10">
+              <div className="bg-brand-primary/5 dark:bg-brand-primary/10 p-8 rounded-[2rem] border border-brand-primary/20">
+                <p className="text-xl text-brand-dark/90 dark:text-brand-light/90 whitespace-pre-wrap leading-relaxed italic">
+                  {lead.goal || 'Define the next steps for this connection...'}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white dark:bg-brand-dark-alt shadow-lg border-brand-secondary/30 rounded-3xl overflow-hidden">
+            <CardHeader className="bg-brand-secondary/5 dark:bg-brand-dark/50 border-b border-brand-secondary/10 p-6">
+              <CardTitle className="text-xl font-bold text-brand-primary flex items-center gap-2">
+                <MessageSquare className="h-5 w-5" /> General Notes
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-10">
+              <p className="text-lg text-brand-dark/70 dark:text-brand-light/70 whitespace-pre-wrap leading-relaxed">
+                {lead.notes || 'No additional notes provided.'}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Edit Modal */}
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50">
+        <DialogContent className="sm:max-w-[650px] max-h-[90vh] overflow-y-auto bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50 rounded-3xl">
           <DialogHeader>
-            <DialogTitle className="text-brand-primary">Edit Lead: {lead.company_name}</DialogTitle>
+            <DialogTitle className="text-2xl font-bold text-brand-primary">Edit Lead: {lead.company_name}</DialogTitle>
           </DialogHeader>
           <LeadForm
             onSubmit={handleUpdateLead}
