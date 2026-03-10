@@ -16,7 +16,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, Save, X } from 'lucide-react';
+import { Loader2, Save, X, DollarSign, Percent, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
@@ -30,6 +30,10 @@ const formSchema = z.object({
   notes: z.string().optional(),
   goal: z.string().optional(),
   status: z.enum(['New', 'Contacted', 'Qualified', 'Lost', 'Converted']).default('New'),
+  lead_type: z.enum(['Music', 'Tech']).default('Music'),
+  estimated_value: z.coerce.number().min(0).default(0),
+  probability: z.coerce.number().min(0).max(100).default(0),
+  follow_up_date: z.string().optional().or(z.literal('')),
 });
 
 export type LeadFormValues = z.infer<typeof formSchema>;
@@ -55,6 +59,10 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
       notes: '',
       goal: '',
       status: 'New',
+      lead_type: 'Music',
+      estimated_value: 0,
+      probability: 0,
+      follow_up_date: '',
       ...initialData,
     },
   });
@@ -72,6 +80,10 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
         notes: '',
         goal: '',
         status: 'New',
+        lead_type: 'Music',
+        estimated_value: 0,
+        probability: 0,
+        follow_up_date: '',
         ...initialData,
       });
     }
@@ -83,19 +95,93 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
-        <FormField
-          control={form.control}
-          name="company_name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className={labelClasses}>Company / Lead Name *</FormLabel>
-              <FormControl>
-                <Input placeholder="e.g., The Australian Club" className={inputClasses} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="company_name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className={labelClasses}>Company / Lead Name *</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., Ministry of Entertainment" className={inputClasses} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="lead_type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className={labelClasses}>Lead Type</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger className={inputClasses}>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50 rounded-xl">
+                    <SelectItem value="Music">Music (Piano/Vocal)</SelectItem>
+                    <SelectItem value="Tech">Tech (IT/Systems)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <FormField
+            control={form.control}
+            name="estimated_value"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className={labelClasses}>Est. Value ($)</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input type="number" className={cn(inputClasses, "pl-10")} {...field} />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="probability"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className={labelClasses}>Probability (%)</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <Percent className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input type="number" className={cn(inputClasses, "pl-10")} {...field} />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="follow_up_date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className={labelClasses}>Follow-up Date</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input type="date" className={cn(inputClasses, "pl-10")} {...field} />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
@@ -105,7 +191,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
               <FormItem>
                 <FormLabel className={labelClasses}>Contact Person</FormLabel>
                 <FormControl>
-                  <Input placeholder="Alexandra" className={inputClasses} {...field} />
+                  <Input placeholder="Jazz Miller" className={inputClasses} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -166,34 +252,19 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
-            name="venue"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className={labelClasses}>Venue / Location</FormLabel>
-                <FormControl>
-                  <Input placeholder="Sydney" className={inputClasses} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="source"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className={labelClasses}>Source / Referral</FormLabel>
-                <FormControl>
-                  <Input placeholder="Referral via Graham" className={inputClasses} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+        <FormField
+          control={form.control}
+          name="venue"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className={labelClasses}>Venue / Location</FormLabel>
+              <FormControl>
+                <Input placeholder="Studio 4, North Melbourne" className={inputClasses} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={form.control}

@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns';
-import { Loader2, UserPlus, Mail, MapPin, Trash2, ExternalLink, Search, Users, TrendingUp, CheckCircle2, Clock } from 'lucide-react';
+import { Loader2, UserPlus, Trash2, ExternalLink, Search, Users, TrendingUp, CheckCircle2, Clock, DollarSign } from 'lucide-react';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,6 +15,7 @@ import LeadForm, { LeadFormValues } from '@/components/admin/LeadForm';
 import { Lead } from '@/types/lead';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
+import { cn } from "@/lib/utils";
 
 const AdminLeadsPage: React.FC = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -44,10 +45,15 @@ const AdminLeadsPage: React.FC = () => {
   }, []);
 
   const stats = useMemo(() => {
+    const totalValue = leads.reduce((sum, l) => sum + (l.estimated_value || 0), 0);
+    const weightedValue = leads.reduce((sum, l) => sum + ((l.estimated_value || 0) * ((l.probability || 0) / 100)), 0);
+
     return {
       total: leads.length,
       new: leads.filter(l => l.status === 'New').length,
       converted: leads.filter(l => l.status === 'Converted').length,
+      pipelineValue: totalValue,
+      weightedValue: weightedValue,
     };
   }, [leads]);
 
@@ -145,7 +151,7 @@ const AdminLeadsPage: React.FC = () => {
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="bg-white/50 dark:bg-brand-dark-alt/50 backdrop-blur-sm border-brand-secondary/30 shadow-sm rounded-2xl">
           <CardContent className="p-6 flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary">
@@ -160,17 +166,28 @@ const AdminLeadsPage: React.FC = () => {
         <Card className="bg-white/50 dark:bg-brand-dark-alt/50 backdrop-blur-sm border-brand-secondary/30 shadow-sm rounded-2xl">
           <CardContent className="p-6 flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-600">
-              <Clock className="h-6 w-6" />
+              <TrendingUp className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-sm font-medium text-brand-dark/60 dark:text-brand-light/60 uppercase tracking-wider">New Inquiries</p>
-              <p className="text-3xl font-bold text-brand-dark dark:text-brand-light">{stats.new}</p>
+              <p className="text-sm font-medium text-brand-dark/60 dark:text-brand-light/60 uppercase tracking-wider">Pipeline Value</p>
+              <p className="text-3xl font-bold text-brand-dark dark:text-brand-light">${stats.pipelineValue.toLocaleString()}</p>
             </div>
           </CardContent>
         </Card>
         <Card className="bg-white/50 dark:bg-brand-dark-alt/50 backdrop-blur-sm border-brand-secondary/30 shadow-sm rounded-2xl">
           <CardContent className="p-6 flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center text-green-600">
+              <DollarSign className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-brand-dark/60 dark:text-brand-light/60 uppercase tracking-wider">Weighted Value</p>
+              <p className="text-3xl font-bold text-brand-dark dark:text-brand-light">${Math.round(stats.weightedValue).toLocaleString()}</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-white/50 dark:bg-brand-dark-alt/50 backdrop-blur-sm border-brand-secondary/30 shadow-sm rounded-2xl">
+          <CardContent className="p-6 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600">
               <CheckCircle2 className="h-6 w-6" />
             </div>
             <div>
@@ -215,10 +232,10 @@ const AdminLeadsPage: React.FC = () => {
                 <TableHeader>
                   <TableRow className="bg-brand-secondary/5 dark:bg-brand-dark/50 border-none">
                     <TableHead className="text-brand-primary font-bold py-6 pl-8">Company / Lead</TableHead>
-                    <TableHead className="text-brand-primary font-bold py-6">Primary Contact</TableHead>
-                    <TableHead className="text-brand-primary font-bold py-6">Venue / Location</TableHead>
+                    <TableHead className="text-brand-primary font-bold py-6">Type</TableHead>
+                    <TableHead className="text-brand-primary font-bold py-6">Value / Prob.</TableHead>
                     <TableHead className="text-brand-primary font-bold py-6">Status</TableHead>
-                    <TableHead className="text-brand-primary font-bold py-6">Added On</TableHead>
+                    <TableHead className="text-brand-primary font-bold py-6">Follow-up</TableHead>
                     <TableHead className="text-brand-primary font-bold py-6 text-center pr-8">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -230,25 +247,21 @@ const AdminLeadsPage: React.FC = () => {
                           <span className="text-lg font-bold text-brand-dark dark:text-brand-light group-hover:text-brand-primary transition-colors">
                             {lead.company_name}
                           </span>
-                          {lead.source && (
-                            <p className="text-xs text-brand-dark/40 dark:text-brand-light/40 mt-1 italic">Source: {lead.source}</p>
-                          )}
+                          <p className="text-xs text-brand-dark/40 dark:text-brand-light/40 mt-1 italic">{lead.contact_name || 'No contact'}</p>
                         </Link>
                       </TableCell>
                       <TableCell className="py-6">
-                        <div className="flex flex-col">
-                          <span className="font-semibold text-brand-dark/80 dark:text-brand-light/80">{lead.contact_name || '—'}</span>
-                          {lead.email && (
-                            <a href={`mailto:${lead.email}`} className="text-sm text-blue-500 hover:underline flex items-center gap-1 mt-1">
-                              <Mail className="h-3 w-3" /> {lead.email}
-                            </a>
-                          )}
-                        </div>
+                        <Badge variant="outline" className={cn(
+                          "px-3 py-1 rounded-full font-medium",
+                          lead.lead_type === 'Tech' ? "border-blue-500 text-blue-500" : "border-brand-primary text-brand-primary"
+                        )}>
+                          {lead.lead_type}
+                        </Badge>
                       </TableCell>
                       <TableCell className="py-6">
-                        <div className="flex items-center gap-2 text-brand-dark/70 dark:text-brand-light/70">
-                          <MapPin className="h-4 w-4 text-brand-primary/50" />
-                          <span>{lead.venue || '—'}</span>
+                        <div className="flex flex-col">
+                          <span className="font-bold text-brand-dark/80 dark:text-brand-light/80">${(lead.estimated_value || 0).toLocaleString()}</span>
+                          <span className="text-xs text-brand-dark/40 dark:text-brand-light/40">{lead.probability || 0}% Probability</span>
                         </div>
                       </TableCell>
                       <TableCell className="py-6">
@@ -256,8 +269,16 @@ const AdminLeadsPage: React.FC = () => {
                           {lead.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="py-6 text-sm text-brand-dark/50 dark:text-brand-light/50">
-                        {format(new Date(lead.created_at), 'MMM d, yyyy')}
+                      <TableCell className="py-6 text-sm">
+                        {lead.follow_up_date ? (
+                          <div className={cn(
+                            "flex items-center gap-2",
+                            new Date(lead.follow_up_date) < new Date() ? "text-red-500 font-bold" : "text-brand-dark/50 dark:text-brand-light/50"
+                          )}>
+                            <Clock className="h-4 w-4" />
+                            {format(new Date(lead.follow_up_date), 'MMM d')}
+                          </div>
+                        ) : '—'}
                       </TableCell>
                       <TableCell className="py-6 text-center pr-8">
                         <div className="flex items-center justify-center gap-2">

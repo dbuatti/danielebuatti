@@ -6,13 +6,14 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, ArrowLeft, Mail, Phone, MapPin, Edit, Trash2, User, Info, Target, MessageSquare, Calendar, Share2, Users } from 'lucide-react';
+import { Loader2, ArrowLeft, Mail, Phone, MapPin, Edit, Trash2, User, Info, Target, MessageSquare, Calendar, Share2, Users, TrendingUp, DollarSign, Clock } from 'lucide-react';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import { format } from 'date-fns';
 import { Lead } from '@/types/lead';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import LeadForm, { LeadFormValues } from '@/components/admin/LeadForm';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 
 const AdminLeadDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -150,9 +151,17 @@ const AdminLeadDetailsPage: React.FC = () => {
         <CardContent className="p-10 md:p-16 relative z-10">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
             <div className="space-y-4">
-              <Badge variant={getStatusBadgeVariant(lead.status)} className="px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-widest bg-brand-primary text-white border-none">
-                {lead.status}
-              </Badge>
+              <div className="flex items-center gap-3">
+                <Badge variant={getStatusBadgeVariant(lead.status)} className="px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-widest bg-brand-primary text-white border-none">
+                  {lead.status}
+                </Badge>
+                <Badge variant="outline" className={cn(
+                  "px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-widest border-white/20 text-white",
+                  lead.lead_type === 'Tech' ? "bg-blue-600/20" : "bg-brand-primary/20"
+                )}>
+                  {lead.lead_type}
+                </Badge>
+              </div>
               <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{lead.company_name}</h1>
               <div className="flex flex-wrap items-center gap-6 text-white/70">
                 <div className="flex items-center gap-2">
@@ -186,6 +195,51 @@ const AdminLeadDetailsPage: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Financial & Strategy Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <Card className="bg-white dark:bg-brand-dark-alt shadow-lg border-brand-secondary/30 rounded-3xl overflow-hidden">
+          <CardContent className="p-8 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary">
+              <DollarSign className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40 font-bold">Est. Value</p>
+              <p className="text-2xl font-bold text-brand-dark dark:text-brand-light">${(lead.estimated_value || 0).toLocaleString()}</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-white dark:bg-brand-dark-alt shadow-lg border-brand-secondary/30 rounded-3xl overflow-hidden">
+          <CardContent className="p-8 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-600">
+              <TrendingUp className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40 font-bold">Probability</p>
+              <p className="text-2xl font-bold text-brand-dark dark:text-brand-light">{lead.probability || 0}%</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-white dark:bg-brand-dark-alt shadow-lg border-brand-secondary/30 rounded-3xl overflow-hidden">
+          <CardContent className="p-8 flex items-center gap-4">
+            <div className={cn(
+              "w-12 h-12 rounded-full flex items-center justify-center",
+              lead.follow_up_date && new Date(lead.follow_up_date) < new Date() ? "bg-red-500/10 text-red-500" : "bg-blue-500/10 text-blue-600"
+            )}>
+              <Clock className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40 font-bold">Follow-up</p>
+              <p className={cn(
+                "text-2xl font-bold",
+                lead.follow_up_date && new Date(lead.follow_up_date) < new Date() ? "text-red-500" : "text-brand-dark dark:text-brand-light"
+              )}>
+                {lead.follow_up_date ? format(new Date(lead.follow_up_date), 'MMM d, yyyy') : 'Not set'}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Information Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -289,6 +343,10 @@ const AdminLeadDetailsPage: React.FC = () => {
               notes: lead.notes || '',
               goal: lead.goal || '',
               status: lead.status,
+              lead_type: lead.lead_type,
+              estimated_value: lead.estimated_value,
+              probability: lead.probability,
+              follow_up_date: lead.follow_up_date || '',
             }}
           />
         </DialogContent>
