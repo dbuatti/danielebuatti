@@ -31,6 +31,7 @@ const formSchema = z.object({
   goal: z.string().optional(),
   status: z.enum(['New', 'Contacted', 'Qualified', 'Lost', 'Converted']).default('New'),
   lead_type: z.enum(['Music', 'Tech']).default('Music'),
+  priority: z.enum(['Low', 'Medium', 'High']).default('Medium'),
   estimated_value: z.coerce.number().min(0).default(0),
   probability: z.coerce.number().min(0).max(100).default(0),
   follow_up_date: z.string().optional().or(z.literal('')),
@@ -60,6 +61,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
       goal: '',
       status: 'New',
       lead_type: 'Music',
+      priority: 'Medium',
       estimated_value: 0,
       probability: 0,
       follow_up_date: '',
@@ -81,6 +83,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
         goal: '',
         status: 'New',
         lead_type: 'Music',
+        priority: 'Medium',
         estimated_value: 0,
         probability: 0,
         follow_up_date: '',
@@ -111,6 +114,31 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
           />
           <FormField
             control={form.control}
+            name="priority"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className={labelClasses}>Priority Level</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger className={cn(inputClasses, field.value === 'High' ? "text-red-500 font-bold" : "")}>
+                      <SelectValue placeholder="Select priority" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50 rounded-xl">
+                    <SelectItem value="Low">Low</SelectItem>
+                    <SelectItem value="Medium">Medium</SelectItem>
+                    <SelectItem value="High">High (Critical)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
             name="lead_type"
             render={({ field }) => (
               <FormItem>
@@ -124,6 +152,30 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
                   <SelectContent className="bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50 rounded-xl">
                     <SelectItem value="Music">Music (Piano/Vocal)</SelectItem>
                     <SelectItem value="Tech">Tech (IT/Systems)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className={labelClasses}>Pipeline Status</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger className={inputClasses}>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50 rounded-xl">
+                    <SelectItem value="New">New</SelectItem>
+                    <SelectItem value="Contacted">Contacted</SelectItem>
+                    <SelectItem value="Qualified">Qualified</SelectItem>
+                    <SelectItem value="Lost">Lost</SelectItem>
+                    <SelectItem value="Converted">Converted</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -199,33 +251,6 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
           />
           <FormField
             control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className={labelClasses}>Pipeline Status</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger className={inputClasses}>
-                      <SelectValue placeholder="Select status" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50 rounded-xl">
-                    <SelectItem value="New">New</SelectItem>
-                    <SelectItem value="Contacted">Contacted</SelectItem>
-                    <SelectItem value="Qualified">Qualified</SelectItem>
-                    <SelectItem value="Lost">Lost</SelectItem>
-                    <SelectItem value="Converted">Converted</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
@@ -237,48 +262,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className={labelClasses}>Phone Number</FormLabel>
-                <FormControl>
-                  <Input placeholder="0424 174 067" className={inputClasses} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </div>
-
-        <FormField
-          control={form.control}
-          name="venue"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className={labelClasses}>Venue / Location</FormLabel>
-              <FormControl>
-                <Input placeholder="Studio 4, North Melbourne" className={inputClasses} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="outcome"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className={labelClasses}>Outcome of Contact</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Summary of the conversation..." className={cn(inputClasses, "h-24 py-3 resize-none")} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <FormField
           control={form.control}
@@ -296,12 +280,12 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
 
         <FormField
           control={form.control}
-          name="notes"
+          name="outcome"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className={labelClasses}>General Notes</FormLabel>
+              <FormLabel className={labelClasses}>Outcome of Contact</FormLabel>
               <FormControl>
-                <Textarea placeholder="Additional context..." className={cn(inputClasses, "h-24 py-3 resize-none")} {...field} />
+                <Textarea placeholder="Summary of the conversation..." className={cn(inputClasses, "h-24 py-3 resize-none")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

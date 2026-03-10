@@ -123,6 +123,15 @@ const AdminLeadsPage: React.FC = () => {
     }
   };
 
+  const getPriorityBadge = (priority: string) => {
+    switch (priority) {
+      case 'High': return <Badge className="bg-red-500 hover:bg-red-600 text-white border-none">High</Badge>;
+      case 'Medium': return <Badge variant="secondary">Medium</Badge>;
+      case 'Low': return <Badge variant="outline" className="opacity-50">Low</Badge>;
+      default: return null;
+    }
+  };
+
   return (
     <div className="space-y-8">
       {/* Header & Stats */}
@@ -232,6 +241,7 @@ const AdminLeadsPage: React.FC = () => {
                 <TableHeader>
                   <TableRow className="bg-brand-secondary/5 dark:bg-brand-dark/50 border-none">
                     <TableHead className="text-brand-primary font-bold py-6 pl-8">Company / Lead</TableHead>
+                    <TableHead className="text-brand-primary font-bold py-6">Priority</TableHead>
                     <TableHead className="text-brand-primary font-bold py-6">Type</TableHead>
                     <TableHead className="text-brand-primary font-bold py-6">Value / Prob.</TableHead>
                     <TableHead className="text-brand-primary font-bold py-6">Status</TableHead>
@@ -249,6 +259,9 @@ const AdminLeadsPage: React.FC = () => {
                           </span>
                           <p className="text-xs text-brand-dark/40 dark:text-brand-light/40 mt-1 italic">{lead.contact_name || 'No contact'}</p>
                         </Link>
+                      </TableCell>
+                      <TableCell className="py-6">
+                        {getPriorityBadge(lead.priority)}
                       </TableCell>
                       <TableCell className="py-6">
                         <Badge variant="outline" className={cn(

@@ -11,10 +11,11 @@ export interface Lead {
   notes: string | null;
   goal: string | null;
   status: 'New' | 'Contacted' | 'Qualified' | 'Lost' | 'Converted';
-  lead_type: 'Music' | 'Tech'; // NEW
-  estimated_value: number; // NEW
-  probability: number; // NEW
-  follow_up_date: string | null; // NEW
+  lead_type: 'Music' | 'Tech';
+  estimated_value: number;
+  probability: number;
+  follow_up_date: string | null;
+  priority: 'Low' | 'Medium' | 'High'; // NEW
   created_at: string;
   updated_at: string;
 }
