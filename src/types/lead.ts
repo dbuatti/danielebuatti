@@ -12,10 +12,11 @@ export interface Lead {
   goal: string | null;
   status: 'New' | 'Contacted' | 'Qualified' | 'Lost' | 'Converted';
   lead_type: 'Music' | 'Tech';
+  sector: string | null; // NEW
   estimated_value: number;
   probability: number;
   follow_up_date: string | null;
-  priority: 'Low' | 'Medium' | 'High'; // NEW
+  priority: 'Low' | 'Medium' | 'High';
   created_at: string;
   updated_at: string;
 }

@@ -31,6 +31,7 @@ const formSchema = z.object({
   goal: z.string().optional(),
   status: z.enum(['New', 'Contacted', 'Qualified', 'Lost', 'Converted']).default('New'),
   lead_type: z.enum(['Music', 'Tech']).default('Music'),
+  sector: z.string().optional(),
   priority: z.enum(['Low', 'Medium', 'High']).default('Medium'),
   estimated_value: z.coerce.number().min(0).default(0),
   probability: z.coerce.number().min(0).max(100).default(0),
@@ -61,6 +62,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
       goal: '',
       status: 'New',
       lead_type: 'Music',
+      sector: '',
       priority: 'Medium',
       estimated_value: 0,
       probability: 0,
@@ -83,6 +85,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
         goal: '',
         status: 'New',
         lead_type: 'Music',
+        sector: '',
         priority: 'Medium',
         estimated_value: 0,
         probability: 0,
@@ -136,7 +139,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <FormField
             control={form.control}
             name="lead_type"
@@ -154,6 +157,19 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, isSubmitting, onClose, in
                     <SelectItem value="Tech">Tech (IT/Systems)</SelectItem>
                   </SelectContent>
                 </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="sector"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className={labelClasses}>Sector</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., Education, MT Industry" className={inputClasses} {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}

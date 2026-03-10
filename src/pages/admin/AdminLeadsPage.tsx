@@ -110,7 +110,8 @@ const AdminLeadsPage: React.FC = () => {
     lead.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     lead.contact_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     lead.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    lead.venue?.toLowerCase().includes(searchTerm.toLowerCase())
+    lead.venue?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    lead.sector?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getStatusBadgeVariant = (status: string) => {
@@ -217,7 +218,7 @@ const AdminLeadsPage: React.FC = () => {
             <div className="relative w-full md:w-96">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
               <Input
-                placeholder="Search by company, contact, or venue..."
+                placeholder="Search by company, contact, or sector..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-12 h-12 bg-brand-secondary/10 dark:bg-brand-dark border-none rounded-full text-brand-dark dark:text-brand-light placeholder:text-gray-500 focus-visible:ring-brand-primary"
@@ -242,7 +243,7 @@ const AdminLeadsPage: React.FC = () => {
                   <TableRow className="bg-brand-secondary/5 dark:bg-brand-dark/50 border-none">
                     <TableHead className="text-brand-primary font-bold py-6 pl-8">Company / Lead</TableHead>
                     <TableHead className="text-brand-primary font-bold py-6">Priority</TableHead>
-                    <TableHead className="text-brand-primary font-bold py-6">Type</TableHead>
+                    <TableHead className="text-brand-primary font-bold py-6">Sector</TableHead>
                     <TableHead className="text-brand-primary font-bold py-6">Value / Prob.</TableHead>
                     <TableHead className="text-brand-primary font-bold py-6">Status</TableHead>
                     <TableHead className="text-brand-primary font-bold py-6">Follow-up</TableHead>
@@ -264,11 +265,8 @@ const AdminLeadsPage: React.FC = () => {
                         {getPriorityBadge(lead.priority)}
                       </TableCell>
                       <TableCell className="py-6">
-                        <Badge variant="outline" className={cn(
-                          "px-3 py-1 rounded-full font-medium",
-                          lead.lead_type === 'Tech' ? "border-blue-500 text-blue-500" : "border-brand-primary text-brand-primary"
-                        )}>
-                          {lead.lead_type}
+                        <Badge variant="outline" className="px-3 py-1 rounded-full font-medium border-brand-secondary/50">
+                          {lead.sector || lead.lead_type}
                         </Badge>
                       </TableCell>
                       <TableCell className="py-6">

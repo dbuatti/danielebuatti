@@ -6,13 +6,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, ArrowLeft, Mail, Phone, MapPin, Edit, Trash2, User, Info, Target, MessageSquare, Calendar, Share2, Users, TrendingUp, DollarSign, Clock } from 'lucide-react';
+import { Loader2, ArrowLeft, Mail, Phone, MapPin, Edit, Trash2, User, Info, Target, MessageSquare, Calendar, Users, TrendingUp, DollarSign, Clock, Briefcase } from 'lucide-react';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import { format } from 'date-fns';
 import { Lead } from '@/types/lead';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import LeadForm, { LeadFormValues } from '@/components/admin/LeadForm';
-import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 
 const AdminLeadDetailsPage: React.FC = () => {
@@ -159,7 +158,7 @@ const AdminLeadDetailsPage: React.FC = () => {
                   "px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-widest border-white/20 text-white",
                   lead.lead_type === 'Tech' ? "bg-blue-600/20" : "bg-brand-primary/20"
                 )}>
-                  {lead.lead_type}
+                  {lead.sector || lead.lead_type}
                 </Badge>
               </div>
               <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{lead.company_name}</h1>
@@ -271,20 +270,17 @@ const AdminLeadDetailsPage: React.FC = () => {
           <Card className="bg-white dark:bg-brand-dark-alt shadow-lg border-brand-secondary/30 rounded-3xl overflow-hidden">
             <CardHeader className="bg-brand-secondary/5 dark:bg-brand-dark/50 border-b border-brand-secondary/10 p-6">
               <CardTitle className="text-xl font-bold text-brand-primary flex items-center gap-2">
-                <Share2 className="h-5 w-5" /> Connection Context
+                <Briefcase className="h-5 w-5" /> Business Context
               </CardTitle>
             </CardHeader>
             <CardContent className="p-8 space-y-6">
               <div className="space-y-1">
+                <p className="text-xs uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40 font-bold">Sector</p>
+                <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">{lead.sector || '—'}</p>
+              </div>
+              <div className="space-y-1">
                 <p className="text-xs uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40 font-bold">Source / Referral</p>
                 <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">{lead.source || '—'}</p>
-              </div>
-              <Separator className="bg-brand-secondary/10" />
-              <div className="space-y-1">
-                <p className="text-xs uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40 font-bold">Outcome of Contact</p>
-                <p className="text-lg text-brand-dark/80 dark:text-brand-light/80 whitespace-pre-wrap leading-relaxed">
-                  {lead.outcome || 'No outcome recorded yet.'}
-                </p>
               </div>
             </CardContent>
           </Card>
@@ -344,6 +340,7 @@ const AdminLeadDetailsPage: React.FC = () => {
               goal: lead.goal || '',
               status: lead.status,
               lead_type: lead.lead_type,
+              sector: lead.sector || '',
               estimated_value: lead.estimated_value,
               probability: lead.probability,
               follow_up_date: lead.follow_up_date || '',
