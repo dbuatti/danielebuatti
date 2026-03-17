@@ -48,7 +48,8 @@ const defaultQuoteValues: QuoteFormValues = {
     { id: 'base-fee', name: 'Base Performance Fee', description: '3 hours of live piano performance.', price: 1000, quantity: 1, scheduleDates: '', showScheduleDates: false, showQuantity: true, showRate: true },
   ],
   addOns: [
-    { id: 'extra-hour', name: 'Extra Hour of Performance', description: 'Additional hour of live piano music.', price: 200, quantity: 0, scheduleDates: '', showScheduleDates: false, showQuantity: true, showRate: true },
+    { id: 'rehearsal-90', name: 'Pre-event Rehearsal (90 mins)', description: 'Bespoke rehearsal session prior to event date.', price: 180, quantity: 0, scheduleDates: '', showScheduleDates: false, showQuantity: true, showRate: true },
+    { id: 'extra-hour', name: 'Additional Performance Hour', description: 'Additional hour of live piano music.', price: 250, quantity: 0, scheduleDates: '', showScheduleDates: false, showQuantity: true, showRate: true },
   ],
 };
 

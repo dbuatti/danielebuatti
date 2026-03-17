@@ -232,7 +232,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         <div className="flex justify-center">
           <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-yellow-500/30 bg-yellow-500/5 text-yellow-500 text-[10px] uppercase tracking-[0.3em] font-bold">
             <Sparkles className="w-3 h-3 fill-current" />
-            Signature Service Proposal
+            Performance Proposal
           </div>
         </div>
       )}
@@ -302,7 +302,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
             />
             {addOns && addOns.length > 0 && (
                 <div className="mt-10 space-y-6">
-                    <h4 className={cn("text-lg font-serif italic", themeClasses.primary)}>Optional Enhancements</h4>
+                    <h4 className={cn("text-lg font-serif italic", themeClasses.primary)}>Additional Services</h4>
                     <QuoteItemMobileList
                         items={optionalItemsToDisplay}
                         currencySymbol={currencySymbol}
@@ -336,7 +336,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
                 <TableRow className="hover:bg-transparent">
                   <TableCell colSpan={5} className="pt-12 pb-4">
                     <div className="flex items-center gap-4">
-                      <span className={cn("text-lg font-serif italic", themeClasses.primary)}>Optional Enhancements</span>
+                      <span className={cn("text-lg font-serif italic", themeClasses.primary)}>Additional Services</span>
                       <div className="flex-grow h-[1px] bg-current/5" />
                     </div>
                   </TableCell>
