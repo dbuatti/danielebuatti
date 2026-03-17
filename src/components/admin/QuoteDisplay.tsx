@@ -239,15 +239,15 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
 
       {/* Header Image */}
       {headerImageUrl && (
-        <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border border-white/10">
+        <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border border-yellow-500/10">
           <DynamicImage
             src={headerImageUrl}
             alt="Quote Header"
-            className={cn("w-full h-80 object-cover", headerImagePosition || 'object-top')}
+            className={cn("w-full h-[450px] object-cover", headerImagePosition || 'object-[center_15%]')}
             width={1000}
-            height={320}
+            height={450}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         </div>
       )}
 
