@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Quote, QuoteItem } from '@/types/quote';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, cn } from '@/lib/utils';
 import {
   Table,
   TableBody,
@@ -11,15 +11,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Separator } from '@/components/ui/separator';
 import DynamicImage from '../DynamicImage';
 import QuoteItemMobileList from './QuoteItemMobileList';
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Minus, Plus, FileText, Tag } from 'lucide-react'; // Added Tag icon for discount badge
+import { Minus, Plus, FileText, Sparkles } from 'lucide-react';
 import { format } from 'date-fns';
-import { Badge } from '@/components/ui/badge'; // Import Badge
-import { renderQuoteRichText } from '@/lib/rich-text-utils'; // NEW IMPORT
+import { renderQuoteRichText } from '@/lib/rich-text-utils';
 
 interface QuoteDisplayProps {
   quote: Quote;
@@ -28,19 +25,15 @@ interface QuoteDisplayProps {
   mutableAddOns?: QuoteItem[];
 }
 
-// Helper function to format dates consistently
 const formatDate = (dateString: string | undefined, formatStr: string = 'PPP') => {
   if (!dateString) return 'N/A';
   try {
-    // Handle ISO date strings (YYYY-MM-DD)
     return format(new Date(dateString), formatStr);
   } catch (e) {
-    // Handle non-standard date strings (like "15–18 June")
     return dateString;
   }
 };
 
-// Helper component for rendering a single item row (used only for desktop table view)
 const QuoteItemRow: React.FC<{ 
   item: QuoteItem; 
   currencySymbol: string; 
@@ -60,73 +53,60 @@ const QuoteItemRow: React.FC<{
 }) => {
   const isSelected = item.quantity > 0;
   const totalAmount = item.price * item.quantity;
-
-  // Determine if controls should be shown (Client view, optional, not finalized)
   const showControls = isOptional && isClientView && !isFinalized && onQuantityChange;
 
-  // Logic to display unit cost for optional items that were NOT selected (quantity 0)
   const displayAmount = () => {
     if (isOptional && !isSelected && !isFinalized && isClientView) {
-      // If optional and not selected (quantity 0) in pending client view, show unit price and 'Unselected'
       return (
         <div className="text-right">
-          <span className="text-sm text-muted-foreground">
+          <span className="text-sm opacity-50">
             {formatCurrency(item.price, currencySymbol)}
           </span>
-          <p className="text-xs text-red-500">Unselected</p>
+          <p className="text-[10px] uppercase tracking-widest text-red-500 mt-1">Unselected</p>
         </div>
       );
     }
-
-    // Otherwise, show the calculated total amount
     return formatCurrency(totalAmount, currencySymbol);
   };
 
-  const displayQuantity = () => {
-    // If controls are shown, the quantity is handled by the controls block below.
-    if (showControls) return null;
-
-    // Static quantity display (Admin view or Finalized Client view)
-    if (isOptional && !isSelected && !isFinalized && isClientView) {
-        return <span className="text-muted-foreground">0</span>;
-    }
-    return item.quantity;
-  }
-
   return (
-    <TableRow className={isOptional && !isSelected && !isFinalized && isClientView ? 'opacity-60' : 'hover:bg-current/5'}>
-      <TableCell className="font-medium border-r border-current/10 py-3">
-        {item.name}
+    <TableRow className={cn(
+      "border-b border-current/10 transition-colors",
+      isOptional && !isSelected && !isFinalized && isClientView ? 'opacity-40' : 'hover:bg-white/5',
+      themeClasses.isPremium ? "border-white/5" : ""
+    )}>
+      <TableCell className="py-6 pr-4">
+        <div className={cn("font-bold text-lg", themeClasses.isPremium ? "font-montserrat tracking-tight" : "")}>
+          {item.name}
+        </div>
         {item.description && (
-          <div className={`text-sm mt-1`}>
+          <div className={cn("text-sm mt-2 leading-relaxed", themeClasses.secondary)}>
             {renderQuoteRichText(item.description, themeClasses)}
           </div>
         )}
       </TableCell>
 
-      {/* Schedule / Dates Column */}
-      {item.showScheduleDates && ( // Use item.showScheduleDates
-        <TableCell className="text-center w-[120px] border-r border-current/10 py-3 text-sm">
-          {item.scheduleDates || 'N/A'}
+      {item.showScheduleDates && (
+        <TableCell className="text-center w-[140px] py-6 text-sm opacity-80">
+          {item.scheduleDates || '—'}
         </TableCell>
       )}
 
-      {/* Quantity Column */}
-      {item.showQuantity && ( // Use item.showQuantity
-        <TableCell className="text-center w-[100px] border-r border-current/10 py-3">
+      {item.showQuantity && (
+        <TableCell className="text-center w-[120px] py-6">
           {showControls ? (
-            <div className={`flex items-center justify-center border rounded-full border-current/30 h-8 ${themeClasses.inputBg}`}>
+            <div className={cn("flex items-center justify-center border rounded-full h-9 px-1", themeClasses.inputBorder, themeClasses.inputBg)}>
                 <Button 
                     type="button" 
                     variant="ghost" 
                     size="icon" 
                     onClick={() => onQuantityChange!(item.id as string, -1)}
                     disabled={item.quantity <= 0}
-                    className={`h-7 w-7 ${themeClasses.primaryText} ${themeClasses.primaryHoverBg} p-0 rounded-full`}
+                    className={cn("h-7 w-7 p-0 rounded-full", themeClasses.primaryText, themeClasses.primaryHoverBg)}
                 >
                     <Minus className="h-3 w-3" />
                 </Button>
-                <span className={`w-6 text-center font-semibold text-sm ${themeClasses.text}`}>
+                <span className="w-8 text-center font-bold text-sm">
                     {item.quantity}
                 </span>
                 <Button 
@@ -134,26 +114,24 @@ const QuoteItemRow: React.FC<{
                     variant="ghost" 
                     size="icon" 
                     onClick={() => onQuantityChange!(item.id as string, 1)}
-                    className={`h-7 w-7 ${themeClasses.primaryText} ${themeClasses.primaryHoverBg} p-0 rounded-full`}
+                    className={cn("h-7 w-7 p-0 rounded-full", themeClasses.primaryText, themeClasses.primaryHoverBg)}
                 >
                     <Plus className="h-3 w-3" />
                 </Button>
             </div>
           ) : (
-              displayQuantity()
+              <span className="font-medium">{item.quantity}</span>
           )}
         </TableCell>
       )}
 
-      {/* Rate (Unit Price) Column */}
-      {item.showRate && ( // Use item.showRate
-        <TableCell className="text-right w-[120px] border-r border-current/10 py-3">
+      {item.showRate && (
+        <TableCell className="text-right w-[120px] py-6 opacity-80">
           {formatCurrency(item.price, currencySymbol)}
         </TableCell>
       )}
 
-      {/* Amount Column (Always visible) */}
-      <TableCell className="text-right font-semibold w-[120px] py-3">
+      <TableCell className={cn("text-right font-bold text-lg w-[140px] py-6", themeClasses.primary)}>
         {displayAmount()}
       </TableCell>
     </TableRow>
@@ -161,130 +139,75 @@ const QuoteItemRow: React.FC<{
 };
 
 const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false, onQuantityChange, mutableAddOns }) => {
-  
-  // --- 1. Extract Active Version Data ---
   const activeVersion = quote.details.versions.find(v => v.is_active);
   
-  if (!activeVersion) {
-    // Fallback if no active version is set (e.g., in Admin Preview mode where we pass a single version)
-    if (quote.details.versions.length === 1) {
-        // Use the single version provided (e.g., from getPreviewData)
-        const singleVersion = quote.details.versions[0];
-        if (singleVersion.versionId === 'v-preview') {
-            // If it's a preview, we treat it as pending/draft
-            singleVersion.status = 'Draft';
-            singleVersion.accepted_at = null;
-            singleVersion.rejected_at = null;
-        }
-        // Temporarily treat this single version as the active one for rendering
-        Object.assign(quote, { 
-            total_amount: singleVersion.total_amount,
-            accepted_at: singleVersion.accepted_at,
-            rejected_at: singleVersion.rejected_at,
-            status: singleVersion.status,
-        });
-    } else {
-        return <div className="p-8 text-center text-red-500">Error: No active quote version found.</div>;
-    }
+  if (!activeVersion && quote.details.versions.length !== 1) {
+    return <div className="p-8 text-center text-red-500">Error: No active quote version found.</div>;
   }
   
-  const version = activeVersion || quote.details.versions[0]; // Use the found active version or the first one as fallback
+  const version = activeVersion || quote.details.versions[0];
 
   const { 
-    total_amount, 
-    accepted_at, 
-    rejected_at, 
-    depositPercentage, 
-    theme, 
-    currencySymbol, 
-    eventTime, 
-    headerImageUrl, 
-    headerImagePosition, 
-    preparationNotes, 
-    paymentTerms, 
-    bankDetails, 
-    compulsoryItems, 
-    addOns, 
-    client_selected_add_ons,
-    scopeOfWorkUrl,
-    discountPercentage, // NEW
-    discountAmount, // NEW
+    total_amount, accepted_at, rejected_at, depositPercentage, theme, currencySymbol, 
+    eventTime, headerImageUrl, headerImagePosition, preparationNotes, paymentTerms, 
+    bankDetails, compulsoryItems, addOns, client_selected_add_ons, scopeOfWorkUrl,
+    discountPercentage, discountAmount,
   } = version;
   
   const { event_title, event_date, event_location, prepared_by } = quote;
-
   const isAccepted = !!accepted_at;
   const isRejected = !!rejected_at;
   const isFinalized = isAccepted || isRejected;
 
-  // Determine which list of add-ons to display and calculate totals
-  let optionalItemsToDisplay: QuoteItem[];
+  let optionalItemsToDisplay = (isClientView && !isFinalized && mutableAddOns) 
+    ? mutableAddOns 
+    : (isAccepted && client_selected_add_ons) 
+      ? client_selected_add_ons 
+      : (addOns || []);
 
-  if (isClientView && !isFinalized && mutableAddOns) {
-      // Client view, pending: use mutable state for display and calculation
-      optionalItemsToDisplay = mutableAddOns;
-  } else if (isAccepted && client_selected_add_ons) {
-      // Finalized (Accepted): use the final selected list
-      optionalItemsToDisplay = client_selected_add_ons || []; // Defensive check
-  } else {
-      // Admin preview or Rejected: use original addOns list
-      optionalItemsToDisplay = addOns || []; // Defensive check
-  }
-
-  // Calculate totals based on the items being displayed/calculated
   const compulsoryTotal = (compulsoryItems || []).reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
   const addOnTotal = optionalItemsToDisplay.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
-
-  // Calculate pre-discount subtotal
   const preDiscountTotal = compulsoryTotal + addOnTotal;
 
-  // Apply discount logic
   let finalTotal = preDiscountTotal;
-  if (discountPercentage > 0) {
-      finalTotal *= (1 - discountPercentage / 100);
-  }
-  if (discountAmount > 0) {
-      finalTotal = finalTotal - discountAmount;
-  }
+  if (discountPercentage > 0) finalTotal *= (1 - discountPercentage / 100);
+  if (discountAmount > 0) finalTotal -= discountAmount;
   finalTotal = Math.max(0, finalTotal);
 
-  // If accepted, use the total_amount from the DB (which should be the final total). Otherwise, use calculated finalTotal.
   const finalDisplayTotal = isAccepted ? total_amount : finalTotal;
   const totalDiscountApplied = preDiscountTotal - finalDisplayTotal;
-  const hasDiscount = totalDiscountApplied > 0.01; // Check if a meaningful discount was applied
-
-  // Calculate deposit amount
+  const hasDiscount = totalDiscountApplied > 0.01;
   const depositAmount = finalDisplayTotal * (depositPercentage / 100);
   const remainingBalance = finalDisplayTotal - depositAmount;
 
-  // Theme setup (unchanged)
   const isBlackGoldTheme = theme === 'black-gold';
 
   const themeClasses = isBlackGoldTheme
     ? {
-        // Black & Gold Theme (Premium Dark)
-        bg: 'bg-brand-dark',
-        text: 'text-brand-light',
-        primary: 'text-brand-yellow', // Gold
-        secondary: 'text-brand-light/70',
-        tableHeaderBg: 'bg-brand-dark-alt/50',
-        tableBorder: 'border-brand-dark-alt',
-        separator: 'bg-brand-yellow',
-        totalBoxBg: 'bg-brand-dark-alt',
-        totalBoxText: 'text-brand-yellow',
-        tableText: 'text-brand-light',
-        contentImageBorder: 'border-brand-yellow/50',
-        inputBg: 'bg-brand-dark-alt',
-        primaryText: 'text-brand-yellow',
-        primaryHoverBg: 'hover:bg-brand-yellow/20',
+        isPremium: true,
+        bg: 'bg-black',
+        text: 'text-white',
+        primary: 'text-yellow-500',
+        secondary: 'text-gray-400',
+        tableHeaderBg: 'bg-zinc-900/50',
+        tableBorder: 'border-white/10',
+        separator: 'bg-yellow-500/30',
+        totalBoxBg: 'bg-zinc-900',
+        totalBoxText: 'text-yellow-500',
+        tableText: 'text-white',
+        contentImageBorder: 'border-white/10',
+        inputBg: 'bg-black',
+        inputBorder: 'border-yellow-500/30',
+        primaryText: 'text-yellow-500',
+        primaryHoverBg: 'hover:bg-yellow-500/10',
         image1: '/blackgoldquoteimage1.jpg',
         image2: '/blackgoldquoteimage2.jpg',
       }
     : {
-        // Default Theme (Premium Light/Pink) - Images removed
+        isPremium: false,
         bg: 'bg-brand-light',
         text: 'text-brand-dark',
-        primary: 'text-brand-primary', // Pink
+        primary: 'text-brand-primary',
         secondary: 'text-brand-dark/70',
         tableHeaderBg: 'bg-brand-secondary/30',
         tableBorder: 'border-brand-secondary',
@@ -294,94 +217,81 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         tableText: 'text-brand-dark',
         contentImageBorder: 'border-brand-primary/50',
         inputBg: 'bg-brand-light',
+        inputBorder: 'border-brand-secondary/50',
         primaryText: 'text-brand-primary',
         primaryHoverBg: 'hover:bg-brand-primary/10',
         image1: undefined,
         image2: undefined,
       };
 
-  const headerImagePositionClass = headerImagePosition || 'object-center';
-
-  // Determine header visibility based on the first compulsory item (or default to false)
-  const firstCompulsoryItem = compulsoryItems?.[0];
-  const headerShowScheduleDates = firstCompulsoryItem?.showScheduleDates ?? false;
-  const headerShowQuantity = firstCompulsoryItem?.showQuantity ?? true;
-  const headerShowRate = firstCompulsoryItem?.showRate ?? true;
-
-  const visibleColumns = 1 + // Description (always visible)
-                         (headerShowScheduleDates ? 1 : 0) +
-                         (headerShowQuantity ? 1 : 0) +
-                         (headerShowRate ? 1 : 0) +
-                         1; // Amount (always visible)
-
   return (
-    <div className={`p-4 sm:p-8 max-w-4xl mx-auto space-y-8 ${themeClasses.bg} ${themeClasses.text}`}>
+    <div className={cn("p-6 sm:p-12 max-w-5xl mx-auto space-y-12", themeClasses.bg, themeClasses.text)}>
+      
+      {/* Premium Badge for Black/Gold */}
+      {isBlackGoldTheme && (
+        <div className="flex justify-center">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-yellow-500/30 bg-yellow-500/5 text-yellow-500 text-[10px] uppercase tracking-[0.3em] font-bold">
+            <Sparkles className="w-3 h-3 fill-current" />
+            Signature Service Proposal
+          </div>
+        </div>
+      )}
 
       {/* Header Image */}
       {headerImageUrl && (
-        <div className="mb-4">
+        <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border border-white/10">
           <DynamicImage
             src={headerImageUrl}
             alt="Quote Header"
-            className={cn(
-              `w-full h-48 object-cover rounded-lg shadow-xl`,
-              headerImagePositionClass
-            )}
-            width={800}
-            height={192}
+            className={cn("w-full h-64 object-cover", headerImagePosition || 'object-center')}
+            width={1000}
+            height={256}
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         </div>
       )}
 
       {/* Quote/Invoice Details */}
-      <div className={`flex flex-col sm:flex-row justify-between items-start border-b pb-4 border-current/20`}>
-        <div>
-          <h1 className={`text-4xl font-extrabold font-display ${themeClasses.primary}`}>{quote.invoice_type}</h1>
-          <p className="text-lg mt-2 font-medium">Prepared By: {prepared_by}</p>
+      <div className="flex flex-col md:flex-row justify-between items-end gap-8 border-b border-current/10 pb-10">
+        <div className="space-y-2 text-left w-full md:w-auto">
+          <h1 className={cn("text-5xl font-light tracking-tight", isBlackGoldTheme ? "font-montserrat uppercase" : "font-display text-brand-primary")}>
+            {quote.invoice_type}
+          </h1>
+          <p className={cn("text-lg font-light", themeClasses.secondary)}>
+            Prepared by <span className={cn("font-medium", themeClasses.text)}>{prepared_by}</span>
+          </p>
         </div>
-        <div className="text-right mt-4 sm:mt-0">
-          <h2 className="text-2xl font-semibold font-display">{event_title}</h2>
-          {/* Date Formatting Consistency Fix */}
-          <p className="mt-1 text-sm">{formatDate(event_date)} {eventTime}</p>
-          <p className="text-sm">{event_location}</p>
+        <div className="text-left md:text-right space-y-1 w-full md:w-auto">
+          <h2 className={cn("text-2xl font-serif italic", themeClasses.primary)}>{event_title}</h2>
+          <p className="text-sm tracking-widest uppercase opacity-60">{formatDate(event_date, 'EEEE d MMMM yyyy')} • {eventTime}</p>
+          <p className="text-sm opacity-60">{event_location}</p>
         </div>
       </div>
 
       {/* Scope of Work Link */}
       {scopeOfWorkUrl && (
-        <div className="text-center pt-4">
-          <a
-            href={scopeOfWorkUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn(
-              "inline-flex items-center justify-center gap-2 px-6 py-3 text-lg font-semibold rounded-full shadow-md transition-colors",
-              isBlackGoldTheme
-                ? "bg-brand-yellow text-brand-dark hover:bg-brand-yellow/90"
-                : "bg-brand-primary text-brand-light hover:bg-brand-primary/90"
-            )}
-          >
-            <FileText className="h-5 w-5" />
-            View Scope of Work Document
-          </a>
-        </div>
-      )}
-
-      {/* Client Details (Only show if finalized or in admin view) */}
-      {(isFinalized || !isClientView) && (
-        <div className="pt-4">
-          <h3 className={`text-xl font-semibold mb-2 ${themeClasses.primary}`}>Client:</h3>
-          <p>{quote.client_name}</p>
-          <p>{quote.client_email}</p>
+        <div className="flex justify-center">
+          <Button asChild variant="outline" className={cn(
+            "rounded-full px-8 py-6 text-sm uppercase tracking-[0.2em] font-bold transition-all hover:scale-105",
+            isBlackGoldTheme ? "border-yellow-500/30 text-yellow-500 hover:bg-yellow-500/10" : "border-brand-primary/30 text-brand-primary"
+          )}>
+            <a href={scopeOfWorkUrl} target="_blank" rel="noopener noreferrer">
+              <FileText className="mr-2 h-4 w-4" /> View Scope of Work
+            </a>
+          </Button>
         </div>
       )}
 
       {/* Items Section */}
-      <div className="pt-4">
-        <h3 className={`text-xl font-semibold mb-4 ${themeClasses.primary}`}>Items Included</h3>
+      <div className="space-y-8">
+        <div className="flex items-center gap-4">
+          <h3 className={cn("text-2xl font-light uppercase tracking-widest", isBlackGoldTheme ? "font-montserrat" : "font-display")}>
+            Investment Details
+          </h3>
+          <div className="flex-grow h-[1px] bg-current/10" />
+        </div>
 
-        {/* Mobile List View (Hidden on md and up) */}
-        <div className="md:hidden space-y-6">
+        <div className="md:hidden">
             <QuoteItemMobileList
                 items={compulsoryItems || []}
                 currencySymbol={currencySymbol}
@@ -390,10 +300,9 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
                 isFinalized={isFinalized}
                 isOptionalSection={false}
             />
-
             {addOns && addOns.length > 0 && (
-                <>
-                    <h4 className={`text-lg font-bold ${themeClasses.primary} pt-4`}>Optional Add-Ons</h4>
+                <div className="mt-10 space-y-6">
+                    <h4 className={cn("text-lg font-serif italic", themeClasses.primary)}>Optional Enhancements</h4>
                     <QuoteItemMobileList
                         items={optionalItemsToDisplay}
                         currencySymbol={currencySymbol}
@@ -403,163 +312,92 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
                         isOptionalSection={true}
                         onQuantityChange={onQuantityChange}
                     />
-                </>
+                </div>
             )}
         </div>
 
-        {/* Desktop Table View (Hidden below md) */}
-        <div className="hidden md:block overflow-x-auto">
-          <Table className={`min-w-full border ${themeClasses.tableBorder} ${themeClasses.tableText}`}>
+        <div className="hidden md:block">
+          <Table className="border-none">
             <TableHeader>
-              <TableRow className={themeClasses.tableHeaderBg}>
-                <TableHead className={`font-bold ${themeClasses.primary} border-r border-current/10 py-3`}>Description</TableHead>
-                {headerShowScheduleDates && <TableHead className={`text-center font-bold ${themeClasses.primary} w-[120px] border-r border-current/10 py-3`}>Schedule / Dates</TableHead>}
-                {headerShowQuantity && <TableHead className={`text-center font-bold ${themeClasses.primary} w-[100px] border-r border-current/10 py-3`}>Qty</TableHead>}
-                {headerShowRate && <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px] border-r border-current/10 py-3`}>Rate</TableHead>}
-                <TableHead className={`text-right font-bold ${themeClasses.primary} w-[120px] py-3`}>Amount</TableHead>
+              <TableRow className="border-b border-current/20 hover:bg-transparent">
+                <TableHead className="text-xs uppercase tracking-[0.2em] font-bold py-4">Description</TableHead>
+                {compulsoryItems?.[0]?.showScheduleDates && <TableHead className="text-center text-xs uppercase tracking-[0.2em] font-bold py-4">Schedule</TableHead>}
+                {compulsoryItems?.[0]?.showQuantity && <TableHead className="text-center text-xs uppercase tracking-[0.2em] font-bold py-4">Qty</TableHead>}
+                {compulsoryItems?.[0]?.showRate && <TableHead className="text-right text-xs uppercase tracking-[0.2em] font-bold py-4">Rate</TableHead>}
+                <TableHead className="text-right text-xs uppercase tracking-[0.2em] font-bold py-4">Amount</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {/* Compulsory Items */}
-              {(compulsoryItems || []).map((item) => (
-                <QuoteItemRow
-                  key={item.id}
-                  item={item}
-                  currencySymbol={currencySymbol}
-                  isOptional={false}
-                  themeClasses={themeClasses}
-                  isClientView={isClientView}
-                  isFinalized={isFinalized}
-                  onQuantityChange={onQuantityChange}
-                />
+              {compulsoryItems.map((item) => (
+                <QuoteItemRow key={item.id} item={item} currencySymbol={currencySymbol} isOptional={false} themeClasses={themeClasses} isClientView={isClientView} isFinalized={isFinalized} onQuantityChange={onQuantityChange} />
               ))}
 
-              {/* Add-Ons (Optional Items) */}
               {addOns && addOns.length > 0 && (
-                <TableRow className={`${themeClasses.tableHeaderBg} hover:${themeClasses.tableHeaderBg}`}>
-                  <TableCell colSpan={visibleColumns} className={`font-bold ${themeClasses.primary} py-3`}>
-                    Optional Add-Ons {isClientView && !isFinalized && <span className="text-sm font-normal"> (Select Quantity Below)</span>}
-                    {isAccepted && `(Client Selected: ${optionalItemsToDisplay.filter(i => i.quantity > 0).length} of ${addOns.length})`}
+                <TableRow className="hover:bg-transparent">
+                  <TableCell colSpan={5} className="pt-12 pb-4">
+                    <div className="flex items-center gap-4">
+                      <span className={cn("text-lg font-serif italic", themeClasses.primary)}>Optional Enhancements</span>
+                      <div className="flex-grow h-[1px] bg-current/5" />
+                    </div>
                   </TableCell>
                 </TableRow>
               )}
 
-              {/* Display all optional items */}
               {optionalItemsToDisplay.map((item) => {
-                  // If finalized and client view, only show selected items
                   if (isClientView && isFinalized && item.quantity === 0) return null;
-
-                  return (
-                      <QuoteItemRow
-                          key={item.id}
-                          item={item}
-                          currencySymbol={currencySymbol}
-                          isOptional={true}
-                          themeClasses={themeClasses}
-                          isClientView={isClientView}
-                          isFinalized={isFinalized}
-                          onQuantityChange={onQuantityChange}
-                      />
-                  );
+                  return <QuoteItemRow key={item.id} item={item} currencySymbol={currencySymbol} isOptional={true} themeClasses={themeClasses} isClientView={isClientView} isFinalized={isFinalized} onQuantityChange={onQuantityChange} />;
               })}
             </TableBody>
           </Table>
         </div>
       </div>
 
-      {/* NEW: Image Section for Black & Gold Theme */}
-      {isBlackGoldTheme && themeClasses.image1 && ( // Check if image1 exists
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-          <DynamicImage
-            src={themeClasses.image1}
-            alt="Daniele Buatti playing piano"
-            className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
-            width={400}
-            height={256}
-          />
-          <DynamicImage
-            src={themeClasses.image2}
-            alt="Daniele Buatti performing live"
-            className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
-            width={400}
-            height={256}
-          />
-        </div>
-      )}
-
-      {/* NEW: Image Section for Default Theme (Only renders if images are explicitly set) */}
-      {!isBlackGoldTheme && headerImageUrl && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-          <DynamicImage
-            src={headerImageUrl}
-            alt="Daniele Buatti playing piano"
-            className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
-            width={400}
-            height={256}
-          />
-          <DynamicImage
-            src={headerImageUrl}
-            alt="Daniele Buatti performing live"
-            className={`w-full h-64 object-cover rounded-lg shadow-lg border-2 ${themeClasses.contentImageBorder}`}
-            width={400}
-            height={256}
-          />
-        </div>
-      )}
-
-      {/* Totals and Notes */}
-      <div className="flex justify-end">
-        <div className="w-full max-w-sm space-y-2">
-          <div className="flex justify-between font-medium">
-            <span>Subtotal (Pre-Discount):</span>
-            <span>{formatCurrency(preDiscountTotal, currencySymbol)}</span>
+      {/* Premium Image Grid */}
+      {isBlackGoldTheme && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="rounded-[2rem] overflow-hidden border border-white/10 shadow-xl aspect-[4/3]">
+            <DynamicImage src="/blackgoldquoteimage1.jpg" alt="Performance" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
           </div>
-          
-          {/* Discount Row */}
-          {hasDiscount && (
-            <div className="flex justify-between font-medium text-red-500 dark:text-red-400">
-              <span>Discount ({discountPercentage > 0 ? `${discountPercentage}%` : ''}{discountPercentage > 0 && discountAmount > 0 ? ' + ' : ''}{discountAmount > 0 ? formatCurrency(discountAmount, currencySymbol) : ''}):</span>
-              <span>
-                - {formatCurrency(totalDiscountApplied, currencySymbol)}
+          <div className="rounded-[2rem] overflow-hidden border border-white/10 shadow-xl aspect-[4/3]">
+            <DynamicImage src="/blackgoldquoteimage2.jpg" alt="Performance" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
+          </div>
+        </div>
+      )}
+
+      {/* Totals Summary */}
+      <div className="flex justify-end pt-8">
+        <div className={cn("w-full max-w-md p-8 rounded-[2rem] border", themeClasses.tableBorder, themeClasses.totalBoxBg)}>
+          <div className="space-y-4">
+            <div className="flex justify-between text-sm uppercase tracking-widest opacity-60">
+              <span>Subtotal</span>
+              <span>{formatCurrency(preDiscountTotal, currencySymbol)}</span>
+            </div>
+            
+            {hasDiscount && (
+              <div className="flex justify-between text-sm font-bold text-red-500">
+                <span>Special Applied</span>
+                <span>- {formatCurrency(totalDiscountApplied, currencySymbol)}</span>
+              </div>
+            )}
+
+            <div className="h-[1px] bg-current/10 my-4" />
+
+            <div className="flex justify-between items-baseline">
+              <span className="text-xs uppercase tracking-[0.3em] font-bold opacity-60">Total Investment</span>
+              <span className={cn("text-4xl font-light", themeClasses.primary)}>
+                {formatCurrency(finalDisplayTotal, currencySymbol)}
               </span>
             </div>
-          )}
 
-          {/* Display Add-on total if applicable */}
-          {addOns && addOns.length > 0 && (
-            <div className="flex justify-between font-medium text-sm">
-              <span>Selected Add-ons Total:</span>
-              <span>{formatCurrency(addOnTotal, currencySymbol)}</span>
-            </div>
-          )}
-
-          <Separator className={themeClasses.separator} />
-
-          <div className={`flex justify-between font-bold text-xl p-2 ${themeClasses.totalBoxBg} rounded-md`}>
-            <span className={themeClasses.totalBoxText}>Final Total:</span>
-            <span className={themeClasses.totalBoxText}>{formatCurrency(finalDisplayTotal, currencySymbol)}</span>
-          </div>
-          
-          {hasDiscount && isClientView && (
-            <Badge className={cn(
-              "flex items-center justify-center gap-1 mt-2 text-sm font-semibold py-2",
-              isBlackGoldTheme ? "bg-brand-yellow/20 text-brand-yellow" : "bg-brand-primary/20 text-brand-primary"
-            )}>
-              <Tag className="h-4 w-4" /> Special Applied: Revised Pricing
-            </Badge>
-          )}
-
-          <Separator className={themeClasses.separator} />
-
-          {/* Deposit Section */}
-          <div className="pt-4 space-y-2">
-            <div className="flex justify-between text-lg font-semibold">
-              <span className={themeClasses.primary}>Deposit Required ({depositPercentage}%):</span>
-              <span className={themeClasses.primary}>{formatCurrency(depositAmount, currencySymbol)}</span>
-            </div>
-            <div className="flex justify-between text-lg font-semibold">
-              <span className={themeClasses.secondary}>Remaining Balance:</span>
-              <span className={themeClasses.secondary}>{formatCurrency(remainingBalance, currencySymbol)}</span>
+            <div className="pt-6 space-y-3">
+              <div className="flex justify-between text-sm font-medium">
+                <span className="opacity-60">Deposit Required ({depositPercentage}%)</span>
+                <span className={themeClasses.primary}>{formatCurrency(depositAmount, currencySymbol)}</span>
+              </div>
+              <div className="flex justify-between text-sm font-medium">
+                <span className="opacity-60">Remaining Balance</span>
+                <span>{formatCurrency(remainingBalance, currencySymbol)}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -567,24 +405,27 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
 
       {/* Preparation Notes */}
       {preparationNotes && (
-        <div className={`pt-4 border-t border-current/20`}>
-          <h3 className={`text-xl font-semibold mb-2 ${themeClasses.primary}`}>Preparation & Service Notes</h3>
-          <div className={`text-sm ${themeClasses.secondary}`}>
+        <div className="pt-12 border-t border-current/10 text-left">
+          <h3 className={cn("text-xl font-serif italic mb-6", themeClasses.primary)}>Service & Preparation Notes</h3>
+          <div className={cn("text-base leading-relaxed space-y-4", themeClasses.secondary)}>
             {renderQuoteRichText(preparationNotes, themeClasses)}
           </div>
         </div>
       )}
 
-      {/* Payment Terms */}
-      {paymentTerms && (
-        <div className={`pt-4 border-t border-current/20`}>
-          <h3 className={`text-xl font-semibold mb-2 ${themeClasses.primary}`}>Payment Terms</h3>
-          <p className={`whitespace-pre-wrap text-sm ${themeClasses.secondary}`}>{paymentTerms}</p>
-          <p className={`text-sm ${themeClasses.secondary} mt-2`}>
-            Bank Details: BSB {bankDetails.bsb}, ACC {bankDetails.acc}
+      {/* Footer / Terms */}
+      <div className="pt-12 border-t border-current/10 text-center space-y-6">
+        <div className="flex justify-center mb-4">
+          <DynamicImage src={isBlackGoldTheme ? "/gold-36.png" : "/blue-pink-ontrans.png"} alt="Logo" className="h-12 w-auto opacity-40" width={48} height={48} />
+        </div>
+        <div className={cn("text-sm max-w-2xl mx-auto leading-relaxed", themeClasses.secondary)}>
+          <p className="font-bold uppercase tracking-widest mb-2 text-current opacity-80">Terms & Conditions</p>
+          <p className="italic">{paymentTerms}</p>
+          <p className="mt-4 font-mono text-xs opacity-50">
+            BANK: BSB {bankDetails.bsb} / ACC {bankDetails.acc}
           </p>
         </div>
-      )}
+      </div>
     </div>
   );
 };
