@@ -19,7 +19,7 @@ import QuoteSendingModal from '@/components/admin/QuoteSendingModal';
 import { createSlug } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { calculateQuoteTotal } from '@/lib/quote-utils'; // Import calculateQuoteTotal
+import { calculateQuoteTotal } from '@/lib/quote-utils';
 
 // Default values for a new quote
 const defaultQuoteValues: QuoteFormValues = {
@@ -39,10 +39,10 @@ const defaultQuoteValues: QuoteFormValues = {
   bankBSB: '923100',
   bankACC: '301110875',
   theme: 'default',
-  headerImageUrl: '', // Default to empty
-  headerImagePosition: '', // Default to empty
+  headerImageUrl: '',
+  headerImagePosition: '',
   preparationNotes: 'This fee covers 7 hours of commitment, including preparation, travel, setup, performance, and pack down.',
-  scopeOfWorkUrl: '', // NEW DEFAULT
+  scopeOfWorkUrl: '',
   
   compulsoryItems: [
     { id: 'base-fee', name: 'Base Performance Fee', description: '3 hours of live piano performance.', price: 1000, quantity: 1, scheduleDates: '', showScheduleDates: false, showQuantity: true, showRate: true },
@@ -56,12 +56,12 @@ interface QuoteDraft {
   id: string;
   title: string;
   updated_at: string;
-  data: QuoteFormValues;
+  data: any; // Changed to any to handle string or object
 }
 
 const AdminQuoteBuilderPage: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // Use useLocation to access state
+  const location = useLocation();
   const { user } = useAuth();
   const [currentQuoteId, setCurrentQuoteId] = useState<string | undefined>(undefined);
   const [currentDraftId, setCurrentDraftId] = useState<string | undefined>(undefined);
@@ -83,23 +83,19 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
   const watchedTheme = form.watch('theme');
 
-  // Update header image URL based on theme selection
   useEffect(() => {
     const currentImageUrl = form.getValues('headerImageUrl');
     const defaultWhitePink = '/whitepinkquoteimage1.jpeg';
     const defaultBlackGold = '/blackgoldquoteimage1.jpg';
 
-    // Only auto-apply black-gold header if current image is empty or the white-pink default
     if (
       watchedTheme === 'black-gold' &&
       (!currentImageUrl || currentImageUrl === defaultWhitePink)
     ) {
       form.setValue('headerImageUrl', defaultBlackGold, { shouldDirty: true });
     }
-    // For 'default' theme we do nothing – preserve whatever image the user has chosen
   }, [watchedTheme, form]);
 
-  // --- Data Fetching ---
   const fetchDrafts = useCallback(async (draftIdToLoad?: string) => {
     setIsLoadingDrafts(true);
     const { data, error } = await supabase
@@ -114,11 +110,11 @@ const AdminQuoteBuilderPage: React.FC = () => {
     } else {
       setDrafts(data || []);
 
-      // Auto-load draft if ID is provided (e.g., from navigation state)
       if (draftIdToLoad) {
-        const draft = data.find(d => d.id === draftIdToLoad);
+        const draft = data?.find(d => d.id === draftIdToLoad);
         if (draft) {
-          form.reset(draft.data);
+          const draftData = typeof draft.data === 'string' ? JSON.parse(draft.data) : draft.data;
+          form.reset(draftData);
           setCurrentDraftId(draftIdToLoad);
           setCurrentQuoteId(undefined);
           setCurrentQuote(null);
@@ -130,13 +126,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
   }, [form]);
 
   useEffect(() => {
-    // Check if we navigated here with a draft ID in state
     const state = location.state as { loadDraftId?: string } | null;
     const draftIdToLoad = state?.loadDraftId;
-
     fetchDrafts(draftIdToLoad);
-
-    // Clear state after loading to prevent re-loading on subsequent visits
     if (draftIdToLoad) {
         navigate(location.pathname, { replace: true, state: {} });
     }
@@ -152,14 +144,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
     }
   };
 
-  // --- Handlers ---
-
   const mapFormValuesToVersion = (values: QuoteFormValues): Omit<QuoteVersion, 'versionId' | 'versionName' | 'created_at' | 'is_active' | 'status' | 'accepted_at' | 'rejected_at' | 'client_selected_add_ons'> => {
-    
-    // Use utility function for total calculation
     const totalAmount = calculateQuoteTotal(values);
-
-    const mapItem = (item: { id?: string, name: string, description?: string, price?: number, quantity?: number, scheduleDates?: string, showScheduleDates?: boolean, showQuantity?: boolean, showRate?: boolean }): QuoteItem => ({
+    const mapItem = (item: any): QuoteItem => ({
       id: item.id || Math.random().toString(36).substring(2, 11),
       name: item.name,
       description: item.description || '',
@@ -174,8 +161,8 @@ const AdminQuoteBuilderPage: React.FC = () => {
     return {
       total_amount: totalAmount,
       depositPercentage: values.depositPercentage,
-      discountPercentage: values.discountPercentage, // NEW
-      discountAmount: values.discountAmount, // NEW
+      discountPercentage: values.discountPercentage,
+      discountAmount: values.discountAmount,
       paymentTerms: values.paymentTerms || '',
       bankDetails: {
         bsb: values.bankBSB ?? '',
@@ -200,7 +187,6 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
     try {
       if (status === 'Draft') {
-        // Handle Draft saving/updating
         const draftPayload = {
           id: currentDraftId,
           user_id: user?.id,
@@ -210,18 +196,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
         
         let result;
         if (currentDraftId) {
-          result = await supabase
-            .from('quote_drafts')
-            .update(draftPayload)
-            .eq('id', currentDraftId)
-            .select()
-            .single();
+          result = await supabase.from('quote_drafts').update(draftPayload).eq('id', currentDraftId).select().single();
         } else {
-          result = await supabase
-            .from('quote_drafts')
-            .insert(draftPayload)
-            .select()
-            .single();
+          result = await supabase.from('quote_drafts').insert(draftPayload).select().single();
         }
         
         if (result.error) throw result.error;
@@ -232,10 +209,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         return null;
         
       } else {
-        // Handle Quote creation/update via Edge Function
         const versionData = mapFormValuesToVersion(values);
-        
-        // For a new quote, we create the first version (v1)
         const newVersion: QuoteVersion = {
             versionId: 'v1',
             versionName: 'Initial Proposal',
@@ -248,7 +222,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         };
         
         const payload = {
-          id: currentQuoteId, // Will be undefined for new quotes
+          id: currentQuoteId,
           clientName: values.clientName,
           clientEmail: values.clientEmail,
           invoiceType: values.invoiceType,
@@ -256,15 +230,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
           eventDate: values.eventDate,
           eventLocation: values.eventLocation,
           preparedBy: values.preparedBy,
-          
-          // Top-level fields reflect the active version (v1)
           totalAmount: newVersion.total_amount,
           status: newVersion.status,
-          
-          // Details now contains the versions array
-          details: {
-              versions: [newVersion]
-          },
+          details: { versions: [newVersion] },
           slug: currentQuote?.slug || createSlug(`${values.eventTitle}-${values.clientName}`),
         };
 
@@ -274,15 +242,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
         if (invokeError) throw invokeError;
         
-        const newQuoteId = invokeData.id;
-        
-        // Fetch the newly created/updated quote to set currentQuote state
-        const { data: fetchedQuote, error: fetchError } = await supabase
-          .from('invoices')
-          .select('*')
-          .eq('id', newQuoteId)
-          .single();
-          
+        const { data: fetchedQuote, error: fetchError } = await supabase.from('invoices').select('*').eq('id', invokeData.id).single();
         if (fetchError) throw fetchError;
         
         const finalQuote: Quote = {
@@ -292,15 +252,12 @@ const AdminQuoteBuilderPage: React.FC = () => {
           status: fetchedQuote.status,
         };
 
-        setCurrentQuoteId(newQuoteId);
+        setCurrentQuoteId(invokeData.id);
         setCurrentQuote(finalQuote);
-        
-        // If it was a draft, clear the draft ID
         if (currentDraftId) {
             await handleDeleteDraft(currentDraftId, false);
             setCurrentDraftId(undefined);
         }
-        
         showSuccess(`${action} successful!`, { id: toastId });
         return finalQuote;
       }
@@ -317,7 +274,8 @@ const AdminQuoteBuilderPage: React.FC = () => {
   const handleLoadDraft = (draftId: string) => {
     const draft = drafts.find(d => d.id === draftId);
     if (draft) {
-      form.reset(draft.data);
+      const draftData = typeof draft.data === 'string' ? JSON.parse(draft.data) : draft.data;
+      form.reset(draftData);
       setCurrentDraftId(draftId);
       setCurrentQuoteId(undefined);
       setCurrentQuote(null);
@@ -327,17 +285,10 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
   const handleDeleteDraft = async (draftId: string, showToast: boolean = true) => {
     if (showToast && !window.confirm('Are you sure you want to delete this draft?')) return;
-    
     const toastId = showToast ? showLoading('Deleting draft...') : undefined;
-
     try {
-      const { error } = await supabase
-        .from('quote_drafts')
-        .delete()
-        .eq('id', draftId);
-
+      const { error } = await supabase.from('quote_drafts').delete().eq('id', draftId);
       if (error) throw error;
-
       if (currentDraftId === draftId) {
         setCurrentDraftId(undefined);
         form.reset(defaultQuoteValues);
@@ -361,7 +312,6 @@ const AdminQuoteBuilderPage: React.FC = () => {
     await extractQuote(emailContent);
   };
   
-  // Apply extracted content to form
   useEffect(() => {
     if (extractedContent) {
       const compulsoryItems = extractedContent.compulsoryItems.map(item => ({
@@ -403,9 +353,9 @@ const AdminQuoteBuilderPage: React.FC = () => {
         addOns: addOns,
         headerImageUrl: defaultQuoteValues.headerImageUrl,
         headerImagePosition: defaultQuoteValues.headerImagePosition,
-        scopeOfWorkUrl: extractedContent.scopeOfWorkUrl || defaultQuoteValues.scopeOfWorkUrl, // Ensure scopeOfWorkUrl is handled
-        discountPercentage: extractedContent.discountPercentage ?? 0, // Apply extracted discount percentage
-        discountAmount: extractedContent.discountAmount ?? 0,       // Apply extracted discount amount
+        scopeOfWorkUrl: extractedContent.scopeOfWorkUrl || defaultQuoteValues.scopeOfWorkUrl,
+        discountPercentage: extractedContent.discountPercentage ?? 0,
+        discountAmount: extractedContent.discountAmount ?? 0,
       };
       
       form.reset(newValues);
@@ -415,7 +365,6 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
   const handleCreateAndSend = async (values: QuoteFormValues) => {
     const finalQuote = await handleSaveCreateQuote(values, 'Created');
-    
     if (finalQuote) {
       setCurrentQuote(finalQuote);
       setIsSendingModalOpen(true);
@@ -426,7 +375,6 @@ const AdminQuoteBuilderPage: React.FC = () => {
     navigate(`/admin/quotes/${currentQuoteId}`);
   };
 
-  // Transform form values into Quote interface structure for preview
   const getPreviewData = (values: QuoteFormValues): Quote => {
     const versionData = mapFormValuesToVersion(values);
     const previewVersion: QuoteVersion = {
@@ -454,9 +402,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       accepted_at: null,
       rejected_at: null,
       created_at: currentQuote?.created_at || new Date().toISOString(),
-      details: {
-        versions: [previewVersion],
-      },
+      details: { versions: [previewVersion] },
       status: currentQuote?.status || 'Draft',
     };
   };
@@ -476,10 +422,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
         currentDraftId={currentDraftId}
       />
 
-      <AIQuoteExtractor 
-        onExtract={handleExtractQuote} 
-        isSubmitting={isAILoading} 
-      />
+      <AIQuoteExtractor onExtract={handleExtractQuote} isSubmitting={isAILoading} />
       
       {isAILoading && (
         <div className="flex items-center justify-center p-4 bg-brand-secondary/10 dark:bg-brand-dark/50 rounded-lg">
@@ -514,9 +457,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
           </DialogHeader>
           <ScrollArea className="h-[calc(90vh-70px)]">
             {previewData ? (
-              <QuoteDisplay 
-                quote={getPreviewData(previewData)} 
-              />
+              <QuoteDisplay quote={getPreviewData(previewData)} />
             ) : (
               <div className="p-8 text-center">No preview data available.</div>
             )}

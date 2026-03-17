@@ -10,16 +10,15 @@ import { Loader2, ExternalLink, Trash2, PlusCircle, FileText } from 'lucide-reac
 import { showError } from '@/utils/toast';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { Quote } from '@/types/quote'; // Import Quote interface
+import { Quote } from '@/types/quote';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { calculateQuoteTotal } from '@/lib/quote-utils'; // Import calculation utility
-import { QuoteFormValues } from '@/components/admin/QuoteForm'; // Import QuoteFormValues
+import { calculateQuoteTotal } from '@/lib/quote-utils';
 
 interface Draft {
   id: string;
   title: string;
-  data: QuoteFormValues; // Use the full QuoteFormValues type
+  data: any; // Changed to any to handle string or object
   updated_at: string;
 }
 
@@ -40,14 +39,13 @@ const AdminQuotesPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const calculateDraftTotal = (draft: Draft): number => {
-    // Use the centralized utility function for accurate total calculation (including discounts)
-    return calculateQuoteTotal(draft.data);
+    const draftData = typeof draft.data === 'string' ? JSON.parse(draft.data) : draft.data;
+    return calculateQuoteTotal(draftData);
   };
 
   const fetchQuotesAndDrafts = async () => {
     setIsLoading(true);
     try {
-      // 1. Fetch finalized quotes (invoices)
       const { data: quotesData, error: quotesError } = await supabase
         .from('invoices')
         .select('*')
@@ -57,7 +55,6 @@ const AdminQuotesPage: React.FC = () => {
 
       const quotes: Quote[] = quotesData as Quote[] || [];
 
-      // 2. Fetch drafts
       const { data: draftsData, error: draftsError } = await supabase
         .from('quote_drafts')
         .select('id, title, data, updated_at');
@@ -66,7 +63,6 @@ const AdminQuotesPage: React.FC = () => {
 
       const drafts: Draft[] = draftsData as Draft[] || [];
 
-      // 3. Combine and map data
       const mappedQuotes: CombinedQuoteItem[] = quotes.map(quote => ({
         id: quote.id,
         type: 'quote',
@@ -79,16 +75,19 @@ const AdminQuotesPage: React.FC = () => {
         slug: quote.slug,
       }));
 
-      const mappedDrafts: CombinedQuoteItem[] = drafts.map(draft => ({
-        id: draft.id,
-        type: 'draft',
-        client_name: draft.data.clientName || draft.title,
-        invoice_type: draft.data.invoiceType || 'Draft',
-        event_date: draft.data.eventDate || null,
-        total_amount: calculateDraftTotal(draft),
-        status: 'Draft',
-        created_at: draft.updated_at, // Use updated_at for drafts for sorting relevance
-      }));
+      const mappedDrafts: CombinedQuoteItem[] = drafts.map(draft => {
+        const draftData = typeof draft.data === 'string' ? JSON.parse(draft.data) : draft.data;
+        return {
+          id: draft.id,
+          type: 'draft',
+          client_name: draftData.clientName || draft.title,
+          invoice_type: draftData.invoiceType || 'Draft',
+          event_date: draftData.eventDate || null,
+          total_amount: calculateDraftTotal(draft),
+          status: 'Draft',
+          created_at: draft.updated_at,
+        };
+      });
 
       const combined = [...mappedQuotes, ...mappedDrafts].sort((a, b) => 
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -113,22 +112,13 @@ const AdminQuotesPage: React.FC = () => {
       async () => {
         let error;
         if (itemType === 'quote') {
-          const result = await supabase
-            .from('invoices')
-            .delete()
-            .eq('id', itemId);
+          const result = await supabase.from('invoices').delete().eq('id', itemId);
           error = result.error;
         } else {
-          const result = await supabase
-            .from('quote_drafts')
-            .delete()
-            .eq('id', itemId);
+          const result = await supabase.from('quote_drafts').delete().eq('id', itemId);
           error = result.error;
         }
-
         if (error) throw error;
-        
-        // Optimistically update the UI
         setCombinedItems(prevItems => prevItems.filter(item => item.id !== itemId));
         return `${itemType === 'quote' ? 'Quote' : 'Draft'} deleted successfully!`;
       },
@@ -141,7 +131,7 @@ const AdminQuotesPage: React.FC = () => {
         },
         action: {
           label: 'Confirm Delete',
-          onClick: () => { /* The promise handles the actual deletion */ },
+          onClick: () => { },
         },
         description: `Are you sure you want to delete this ${itemType}? This action cannot be undone.`,
       }
@@ -150,17 +140,11 @@ const AdminQuotesPage: React.FC = () => {
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
-      case 'Accepted':
-        return 'default';
-      case 'Rejected':
-        return 'destructive';
-      case 'Sent':
-        return 'secondary';
-      case 'Draft':
-        return 'outline';
-      case 'Created':
-      default:
-        return 'default';
+      case 'Accepted': return 'default';
+      case 'Rejected': return 'destructive';
+      case 'Sent': return 'secondary';
+      case 'Draft': return 'outline';
+      default: return 'default';
     }
   };
 
@@ -210,7 +194,7 @@ const AdminQuotesPage: React.FC = () => {
                 </TableHeader>
                 <TableBody>
                   {combinedItems.map((item) => (
-                    <TableRow key={item.id} className="hover:bg-brand-secondary/5 dark:hover:bg-brand-dark/30">
+                    <TableRow key={item.id} className="hover:bg-brand-secondary/5 dark:hover:bg-brand-dark/30 transition-colors border-b border-brand-secondary/10 last:border-none">
                       <TableCell className="font-medium text-brand-dark dark:text-brand-light">
                         {item.client_name}
                       </TableCell>
