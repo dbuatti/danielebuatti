@@ -243,9 +243,9 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
           <DynamicImage
             src={headerImageUrl}
             alt="Quote Header"
-            className={cn("w-full h-64 object-cover", headerImagePosition || 'object-center')}
+            className={cn("w-full h-80 object-cover", headerImagePosition || 'object-top')}
             width={1000}
-            height={256}
+            height={320}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         </div>
