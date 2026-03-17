@@ -56,7 +56,7 @@ interface QuoteDraft {
   id: string;
   title: string;
   updated_at: string;
-  data: any; // Changed to any to handle string or object
+  data: any;
 }
 
 const AdminQuoteBuilderPage: React.FC = () => {
@@ -98,16 +98,19 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
   const fetchDrafts = useCallback(async (draftIdToLoad?: string) => {
     setIsLoadingDrafts(true);
+    console.log("[QuoteBuilder] Fetching drafts for user:", user?.id);
+    
     const { data, error } = await supabase
       .from('quote_drafts')
       .select('id, title, updated_at, data')
       .order('updated_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching drafts:', error);
+      console.error('[QuoteBuilder] Error fetching drafts:', error);
       showError('Failed to load drafts.');
       setDrafts([]);
     } else {
+      console.log(`[QuoteBuilder] Found ${data?.length || 0} drafts.`);
       setDrafts(data || []);
 
       if (draftIdToLoad) {
@@ -123,7 +126,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       }
     }
     setIsLoadingDrafts(false);
-  }, [form]);
+  }, [form, user]);
 
   useEffect(() => {
     const state = location.state as { loadDraftId?: string } | null;
@@ -451,7 +454,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       </Card>
 
       <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-        <DialogContent className="sm:max-w-[90vw] w-[90vw] h-[90vh] p-0 bg-brand-light dark:bg-brand-dark-alt text-brand-dark dark:text-brand-light border-brand-secondary/50">
+        <DialogContent className="sm:max-w-[90vw] w-[90vw] h-[90vh] p-0 bg-brand-light dark:bg-brand-dark-alt text-brand-dark text-brand-light border-brand-secondary/50">
           <DialogHeader className="p-6 pb-0">
             <DialogTitle className="text-brand-primary text-2xl">Quote Preview</DialogTitle>
           </DialogHeader>
