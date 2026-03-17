@@ -286,7 +286,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       <div className="space-y-8">
         <div className="flex items-center gap-4">
           <h3 className={cn("text-2xl font-light uppercase tracking-widest", isBlackGoldTheme ? "font-montserrat" : "font-display")}>
-            Investment Details
+            Service Details
           </h3>
           <div className="flex-grow h-[1px] bg-current/10" />
         </div>
@@ -383,7 +383,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
             <div className="h-[1px] bg-current/10 my-4" />
 
             <div className="flex justify-between items-baseline">
-              <span className="text-xs uppercase tracking-[0.3em] font-bold opacity-60">Total Investment</span>
+              <span className="text-xs uppercase tracking-[0.3em] font-bold opacity-60">Total Fee</span>
               <span className={cn("text-4xl font-light", themeClasses.primary)}>
                 {formatCurrency(finalDisplayTotal, currencySymbol)}
               </span>
