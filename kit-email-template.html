@@ -18,7 +18,7 @@
     /* MOBILE STYLES */
     @media screen and (max-width: 600px) {
       .wrapper { width: 100% !important; max-width: 100% !important; }
-      .content-padding { padding: 30px 20px !important; }
+      .content-padding { padding: 30px 25px !important; }
       .logo-text { width: 180px !important; }
     }
 
@@ -28,9 +28,10 @@
     h1, h2, h3 { color: #00022D; margin-top: 0; }
     
     .profile-circle {
-      border-radius: 50%;
-      border: 4px solid #ffffff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: 50% !important;
+      overflow: hidden;
+      border: 3px solid #ffffff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     }
   </style>
 </head>
@@ -54,19 +55,29 @@
       <tr>
         <td align="center" style="padding-bottom: 40px;">
           <!-- MAIN CONTENT CARD -->
-          <table border="0" cellpadding="0" cellspacing="0" width="600" class="wrapper" style="background-color: #ffffff; border-radius: 32px; overflow: visible; box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
+          <table border="0" cellpadding="0" cellspacing="0" width="600" class="wrapper" style="background-color: #ffffff; border-radius: 32px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
             <tr>
-              <td align="center" style="padding-top: 40px;">
-                <!-- CIRCULAR PROFILE IMAGE -->
-                <img src="https://danielebuatti.com/daniele%20simple.jpeg" alt="Daniele Buatti" width="100" height="100" class="profile-circle" style="display: block; object-fit: cover;" />
-              </td>
-            </tr>
-            <tr>
-              <td class="content-padding" style="padding: 40px 50px 50px 50px; font-size: 17px; line-height: 1.7; color: #00022D;">
+              <td class="content-padding" style="padding: 50px 60px 40px 60px; font-size: 17px; line-height: 1.7; color: #00022D;">
                 
                 <!-- KIT CONTENT VARIABLE -->
                 {{ message_content }}
 
+              </td>
+            </tr>
+            <tr>
+              <td class="content-padding" style="padding: 0 60px 50px 60px;">
+                <!-- SIGN-OFF SECTION -->
+                <table border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td width="70" align="left" style="padding-right: 15px;">
+                      <img src="https://danielebuatti.com/daniele%20simple.jpeg" alt="Daniele" width="70" height="70" class="profile-circle" style="display: block; object-fit: cover; border-radius: 50%;" />
+                    </td>
+                    <td align="left" style="vertical-align: middle;">
+                      <p style="margin: 0; font-weight: 700; font-size: 18px; color: #00022D;">Daniele Buatti</p>
+                      <p style="margin: 2px 0 0 0; font-size: 13px; color: #DB4CA3; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Pianist & Vocal Coach</p>
+                    </td>
+                  </tr>
+                </table>
               </td>
             </tr>
           </table>
@@ -80,7 +91,7 @@
               <td align="center" style="padding: 0 20px; color: #00022D; font-size: 14px; line-height: 1.5; opacity: 0.8;">
                 
                 <!-- COLOR PIANO LOGO IN FOOTER -->
-                <img src="https://danielebuatti.com/blue-pink-ontrans.png" alt="Daniele Buatti Logo" width="120" style="margin-bottom: 25px; display: block;" />
+                <img src="https://danielebuatti.com/blue-pink-ontrans.png" alt="Daniele Buatti Logo" width="100" style="margin-bottom: 25px; display: block;" />
                 
                 <p style="margin: 0 0 10px 0; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; font-size: 11px; color: #DB4CA3;">
                   Embodied Coaching for Performers & Communicators
