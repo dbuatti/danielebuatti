@@ -1,0 +1,1 @@
+SELECT id, client_name, event_title, slug, status FROM invoices WHERE client_name = 'Tommy Clarke' AND event_title = 'Elly''s 50th Birthday "Splendide"';
