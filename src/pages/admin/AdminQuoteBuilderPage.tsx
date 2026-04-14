@@ -35,7 +35,7 @@ const defaultQuoteValues: QuoteFormValues = {
   depositPercentage: 50,
   discountPercentage: 0,
   discountAmount: 0,
-  paymentTerms: 'Payment due within 7 days of acceptance.',
+  paymentTerms: '50% deposit to secure date. Balance due 7 days prior to event.',
   bankBSB: '923100',
   bankACC: '301110875',
   theme: 'default',
