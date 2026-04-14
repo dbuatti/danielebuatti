@@ -21,7 +21,7 @@ import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { calculateQuoteTotal } from '@/lib/quote-utils';
 
-// Default values for a new quote
+// Updated default values based on the new pricing strategy
 const defaultQuoteValues: QuoteFormValues = {
   clientName: '',
   clientEmail: '',
@@ -45,11 +45,42 @@ const defaultQuoteValues: QuoteFormValues = {
   scopeOfWorkUrl: '',
   
   compulsoryItems: [
-    { id: 'base-fee', name: 'Base Performance Fee', description: '3 hours of live piano performance.', price: 1000, quantity: 1, scheduleDates: '', showScheduleDates: false, showQuantity: true, showRate: true },
+    { 
+      id: 'base-fee', 
+      name: 'Base Performance Fee', 
+      description: '3 hours of live piano performance.', 
+      price: 1250, // Updated from 1000
+      quantity: 1, 
+      scheduleDates: '', 
+      showScheduleDates: false, 
+      showQuantity: true, 
+      showRate: true 
+    },
   ],
   addOns: [
-    { id: 'rehearsal-90', name: 'Pre-event Rehearsal (90 mins)', description: 'Bespoke rehearsal session prior to event date.', price: 180, quantity: 0, scheduleDates: '', showScheduleDates: false, showQuantity: true, showRate: true },
-    { id: 'extra-hour', name: 'Additional Performance Hour', description: 'Additional hour of live piano music.', price: 250, quantity: 0, scheduleDates: '', showScheduleDates: false, showQuantity: true, showRate: true },
+    { 
+      id: 'digital-upgrade', 
+      name: 'Interactive "Piano Bar" Rig (Digital Upgrade)', 
+      description: 'Professional digital piano, vocal microphone, mixer, and high-fidelity amplification for high-energy interaction.', 
+      price: 300, // Updated from 200
+      quantity: 0, 
+      maxQuantity: 1, // Limit to 1
+      scheduleDates: '', 
+      showScheduleDates: false, 
+      showQuantity: true, 
+      showRate: true 
+    },
+    { 
+      id: 'overtime-30', 
+      name: 'Overtime (per 30 min)', 
+      description: 'Additional 30 minutes of live performance beyond the base booking.', 
+      price: 250, 
+      quantity: 0, 
+      scheduleDates: '', 
+      showScheduleDates: false, 
+      showQuantity: true, 
+      showRate: true 
+    },
   ],
 };
 
@@ -99,8 +130,6 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
   const fetchDrafts = useCallback(async (draftIdToLoad?: string) => {
     setIsLoadingDrafts(true);
-    console.log("[QuoteBuilder] Fetching drafts for user:", user?.id);
-    
     const { data, error } = await supabase
       .from('quote_drafts')
       .select('id, title, updated_at, data')
@@ -111,7 +140,6 @@ const AdminQuoteBuilderPage: React.FC = () => {
       showError('Failed to load drafts.');
       setDrafts([]);
     } else {
-      console.log(`[QuoteBuilder] Found ${data?.length || 0} drafts.`);
       setDrafts(data || []);
 
       if (draftIdToLoad) {
@@ -127,7 +155,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       }
     }
     setIsLoadingDrafts(false);
-  }, [form, user]);
+  }, [form]);
 
   useEffect(() => {
     const state = location.state as { loadDraftId?: string } | null;
@@ -160,6 +188,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
       showScheduleDates: item.showScheduleDates ?? false,
       showQuantity: item.showQuantity ?? true,
       showRate: item.showRate ?? true,
+      maxQuantity: item.maxQuantity,
     });
 
     return {
