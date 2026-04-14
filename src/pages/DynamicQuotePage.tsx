@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { showError, showSuccess, showLoading, dismissToast } from '@/utils/toast';
 import { Card, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import { Quote, QuoteItem, QuoteVersion } from '@/types/quote';
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -24,16 +24,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import SeoMetadata from '@/components/SeoMetadata';
-// Removed unused import: import { calculatePreDiscountTotal } from '@/lib/quote-utils'; // Import calculatePreDiscountTotal
 
-// Define favicon paths
 const BRAND_FAVICON_PATH = '/blue-pink-ontrans.png?v=1';
 const GOLD_FAVICON_PATH = '/gold-36.png';
 
-// Define the structure for the data fetched from Supabase
 interface QuoteData extends Quote {}
 
-// Define schema for acceptance form
 const acceptanceSchema = z.object({
   clientName: z.string().min(1, { message: "Your name is required for acceptance." }),
   clientEmail: z.string().email({ message: "A valid email is required for acceptance." }),
@@ -46,10 +42,8 @@ const DynamicQuotePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAccepting, setIsAccepting] = useState(false);
-  // State to hold the mutable quantities for optional add-ons (only used if not finalized)
   const [currentOptionalAddOns, setCurrentOptionalAddOns] = useState<QuoteItem[]>([]); 
   
-  // Initialize acceptance form (will be reset once quote data is loaded)
   const acceptanceForm = useForm<z.infer<typeof acceptanceSchema>>({
     resolver: zodResolver(acceptanceSchema),
     defaultValues: {
@@ -58,25 +52,28 @@ const DynamicQuotePage: React.FC = () => {
     },
   });
 
-  // --- Favicon Management ---
+  const safeFormatDate = (dateStr: string | null | undefined, formatStr: string = 'PPP') => {
+    if (!dateStr) return 'N/A';
+    const date = new Date(dateStr);
+    if (!isValid(date)) return 'Invalid Date';
+    return format(date, formatStr);
+  };
+
   useEffect(() => {
     if (!quote) return;
     
     const activeVersion = quote.details.versions.find(v => v.is_active);
     const theme = activeVersion?.theme || 'default';
-
     const isBlackGoldTheme = theme === 'black-gold';
     const faviconPath = isBlackGoldTheme ? GOLD_FAVICON_PATH : BRAND_FAVICON_PATH;
 
     const updateFavicon = (rel: string, path: string) => {
       let link: HTMLLinkElement | null = document.querySelector(`link[rel*='${rel}']`) as HTMLLinkElement;
-      
       if (!link) {
         link = document.createElement('link');
         link.rel = rel;
         document.getElementsByTagName('head')[0].appendChild(link);
       }
-      
       if (link.getAttribute('href') !== path) {
           link.href = path;
       }
@@ -117,21 +114,17 @@ const DynamicQuotePage: React.FC = () => {
           const activeVersion = quoteData.details.versions.find(v => v.is_active);
           if (!activeVersion) throw new Error("No active version found for this quote.");
           
-          // Reset acceptance form with client data
           acceptanceForm.reset({
             clientName: quoteData.client_name,
             clientEmail: quoteData.client_email,
           });
 
-          // Initialize mutable state for quantity controls
           if (activeVersion.accepted_at && activeVersion.client_selected_add_ons) {
-            // If accepted, use the final selected list for display (though controls will be disabled)
             setCurrentOptionalAddOns(activeVersion.client_selected_add_ons);
           } else {
-            // If pending/rejected, use the original optional list, ensuring quantity is initialized
             setCurrentOptionalAddOns(activeVersion.addOns.map(item => ({
                 ...item,
-                quantity: item.quantity || 0 // Default to 0 if not set
+                quantity: item.quantity || 0
             })));
           }
         } else {
@@ -174,15 +167,11 @@ const DynamicQuotePage: React.FC = () => {
     const toastId = showLoading('Accepting quote...');
 
     try {
-      // 1. Calculate final total based on selected add-ons
       const finalAddOns = currentOptionalAddOns.filter(item => item.quantity > 0);
-      
-      // Ensure compulsoryTotal is calculated here for the payload
       const compulsoryTotal = activeVersion.compulsoryItems.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0) || 0;
       const addOnTotal = finalAddOns.reduce((sum: number, item: QuoteItem) => sum + item.price * item.quantity, 0);
       const preDiscountTotal = compulsoryTotal + addOnTotal;
 
-      // Apply discount logic from the active version
       let finalTotal = preDiscountTotal;
       if (activeVersion.discountPercentage > 0) {
           finalTotal *= (1 - activeVersion.discountPercentage / 100);
@@ -192,8 +181,6 @@ const DynamicQuotePage: React.FC = () => {
       }
       finalTotal = Math.max(0, finalTotal);
 
-
-      // 2. Prepare data for Edge Function
       const acceptancePayload = {
         quoteId: quote.id,
         clientName: values.clientName,
@@ -202,7 +189,6 @@ const DynamicQuotePage: React.FC = () => {
         finalSelectedAddOns: finalAddOns,
       };
 
-      // 3. Invoke the Edge Function to update the database and send notification
       const { error: invokeError } = await supabase.functions.invoke('submit-generic-quote-acceptance', {
         body: acceptancePayload,
       });
@@ -210,8 +196,6 @@ const DynamicQuotePage: React.FC = () => {
       if (invokeError) throw invokeError;
 
       showSuccess('Quote accepted successfully! Redirecting...', { id: toastId });
-      
-      // Redirect to a confirmation page after successful acceptance
       navigate('/live-piano-services/quote-confirmation');
       
     } catch (err: any) {
@@ -232,8 +216,6 @@ const DynamicQuotePage: React.FC = () => {
 
     try {
       const rejectedAt = new Date().toISOString();
-      
-      // 1. Update the active version within the versions array
       const updatedVersions = quote.details.versions.map(v => {
           if (v.versionId === activeVersion.versionId) {
               return {
@@ -246,7 +228,6 @@ const DynamicQuotePage: React.FC = () => {
           return v;
       });
 
-      // 2. Update the main invoice record
       const { error } = await supabase
         .from('invoices')
         .update({
@@ -260,7 +241,6 @@ const DynamicQuotePage: React.FC = () => {
       if (error) throw error;
 
       showSuccess('Quote rejected.', { id: toastId });
-      // Manually update state to reflect rejection
       setQuote(prev => {
           if (!prev) return null;
           const newVersions = prev.details.versions.map(v => v.is_active ? { ...v, rejected_at: rejectedAt, accepted_at: null, status: 'Rejected' as QuoteVersion['status'] } : v);
@@ -282,7 +262,6 @@ const DynamicQuotePage: React.FC = () => {
 
   if (error || !quote) {
     const themeClasses = { bg: 'bg-brand-light', text: 'text-brand-dark' };
-      
     return (
       <div className={`min-h-screen flex flex-col items-center justify-center ${themeClasses.bg} ${themeClasses.text} p-8`}>
         <XCircle className="h-12 w-12 mb-4 text-red-500" />
@@ -299,25 +278,20 @@ const DynamicQuotePage: React.FC = () => {
   }
   
   const activeVersion = quote.details.versions.find(v => v.is_active);
-  if (!activeVersion) {
-      // Should be caught by fetchQuote, but defensive check here
-      return <div className="p-8 text-center text-red-500">Error: No active version available for this quote.</div>;
-  }
+  if (!activeVersion) return <div className="p-8 text-center text-red-500">Error: No active version available for this quote.</div>;
 
   const isAccepted = !!activeVersion.accepted_at;
   const isRejected = !!activeVersion.rejected_at;
   const isFinalized = isAccepted || isRejected;
-  
   const { depositPercentage, theme, currencySymbol } = activeVersion;
 
-  // Theme setup (copied from QuoteDisplay for the wrapper elements)
   const isBlackGoldTheme = theme === 'black-gold';
   const themeClasses = isBlackGoldTheme
     ? {
         bg: 'bg-brand-dark',
         cardBg: 'bg-brand-dark-alt',
         text: 'text-brand-light',
-        primary: 'text-brand-yellow', // Gold
+        primary: 'text-brand-yellow',
         secondary: 'text-brand-light/70',
         border: 'border-brand-yellow/50',
         acceptButton: 'bg-brand-yellow text-brand-dark hover:bg-brand-yellow/90',
@@ -334,7 +308,7 @@ const DynamicQuotePage: React.FC = () => {
         bg: 'bg-brand-light',
         cardBg: 'bg-white',
         text: 'text-brand-dark',
-        primary: 'text-brand-primary', // Pink
+        primary: 'text-brand-primary',
         secondary: 'text-brand-dark/70',
         border: 'border-brand-primary/50',
         acceptButton: 'bg-brand-primary text-white hover:bg-brand-primary/90',
@@ -348,7 +322,6 @@ const DynamicQuotePage: React.FC = () => {
         statusRejectedText: 'text-red-700',
       };
       
-  // SEO Metadata for Quote Page
   const quoteTitle = `${quote.invoice_type} for ${quote.client_name} - ${quote.event_title}`;
   const quoteDescription = `Review your personalized quote proposal (Version ${activeVersion.versionId}) for ${quote.event_title} on ${quote.event_date}. Total: ${currencySymbol}${activeVersion.total_amount.toFixed(2)}.`;
   const quoteImage = isBlackGoldTheme ? `${window.location.origin}/blackgoldquoteimage1.jpg` : `${window.location.origin}/whitepinkquoteimage1.jpeg`;
@@ -356,31 +329,15 @@ const DynamicQuotePage: React.FC = () => {
 
   return (
     <ScrollArea className={`min-h-screen ${themeClasses.bg}`}>
-      <SeoMetadata 
-        title={quoteTitle}
-        description={quoteDescription}
-        image={quoteImage}
-        url={quoteUrl}
-      />
+      <SeoMetadata title={quoteTitle} description={quoteDescription} image={quoteImage} url={quoteUrl} />
       <div className={`max-w-6xl mx-auto p-4 sm:p-8`}>
         <Card className={`shadow-2xl rounded-lg ${themeClasses.cardBg} ${themeClasses.text} border-2 ${themeClasses.border} p-0`}>
-          
-          {/* Use QuoteDisplay for the main content area */}
-          <QuoteDisplay 
-            quote={quote as Quote}
-            isClientView={true}
-            onQuantityChange={handleQuantityChange}
-            mutableAddOns={currentOptionalAddOns}
-          />
-
-          {/* Acceptance Form/Buttons Wrapper */}
+          <QuoteDisplay quote={quote as Quote} isClientView={true} onQuantityChange={handleQuantityChange} mutableAddOns={currentOptionalAddOns} />
           <CardFooter className={`p-8 pt-12 flex flex-col space-y-8 border-t border-current/20 ${themeClasses.cardBg}`}>
-            
             <div className={`p-8 rounded-xl text-center shadow-2xl border ${themeClasses.border} ${themeClasses.acceptBoxBg}`}>
               <h2 className={`text-3xl font-extrabold mb-8 ${themeClasses.primary}`}>
                 {isFinalized ? 'Booking Status' : `Accept Quote (Version ${activeVersion.versionId})`}
               </h2>
-              
               <Form {...acceptanceForm}>
                 <form onSubmit={handleAcceptQuote} className="space-y-6">
                   {!isFinalized ? (
@@ -392,14 +349,7 @@ const DynamicQuotePage: React.FC = () => {
                           <FormItem>
                             <FormLabel className={themeClasses.text}>Your Full Name *</FormLabel>
                             <FormControl>
-                              <Input 
-                                placeholder="Enter your name" 
-                                {...field} 
-                                className={`
-                                  ${themeClasses.inputBg} ${themeClasses.text} ${themeClasses.inputBorder} 
-                                  placeholder:${themeClasses.secondary} focus-visible:ring-brand-primary
-                                `}
-                              />
+                              <Input placeholder="Enter your name" {...field} className={`${themeClasses.inputBg} ${themeClasses.text} ${themeClasses.inputBorder} placeholder:${themeClasses.secondary} focus-visible:ring-brand-primary`} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -412,15 +362,7 @@ const DynamicQuotePage: React.FC = () => {
                           <FormItem>
                             <FormLabel className={themeClasses.text}>Your Email Address *</FormLabel>
                             <FormControl>
-                              <Input 
-                                type="email"
-                                placeholder="Enter your email" 
-                                {...field} 
-                                className={`
-                                  ${themeClasses.inputBg} ${themeClasses.text} ${themeClasses.inputBorder} 
-                                  placeholder:${themeClasses.secondary} focus-visible:ring-brand-primary
-                                `}
-                              />
+                              <Input type="email" placeholder="Enter your email" {...field} className={`${themeClasses.inputBg} ${themeClasses.text} ${themeClasses.inputBorder} placeholder:${themeClasses.secondary} focus-visible:ring-brand-primary`} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -431,30 +373,16 @@ const DynamicQuotePage: React.FC = () => {
                       </p>
                     </div>
                   ) : (
-                    // Display status message if finalized
                     <div className={`mt-4 p-4 rounded-md font-semibold flex flex-col sm:flex-row items-center justify-center space-x-2 ${isAccepted ? `${themeClasses.statusAcceptedBg} ${themeClasses.statusAcceptedText}` : `${themeClasses.statusRejectedBg} ${themeClasses.statusRejectedText}`}`}>
                         {isAccepted ? <CheckCircle className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
-                        <span className="mt-2 sm:mt-0">This quote was {isAccepted ? 'ACCEPTED' : 'REJECTED'} on {format(new Date(activeVersion.accepted_at || activeVersion.rejected_at!), 'PPP')}.</span>
+                        <span className="mt-2 sm:mt-0">This quote was {isAccepted ? 'ACCEPTED' : 'REJECTED'} on {safeFormatDate(activeVersion.accepted_at || activeVersion.rejected_at!)}.</span>
                     </div>
                   )}
-
                   <div className="mt-8 flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                     {!isFinalized && (
                       <>
-                        <Button 
-                          type="button"
-                          variant="destructive" 
-                          onClick={handleRejectQuote} 
-                          disabled={isAccepting}
-                          className={themeClasses.rejectButton}
-                        >
-                          Reject Quote
-                        </Button>
-                        <Button 
-                          type="submit"
-                          disabled={isAccepting}
-                          className={themeClasses.acceptButton}
-                        >
+                        <Button type="button" variant="destructive" onClick={handleRejectQuote} disabled={isAccepting} className={themeClasses.rejectButton}>Reject Quote</Button>
+                        <Button type="submit" disabled={isAccepting} className={themeClasses.acceptButton}>
                           {isAccepting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
                           Accept Quote
                         </Button>
@@ -464,9 +392,8 @@ const DynamicQuotePage: React.FC = () => {
                 </form>
               </Form>
             </div>
-            
             <p className={`text-xs italic ${themeClasses.secondary} text-center`}>
-              Quote prepared by {quote.prepared_by} on {format(new Date(quote.created_at), 'PPP')}.
+              Quote prepared by {quote.prepared_by} on {safeFormatDate(quote.created_at)}.
             </p>
           </CardFooter>
         </Card>
