@@ -244,8 +244,8 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
             src={headerImageUrl}
             alt="Quote Header"
             className={cn("w-full h-[450px] object-cover", headerImagePosition || 'object-[center_15%]')}
-            width={1000}
-            height={450}
+            width={2000}
+            height={900}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         </div>
@@ -356,10 +356,10 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       {isBlackGoldTheme && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="rounded-[2rem] overflow-hidden border border-white/10 shadow-xl aspect-[4/3]">
-            <DynamicImage src="/blackgoldquoteimage1.jpg" alt="Performance" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
+            <DynamicImage src="/blackgoldquoteimage1.jpg" alt="Performance" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" width={1200} height={900} />
           </div>
           <div className="rounded-[2rem] overflow-hidden border border-white/10 shadow-xl aspect-[4/3]">
-            <DynamicImage src="/blackgoldquoteimage2.jpg" alt="Performance" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
+            <DynamicImage src="/blackgoldquoteimage2.jpg" alt="Performance" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" width={1200} height={900} />
           </div>
         </div>
       )}
