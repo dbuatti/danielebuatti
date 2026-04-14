@@ -74,7 +74,7 @@ const QuoteItemMobileList: React.FC<QuoteItemMobileListProps> = ({
               <div className="flex flex-col space-y-1">
                 <span className={`text-xs font-medium ${themeClasses.secondary}`}>Total Amount</span>
                 <span className={`font-bold text-lg ${isSelected ? themeClasses.primary : themeClasses.secondary}`}>
-                  {formatCurrency(totalAmount, currencySymbol)}
+                  {isSelected ? formatCurrency(totalAmount, currencySymbol) : 'Unselected'}
                 </span>
               </div>
 

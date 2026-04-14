@@ -57,6 +57,7 @@ const QuoteItemRow: React.FC<{
   const isAtMax = item.maxQuantity !== undefined && item.quantity >= item.maxQuantity;
 
   const displayAmount = () => {
+    // If it's an unselected optional item in the selection view
     if (isOptional && !isSelected && !isFinalized && isClientView) {
       return (
         <div className="text-right">
@@ -161,6 +162,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
   const isRejected = !!rejected_at;
   const isFinalized = isAccepted || isRejected;
 
+  // Logic to determine which optional items to show
   let optionalItemsToDisplay = (isClientView && !isFinalized && mutableAddOns) 
     ? mutableAddOns 
     : (isAccepted && client_selected_add_ons) 
@@ -346,6 +348,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
               )}
 
               {optionalItemsToDisplay.map((item) => {
+                  // Hide unselected items in finalized view
                   if (isClientView && isFinalized && item.quantity === 0) return null;
                   return <QuoteItemRow key={item.id} item={item} currencySymbol={currencySymbol} isOptional={true} themeClasses={themeClasses} isClientView={isClientView} isFinalized={isFinalized} onQuantityChange={onQuantityChange} />;
               })}
