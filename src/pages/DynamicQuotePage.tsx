@@ -393,7 +393,7 @@ const DynamicQuotePage: React.FC = () => {
               </Form>
             </div>
             <p className={`text-xs italic ${themeClasses.secondary} text-center`}>
-              Quote prepared by {quote.prepared_by} on {safeFormatDate(quote.created_at)}.
+              Quote prepared by {quote.prepared_by} on {safeFormatDate(activeVersion.created_at || quote.created_at)}.
             </p>
           </CardFooter>
         </Card>
