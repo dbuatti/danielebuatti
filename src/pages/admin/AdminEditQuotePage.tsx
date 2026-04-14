@@ -112,9 +112,8 @@ const AdminEditQuotePage: React.FC = () => {
   useEffect(() => {
     if (!isLoading) {
       const currentImageUrl = form.getValues('headerImageUrl');
-      const defaultWhitePink = '/whitepinkquoteimage1.jpeg';
       const defaultBlackGold = '/blackgoldquoteimage1.jpg';
-      if (watchedTheme === 'black-gold' && (!currentImageUrl || currentImageUrl === defaultWhitePink || currentImageUrl === '/blacktie.avif')) {
+      if (watchedTheme === 'black-gold' && (!currentImageUrl || currentImageUrl === '/whitepinkquoteimage1.jpeg')) {
           form.setValue('headerImageUrl', defaultBlackGold, { shouldDirty: true });
       }
     }

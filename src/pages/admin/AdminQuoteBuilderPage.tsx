@@ -91,7 +91,7 @@ const AdminQuoteBuilderPage: React.FC = () => {
 
     if (
       watchedTheme === 'black-gold' &&
-      (!currentImageUrl || currentImageUrl === defaultWhitePink || currentImageUrl === '/blacktie.avif')
+      (!currentImageUrl || currentImageUrl === defaultWhitePink)
     ) {
       form.setValue('headerImageUrl', defaultBlackGold, { shouldDirty: true });
     }
