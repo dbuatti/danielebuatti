@@ -98,7 +98,7 @@ const CeremonySpecialistPage: React.FC = () => {
           <DynamicImage
             src="/blacktie.avif"
             alt="Daniele Buatti Wedding Performance"
-            className="w-full h-[500px] object-cover grayscale hover:grayscale-0 transition-all duration-1000"
+            className="w-full h-[500px] object-cover grayscale hover:grayscale-0 transition-all duration-1000 transform-gpu"
             width={1200}
             height={600}
           />
