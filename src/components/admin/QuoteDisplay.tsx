@@ -200,8 +200,8 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         inputBorder: 'border-yellow-500/30',
         primaryText: 'text-yellow-500',
         primaryHoverBg: 'hover:bg-yellow-500/10',
-        image1: '/blackgoldquoteimage1.jpg',
-        image2: '/blackgoldquoteimage2.jpg',
+        image1: '/blacktie1.avif',
+        image2: '/blacktie3.avif',
       }
     : {
         isPremium: false,
@@ -356,10 +356,10 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       {isBlackGoldTheme && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="rounded-[2rem] overflow-hidden border border-white/10 shadow-xl aspect-[4/3]">
-            <DynamicImage src="/blackgoldquoteimage1.jpg" alt="Performance" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" width={1200} height={900} />
+            <DynamicImage src={themeClasses.image1} alt="Performance" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" width={1200} height={900} />
           </div>
           <div className="rounded-[2rem] overflow-hidden border border-white/10 shadow-xl aspect-[4/3]">
-            <DynamicImage src="/blackgoldquoteimage2.jpg" alt="Performance" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" width={1200} height={900} />
+            <DynamicImage src={themeClasses.image2} alt="Performance" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" width={1200} height={900} />
           </div>
         </div>
       )}

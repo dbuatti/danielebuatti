@@ -87,11 +87,11 @@ const AdminQuoteBuilderPage: React.FC = () => {
   useEffect(() => {
     const currentImageUrl = form.getValues('headerImageUrl');
     const defaultWhitePink = '/whitepinkquoteimage1.jpeg';
-    const defaultBlackGold = '/blackgoldquoteimage1.jpg';
+    const defaultBlackGold = '/blacktie.avif'; // Updated to high-res AVIF
 
     if (
       watchedTheme === 'black-gold' &&
-      (!currentImageUrl || currentImageUrl === defaultWhitePink)
+      (!currentImageUrl || currentImageUrl === defaultWhitePink || currentImageUrl === '/blackgoldquoteimage1.jpg')
     ) {
       form.setValue('headerImageUrl', defaultBlackGold, { shouldDirty: true });
     }
