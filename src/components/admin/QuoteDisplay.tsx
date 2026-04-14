@@ -54,6 +54,7 @@ const QuoteItemRow: React.FC<{
   const isSelected = item.quantity > 0;
   const totalAmount = item.price * item.quantity;
   const showControls = isOptional && isClientView && !isFinalized && onQuantityChange;
+  const isAtMax = item.maxQuantity !== undefined && item.quantity >= item.maxQuantity;
 
   const displayAmount = () => {
     if (isOptional && !isSelected && !isFinalized && isClientView) {
@@ -114,6 +115,7 @@ const QuoteItemRow: React.FC<{
                     variant="ghost" 
                     size="icon" 
                     onClick={() => onQuantityChange!(item.id as string, 1)}
+                    disabled={isAtMax}
                     className={cn("h-7 w-7 p-0 rounded-full", themeClasses.primaryText, themeClasses.primaryHoverBg)}
                 >
                     <Plus className="h-3 w-3" />

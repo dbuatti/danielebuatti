@@ -11,6 +11,7 @@ export interface QuoteItem {
   showScheduleDates: boolean;
   showQuantity: boolean;
   showRate: boolean;
+  maxQuantity?: number; // NEW: Optional limit on quantity
 }
 
 export interface QuoteVersion {

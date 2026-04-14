@@ -37,6 +37,7 @@ const QuoteItemMobileList: React.FC<QuoteItemMobileListProps> = ({
 
         const totalAmount = item.price * item.quantity;
         const showControls = isOptional && isClientView && !isFinalized && onQuantityChange;
+        const isAtMax = item.maxQuantity !== undefined && item.quantity >= item.maxQuantity;
 
         const itemClasses = isOptional && !isSelected && !isFinalized && isClientView
           ? `opacity-60 ${themeClasses.secondary}`
@@ -110,6 +111,7 @@ const QuoteItemMobileList: React.FC<QuoteItemMobileListProps> = ({
                                     variant="ghost"
                                     size="icon"
                                     onClick={() => onQuantityChange!(item.id as string, 1)}
+                                    disabled={isAtMax}
                                     className={`h-7 w-7 ${themeClasses.primaryText} ${themeClasses.primaryHoverBg} p-0 rounded-full`}
                                 >
                                     <Plus className="h-3 w-3" />

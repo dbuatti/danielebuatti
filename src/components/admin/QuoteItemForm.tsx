@@ -10,6 +10,7 @@ import { Trash2 } from 'lucide-react';
 import PillToggle from './PillToggle';
 import RichTextPreview from './RichTextPreview';
 import { QuoteFormValues } from './QuoteForm';
+import { cn } from '@/lib/utils';
 
 interface QuoteItemFormProps {
   index: number;
@@ -125,22 +126,45 @@ const QuoteItemForm: React.FC<QuoteItemFormProps> = ({ index, type, onRemove, is
         </div>
       </div>
 
-      {/* Item Toggles and Delete Button */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-2 pt-2 border-t border-brand-secondary/20 md:border-none md:pt-0">
+      {/* Item Toggles, Max Qty, and Delete Button */}
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-2 border-t border-brand-secondary/20 md:border-none md:pt-0">
         <div className="flex flex-wrap justify-start gap-2">
             <PillToggle name={`${baseName}.showScheduleDates`} label="Schedule" />
             <PillToggle name={`${baseName}.showQuantity`} label="Qty" />
             <PillToggle name={`${baseName}.showRate`} label="Rate" />
         </div>
-        <Button
-          type="button"
-          variant="destructive"
-          onClick={() => onRemove(index)}
-          disabled={!isRemovable}
-          className="w-full md:w-auto"
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
+
+        <div className="flex items-center gap-4 w-full md:w-auto">
+            <FormField
+                control={control}
+                name={`${baseName}.maxQuantity` as any}
+                render={({ field: itemField }) => (
+                    <FormItem className="flex items-center gap-2 space-y-0">
+                        <FormLabel className="text-xs font-bold uppercase tracking-widest text-brand-dark/60 dark:text-brand-light/60">Max Qty:</FormLabel>
+                        <FormControl>
+                            <Input
+                                type="number"
+                                placeholder="None"
+                                className={cn(inputClasses, "w-20 h-8 text-xs")}
+                                value={itemField.value || ''}
+                                onChange={e => itemField.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
+                            />
+                        </FormControl>
+                    </FormItem>
+                )}
+            />
+
+            <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                onClick={() => onRemove(index)}
+                disabled={!isRemovable}
+                className="ml-auto"
+            >
+                <Trash2 className="h-4 w-4" />
+            </Button>
+        </div>
       </div>
 
       {/* Live Preview for Description */}

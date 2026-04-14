@@ -27,6 +27,7 @@ const ItemSchema = z.object({
   showScheduleDates: z.boolean().default(false), // Default to false
   showQuantity: z.boolean().default(true),
   showRate: z.boolean().default(true),
+  maxQuantity: z.number().min(1).optional(), // NEW: Max quantity limit
 });
 
 // Define the main form schema
