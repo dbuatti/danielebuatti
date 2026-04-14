@@ -14,7 +14,7 @@ import {
 import DynamicImage from '../DynamicImage';
 import QuoteItemMobileList from './QuoteItemMobileList';
 import { Button } from '@/components/ui/button';
-import { Minus, Plus, FileText, Sparkles } from 'lucide-react';
+import { Minus, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import { renderQuoteRichText } from '@/lib/rich-text-utils';
 
@@ -72,11 +72,10 @@ const QuoteItemRow: React.FC<{
   return (
     <TableRow className={cn(
       "border-b border-current/10 transition-colors",
-      isOptional && !isSelected && !isFinalized && isClientView ? 'opacity-40' : 'hover:bg-white/5',
-      themeClasses.isPremium ? "border-white/5" : ""
+      isOptional && !isSelected && !isFinalized && isClientView ? 'opacity-40' : 'hover:bg-white/5'
     )}>
       <TableCell className="py-6 pr-4">
-        <div className={cn("font-bold text-lg", themeClasses.isPremium ? "font-montserrat tracking-tight" : "")}>
+        <div className="font-bold text-lg">
           {item.name}
         </div>
         {item.description && (
@@ -150,7 +149,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
   const { 
     total_amount, accepted_at, rejected_at, depositPercentage, theme, currencySymbol, 
     eventTime, headerImageUrl, headerImagePosition, preparationNotes, paymentTerms, 
-    bankDetails, compulsoryItems, addOns, client_selected_add_ons, scopeOfWorkUrl,
+    bankDetails, compulsoryItems, addOns, client_selected_add_ons,
     discountPercentage, discountAmount,
   } = version;
   
@@ -184,62 +183,50 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
 
   const themeClasses = isBlackGoldTheme
     ? {
-        isPremium: true,
-        bg: 'bg-black',
-        text: 'text-white',
-        primary: 'text-yellow-500',
-        secondary: 'text-gray-400',
-        tableHeaderBg: 'bg-zinc-900/50',
-        tableBorder: 'border-white/10',
-        separator: 'bg-yellow-500/30',
-        totalBoxBg: 'bg-zinc-900',
-        totalBoxText: 'text-yellow-500',
-        tableText: 'text-white',
-        contentImageBorder: 'border-white/10',
-        inputBg: 'bg-black',
-        inputBorder: 'border-yellow-500/30',
-        primaryText: 'text-yellow-500',
-        primaryHoverBg: 'hover:bg-yellow-500/10',
-        image1: '/blacktie1.avif',
-        image2: '/blacktie3.avif',
+        bg: 'bg-brand-dark',
+        cardBg: 'bg-brand-dark-alt',
+        text: 'text-brand-light',
+        primary: 'text-brand-yellow', // Gold
+        secondary: 'text-brand-light/70',
+        border: 'border-brand-yellow/50',
+        acceptButton: 'bg-brand-yellow text-brand-dark hover:bg-brand-yellow/90',
+        rejectButton: 'bg-red-600 text-white hover:bg-red-700',
+        acceptBoxBg: 'bg-brand-dark',
+        inputBg: 'bg-brand-dark',
+        inputBorder: 'border-brand-yellow/30',
+        statusAcceptedBg: 'bg-green-900/50',
+        statusAcceptedText: 'text-green-400',
+        statusRejectedBg: 'bg-red-900/50',
+        statusRejectedText: 'text-red-400',
+        primaryText: 'text-brand-yellow',
+        primaryHoverBg: 'hover:bg-brand-yellow/10',
       }
     : {
-        isPremium: false,
         bg: 'bg-brand-light',
+        cardBg: 'bg-white',
         text: 'text-brand-dark',
-        primary: 'text-brand-primary',
+        primary: 'text-brand-primary', // Pink
         secondary: 'text-brand-dark/70',
-        tableHeaderBg: 'bg-brand-secondary/30',
-        tableBorder: 'border-brand-secondary',
-        separator: 'bg-brand-primary',
-        totalBoxBg: 'bg-brand-secondary/20',
-        totalBoxText: 'text-brand-primary',
-        tableText: 'text-brand-dark',
-        contentImageBorder: 'border-brand-primary/50',
+        border: 'border-brand-primary/50',
+        acceptButton: 'bg-brand-primary text-white hover:bg-brand-primary/90',
+        rejectButton: 'bg-red-600 text-white hover:bg-red-700',
+        acceptBoxBg: 'bg-brand-secondary/10',
         inputBg: 'bg-brand-light',
         inputBorder: 'border-brand-secondary/50',
+        statusAcceptedBg: 'bg-green-100',
+        statusAcceptedText: 'text-green-700',
+        statusRejectedBg: 'bg-red-100',
+        statusRejectedText: 'text-red-700',
         primaryText: 'text-brand-primary',
         primaryHoverBg: 'hover:bg-brand-primary/10',
-        image1: undefined,
-        image2: undefined,
       };
 
   return (
     <div className={cn("p-6 sm:p-12 max-w-5xl mx-auto space-y-12", themeClasses.bg, themeClasses.text)}>
       
-      {/* Premium Badge for Black/Gold */}
-      {isBlackGoldTheme && (
-        <div className="flex justify-center">
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-yellow-500/30 bg-yellow-500/5 text-yellow-500 text-[10px] uppercase tracking-[0.3em] font-bold">
-            <Sparkles className="w-3 h-3 fill-current" />
-            Performance Proposal
-          </div>
-        </div>
-      )}
-
       {/* Header Image */}
       {headerImageUrl && (
-        <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border border-yellow-500/10">
+        <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border border-current/10">
           <DynamicImage
             src={headerImageUrl}
             alt="Quote Header"
@@ -254,7 +241,7 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
       {/* Quote/Invoice Details */}
       <div className="flex flex-col md:flex-row justify-between items-end gap-8 border-b border-current/10 pb-10">
         <div className="space-y-2 text-left w-full md:w-auto">
-          <h1 className={cn("text-5xl font-light tracking-tight", isBlackGoldTheme ? "font-montserrat uppercase" : "font-display text-brand-primary")}>
+          <h1 className={cn("text-5xl font-light tracking-tight", isBlackGoldTheme ? "text-brand-yellow" : "text-brand-primary")}>
             {quote.invoice_type}
           </h1>
           <p className={cn("text-lg font-light", themeClasses.secondary)}>
@@ -268,24 +255,10 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         </div>
       </div>
 
-      {/* Scope of Work Link */}
-      {scopeOfWorkUrl && (
-        <div className="flex justify-center">
-          <Button asChild variant="outline" className={cn(
-            "rounded-full px-8 py-6 text-sm uppercase tracking-[0.2em] font-bold transition-all hover:scale-105",
-            isBlackGoldTheme ? "border-yellow-500/30 text-yellow-500 hover:bg-yellow-500/10" : "border-brand-primary/30 text-brand-primary"
-          )}>
-            <a href={scopeOfWorkUrl} target="_blank" rel="noopener noreferrer">
-              <FileText className="mr-2 h-4 w-4" /> View Scope of Work
-            </a>
-          </Button>
-        </div>
-      )}
-
       {/* Items Section */}
       <div className="space-y-8">
         <div className="flex items-center gap-4">
-          <h3 className={cn("text-2xl font-light uppercase tracking-widest", isBlackGoldTheme ? "font-montserrat" : "font-display")}>
+          <h3 className="text-2xl font-light uppercase tracking-widest">
             Service Details
           </h3>
           <div className="flex-grow h-[1px] bg-current/10" />
@@ -352,21 +325,9 @@ const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, isClientView = false
         </div>
       </div>
 
-      {/* Premium Image Grid */}
-      {isBlackGoldTheme && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="rounded-[2rem] overflow-hidden border border-white/10 shadow-xl aspect-[4/3]">
-            <DynamicImage src={themeClasses.image1} alt="Performance" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" width={1200} height={900} />
-          </div>
-          <div className="rounded-[2rem] overflow-hidden border border-white/10 shadow-xl aspect-[4/3]">
-            <DynamicImage src={themeClasses.image2} alt="Performance" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" width={1200} height={900} />
-          </div>
-        </div>
-      )}
-
       {/* Totals Summary */}
       <div className="flex justify-end pt-8">
-        <div className={cn("w-full max-w-md p-8 rounded-[2rem] border", themeClasses.tableBorder, themeClasses.totalBoxBg)}>
+        <div className={cn("w-full max-w-md p-8 rounded-[2rem] border", themeClasses.border, themeClasses.acceptBoxBg)}>
           <div className="space-y-4">
             <div className="flex justify-between text-sm uppercase tracking-widest opacity-60">
               <span>Subtotal</span>

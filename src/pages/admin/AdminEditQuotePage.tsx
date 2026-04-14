@@ -112,8 +112,9 @@ const AdminEditQuotePage: React.FC = () => {
   useEffect(() => {
     if (!isLoading) {
       const currentImageUrl = form.getValues('headerImageUrl');
-      const defaultBlackGold = '/blacktie.avif'; // Updated to high-res AVIF
-      if (watchedTheme === 'black-gold' && (!currentImageUrl || currentImageUrl === '/whitepinkquoteimage1.jpeg' || currentImageUrl === '/blackgoldquoteimage1.jpg')) {
+      const defaultWhitePink = '/whitepinkquoteimage1.jpeg';
+      const defaultBlackGold = '/blackgoldquoteimage1.jpg';
+      if (watchedTheme === 'black-gold' && (!currentImageUrl || currentImageUrl === defaultWhitePink || currentImageUrl === '/blacktie.avif')) {
           form.setValue('headerImageUrl', defaultBlackGold, { shouldDirty: true });
       }
     }
