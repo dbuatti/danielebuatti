@@ -7,7 +7,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Loader2, Search, Music, BookOpen, Download, ShieldCheck, HelpCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';
-import { CartProvider } from '@/components/store/CartProvider';
 import SeoMetadata from '@/components/SeoMetadata';
 import StoreStructuredData from '@/components/store/StoreStructuredData';
 import Navbar from '@/components/Navbar';
@@ -79,7 +78,7 @@ const StoreFaqSection: React.FC = () => {
   );
 };
 
-const StorePageContent: React.FC = () => {
+const StorePage: React.FC = () => {
   const [arrangements, setArrangements] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -134,7 +133,7 @@ const StorePageContent: React.FC = () => {
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark">
       <SeoMetadata 
         title="Sheet Music Store | Professional Piano & Vocal Arrangements | Daniele Buatti"
-        description="Browse a curated collection of professional sheet music PDFs, piano arrangements, and vocal scores. Instant digital downloads for performers and educators."
+        description="Browse a curated collection of professional sheet music PDFs, piano arrangements, and vocal scores. Digital downloads delivered instantly."
         url={`${window.location.origin}/store`}
       />
       <StoreStructuredData arrangements={arrangements} />
@@ -272,14 +271,6 @@ const StorePageContent: React.FC = () => {
       
       <Footer />
     </div>
-  );
-};
-
-const StorePage: React.FC = () => {
-  return (
-    <CartProvider>
-      <StorePageContent />
-    </CartProvider>
   );
 };
 

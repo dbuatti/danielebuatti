@@ -7,6 +7,7 @@ import AdminLayout from './pages/admin/AdminLayout';
 import { SessionContextProvider } from './components/SessionContextProvider';
 import ScrollToTop from './components/ScrollToTop';
 import FaviconManager from './components/FaviconManager';
+import { CartProvider } from './components/store/CartProvider';
 
 // Public Pages
 import LandingPageV3 from './pages/LandingPageV3';
@@ -30,7 +31,7 @@ import GiftCardsPage from './pages/GiftCardsPage';
 import CeremonySpecialistPage from './pages/CeremonySpecialistPage';
 import StorePage from './pages/StorePage';
 import StoreSuccessPage from './pages/StoreSuccessPage';
-import ArrangementDetailsPage from './pages/ArrangementDetailsPage'; // New
+import ArrangementDetailsPage from './pages/ArrangementDetailsPage';
 
 // Admin Pages
 import Login from './pages/Login';
@@ -55,56 +56,58 @@ function App() {
       <ScrollToTop />
       <FaviconManager />
       <SessionContextProvider>
-        <Routes>
-          <Route path="/" element={<RootLayout />}>
-            {/* Public Routes */}
-            <Route index element={<LandingPageV4 />} />
-            <Route path="landing-v3" element={<LandingPageV3 />} />
-            <Route path="landing-v4" element={<LandingPageV4 />} />
-            <Route path="coaching" element={<CoachingPage />} />
-            <Route path="projects-resources" element={<ProjectsResourcesPage />} />
-            <Route path="live-piano-services" element={<LivePianoServicesPage />} />
-            <Route path="ameb-accompanying" element={<AmebAccompanyingPage />} />
-            <Route path="music-director-pianist" element={<MusicDirectorPianistPage />} />
-            <Route path="archive" element={<ArchivePage />} />
-            <Route path="about" element={<AboutPage />} />
-            <Route path="voice-piano-services" element={<VoicePianoServicesPage />} />
-            <Route path="book-voice-piano" element={<VoicePianoBookingPage />} />
-            <Route path="book-embodiment-somatic" element={<EmbodimentSomaticBookingPage />} />
-            <Route path="book-presence-communication" element={<PresenceCommunicationBookingPage />} />
-            <Route path="quotes/:slug" element={<DynamicQuotePage />} />
-            <Route path="live-piano-services/quote-confirmation" element={<QuoteConfirmationPage />} />
-            <Route path="contact" element={<ContactPage />} />
-            <Route path="gift-cards" element={<GiftCardsPage />} />
-            <Route path="ceremony-specialist" element={<CeremonySpecialistPage />} />
-            <Route path="store" element={<StorePage />} />
-            <Route path="store/success" element={<StoreSuccessPage />} />
-            <Route path="store/arrangements/:slug" element={<ArrangementDetailsPage />} /> {/* New */}
+        <CartProvider>
+          <Routes>
+            <Route path="/" element={<RootLayout />}>
+              {/* Public Routes */}
+              <Route index element={<LandingPageV4 />} />
+              <Route path="landing-v3" element={<LandingPageV3 />} />
+              <Route path="landing-v4" element={<LandingPageV4 />} />
+              <Route path="coaching" element={<CoachingPage />} />
+              <Route path="projects-resources" element={<ProjectsResourcesPage />} />
+              <Route path="live-piano-services" element={<LivePianoServicesPage />} />
+              <Route path="ameb-accompanying" element={<AmebAccompanyingPage />} />
+              <Route path="music-director-pianist" element={<MusicDirectorPianistPage />} />
+              <Route path="archive" element={<ArchivePage />} />
+              <Route path="about" element={<AboutPage />} />
+              <Route path="voice-piano-services" element={<VoicePianoServicesPage />} />
+              <Route path="book-voice-piano" element={<VoicePianoBookingPage />} />
+              <Route path="book-embodiment-somatic" element={<EmbodimentSomaticBookingPage />} />
+              <Route path="book-presence-communication" element={<PresenceCommunicationBookingPage />} />
+              <Route path="quotes/:slug" element={<DynamicQuotePage />} />
+              <Route path="live-piano-services/quote-confirmation" element={<QuoteConfirmationPage />} />
+              <Route path="contact" element={<ContactPage />} />
+              <Route path="gift-cards" element={<GiftCardsPage />} />
+              <Route path="ceremony-specialist" element={<CeremonySpecialistPage />} />
+              <Route path="store" element={<StorePage />} />
+              <Route path="store/success" element={<StoreSuccessPage />} />
+              <Route path="store/arrangements/:slug" element={<ArrangementDetailsPage />} />
 
-            {/* Auth Route */}
-            <Route path="login" element={<Login />} />
+              {/* Auth Route */}
+              <Route path="login" element={<Login />} />
 
-            {/* Admin Routes */}
-            <Route path="admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboardPage />} />
-              <Route path="leads" element={<AdminLeadsPage />} />
-              <Route path="leads/:id" element={<AdminLeadDetailsPage />} />
-              <Route path="quotes" element={<AdminQuotesPage />} />
-              <Route path="quotes/:id" element={<AdminQuoteDetailsPage />} />
-              <Route path="quotes/edit/:id" element={<AdminEditQuotePage />} />
-              <Route path="create-quote" element={<AdminQuoteBuilderPage />} />
-              <Route path="ameb-bookings" element={<AdminAmebBookingsPage />} />
-              <Route path="ameb-bookings/:id" element={<AdminAmebBookingDetailsPage />} />
-              <Route path="email-templates" element={<AdminEmailTemplatesPage />} />
-              <Route path="gift-cards" element={<AdminGiftCardsPage />} />
-              <Route path="store" element={<AdminStorePage />} />
-              <Route path="job-decision-filter" element={<JobDecisionFilterPage />} />
+              {/* Admin Routes */}
+              <Route path="admin" element={<AdminLayout />}>
+                <Route index element={<AdminDashboardPage />} />
+                <Route path="leads" element={<AdminLeadsPage />} />
+                <Route path="leads/:id" element={<AdminLeadDetailsPage />} />
+                <Route path="quotes" element={<AdminQuotesPage />} />
+                <Route path="quotes/:id" element={<AdminQuoteDetailsPage />} />
+                <Route path="quotes/edit/:id" element={<AdminEditQuotePage />} />
+                <Route path="create-quote" element={<AdminQuoteBuilderPage />} />
+                <Route path="ameb-bookings" element={<AdminAmebBookingsPage />} />
+                <Route path="ameb-bookings/:id" element={<AdminAmebBookingDetailsPage />} />
+                <Route path="email-templates" element={<AdminEmailTemplatesPage />} />
+                <Route path="gift-cards" element={<AdminGiftCardsPage />} />
+                <Route path="store" element={<AdminStorePage />} />
+                <Route path="job-decision-filter" element={<JobDecisionFilterPage />} />
+              </Route>
+
+              {/* 404 Route */}
+              <Route path="*" element={<NotFound />} />
             </Route>
-
-            {/* 404 Route */}
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
+          </Routes>
+        </CartProvider>
       </SessionContextProvider>
       <Toaster richColors position="top-right" />
     </BrowserRouter>
