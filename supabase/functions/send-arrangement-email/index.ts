@@ -48,7 +48,9 @@ serve(async (req: Request) => {
       });
     }
 
-    // Generate signed URLs for all files
+    // Generate signed URLs for all files - Set to 10 years (effectively never expires)
+    const TEN_YEARS_IN_SECONDS = 60 * 60 * 24 * 365 * 10;
+    
     const downloadLinks = await Promise.all(arrangements.map(async (arr: any) => {
       const files = [];
       
@@ -56,7 +58,7 @@ serve(async (req: Request) => {
       if (arr.pdf_file_path) {
         const { data } = await supabaseClient.storage
           .from('arrangements')
-          .createSignedUrl(arr.pdf_file_path, 60 * 60 * 24 * 7); // 7 days
+          .createSignedUrl(arr.pdf_file_path, TEN_YEARS_IN_SECONDS);
         
         files.push({
           label: 'Main Score (PDF)',
@@ -68,7 +70,7 @@ serve(async (req: Request) => {
       if (arr.secondary_file_path) {
         const { data } = await supabaseClient.storage
           .from('arrangements')
-          .createSignedUrl(arr.secondary_file_path, 60 * 60 * 24 * 7); // 7 days
+          .createSignedUrl(arr.secondary_file_path, TEN_YEARS_IN_SECONDS);
         
         files.push({
           label: arr.secondary_file_name || 'Secondary File',
@@ -112,7 +114,7 @@ serve(async (req: Request) => {
         <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
           <h2 style="color: #DB4CA3; text-align: center; margin-bottom: 20px;">Your Music Arrangements are Ready!</h2>
           <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">Dear Customer,</p>
-          <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">Thank you for your purchase. You can download your files using the links below. These links will be active for 7 days.</p>
+          <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">Thank you for your purchase. You can download your files using the secure links below.</p>
           
           ${itemsHtml}
           

@@ -44,7 +44,7 @@ const StoreSuccessPage: React.FC = () => {
                 <Mail className="h-4 w-4" /> Check Your Email
               </div>
               <p className="text-sm text-brand-dark/80 dark:text-brand-light/80">
-                We've sent a secure download link to your email address. The link will remain active for 7 days.
+                We've sent secure download links to your email address. You can access your files at any time.
               </p>
             </div>
             <div className="p-6 rounded-2xl bg-brand-secondary/10 dark:bg-brand-dark/50 border border-brand-secondary/20 text-left space-y-3">
