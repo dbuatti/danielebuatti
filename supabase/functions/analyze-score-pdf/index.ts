@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
 import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai@0.21.0";
 
 const corsHeaders = {
@@ -10,56 +11,20 @@ const corsHeaders = {
 const extractionSchema = {
   type: "object",
   properties: {
-    title: { type: "string", description: "The title of the arrangement." },
-    composer: { type: "string", description: "The original composer or arranger." },
-    instrumentation: { type: "string", description: "The instruments involved (e.g., Piano/Vocal, SATB, Jazz Trio)." },
-    difficulty: { type: "string", description: "Estimated difficulty level (e.g., Beginner, Intermediate, Advanced)." },
-    key: { type: "string", description: "The musical key of the piece." },
-    genre: { type: "string", description: "The musical genre (e.g., Jazz, Classical, Pop)." },
-    lyrics: { type: "string", description: "A snippet of the lyrics if present." },
-    duration: { type: "string", description: "Estimated duration (e.g., 3:30)." },
-    style: { type: "string", description: "The musical style (e.g., Swing, Ballad, Up-tempo)." },
+    title: { type: "string" },
+    composer: { type: "string" },
+    instrumentation: { type: "string" },
+    difficulty: { type: "string" },
+    key: { type: "string" },
+    genre: { type: "string" },
+    lyrics: { type: "string" },
+    duration: { type: "string" },
+    style: { type: "string" },
   },
   required: ["title", "composer", "instrumentation"],
 };
 
 const PRIMARY_KEY = Deno.env.get('GEMINI_API_KEY');
-const BACKUP_KEY = Deno.env.get('GEMINI_API_KEY_BACKUP');
-
-const runExtraction = async (apiKey: string, text: string, retryCount = 0) => {
-  try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    
-    // Using gemini-2.5-flash as requested
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.5-flash",
-      generationConfig: {
-        responseMimeType: "application/json",
-        responseSchema: extractionSchema,
-      }
-    });
-
-    const prompt = `You are an expert music librarian. Analyze the following text extracted from a music score PDF and extract metadata into a single JSON object strictly following the provided JSON schema.
-
-Extracted Text:
----
-${text}
----
-`;
-
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    return JSON.parse(response.text());
-  } catch (error: any) {
-    // Handle 503 Service Unavailable with a single retry after a short delay
-    if (error.message?.includes('503') && retryCount < 1) {
-      console.log(`[analyze-score-pdf] Gemini 503 detected. Retrying in 2s...`);
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      return runExtraction(apiKey, text, retryCount + 1);
-    }
-    throw error;
-  }
-};
 
 serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
@@ -67,44 +32,41 @@ serve(async (req: Request) => {
   }
 
   try {
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+    );
+
+    // Verify Authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: 'No authorization header' }), { status: 401, headers: corsHeaders });
+    }
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser(authHeader.replace('Bearer ', ''));
+    if (authError || !user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: corsHeaders });
+    }
+
     const { text } = await req.json();
+    if (!text) return new Response(JSON.stringify({ error: 'Missing text' }), { status: 400, headers: corsHeaders });
 
-    if (!text) {
-      return new Response(JSON.stringify({ error: 'Missing text in request body' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
+    const genAI = new GoogleGenerativeAI(PRIMARY_KEY);
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-2.5-flash",
+      generationConfig: { responseMimeType: "application/json", responseSchema: extractionSchema }
+    });
 
-    if (!PRIMARY_KEY) {
-      throw new Error("GEMINI_API_KEY environment variable not set.");
-    }
+    const prompt = `Analyze the following text extracted from a music score PDF and extract metadata: ${text}`;
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
 
-    let extractedData;
-
-    try {
-      extractedData = await runExtraction(PRIMARY_KEY, text);
-    } catch (primaryError: any) {
-      console.error('[analyze-score-pdf] Primary Key failed:', primaryError.message);
-      
-      // If primary fails (rate limit or other), try backup if available
-      if (BACKUP_KEY) {
-        console.log('[analyze-score-pdf] Retrying with backup key...');
-        extractedData = await runExtraction(BACKUP_KEY, text);
-      } else {
-        throw primaryError;
-      }
-    }
-
-    return new Response(JSON.stringify(extractedData), {
+    return new Response(response.text(), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     });
 
   } catch (error: any) {
-    console.error('[analyze-score-pdf] AI Extraction Error:', error);
-    
-    return new Response(JSON.stringify({ error: error.message || 'Failed to process AI extraction' }), {
+    return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
