@@ -4,14 +4,15 @@ import { ArrangementCard } from '@/components/store/ArrangementCard';
 import { CartDrawer } from '@/components/store/CartDrawer';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, Search, Music, BookOpen, Download, ShieldCheck, HelpCircle } from 'lucide-react';
+import { Loader2, Search, Music, BookOpen, Download, ShieldCheck, HelpCircle, X } from 'lucide-react';
 import { toast } from 'sonner';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import SeoMetadata from '@/components/SeoMetadata';
 import StoreStructuredData from '@/components/store/StoreStructuredData';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Button } from '@/components/ui/button';
 
 const faqs = [
   {
@@ -129,6 +130,12 @@ const StorePage: React.FC = () => {
   const instruments = Array.from(new Set(arrangements.map(a => a.instrumentation).filter(Boolean)));
   const difficulties = Array.from(new Set(arrangements.map(a => a.difficulty).filter(Boolean)));
 
+  const resetFilters = () => {
+    setSearchTerm('');
+    setInstrumentFilter('all');
+    setDifficultyFilter('all');
+  };
+
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark">
       <SeoMetadata 
@@ -143,6 +150,11 @@ const StorePage: React.FC = () => {
       <main className="container mx-auto px-4 py-12 max-w-7xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
           <div className="space-y-2">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40 mb-2">
+              <Link to="/" className="hover:text-brand-primary transition-colors">Home</Link>
+              <span>/</span>
+              <span className="text-brand-primary">Store</span>
+            </div>
             <h1 className="text-4xl md:text-5xl font-bold text-brand-dark dark:text-brand-light tracking-tight">
               Music Arrangement <span className="text-brand-primary">Store</span>
             </h1>
@@ -162,8 +174,16 @@ const StorePage: React.FC = () => {
               placeholder="Search by title or composer..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 bg-white dark:bg-brand-dark border-brand-secondary/20 h-11"
+              className="pl-10 pr-10 bg-white dark:bg-brand-dark border-brand-secondary/20 h-11"
             />
+            {searchTerm && (
+              <button 
+                onClick={() => setSearchTerm('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-dark/40 hover:text-brand-primary transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
           </div>
           <Select value={instrumentFilter} onValueChange={setInstrumentFilter}>
             <SelectTrigger className="bg-white dark:bg-brand-dark border-brand-secondary/20 h-11">
@@ -200,9 +220,16 @@ const StorePage: React.FC = () => {
               <Music className="h-10 w-10 text-brand-secondary/30" />
             </div>
             <h3 className="text-2xl font-bold text-brand-dark dark:text-brand-light mb-2">No arrangements found</h3>
-            <p className="text-brand-dark/60 dark:text-brand-light/60 max-w-md mx-auto">
-              We couldn't find any arrangements matching your current search or filters. Try clearing them or searching for something else.
+            <p className="text-brand-dark/60 dark:text-brand-light/60 max-w-md mx-auto mb-8">
+              We couldn't find any arrangements matching your current search or filters.
             </p>
+            <Button 
+              variant="outline" 
+              onClick={resetFilters}
+              className="rounded-full border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white transition-all"
+            >
+              Clear all filters
+            </Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">

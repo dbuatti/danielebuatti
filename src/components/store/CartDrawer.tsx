@@ -5,6 +5,7 @@ import { ShoppingCart, Trash2, Loader2, AlertCircle } from 'lucide-react';
 import { useCart } from './CartProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const CartDrawer: React.FC = () => {
   const { items, removeFromCart, total, clearCart } = useCart();
@@ -37,13 +38,25 @@ export const CartDrawer: React.FC = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" className="relative border-brand-primary text-brand-primary hover:bg-brand-primary/10 bg-white dark:bg-brand-dark">
+        <Button variant="outline" className="relative border-brand-primary text-brand-primary hover:bg-brand-primary/10 bg-white dark:bg-brand-dark rounded-full px-4">
           <ShoppingCart className="h-5 w-5" />
-          {items.length > 0 && (
-            <span className="absolute -top-2 -right-2 bg-brand-primary text-white text-[10px] font-bold h-5 w-5 rounded-full flex items-center justify-center shadow-sm">
-              {items.length}
-            </span>
-          )}
+          <AnimatePresence>
+            {items.length > 0 && (
+              <motion.span 
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
+                className="absolute -top-2 -right-2 bg-brand-primary text-white text-[10px] font-bold h-5 w-5 rounded-full flex items-center justify-center shadow-sm"
+              >
+                {items.length}
+                <motion.span 
+                  animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                  className="absolute inset-0 rounded-full bg-brand-primary -z-10"
+                />
+              </motion.span>
+            )}
+          </AnimatePresence>
         </Button>
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-md flex flex-col bg-brand-light dark:bg-brand-dark-alt border-l border-brand-secondary/20">

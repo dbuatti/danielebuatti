@@ -4,9 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Music, ShoppingCart, Clock, User, ArrowLeft, ShieldCheck, Download, Info } from 'lucide-react';
+import { Music, ShoppingCart, Clock, User, ArrowLeft, ShieldCheck, Download, Info, ChevronRight } from 'lucide-react';
 import { useCart } from '@/components/store/CartProvider';
-import { CartDrawer } from '@/components/store/CartDrawer'; // Import CartDrawer
+import { CartDrawer } from '@/components/store/CartDrawer';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SeoMetadata from '@/components/SeoMetadata';
@@ -128,13 +128,22 @@ const ArrangementDetailsPage: React.FC = () => {
       <Navbar />
       
       <main className="container mx-auto px-4 py-12 max-w-6xl">
-        <div className="flex items-center justify-between mb-8">
-          <Button asChild variant="ghost" className="hover:bg-brand-secondary/10">
-            <Link to="/store">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Store
-            </Link>
-          </Button>
-          <CartDrawer />
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40">
+            <Link to="/" className="hover:text-brand-primary transition-colors">Home</Link>
+            <ChevronRight className="h-3 w-3" />
+            <Link to="/store" className="hover:text-brand-primary transition-colors">Store</Link>
+            <ChevronRight className="h-3 w-3" />
+            <span className="text-brand-primary truncate max-w-[200px]">{arrangement.title}</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <Button asChild variant="ghost" className="hover:bg-brand-secondary/10 rounded-full">
+              <Link to="/store">
+                <ArrowLeft className="mr-2 h-4 w-4" /> Back to Store
+              </Link>
+            </Button>
+            <CartDrawer />
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-12">
