@@ -1,5 +1,5 @@
 import React from 'react';
-import { testimonials } from '@/components/pages/landing-page-v3/TestimonialsSection'; // Import testimonials
+import { testimonials } from '@/components/pages/landing-page-v3/TestimonialsSection';
 
 const SeoStructuredData: React.FC = () => {
   const schema = {
@@ -30,10 +30,14 @@ const SeoStructuredData: React.FC = () => {
         "name": "Daniele Buatti Coaching",
         "url": "https://danielebuatti.com/",
         "logo": "https://danielebuatti.com/logo-pinkwhite.png",
-        "image": "https://danielebuatti.com/headshot.jpeg",
+        "image": [
+          "https://danielebuatti.com/headshot.jpeg",
+          "https://danielebuatti.com/blackgoldquoteimage1.jpg"
+        ],
         "description": "Daniele Buatti offers embodied coaching for performers and communicators, blending musical training with body awareness and mindset techniques for confident, authentic expression.",
         "telephone": "+61424174067",
         "email": "info@danielebuatti.com",
+        "priceRange": "$$",
         "address": {
           "@type": "PostalAddress",
           "streetAddress": "685 Toorak Road",
@@ -41,6 +45,29 @@ const SeoStructuredData: React.FC = () => {
           "addressRegion": "VIC",
           "postalCode": "3142",
           "addressCountry": "AU"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": -37.8417,
+          "longitude": 145.0389
+        },
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday"
+            ],
+            "opens": "09:00",
+            "closes": "18:00"
+          }
+        ],
+        "areaServed": {
+          "@type": "City",
+          "name": "Melbourne"
         },
         "hasOfferCatalog": {
           "@type": "OfferCatalog",
