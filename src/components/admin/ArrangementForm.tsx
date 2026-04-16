@@ -12,7 +12,7 @@ import { Loader2, Wand2, FileText, Image as ImageIcon, Layers, Save, CheckCircle
 import { supabase } from '@/integrations/supabase/client';
 import { processPDF } from '@/lib/pdf-utils';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
+import { cn, createSlug } from '@/lib/utils';
 
 const variantSchema = z.object({
   key: z.string().min(1, 'Key name is required'),
@@ -22,6 +22,7 @@ const variantSchema = z.object({
 
 const arrangementSchema = z.object({
   title: z.string().min(1, 'Title is required'),
+  slug: z.string().min(1, 'Slug is required'), // NEW
   composer: z.string().optional(),
   instrumentation: z.string().optional(),
   difficulty: z.string().optional(),
@@ -74,6 +75,7 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
       description: initialData.description || '',
     } : {
       title: '',
+      slug: '',
       composer: '',
       instrumentation: '',
       difficulty: '',
@@ -96,6 +98,17 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
     control: form.control,
     name: 'key_variants',
   });
+
+  // Auto-generate slug from title and composer
+  const watchedTitle = form.watch('title');
+  const watchedComposer = form.watch('composer');
+
+  React.useEffect(() => {
+    if (watchedTitle && !initialData) {
+      const base = watchedComposer ? `${watchedTitle}-${watchedComposer}` : watchedTitle;
+      form.setValue('slug', createSlug(base), { shouldValidate: true });
+    }
+  }, [watchedTitle, watchedComposer, form, initialData]);
 
   const handleFiles = useCallback(async (files: FileList | File[]) => {
     const fileArray = Array.from(files);
@@ -362,6 +375,15 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
               <FormItem>
                 <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Arrangement Title *</FormLabel>
                 <FormControl><Input placeholder="e.g. Fly Me To The Moon" {...field} className="bg-white dark:bg-brand-dark h-12 rounded-xl border-brand-secondary/30 font-bold text-lg" /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+
+            <FormField control={form.control} name="slug" render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">URL Slug (SEO) *</FormLabel>
+                <FormControl><Input placeholder="fly-me-to-the-moon" {...field} className="bg-brand-secondary/5 dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30 text-xs font-mono" /></FormControl>
+                <FormDescription className="text-[10px]">This defines the URL: danielebuatti.com/store/arrangements/<strong>slug</strong></FormDescription>
                 <FormMessage />
               </FormItem>
             )} />

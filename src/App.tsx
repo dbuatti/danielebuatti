@@ -29,7 +29,8 @@ import ContactPage from './pages/ContactPage';
 import GiftCardsPage from './pages/GiftCardsPage';
 import CeremonySpecialistPage from './pages/CeremonySpecialistPage';
 import StorePage from './pages/StorePage';
-import StoreSuccessPage from './pages/StoreSuccessPage'; // New
+import StoreSuccessPage from './pages/StoreSuccessPage';
+import ArrangementDetailsPage from './pages/ArrangementDetailsPage'; // New
 
 // Admin Pages
 import Login from './pages/Login';
@@ -77,7 +78,8 @@ function App() {
             <Route path="gift-cards" element={<GiftCardsPage />} />
             <Route path="ceremony-specialist" element={<CeremonySpecialistPage />} />
             <Route path="store" element={<StorePage />} />
-            <Route path="store/success" element={<StoreSuccessPage />} /> {/* New */}
+            <Route path="store/success" element={<StoreSuccessPage />} />
+            <Route path="store/arrangements/:slug" element={<ArrangementDetailsPage />} /> {/* New */}
 
             {/* Auth Route */}
             <Route path="login" element={<Login />} />
