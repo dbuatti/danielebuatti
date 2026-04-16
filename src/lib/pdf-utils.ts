@@ -1,8 +1,10 @@
 import * as pdfjsLib from 'pdfjs-dist';
 
-// Use unpkg for the worker as it's more reliable for specific versions
-// For pdfjs-dist 4.0+, the worker is often an .mjs file
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
+// Use Vite's ?url suffix to get a stable local path for the worker
+// This is the most reliable way to handle PDF.js workers in a modern React/Vite app
+import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
 export interface PDFData {
   previewUrl: string;
@@ -32,7 +34,7 @@ export const processPDF = async (file: File): Promise<PDFData> => {
   canvas.height = viewport.height;
   canvas.width = viewport.width;
 
-  // @ts-ignore
+  // @ts-ignore - The render function expects a specific context type that matches our canvas
   await page.render({ canvasContext: context, viewport }).promise;
   const previewUrl = canvas.toDataURL('image/jpeg', 0.8);
 
