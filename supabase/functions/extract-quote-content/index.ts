@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { GoogleGenAI } from "https://esm.sh/@google/genai@0.15.0";
+import { GoogleGenAI } from "https://esm.sh/@google/genai@0.21.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -56,8 +56,9 @@ const BACKUP_KEY = Deno.env.get('GEMINI_API_KEY_BACKUP');
 const runExtraction = async (apiKey: string, emailContent: string) => {
   const genAI = new GoogleGenAI(apiKey);
   
+  // Using the stable gemini-2.5-flash model
   const model = genAI.getGenerativeModel({ 
-    model: "gemini-1.5-flash",
+    model: "gemini-2.5-flash",
     generationConfig: {
       responseMimeType: "application/json",
       responseSchema: extractionSchema,
