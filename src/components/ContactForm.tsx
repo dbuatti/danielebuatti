@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useSearchParams } from "react-router-dom";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -33,12 +34,14 @@ const formSchema = z.object({
 });
 
 const ContactForm: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       email: "",
-      message: "",
+      message: searchParams.get("message") || "",
     },
   });
 

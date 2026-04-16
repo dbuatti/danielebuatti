@@ -28,6 +28,7 @@ import QuoteConfirmationPage from './pages/QuoteConfirmationPage';
 import ContactPage from './pages/ContactPage';
 import GiftCardsPage from './pages/GiftCardsPage';
 import CeremonySpecialistPage from './pages/CeremonySpecialistPage';
+import StorePage from './pages/StorePage';
 
 // Admin Pages
 import Login from './pages/Login';
@@ -40,6 +41,7 @@ import AdminAmebBookingsPage from './pages/admin/AdminAmebBookingsPage';
 import AdminAmebBookingDetailsPage from './pages/admin/AdminAmebBookingDetailsPage';
 import AdminEmailTemplatesPage from './pages/admin/AdminEmailTemplatesPage';
 import AdminGiftCardsPage from './pages/admin/AdminGiftCardsPage';
+import AdminStorePage from './pages/admin/AdminStorePage';
 import JobDecisionFilterPage from './pages/admin/JobDecisionFilterPage';
 import AdminLeadsPage from './pages/admin/AdminLeadsPage'; // New
 import AdminLeadDetailsPage from './pages/admin/AdminLeadDetailsPage'; // New
@@ -73,6 +75,7 @@ function App() {
             <Route path="contact" element={<ContactPage />} />
             <Route path="gift-cards" element={<GiftCardsPage />} />
             <Route path="ceremony-specialist" element={<CeremonySpecialistPage />} />
+            <Route path="store" element={<StorePage />} />
 
             {/* Auth Route */}
             <Route path="login" element={<Login />} />
@@ -90,6 +93,7 @@ function App() {
               <Route path="ameb-bookings/:id" element={<AdminAmebBookingDetailsPage />} />
               <Route path="email-templates" element={<AdminEmailTemplatesPage />} />
               <Route path="gift-cards" element={<AdminGiftCardsPage />} />
+              <Route path="store" element={<AdminStorePage />} />
               <Route path="job-decision-filter" element={<JobDecisionFilterPage />} />
             </Route>
 
