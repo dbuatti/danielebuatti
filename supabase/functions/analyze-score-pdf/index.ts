@@ -20,8 +20,12 @@ const extractionSchema = {
     lyrics: { type: "string" },
     duration: { type: "string" },
     style: { type: "string" },
+    description: { 
+      type: "string", 
+      description: "A compelling 2-3 sentence product description for the store, highlighting musical features, performance suitability, and arrangement style based on the score content." 
+    },
   },
-  required: ["title", "composer", "instrumentation"],
+  required: ["title", "composer", "instrumentation", "description"],
 };
 
 const PRIMARY_KEY = Deno.env.get('GEMINI_API_KEY');
@@ -52,11 +56,19 @@ serve(async (req: Request) => {
 
     const genAI = new GoogleGenerativeAI(PRIMARY_KEY);
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.5-flash",
+      model: "gemini-2.0-flash",
       generationConfig: { responseMimeType: "application/json", responseSchema: extractionSchema }
     });
 
-    const prompt = `Analyze the following text extracted from a music score PDF and extract metadata: ${text}`;
+    const prompt = `
+      Analyze the following text extracted from a music score PDF. 
+      Extract metadata and write a professional, engaging product description for a sheet music store.
+      Focus on the arrangement's character, technical highlights, and who it's best for (e.g., cabaret performers, students, etc.).
+      
+      TEXT CONTENT:
+      ${text}
+    `;
+    
     const result = await model.generateContent(prompt);
     const response = await result.response;
 

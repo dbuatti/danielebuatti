@@ -7,9 +7,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, Wand2, FileText, Image as ImageIcon, X, Layers, Save, CheckCircle, Plus, Trash2 } from 'lucide-react';
+import { Loader2, Wand2, FileText, Image as ImageIcon, Layers, Save, CheckCircle, Plus, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { processPDF } from '@/lib/pdf-utils';
 import { toast } from 'sonner';
@@ -26,11 +25,12 @@ const arrangementSchema = z.object({
   composer: z.string().optional(),
   instrumentation: z.string().optional(),
   difficulty: z.string().optional(),
-  key: z.string().optional(), // Primary/Default key
+  key: z.string().optional(),
   genre: z.string().optional(),
   lyrics: z.string().optional(),
   duration: z.string().optional(),
   style: z.string().optional(),
+  description: z.string().optional(),
   price: z.string().optional(),
   additional_key_price: z.string().optional(),
   is_purchasable: z.boolean().default(false),
@@ -54,8 +54,6 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
   const [mainFile, setMainFile] = useState<File | null>(null);
   const [secondaryFile, setSecondaryFile] = useState<File | null>(null);
   const [manualPreviewFile, setManualPreviewFile] = useState<File | null>(null);
-  
-  // Track files for variants
   const [variantFiles, setVariantFiles] = useState<Record<number, File>>({});
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(
@@ -73,6 +71,7 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
       secondary_file_name: initialData.secondary_file_name || '',
       status: initialData.status || 'published',
       key_variants: initialData.key_variants || [],
+      description: initialData.description || '',
     } : {
       title: '',
       composer: '',
@@ -83,6 +82,7 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
       lyrics: '',
       duration: '',
       style: '',
+      description: '',
       price: '0',
       additional_key_price: '0',
       is_purchasable: false,
@@ -137,7 +137,7 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
   const handleVariantFile = (index: number, file: File) => {
     setVariantFiles(prev => ({ ...prev, [index]: file }));
     form.setValue(`key_variants.${index}.file_name`, file.name);
-    form.setValue(`key_variants.${index}.file_path`, 'pending_upload'); // Placeholder to satisfy validation
+    form.setValue(`key_variants.${index}.file_path`, 'pending_upload');
   };
 
   const handleAnalyze = async () => {
@@ -168,7 +168,7 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
         }
       });
       
-      toast.success('Metadata extracted using AI!');
+      toast.success('Metadata and description extracted using AI!');
     } catch (error: any) {
       console.error('Analysis error:', error);
       toast.error('Failed to analyze PDF: ' + error.message);
@@ -190,54 +190,40 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
       let secondaryPath = initialData?.secondary_file_path;
       let previewPath = initialData?.preview_image_path;
 
-      // Upload Main File
       if (mainFile) {
         const fileName = `${Date.now()}-main-${mainFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-        const { data: pdfData, error: pdfError } = await supabase.storage
-          .from('arrangements')
-          .upload(fileName, mainFile);
+        const { data: pdfData, error: pdfError } = await supabase.storage.from('arrangements').upload(fileName, mainFile);
         if (pdfError) throw pdfError;
         mainPath = pdfData.path;
       }
 
-      // Upload Secondary File
       if (secondaryFile) {
         const fileName = `${Date.now()}-secondary-${secondaryFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-        const { data: secData, error: secError } = await supabase.storage
-          .from('arrangements')
-          .upload(fileName, secondaryFile);
+        const { data: secData, error: secError } = await supabase.storage.from('arrangements').upload(fileName, secondaryFile);
         if (secError) throw secError;
         secondaryPath = secData.path;
       }
 
-      // Upload Preview Image
       if (manualPreviewFile) {
         const fileName = `${Date.now()}-preview-${manualPreviewFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-        const { data: imgData, error: imgError } = await supabase.storage
-          .from('arrangement-previews')
-          .upload(fileName, manualPreviewFile);
+        const { data: imgData, error: imgError } = await supabase.storage.from('arrangement-previews').upload(fileName, manualPreviewFile);
         if (imgError) throw imgError;
         previewPath = imgData.path;
       } else if (mainFile && previewUrl && previewUrl.startsWith('data:')) {
         const response = await fetch(previewUrl);
         const blob = await response.blob();
         const previewFileName = `${Date.now()}-preview-auto.jpg`;
-        const { data: previewData, error: previewError } = await supabase.storage
-          .from('arrangement-previews')
-          .upload(previewFileName, blob);
+        const { data: previewData, error: previewError } = await supabase.storage.from('arrangement-previews').upload(previewFileName, blob);
         if (previewError) throw previewError;
         previewPath = previewData.path;
       }
 
-      // Upload Variant Files
       const updatedVariants = [...values.key_variants];
       for (let i = 0; i < updatedVariants.length; i++) {
         const file = variantFiles[i];
         if (file) {
           const fileName = `${Date.now()}-variant-${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-          const { data: varData, error: varError } = await supabase.storage
-            .from('arrangements')
-            .upload(fileName, file);
+          const { data: varData, error: varError } = await supabase.storage.from('arrangements').upload(fileName, file);
           if (varError) throw varError;
           updatedVariants[i].file_path = varData.path;
         }
@@ -256,18 +242,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
 
       let result;
       if (initialData?.id) {
-        result = await supabase
-          .from('arrangements')
-          .update(arrangementData)
-          .eq('id', initialData.id)
-          .select()
-          .single();
+        result = await supabase.from('arrangements').update(arrangementData).eq('id', initialData.id).select().single();
       } else {
-        result = await supabase
-          .from('arrangements')
-          .insert([arrangementData])
-          .select()
-          .single();
+        result = await supabase.from('arrangements').insert([arrangementData]).select().single();
       }
 
       if (result.error) throw result.error;
@@ -285,18 +262,13 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
   return (
     <Form {...form}>
       <form onSubmit={(e) => e.preventDefault()} className="space-y-8">
-        
-        {/* Master Drop Zone */}
         <div 
           onDragOver={(e) => { e.preventDefault(); setIsDraggingMaster(true); }}
           onDragLeave={() => setIsDraggingMaster(false)}
           onDrop={(e) => { e.preventDefault(); setIsDraggingMaster(false); handleFiles(e.dataTransfer.files); }}
           className={cn(
             "relative border-2 border-dashed rounded-[2rem] p-10 text-center transition-all duration-300 group",
-            isDraggingMaster 
-              ? "border-brand-primary bg-brand-primary/5 scale-[1.01] shadow-2xl" 
-              : "border-brand-secondary/30 bg-brand-secondary/5 hover:bg-brand-secondary/10",
-            (mainFile || secondaryFile || manualPreviewFile) ? "border-brand-primary/40" : ""
+            isDraggingMaster ? "border-brand-primary bg-brand-primary/5 scale-[1.01] shadow-2xl" : "border-brand-secondary/30 bg-brand-secondary/5 hover:bg-brand-secondary/10"
           )}
         >
           <div className="space-y-4">
@@ -305,36 +277,22 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
             </div>
             <div>
               <h3 className="text-xl font-bold text-brand-dark dark:text-brand-light">Master Drop Zone</h3>
-              <p className="text-sm text-brand-dark/60 dark:text-brand-light/60 mt-1">
-                Drag & drop multiple PDFs and an Image here to auto-populate the form.
-              </p>
-            </div>
-            <div className="flex justify-center gap-4 pt-2">
-              <Badge variant="outline" className="bg-white/50 dark:bg-black/50">PDF 1: Main Score</Badge>
-              <Badge variant="outline" className="bg-white/50 dark:bg-black/50">PDF 2: Secondary</Badge>
-              <Badge variant="outline" className="bg-white/50 dark:bg-black/50">Image: Preview</Badge>
+              <p className="text-sm text-brand-dark/60 dark:text-brand-light/60 mt-1">Drag & drop multiple PDFs and an Image here to auto-populate the form.</p>
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          {/* Left Column: File Management */}
           <div className="space-y-8">
-            
-            {/* Main Score PDF */}
             <div className="space-y-3">
               <FormLabel className="text-xs uppercase tracking-[0.2em] font-bold text-brand-primary">1. Main Score (PDF) *</FormLabel>
-              <div className={cn(
-                "p-4 rounded-2xl border bg-white dark:bg-brand-dark flex items-center justify-between gap-4 shadow-sm",
-                mainFile ? "border-brand-primary/30" : "border-brand-secondary/30"
-              )}>
+              <div className="p-4 rounded-2xl border bg-white dark:bg-brand-dark flex items-center justify-between gap-4 shadow-sm border-brand-secondary/30">
                 <div className="flex items-center gap-3 overflow-hidden">
                   <div className="w-10 h-10 rounded-lg bg-brand-primary/10 flex items-center justify-center shrink-0">
                     <FileText className="h-5 w-5 text-brand-primary" />
                   </div>
                   <div className="overflow-hidden">
                     <p className="text-sm font-bold truncate">{mainFile ? mainFile.name : (initialData?.pdf_file_path ? 'Existing Score' : 'No file selected')}</p>
-                    {mainFile && <p className="text-[10px] text-brand-dark/40 uppercase tracking-widest">Ready to upload</p>}
                   </div>
                 </div>
                 <div className="flex gap-2">
@@ -343,13 +301,7 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
                     <label htmlFor="main-pdf-input">Change</label>
                   </Button>
                   {mainFile && (
-                    <Button 
-                      type="button" 
-                      size="sm" 
-                      onClick={handleAnalyze} 
-                      disabled={isAnalyzing}
-                      className="bg-brand-primary hover:bg-brand-primary/90 text-white rounded-full h-8 px-4"
-                    >
+                    <Button type="button" size="sm" onClick={handleAnalyze} disabled={isAnalyzing} className="bg-brand-primary hover:bg-brand-primary/90 text-white rounded-full h-8 px-4">
                       {isAnalyzing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Wand2 className="h-3 w-3 mr-2" />}
                       AI Extract
                     </Button>
@@ -358,363 +310,154 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
               </div>
             </div>
 
-            {/* Key Variants Section */}
             <div className="space-y-4 p-6 rounded-3xl border border-brand-secondary/30 bg-brand-secondary/5">
               <div className="flex items-center justify-between">
                 <FormLabel className="text-xs uppercase tracking-[0.2em] font-bold text-brand-primary">Additional Key Variants</FormLabel>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => appendVariant({ key: '', file_path: '', file_name: '' })}
-                  className="rounded-full h-8"
-                >
+                <Button type="button" variant="outline" size="sm" onClick={() => appendVariant({ key: '', file_path: '', file_name: '' })} className="rounded-full h-8">
                   <Plus className="h-4 w-4 mr-2" /> Add Key
                 </Button>
               </div>
-              
               <div className="space-y-4">
                 {variantFields.map((field, index) => (
                   <div key={field.id} className="p-4 bg-white dark:bg-brand-dark rounded-2xl border border-brand-secondary/20 space-y-3 shadow-sm">
                     <div className="flex items-center gap-3">
-                      <FormField
-                        control={form.control}
-                        name={`key_variants.${index}.key`}
-                        render={({ field }) => (
-                          <FormItem className="flex-grow">
-                            <FormControl>
-                              <Input placeholder="e.g. D Major" {...field} className="h-9 text-sm rounded-xl" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button type="button" variant="ghost" size="icon" onClick={() => removeVariant(index)} className="text-red-500 h-9 w-9">
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <FormField control={form.control} name={`key_variants.${index}.key`} render={({ field }) => (
+                        <FormItem className="flex-grow">
+                          <FormControl><Input placeholder="e.g. D Major" {...field} className="h-9 text-sm rounded-xl" /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                      <Button type="button" variant="ghost" size="icon" onClick={() => removeVariant(index)} className="text-red-500 h-9 w-9"><Trash2 className="h-4 w-4" /></Button>
                     </div>
-                    
                     <div className="flex items-center gap-3">
                       <div className="flex-grow overflow-hidden">
-                        <p className="text-[10px] font-bold truncate text-brand-dark/60">
-                          {variantFiles[index] ? variantFiles[index].name : (field.file_name || 'No file selected')}
-                        </p>
+                        <p className="text-[10px] font-bold truncate text-brand-dark/60">{variantFiles[index] ? variantFiles[index].name : (field.file_name || 'No file selected')}</p>
                       </div>
-                      <Input 
-                        type="file" 
-                        accept=".pdf" 
-                        onChange={(e) => { const file = e.target.files?.[0]; if (file) handleVariantFile(index, file); }} 
-                        className="hidden" 
-                        id={`variant-file-${index}`} 
-                      />
-                      <Button type="button" variant="outline" size="sm" asChild className="rounded-full h-7 px-3 text-[10px] cursor-pointer">
-                        <label htmlFor={`variant-file-${index}`}>Select PDF</label>
-                      </Button>
+                      <Input type="file" accept=".pdf" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleVariantFile(index, file); }} className="hidden" id={`variant-file-${index}`} />
+                      <Button type="button" variant="outline" size="sm" asChild className="rounded-full h-7 px-3 text-[10px] cursor-pointer"><label htmlFor={`variant-file-${index}`}>Select PDF</label></Button>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Secondary File */}
-            <div className="space-y-3">
-              <FormLabel className="text-xs uppercase tracking-[0.2em] font-bold text-brand-primary">Secondary File (Parts/Audio)</FormLabel>
-              <div className={cn(
-                "p-4 rounded-2xl border bg-white dark:bg-brand-dark flex items-center justify-between gap-4 shadow-sm",
-                secondaryFile ? "border-brand-primary/30" : "border-brand-secondary/30"
-              )}>
-                <div className="flex items-center gap-3 overflow-hidden">
-                  <div className="w-10 h-10 rounded-lg bg-brand-secondary/10 flex items-center justify-center shrink-0">
-                    <Layers className="h-5 w-5 text-brand-dark/40" />
-                  </div>
-                  <div className="overflow-hidden">
-                    <p className="text-sm font-bold truncate">{secondaryFile ? secondaryFile.name : (initialData?.secondary_file_path ? 'Existing Secondary File' : 'Optional')}</p>
-                    {secondaryFile && <p className="text-[10px] text-brand-dark/40 uppercase tracking-widest">Ready to upload</p>}
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Input type="file" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFiles([file]); }} className="hidden" id="sec-file-input" />
-                  <Button type="button" variant="outline" size="sm" asChild className="rounded-full h-8 px-4 cursor-pointer">
-                    <label htmlFor="sec-file-input">{secondaryFile ? 'Change' : 'Select'}</label>
-                  </Button>
-                  {secondaryFile && (
-                    <Button type="button" variant="ghost" size="sm" onClick={() => setSecondaryFile(null)} className="h-8 w-8 p-0 rounded-full text-red-500">
-                      <X className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              </div>
-              <FormField
-                control={form.control}
-                name="secondary_file_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input placeholder="Label (e.g. Instrumental Parts)" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30 text-xs" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            {/* Preview Image Area */}
             <div className="space-y-3">
               <FormLabel className="text-xs uppercase tracking-[0.2em] font-bold text-brand-primary">Store Preview Image</FormLabel>
-              <div 
-                onDragOver={(e) => { e.preventDefault(); }}
-                onDrop={(e) => { e.preventDefault(); const file = e.dataTransfer.files?.[0]; if (file && file.type.startsWith('image/')) handleFiles([file]); }}
-                className={cn(
-                  "relative aspect-[3/4] rounded-3xl overflow-hidden border-2 border-dashed transition-all duration-300 group",
-                  manualPreviewFile ? "border-brand-primary/50" : "border-brand-secondary/30 bg-brand-secondary/5"
-                )}
-              >
+              <div className="relative aspect-[3/4] rounded-3xl overflow-hidden border-2 border-dashed border-brand-secondary/30 bg-brand-secondary/5">
                 {previewUrl ? (
-                  <>
-                    <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3">
-                      <p className="text-white text-xs font-bold uppercase tracking-widest">Drop new image to replace</p>
-                      <div className="flex gap-2">
-                        <Input type="file" accept="image/*" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFiles([file]); }} className="hidden" id="preview-img-input" />
-                        <Button type="button" variant="secondary" size="sm" asChild className="rounded-full cursor-pointer">
-                          <label htmlFor="preview-img-input">Upload Manually</label>
-                        </Button>
-                      </div>
-                    </div>
-                    {manualPreviewFile && (
-                      <div className="absolute top-4 right-4">
-                        <Badge className="bg-brand-primary text-white">Custom Upload</Badge>
-                      </div>
-                    )}
-                  </>
+                  <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
                 ) : (
                   <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
                     <ImageIcon className="h-12 w-12 text-brand-secondary/40" />
-                    <div className="text-center">
-                      <p className="text-sm font-bold">No Preview Image</p>
-                      <p className="text-[10px] text-brand-dark/40 uppercase tracking-widest mt-1">Drop image or auto-generate from PDF</p>
-                    </div>
                     <Input type="file" accept="image/*" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFiles([file]); }} className="hidden" id="preview-img-input-init" />
-                    <Button type="button" variant="outline" size="sm" asChild className="rounded-full cursor-pointer">
-                      <label htmlFor="preview-img-input-init">Select Image</label>
-                    </Button>
+                    <Button type="button" variant="outline" size="sm" asChild className="rounded-full cursor-pointer"><label htmlFor="preview-img-input-init">Select Image</label></Button>
                   </div>
                 )}
               </div>
             </div>
           </div>
 
-          {/* Right Column: Metadata Form */}
           <div className="space-y-6">
-            <div className="flex items-center justify-between gap-4">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem className="flex-grow">
-                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Arrangement Title *</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. Fly Me To The Moon" {...field} className="bg-white dark:bg-brand-dark h-12 rounded-xl border-brand-secondary/30 font-bold text-lg" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem className="w-32">
-                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Status</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="bg-white dark:bg-brand-dark h-12 rounded-xl border-brand-secondary/30">
-                          <SelectValue placeholder="Status" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="draft">Draft</SelectItem>
-                        <SelectItem value="published">Published</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FormField control={form.control} name="title" render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Arrangement Title *</FormLabel>
+                <FormControl><Input placeholder="e.g. Fly Me To The Moon" {...field} className="bg-white dark:bg-brand-dark h-12 rounded-xl border-brand-secondary/30 font-bold text-lg" /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+
+            <FormField control={form.control} name="description" render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Store Description</FormLabel>
+                <FormControl>
+                  <Textarea 
+                    placeholder="Describe the arrangement, its style, and performance suitability..." 
+                    {...field} 
+                    className="bg-white dark:bg-brand-dark min-h-[120px] rounded-xl border-brand-secondary/30 resize-none leading-relaxed" 
+                  />
+                </FormControl>
+                <FormDescription className="text-[10px]">AI will generate this if you use 'AI Extract' on a PDF.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )} />
 
             <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="composer"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Composer / Arranger</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Bart Howard" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="instrumentation"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Instrumentation</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. Piano/Vocal" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="difficulty"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Difficulty</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. Intermediate" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="key"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Default Key</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. C Major" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="genre"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Genre</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. Jazz" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="duration"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Duration</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. 3:30" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="lyrics"
-              render={({ field }) => (
+              <FormField control={form.control} name="composer" render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Lyrics Snippet</FormLabel>
+                  <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Composer / Arranger</FormLabel>
+                  <FormControl><Input placeholder="Bart Howard" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="instrumentation" render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Instrumentation</FormLabel>
+                  <FormControl><Input placeholder="e.g. Piano/Vocal" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField control={form.control} name="difficulty" render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Difficulty</FormLabel>
+                  <FormControl><Input placeholder="e.g. Intermediate" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="key" render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Default Key</FormLabel>
+                  <FormControl><Input placeholder="e.g. C Major" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField control={form.control} name="price" render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Base Price</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="First few lines..." {...field} className="bg-white dark:bg-brand-dark min-h-[80px] rounded-xl border-brand-secondary/30 resize-none" />
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-dark/40 font-bold">$</span>
+                      <Input type="number" step="0.01" {...field} className="bg-white dark:bg-brand-dark h-10 pl-8 rounded-xl border-brand-secondary/30 font-bold" />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-              )}
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Base Price (1st Key)</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-dark/40 font-bold">$</span>
-                        <Input type="number" step="0.01" {...field} className="bg-white dark:bg-brand-dark h-10 pl-8 rounded-xl border-brand-secondary/30 font-bold" />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="additional_key_price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Additional Key Price</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-dark/40 font-bold">$</span>
-                        <Input type="number" step="0.01" {...field} className="bg-white dark:bg-brand-dark h-10 pl-8 rounded-xl border-brand-secondary/30 font-bold" />
-                      </div>
-                    </FormControl>
-                    <FormDescription className="text-[10px]">Price for each extra key selected by the customer.</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              )} />
+              <FormField control={form.control} name="status" render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Status</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl><SelectTrigger className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30"><SelectValue placeholder="Status" /></SelectTrigger></FormControl>
+                    <SelectContent><SelectItem value="draft">Draft</SelectItem><SelectItem value="published">Published</SelectItem></SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )} />
             </div>
 
-            <FormField
-              control={form.control}
-              name="is_purchasable"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-xl border border-brand-secondary/30 p-4 shadow-sm bg-white dark:bg-brand-dark">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-xs font-bold uppercase tracking-widest text-brand-dark/60 dark:text-brand-light/60">Purchasable</FormLabel>
-                    <p className="text-[10px] text-muted-foreground">Enable instant digital checkout via Stripe.</p>
-                  </div>
-                  <FormControl>
-                    <Switch checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            <FormField control={form.control} name="is_purchasable" render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-xl border border-brand-secondary/30 p-4 shadow-sm bg-white dark:bg-brand-dark">
+                <div className="space-y-0.5">
+                  <FormLabel className="text-xs font-bold uppercase tracking-widest text-brand-dark/60 dark:text-brand-light/60">Purchasable</FormLabel>
+                  <p className="text-[10px] text-muted-foreground">Enable instant digital checkout via Stripe.</p>
+                </div>
+                <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+              </FormItem>
+            )} />
           </div>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 pt-4">
-          <Button 
-            type="button" 
-            variant="outline" 
-            className="flex-1 h-16 text-lg font-bold rounded-full border-brand-secondary/50 hover:bg-brand-secondary/10 transition-all"
-            onClick={() => handleSave(false)}
-            disabled={isSubmitting}
-          >
+          <Button type="button" variant="outline" className="flex-1 h-16 text-lg font-bold rounded-full border-brand-secondary/50 hover:bg-brand-secondary/10 transition-all" onClick={() => handleSave(false)} disabled={isSubmitting}>
             {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Save className="mr-2 h-5 w-5" />}
             Save Progress
           </Button>
-          <Button 
-            type="button" 
-            className="flex-[2] bg-brand-primary hover:bg-brand-primary/90 text-white h-16 text-xl font-bold rounded-full shadow-xl shadow-brand-primary/20 transition-all hover:scale-[1.01]"
-            onClick={() => handleSave(true)}
-            disabled={isSubmitting}
-          >
+          <Button type="button" className="flex-[2] bg-brand-primary hover:bg-brand-primary/90 text-white h-16 text-xl font-bold rounded-full shadow-xl shadow-brand-primary/20 transition-all hover:scale-[1.01]" onClick={() => handleSave(true)} disabled={isSubmitting}>
             {isSubmitting ? <Loader2 className="mr-2 h-6 w-6 animate-spin" /> : <CheckCircle className="mr-2 h-6 w-6" />}
             {initialData ? 'Update & Close' : 'Add to Store & Close'}
           </Button>
