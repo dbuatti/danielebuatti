@@ -8,7 +8,7 @@ import SeoStructuredData from "@/components/SeoStructuredData";
 import SeoMetadata from "@/components/SeoMetadata";
 import DynamicImage from "@/components/DynamicImage";
 import ITServiceBanner from "@/components/ITServiceBanner";
-import KinesiologyBanner from "@/components/KinesiologyBanner"; // Import the new banner
+import KinesiologyBanner from "@/components/KinesiologyBanner";
 import { Link } from "react-router-dom";
 import { 
   Mic2, 
@@ -61,8 +61,8 @@ const LandingPageV4: React.FC = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200 relative">
       <SeoStructuredData />
       <SeoMetadata 
-        title="Daniele Buatti - Pianist & Vocal Coach"
-        description="Professional coaching in voice, piano, performance, and embodiment."
+        title="Daniele Buatti | Pianist, Vocal Coach & Music Director"
+        description="Professional embodied coaching for singers, performers, and speakers. Unlock your authentic voice through piano, vocal mastery, and somatic awareness."
         url={`${window.location.origin}`}
       />
       <Navbar />

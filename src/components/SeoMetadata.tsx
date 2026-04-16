@@ -7,25 +7,33 @@ interface SeoMetadataProps {
   description?: string;
   image?: string;
   url?: string;
-  canonical?: string; // Added canonical prop
+  canonical?: string;
 }
 
 const SeoMetadata: React.FC<SeoMetadataProps> = ({ title, description, image, url, canonical }) => {
   useEffect(() => {
     const originalTitle = document.title;
     const originalDescription = document.querySelector('meta[name="description"]')?.getAttribute('content');
-    const originalOgTitle = document.querySelector('meta[property="og:title"]')?.getAttribute('content');
-    const originalOgDescription = document.querySelector('meta[property="og:description"]')?.getAttribute('content');
-    const originalOgImage = document.querySelector('meta[property="og:image"]')?.getAttribute('content');
-    const originalOgUrl = document.querySelector('meta[property="og:url"]')?.getAttribute('content');
 
-    // Helper to set or update a meta tag
-    const setMeta = (property: string, content?: string) => {
+    // Helper to set or update a meta tag by property (OG/Twitter)
+    const setMetaProperty = (property: string, content?: string) => {
       if (!content) return;
       let element = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
       if (!element) {
         element = document.createElement('meta');
         element.setAttribute('property', property);
+        document.head.appendChild(element);
+      }
+      element.setAttribute('content', content);
+    };
+
+    // Helper to set or update a meta tag by name (Standard SEO)
+    const setMetaName = (name: string, content?: string) => {
+      if (!content) return;
+      let element = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement;
+      if (!element) {
+        element = document.createElement('meta');
+        element.setAttribute('name', name);
         document.head.appendChild(element);
       }
       element.setAttribute('content', content);
@@ -51,15 +59,18 @@ const SeoMetadata: React.FC<SeoMetadataProps> = ({ title, description, image, ur
       document.title = title;
     }
 
+    // Update Standard Description
+    setMetaName('description', description);
+
     // Update OG and Twitter tags
-    setMeta('og:title', title);
-    setMeta('twitter:title', title);
-    setMeta('og:description', description);
-    setMeta('twitter:description', description);
-    setMeta('og:image', image);
-    setMeta('twitter:image', image);
-    setMeta('og:url', url);
-    setMeta('twitter:url', url);
+    setMetaProperty('og:title', title);
+    setMetaProperty('twitter:title', title);
+    setMetaProperty('og:description', description);
+    setMetaProperty('twitter:description', description);
+    setMetaProperty('og:image', image);
+    setMetaProperty('twitter:image', image);
+    setMetaProperty('og:url', url);
+    setMetaProperty('twitter:url', url);
     
     // Update Canonical
     setCanonical(canonical || url);
@@ -67,11 +78,7 @@ const SeoMetadata: React.FC<SeoMetadataProps> = ({ title, description, image, ur
     // Cleanup function to restore original metadata when component unmounts
     return () => {
       if (originalTitle) document.title = originalTitle;
-      if (originalDescription) setMeta('name="description"', originalDescription);
-      if (originalOgTitle) setMeta('og:title', originalOgTitle);
-      if (originalOgDescription) setMeta('og:description', originalOgDescription);
-      if (originalOgImage) setMeta('og:image', originalOgImage);
-      if (originalOgUrl) setMeta('og:url', originalOgUrl);
+      if (originalDescription) setMetaName('description', originalDescription);
       setCanonical(undefined);
     };
   }, [title, description, image, url, canonical]);
