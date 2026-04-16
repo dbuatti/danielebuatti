@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
 
@@ -47,15 +48,37 @@ serve(async (req: Request) => {
       });
     }
 
-    // Generate signed URLs
-    const downloadLinks = await Promise.all(arrangements.map(async (arr) => {
-      const { data, error } = await supabaseClient.storage
-        .from('arrangements')
-        .createSignedUrl(arr.pdf_file_path, 60 * 60 * 24 * 7); // 7 days
+    // Generate signed URLs for all files
+    const downloadLinks = await Promise.all(arrangements.map(async (arr: any) => {
+      const files = [];
+      
+      // Main PDF
+      if (arr.pdf_file_path) {
+        const { data } = await supabaseClient.storage
+          .from('arrangements')
+          .createSignedUrl(arr.pdf_file_path, 60 * 60 * 24 * 7); // 7 days
+        
+        files.push({
+          label: 'Main Score (PDF)',
+          url: data?.signedUrl,
+        });
+      }
+
+      // Secondary File
+      if (arr.secondary_file_path) {
+        const { data } = await supabaseClient.storage
+          .from('arrangements')
+          .createSignedUrl(arr.secondary_file_path, 60 * 60 * 24 * 7); // 7 days
+        
+        files.push({
+          label: arr.secondary_file_name || 'Secondary File',
+          url: data?.signedUrl,
+        });
+      }
 
       return {
         title: arr.title,
-        url: data?.signedUrl,
+        files: files,
       };
     }));
 
@@ -69,21 +92,30 @@ serve(async (req: Request) => {
       throw new Error('Server configuration error: Missing email service credentials.');
     }
 
-    const linksHtml = downloadLinks.map(link => `
-      <li style="margin-bottom: 10px;">
-        <strong>${link.title}</strong>: <a href="${link.url}" style="color: #DB4CA3; text-decoration: none; font-weight: bold;">Download PDF</a>
-      </li>
+    const itemsHtml = downloadLinks.map((item: any) => `
+      <div style="margin-bottom: 25px; padding: 15px; background-color: #f9f9f9; border-radius: 12px; border: 1px solid #eeeeee;">
+        <h3 style="margin: 0 0 10px 0; color: #00022D;">${item.title}</h3>
+        <ul style="margin: 0; padding: 0; list-style: none;">
+          ${item.files.map((file: any) => `
+            <li style="margin-bottom: 8px;">
+              <a href="${file.url}" style="color: #DB4CA3; text-decoration: none; font-weight: bold; font-size: 15px;">
+                ↓ Download ${file.label}
+              </a>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
     `).join('');
 
     const emailHtml = `
       <div style="font-family: 'Outfit', sans-serif; color: #1b1b1b; background-color: #F8F8F8; padding: 20px; border-radius: 8px;">
         <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
           <h2 style="color: #DB4CA3; text-align: center; margin-bottom: 20px;">Your Music Arrangements are Ready!</h2>
-          <p style="font-size: 16px; line-height: 1.6; margin-bottom: 10px;">Dear Customer,</p>
-          <p style="font-size: 16px; line-height: 1.6; margin-bottom: 10px;">Thank you for your purchase. You can download your arrangements using the links below. These links will be active for 7 days.</p>
-          <ul style="font-size: 16px; line-height: 1.6; margin-bottom: 20px; padding-left: 20px;">
-            ${linksHtml}
-          </ul>
+          <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">Dear Customer,</p>
+          <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">Thank you for your purchase. You can download your files using the links below. These links will be active for 7 days.</p>
+          
+          ${itemsHtml}
+          
           <p style="font-size: 14px; color: #666666; text-align: center; margin-top: 30px;">
             If you have any questions, please reply to this email.
           </p>
@@ -111,8 +143,6 @@ serve(async (req: Request) => {
       html: emailHtml,
       bcc: [CONTACT_FORM_RECIPIENT_EMAIL],
     };
-
-    console.log(`[send-arrangement-email] Sending payload to ${EMAIL_SERVICE_ENDPOINT}:`, JSON.stringify({ ...emailPayload, html: '[...html content excluded...]' }));
 
     const emailResponse = await fetch(EMAIL_SERVICE_ENDPOINT, {
       method: 'POST',

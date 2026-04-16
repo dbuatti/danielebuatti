@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Loader2, Music, PlusCircle, Edit, Trash2 } from 'lucide-react';
+import { Loader2, Music, PlusCircle, Edit, Trash2, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ArrangementForm } from '@/components/admin/ArrangementForm';
@@ -19,6 +19,8 @@ interface Arrangement {
   is_purchasable: boolean;
   preview_image_path: string | null;
   pdf_file_path: string | null;
+  secondary_file_path: string | null;
+  secondary_file_name: string | null;
 }
 
 const AdminStorePage: React.FC = () => {
@@ -117,8 +119,8 @@ const AdminStorePage: React.FC = () => {
                   <TableRow className="bg-brand-secondary/10 dark:bg-brand-dark/50">
                     <TableHead className="text-brand-primary">Preview</TableHead>
                     <TableHead className="text-brand-primary">Title</TableHead>
+                    <TableHead className="text-brand-primary">Files</TableHead>
                     <TableHead className="text-brand-primary">Composer</TableHead>
-                    <TableHead className="text-brand-primary">Instrumentation</TableHead>
                     <TableHead className="text-brand-primary">Price</TableHead>
                     <TableHead className="text-brand-primary">Status</TableHead>
                     <TableHead className="text-brand-primary text-right">Actions</TableHead>
@@ -141,8 +143,19 @@ const AdminStorePage: React.FC = () => {
                         )}
                       </TableCell>
                       <TableCell className="font-medium text-brand-dark dark:text-brand-light">{arr.title}</TableCell>
+                      <TableCell>
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-1 text-xs text-brand-dark/60">
+                            <FileText className="h-3 w-3" /> Main Score
+                          </div>
+                          {arr.secondary_file_path && (
+                            <div className="flex items-center gap-1 text-xs text-brand-primary font-medium">
+                              <FileText className="h-3 w-3" /> {arr.secondary_file_name || 'Secondary'}
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
                       <TableCell className="text-brand-dark/80 dark:text-brand-light/80">{arr.composer || 'N/A'}</TableCell>
-                      <TableCell className="text-brand-dark/80 dark:text-brand-light/80">{arr.instrumentation || 'N/A'}</TableCell>
                       <TableCell className="font-semibold text-brand-primary">{arr.price ? `A$${arr.price.toFixed(2)}` : 'N/A'}</TableCell>
                       <TableCell>
                         <Badge variant={arr.is_purchasable ? 'default' : 'secondary'}>
