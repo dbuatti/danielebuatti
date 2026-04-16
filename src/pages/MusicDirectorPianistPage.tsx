@@ -2,10 +2,8 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import DynamicImage from "@/components/DynamicImage";
-import { GraduationCap, ArrowLeft } from "lucide-react";
+import { GraduationCap, ArrowLeft, Music, FileText } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SectionHeading from "@/components/SectionHeading";
@@ -17,71 +15,95 @@ const MusicDirectorPianistPage: React.FC = () => {
   const imageSrc = "/daniele simple.jpeg";
 
   return (
-    <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
       <Navbar />
-      <main className="container mx-auto px-4 pt-12 pb-12">
-        <div className="text-center space-y-4 mb-10">
+      <main className="max-w-5xl mx-auto px-6 py-16">
+        {/* Header Section */}
+        <div className="text-center space-y-4 mb-16">
           <SectionHeading>Music Director & Pianist</SectionHeading>
-          <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 max-w-3xl mx-auto">
-            A versatile music theatre practitioner with extensive experience as a vocal coach, pianist, music director, and performer.
+          <p className="text-xl font-medium text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            Collaborative musical leadership for stage, studio, and performance development.
           </p>
-          <Separator className="max-w-xs mx-auto bg-brand-secondary" />
         </div>
 
-        <Card className={cn(
-          "bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 md:p-8",
-          "flex flex-col lg:flex-row items-center gap-8 max-w-6xl mx-auto"
-        )}>
-          <div className="lg:w-1/3 flex-shrink-0 flex justify-center">
-            <DynamicImage
-              src={imageSrc}
-              alt="Daniele Buatti simple headshot"
-              className="w-full max-w-sm h-auto rounded-xl shadow-lg object-cover border-4 border-brand-primary"
-              width={400}
-              height={400}
-            />
-          </div>
-          <div className="lg:w-2/3 text-center lg:text-left space-y-6">
-            <CardContent className="p-0 text-lg text-brand-dark/80 dark:text-brand-light/80 leading-relaxed space-y-4">
-              <p>
-                I am a versatile music theatre practitioner with extensive experience as a vocal coach, pianist, music director, and performer. With a career spanning over a decade, I have collaborated on a wide range of productions, from large-scale musicals to intimate workshops, including Paw Patrol Live, Beetlejuice, Heathers, A Chorus Line, Shrek, Legally Blonde, Mary Poppins, and Madiba the Musical at Melbourne’s Comedy Theatre.
-              </p>
-              <p>
-                My approach blends technical expertise with a deep understanding of embodiment, performance psychology, and improvisation, helping performers find freedom, resonance, and authenticity in their voice. I am also known for my innovative work in educational and charitable theatre programs, mentoring emerging artists and facilitating workshops that integrate movement, sound, and emotional awareness.
-              </p>
-              <p>
-                As a pianist and music director, I bring a nuanced, collaborative energy to every production, tailoring musical direction to support both performers and the narrative. My teaching and coaching practice focuses on helping artists unlock their potential, manage performance stress, and develop a sustainable, expressive relationship with their craft. This often involves addressing underlying physical or energetic blocks through body-voice integration, leading to deeper healing and more authentic expression.
-              </p>
-              <p>
-                Passionate about the transformative power of music and theatre, I continue to inspire performers of all ages and levels, combining artistry, empathy, and technical skill to create performances that are both compelling and heartfelt.
-              </p>
-
-              {/* Education & Certifications Section */}
-              <div className="mt-8 space-y-4">
-                <h3 className="flex items-center gap-3 text-2xl font-bold text-brand-primary justify-center md:justify-start">
-                  <GraduationCap className="h-7 w-7" />
-                  My Education & Certifications
-                </h3>
-                <p>
-                  I completed a Bachelor of Music at the Australian Institute of Music (2014-2016), where I focused on Arranging, Composition, Orchestration, and Piano. Furthering my commitment to holistic development, I also earned a Diploma of Kinesiology, specialising in mind-body integration for performance and well-being, which deeply informs my integrated coaching approach.
-                </p>
-                <p>
-                  With over 12 years of experience as a Music Director, Pianist, Arranger, Vocal Coach, and Educator, I bring together professional music theatre expertise, vocal pedagogy, and somatic practices influenced by kinesiology and yoga. This integrated approach forms the foundation for my unique, embodied coaching — training versatile, resilient, and expressive performers and communicators.
-                </p>
+        {/* Main Content - Cardless Layout */}
+        <div className="grid md:grid-cols-[1fr_2fr] gap-12 lg:gap-20 items-start">
+          {/* Left Column: Image & Quick Actions */}
+          <div className="space-y-8">
+            <div className="relative">
+              <DynamicImage
+                src={imageSrc}
+                alt="Daniele Buatti"
+                className="w-full h-auto rounded-[2.5rem] shadow-2xl object-cover border-4 border-white dark:border-gray-800"
+                width={400}
+                height={400}
+              />
+              <div className="absolute -bottom-4 -right-4 bg-brand-primary p-4 rounded-2xl shadow-lg">
+                <Music className="h-6 w-6 text-white" />
               </div>
-            </CardContent>
-            <Button size="lg" className="mt-4 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-              <a href={cvLink} target="_blank" rel="noopener noreferrer">
-                View CV
-              </a>
-            </Button>
+            </div>
+            
+            <div className="space-y-4 pt-4">
+              <Button asChild size="lg" className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white text-lg py-7 rounded-full shadow-xl transition-all hover:scale-[1.02]">
+                <a href={cvLink} target="_blank" rel="noopener noreferrer">
+                  <FileText className="mr-2 h-5 w-5" /> View Full CV
+                </a>
+              </Button>
+              <p className="text-center text-sm text-gray-500 italic">
+                Available for music direction, piano performance, and vocal coaching.
+              </p>
+            </div>
           </div>
-        </Card>
-        <div className="text-center mt-12">
-          <Button asChild variant="ghost" className="text-brand-dark dark:text-brand-light hover:text-brand-primary transition-colors duration-200 px-0 py-0 h-auto">
-            <Link to="/programs">
-              <span className="flex items-center text-base md:text-lg font-semibold">
-                <ArrowLeft className="h-5 w-5 mr-2" /> Back to Programs
+
+          {/* Right Column: Bio & Education */}
+          <div className="space-y-10">
+            <div className="space-y-6 text-lg leading-relaxed text-gray-700 dark:text-gray-300">
+              <p className="text-2xl font-light text-gray-900 dark:text-white leading-snug">
+                I'm a music theatre practitioner based in Melbourne, with over a decade of experience as a music director, pianist, vocal coach, and performer.
+              </p>
+              <p>
+                My work spans large-scale productions and intimate workshops. Credits include <span className="font-semibold text-brand-primary">Paw Patrol Live, Beetlejuice, Heathers, A Chorus Line, Shrek, Legally Blonde, Mary Poppins</span>, and <span className="font-semibold text-brand-primary">Madiba the Musical</span> at Melbourne's Comedy Theatre.
+              </p>
+              <p>
+                As a music director and pianist, I bring a collaborative, detail-oriented approach to every production — supporting performers, serving the narrative, and building a musical environment where the whole cast can do their best work.
+              </p>
+              <p>
+                As a vocal coach, I work with performers at all levels to develop technical skill, expressive range, and confidence under pressure. My coaching draws on vocal pedagogy, performance psychology, and body-voice integration informed by my <span className="italic">Diploma of Kinesiology</span> — helping singers address not just technique, but the physical and psychological patterns that shape how they perform.
+              </p>
+            </div>
+
+            <Separator className="bg-gray-200 dark:bg-gray-800" />
+
+            {/* Education & Training Section */}
+            <div className="space-y-6">
+              <h3 className="flex items-center gap-3 text-2xl font-bold text-gray-900 dark:text-white">
+                <GraduationCap className="h-7 w-7 text-brand-primary" />
+                Education & Training
+              </h3>
+              <div className="space-y-6">
+                <div className="space-y-1">
+                  <p className="font-bold text-gray-900 dark:text-white">Bachelor of Music</p>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Australian Institute of Music (2014–2016) — majoring in Arranging, Composition, Orchestration, and Piano.
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <p className="font-bold text-gray-900 dark:text-white">Diploma of Kinesiology</p>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Specialising in mind-body integration, which underpins my approach to performance coaching and artist development.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Navigation */}
+        <div className="text-center mt-24 pt-12 border-t border-gray-200 dark:border-gray-800">
+          <Button asChild variant="ghost" className="text-gray-500 hover:text-brand-primary transition-colors rounded-full px-8">
+            <Link to="/projects-resources">
+              <span className="flex items-center text-lg font-medium">
+                <ArrowLeft className="h-5 w-5 mr-2" /> Back to Projects & Services
               </span>
             </Link>
           </Button>
