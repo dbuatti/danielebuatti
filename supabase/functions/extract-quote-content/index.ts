@@ -60,7 +60,15 @@ const PRIMARY_KEY = Deno.env.get('GEMINI_API_KEY');
 const BACKUP_KEY = Deno.env.get('GEMINI_API_KEY_BACKUP');
 
 const runExtraction = async (apiKey: string, emailContent: string) => {
-  const ai = new GoogleGenAI({ apiKey });
+  const genAI = new GoogleGenAI(apiKey);
+  
+  const model = genAI.getGenerativeModel({ 
+    model: "gemini-2.5-flash",
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: extractionSchema,
+    }
+  });
 
   const prompt = `You are an expert quote extraction service. Analyze the following raw text input, which contains structured quote details. Extract all fields into a single JSON object strictly following the provided JSON schema. Ensure all dates are in YYYY-MM-DD format and times are in HH:MM format. If a field is missing, use a reasonable default or an empty string/array, but ensure the output strictly adheres to the schema. For discountPercentage and discountAmount, if not explicitly mentioned, default to 0.
 
@@ -70,16 +78,9 @@ ${emailContent}
 ---
 `;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-      responseSchema: extractionSchema,
-    },
-  });
-
-  return JSON.parse(response.text);
+  const result = await model.generateContent(prompt);
+  const response = await result.response;
+  return JSON.parse(response.text());
 };
 
 serve(async (req: Request) => {

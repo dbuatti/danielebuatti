@@ -1,5 +1,5 @@
+// @ts-nocheck
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-// @ts-ignore
 import { GoogleGenAI } from "https://esm.sh/@google/genai@0.15.0";
 
 const corsHeaders = {
@@ -23,13 +23,19 @@ const extractionSchema = {
   required: ["title", "composer", "instrumentation"],
 };
 
-// @ts-ignore
 const PRIMARY_KEY = Deno.env.get('GEMINI_API_KEY');
-// @ts-ignore
 const BACKUP_KEY = Deno.env.get('GEMINI_API_KEY_BACKUP');
 
 const runExtraction = async (apiKey: string, text: string) => {
-  const ai = new GoogleGenAI({ apiKey });
+  const genAI = new GoogleGenAI(apiKey);
+  
+  const model = genAI.getGenerativeModel({ 
+    model: "gemini-2.5-flash",
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: extractionSchema,
+    }
+  });
 
   const prompt = `You are an expert music librarian. Analyze the following text extracted from a music score PDF and extract metadata into a single JSON object strictly following the provided JSON schema.
 
@@ -39,16 +45,9 @@ ${text}
 ---
 `;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-1.5-flash",
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-      responseSchema: extractionSchema,
-    },
-  });
-
-  return JSON.parse(response.text);
+  const result = await model.generateContent(prompt);
+  const response = await result.response;
+  return JSON.parse(response.text());
 };
 
 serve(async (req: Request) => {
