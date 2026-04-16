@@ -7,10 +7,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Loader2, Upload, Wand2 } from 'lucide-react';
+import { Loader2, Upload, Wand2, FileText } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { processPDF } from '@/lib/pdf-utils';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 
 const arrangementSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -36,6 +37,7 @@ interface ArrangementFormProps {
 export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, onSuccess }) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(
     initialData?.preview_image_path 
@@ -63,20 +65,41 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
     },
   });
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setPdfFile(file);
-      toast.info('PDF uploaded. Click "Analyze with AI" to extract metadata.');
-      
-      // Automatically generate preview when file is selected
-      try {
-        const { previewUrl: generatedPreview } = await processPDF(file);
-        setPreviewUrl(generatedPreview);
-      } catch (err) {
-        console.error('Preview generation error:', err);
-      }
+  const handleFile = async (file: File) => {
+    if (file.type !== 'application/pdf') {
+      toast.error('Please upload a PDF file');
+      return;
     }
+    setPdfFile(file);
+    toast.info('PDF uploaded. Click "Analyze with AI" to extract metadata.');
+    
+    try {
+      const { previewUrl: generatedPreview } = await processPDF(file);
+      setPreviewUrl(generatedPreview);
+    } catch (err) {
+      console.error('Preview generation error:', err);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleFile(file);
+  };
+
+  const onDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const onDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const onDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) handleFile(file);
   };
 
   const handleAnalyze = async () => {
@@ -95,7 +118,6 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
 
       if (error) throw error;
 
-      // Update form fields with AI results
       Object.keys(data).forEach((key) => {
         if (key in arrangementSchema.shape) {
           form.setValue(key as any, data[key]);
@@ -174,30 +196,66 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-4">
-            <div className="border-2 border-dashed border-brand-secondary/30 rounded-lg p-6 text-center space-y-4 bg-brand-light/50 dark:bg-brand-dark/50">
+            <div 
+              onDragOver={onDragOver}
+              onDragLeave={onDragLeave}
+              onDrop={onDrop}
+              className={cn(
+                "border-2 border-dashed rounded-2xl p-8 text-center space-y-4 transition-all duration-200 min-h-[300px] flex flex-col items-center justify-center",
+                isDragging 
+                  ? "border-brand-primary bg-brand-primary/5 scale-[1.02]" 
+                  : "border-brand-secondary/30 bg-brand-light/50 dark:bg-brand-dark/50",
+                pdfFile || initialData ? "border-solid" : ""
+              )}
+            >
               {previewUrl ? (
-                <div className="relative group">
-                  <img src={previewUrl} alt="Preview" className="max-h-64 mx-auto rounded shadow-md" />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded">
-                    <p className="text-white text-sm font-medium">Click Change PDF to update</p>
+                <div className="relative group w-full">
+                  <img src={previewUrl} alt="Preview" className="max-h-64 mx-auto rounded-lg shadow-xl border border-brand-secondary/20" />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                    <p className="text-white text-sm font-medium">Drop new PDF to replace</p>
                   </div>
                 </div>
               ) : (
-                <Upload className="h-12 w-12 mx-auto text-brand-secondary/50" />
+                <div className="space-y-4">
+                  <div className="h-20 w-20 bg-brand-secondary/10 rounded-full flex items-center justify-center mx-auto">
+                    <Upload className={cn("h-10 w-10 transition-colors", isDragging ? "text-brand-primary" : "text-brand-secondary/50")} />
+                  </div>
+                  <div>
+                    <p className="text-lg font-medium text-brand-dark dark:text-brand-light">
+                      {isDragging ? "Drop it here" : "Drag & drop your PDF"}
+                    </p>
+                    <p className="text-sm text-brand-dark/60 dark:text-brand-light/60">
+                      or click to browse files
+                    </p>
+                  </div>
+                </div>
               )}
-              <div>
+              
+              <div className="pt-2">
                 <Input type="file" accept=".pdf" onChange={handleFileChange} className="hidden" id="pdf-upload" />
                 <label htmlFor="pdf-upload">
-                  <Button type="button" variant="outline" asChild className="cursor-pointer">
-                    <span>{pdfFile || initialData ? 'Change PDF' : 'Upload PDF'}</span>
+                  <Button type="button" variant="outline" asChild className="cursor-pointer rounded-full px-6">
+                    <span>{pdfFile || initialData ? 'Change PDF' : 'Select PDF'}</span>
                   </Button>
                 </label>
               </div>
+
               {pdfFile && (
-                <Button type="button" onClick={handleAnalyze} disabled={isAnalyzing} className="w-full bg-brand-primary hover:bg-brand-primary/90">
-                  {isAnalyzing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
-                  Analyze with AI
-                </Button>
+                <div className="w-full space-y-3 pt-4">
+                  <div className="flex items-center gap-2 justify-center text-sm text-brand-primary font-medium">
+                    <FileText className="h-4 w-4" />
+                    <span className="truncate max-w-[200px]">{pdfFile.name}</span>
+                  </div>
+                  <Button 
+                    type="button" 
+                    onClick={handleAnalyze} 
+                    disabled={isAnalyzing} 
+                    className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white rounded-full shadow-lg shadow-brand-primary/20"
+                  >
+                    {isAnalyzing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
+                    Analyze with AI
+                  </Button>
+                </div>
               )}
             </div>
 
@@ -206,9 +264,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title *</FormLabel>
+                  <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Title *</FormLabel>
                   <FormControl>
-                    <Input placeholder="Arrangement Title" {...field} className="bg-white dark:bg-brand-dark" />
+                    <Input placeholder="Arrangement Title" {...field} className="bg-white dark:bg-brand-dark h-12 rounded-xl border-brand-secondary/30" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -220,9 +278,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
               name="composer"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Composer</FormLabel>
+                  <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Composer</FormLabel>
                   <FormControl>
-                    <Input placeholder="Original Composer" {...field} className="bg-white dark:bg-brand-dark" />
+                    <Input placeholder="Original Composer" {...field} className="bg-white dark:bg-brand-dark h-12 rounded-xl border-brand-secondary/30" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -237,9 +295,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
                 name="instrumentation"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Instrumentation</FormLabel>
+                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Instrumentation</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g. Piano/Vocal" {...field} className="bg-white dark:bg-brand-dark" />
+                      <Input placeholder="e.g. Piano/Vocal" {...field} className="bg-white dark:bg-brand-dark h-12 rounded-xl border-brand-secondary/30" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -250,9 +308,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
                 name="difficulty"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Difficulty</FormLabel>
+                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Difficulty</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g. Intermediate" {...field} className="bg-white dark:bg-brand-dark" />
+                      <Input placeholder="e.g. Intermediate" {...field} className="bg-white dark:bg-brand-dark h-12 rounded-xl border-brand-secondary/30" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -266,9 +324,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
                 name="key"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Key</FormLabel>
+                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Key</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g. C Major" {...field} className="bg-white dark:bg-brand-dark" />
+                      <Input placeholder="e.g. C Major" {...field} className="bg-white dark:bg-brand-dark h-12 rounded-xl border-brand-secondary/30" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -279,9 +337,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
                 name="genre"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Genre</FormLabel>
+                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Genre</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g. Jazz" {...field} className="bg-white dark:bg-brand-dark" />
+                      <Input placeholder="e.g. Jazz" {...field} className="bg-white dark:bg-brand-dark h-12 rounded-xl border-brand-secondary/30" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -294,9 +352,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
               name="lyrics"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Lyrics Snippet</FormLabel>
+                  <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Lyrics Snippet</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="First few lines..." {...field} className="bg-white dark:bg-brand-dark min-h-[80px]" />
+                    <Textarea placeholder="First few lines..." {...field} className="bg-white dark:bg-brand-dark min-h-[100px] rounded-xl border-brand-secondary/30 resize-none" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -309,9 +367,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
                 name="duration"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Duration</FormLabel>
+                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Duration</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g. 3:30" {...field} className="bg-white dark:bg-brand-dark" />
+                      <Input placeholder="e.g. 3:30" {...field} className="bg-white dark:bg-brand-dark h-12 rounded-xl border-brand-secondary/30" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -322,9 +380,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
                 name="style"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Style</FormLabel>
+                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Style</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g. Swing" {...field} className="bg-white dark:bg-brand-dark" />
+                      <Input placeholder="e.g. Swing" {...field} className="bg-white dark:bg-brand-dark h-12 rounded-xl border-brand-secondary/30" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -338,9 +396,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
                 name="price"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Price (AUD)</FormLabel>
+                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Price (AUD)</FormLabel>
                     <FormControl>
-                      <Input type="number" step="0.01" {...field} className="bg-white dark:bg-brand-dark" />
+                      <Input type="number" step="0.01" {...field} className="bg-white dark:bg-brand-dark h-12 rounded-xl border-brand-secondary/30" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -350,9 +408,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
                 control={form.control}
                 name="is_purchasable"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-white dark:bg-brand-dark">
+                  <FormItem className="flex flex-row items-center justify-between rounded-xl border border-brand-secondary/30 p-3 shadow-sm bg-white dark:bg-brand-dark h-12">
                     <div className="space-y-0.5">
-                      <FormLabel>Purchasable</FormLabel>
+                      <FormLabel className="text-xs font-bold uppercase tracking-widest text-brand-dark/60 dark:text-brand-light/60">Purchasable</FormLabel>
                     </div>
                     <FormControl>
                       <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -364,9 +422,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
           </div>
         </div>
 
-        <Button type="submit" className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white" disabled={isSubmitting}>
-          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {initialData ? 'Update Arrangement' : 'Add Arrangement'}
+        <Button type="submit" className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-14 text-lg font-bold rounded-full shadow-xl shadow-brand-primary/20 transition-all hover:scale-[1.01]" disabled={isSubmitting}>
+          {isSubmitting && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+          {initialData ? 'Update Arrangement' : 'Add Arrangement to Store'}
         </Button>
       </form>
     </Form>
