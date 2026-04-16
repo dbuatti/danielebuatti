@@ -85,6 +85,9 @@ const AdminStorePage: React.FC = () => {
           <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto bg-brand-light dark:bg-brand-dark-alt border-brand-secondary/50">
             <DialogHeader>
               <DialogTitle className="text-brand-primary">{editingArrangement ? 'Edit Arrangement' : 'Add New Arrangement'}</DialogTitle>
+              <div className="text-sm text-muted-foreground">
+                Fill in the details below to manage your music arrangement.
+              </div>
             </DialogHeader>
             <ArrangementForm initialData={editingArrangement} onSuccess={handleSuccess} />
           </DialogContent>
