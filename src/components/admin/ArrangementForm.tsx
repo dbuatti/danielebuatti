@@ -22,7 +22,7 @@ const variantSchema = z.object({
 
 const arrangementSchema = z.object({
   title: z.string().min(1, 'Title is required'),
-  slug: z.string().min(1, 'Slug is required'), // NEW
+  slug: z.string().min(1, 'Slug is required'),
   composer: z.string().optional(),
   instrumentation: z.string().optional(),
   difficulty: z.string().optional(),
@@ -66,13 +66,23 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
   const form = useForm<ArrangementFormValues>({
     resolver: zodResolver(arrangementSchema),
     defaultValues: initialData ? {
-      ...initialData,
+      title: initialData.title || '',
+      slug: initialData.slug || '',
+      composer: initialData.composer || '',
+      instrumentation: initialData.instrumentation || '',
+      difficulty: initialData.difficulty || '',
+      key: initialData.key || '',
+      genre: initialData.genre || '',
+      lyrics: initialData.lyrics || '',
+      duration: initialData.duration || '',
+      style: initialData.style || '',
+      description: initialData.description || '',
       price: initialData.price?.toString() || '0',
       additional_key_price: initialData.additional_key_price?.toString() || '0',
-      secondary_file_name: initialData.secondary_file_name || '',
+      is_purchasable: !!initialData.is_purchasable,
       status: initialData.status || 'published',
+      secondary_file_name: initialData.secondary_file_name || '',
       key_variants: initialData.key_variants || [],
-      description: initialData.description || '',
     } : {
       title: '',
       slug: '',
@@ -99,7 +109,6 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
     name: 'key_variants',
   });
 
-  // Auto-generate slug from title and composer
   const watchedTitle = form.watch('title');
   const watchedComposer = form.watch('composer');
 
@@ -266,7 +275,7 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
       onSuccess(shouldClose, result.data);
     } catch (error: any) {
       console.error('Submit error:', error);
-      toast.error('Error saving arrangement: ' + error.message, { id: toastId });
+      toast.error('Error saving arrangement: ' + (error.message || 'Unknown error'), { id: toastId });
     } finally {
       setIsSubmitting(false);
     }
