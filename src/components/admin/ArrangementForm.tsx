@@ -75,15 +75,15 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
 
   const handleFiles = useCallback(async (files: FileList | File[]) => {
     const fileArray = Array.from(files);
+    console.log('[ArrangementForm] Processing files:', fileArray.map(f => f.name));
+    
     const pdfs = fileArray.filter(f => f.type === 'application/pdf');
     const images = fileArray.filter(f => f.type.startsWith('image/'));
 
     if (pdfs.length > 0) {
-      // Set first PDF as main
       const firstPdf = pdfs[0];
       setMainFile(firstPdf);
       
-      // Auto-generate preview from first PDF (unless an image was also dropped)
       if (images.length === 0) {
         try {
           const { previewUrl: generatedPreview } = await processPDF(firstPdf);
@@ -93,7 +93,6 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
         }
       }
 
-      // Set second PDF as secondary if it exists
       if (pdfs.length > 1) {
         setSecondaryFile(pdfs[1]);
         if (!form.getValues('secondary_file_name')) {
@@ -110,8 +109,37 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
 
     if (pdfs.length > 0 || images.length > 0) {
       toast.success(`Processed ${pdfs.length} PDF(s) and ${images.length} image(s)`);
+    } else {
+      toast.error('No valid PDF or Image files detected.');
     }
   }, [form]);
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.dataTransfer.dropEffect = 'copy';
+  };
+
+  const handleDragEnter = (e: React.DragEvent, setter: (val: boolean) => void) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setter(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent, setter: (val: boolean) => void) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setter(false);
+  };
+
+  const handleDrop = (e: React.DragEvent, setter: (val: boolean) => void) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setter(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFiles(e.dataTransfer.files);
+    }
+  };
 
   const handleAnalyze = async () => {
     if (!mainFile) {
@@ -157,7 +185,6 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
       let secondaryPath = initialData?.secondary_file_path;
       let previewPath = initialData?.preview_image_path;
 
-      // Upload Main PDF
       if (mainFile) {
         const fileName = `${Date.now()}-main-${mainFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
         const { data: pdfData, error: pdfError } = await supabase.storage
@@ -167,7 +194,6 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
         mainPath = pdfData.path;
       }
 
-      // Upload Secondary File
       if (secondaryFile) {
         const fileName = `${Date.now()}-secondary-${secondaryFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
         const { data: secData, error: secError } = await supabase.storage
@@ -177,7 +203,6 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
         secondaryPath = secData.path;
       }
 
-      // Upload Preview Image (Manual or Auto-generated)
       if (manualPreviewFile) {
         const fileName = `${Date.now()}-preview-${manualPreviewFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
         const { data: imgData, error: imgError } = await supabase.storage
@@ -186,7 +211,6 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
         if (imgError) throw imgError;
         previewPath = imgData.path;
       } else if (mainFile && previewUrl && previewUrl.startsWith('data:')) {
-        // Only upload auto-generated if we don't have a manual one and we just uploaded a new main PDF
         const response = await fetch(previewUrl);
         const blob = await response.blob();
         const previewFileName = `${Date.now()}-preview-auto.jpg`;
@@ -236,9 +260,10 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
         
         {/* Master Drop Zone */}
         <div 
-          onDragOver={(e) => { e.preventDefault(); setIsDraggingMaster(true); }}
-          onDragLeave={() => setIsDraggingMaster(false)}
-          onDrop={(e) => { e.preventDefault(); setIsDraggingMaster(false); handleFiles(e.dataTransfer.files); }}
+          onDragOver={handleDragOver}
+          onDragEnter={(e) => handleDragEnter(e, setIsDraggingMaster)}
+          onDragLeave={(e) => handleDragLeave(e, setIsDraggingMaster)}
+          onDrop={(e) => handleDrop(e, setIsDraggingMaster)}
           className={cn(
             "relative border-2 border-dashed rounded-[2rem] p-10 text-center transition-all duration-300 group",
             isDraggingMaster 
@@ -352,8 +377,8 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
             <div className="space-y-3">
               <FormLabel className="text-xs uppercase tracking-[0.2em] font-bold text-brand-primary">3. Store Preview Image</FormLabel>
               <div 
-                onDragOver={(e) => { e.preventDefault(); }}
-                onDrop={(e) => { e.preventDefault(); const file = e.dataTransfer.files?.[0]; if (file && file.type.startsWith('image/')) handleFiles([file]); }}
+                onDragOver={handleDragOver}
+                onDrop={(e) => { e.preventDefault(); e.stopPropagation(); const file = e.dataTransfer.files?.[0]; if (file && file.type.startsWith('image/')) handleFiles([file]); }}
                 className={cn(
                   "relative aspect-[3/4] rounded-3xl overflow-hidden border-2 border-dashed transition-all duration-300 group",
                   manualPreviewFile ? "border-brand-primary/50" : "border-brand-secondary/30 bg-brand-secondary/5"
@@ -510,6 +535,35 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
                 </FormItem>
               )}
             />
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="duration"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Duration</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. 3:30" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="style"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Style</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. Swing" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <div className="grid grid-cols-2 gap-4 items-end">
               <FormField
