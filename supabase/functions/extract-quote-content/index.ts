@@ -53,23 +53,32 @@ const extractionSchema = {
 const PRIMARY_KEY = Deno.env.get('GEMINI_API_KEY');
 const BACKUP_KEY = Deno.env.get('GEMINI_API_KEY_BACKUP');
 
-const runExtraction = async (apiKey: string, emailContent: string) => {
-  const genAI = new GoogleGenerativeAI(apiKey);
-  
-  // Using gemini-2.5-flash which is the latest stable high-performance model
-  const model = genAI.getGenerativeModel({ 
-    model: "gemini-2.5-flash",
-    generationConfig: {
-      responseMimeType: "application/json",
-      responseSchema: extractionSchema,
+const runExtraction = async (apiKey: string, emailContent: string, retryCount = 0) => {
+  try {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-2.5-flash",
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: extractionSchema,
+      }
+    });
+
+    const prompt = `Extract quote details from this text into JSON: ${emailContent}`;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    return JSON.parse(response.text());
+  } catch (error: any) {
+    // Handle 503 Service Unavailable with a single retry
+    if (error.message?.includes('503') && retryCount < 1) {
+      console.log(`[extract-quote-content] Gemini 503 detected. Retrying in 2s...`);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      return runExtraction(apiKey, emailContent, retryCount + 1);
     }
-  });
-
-  const prompt = `Extract quote details from this text into JSON: ${emailContent}`;
-
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  return JSON.parse(response.text());
+    throw error;
+  }
 };
 
 serve(async (req: Request) => {
@@ -97,6 +106,7 @@ serve(async (req: Request) => {
     } catch (err: any) {
       console.error('[extract-quote-content] Primary Key failed:', err.message);
       if (BACKUP_KEY) {
+        console.log('[extract-quote-content] Retrying with backup key...');
         extractedData = await runExtraction(BACKUP_KEY, emailContent);
       } else {
         throw err;

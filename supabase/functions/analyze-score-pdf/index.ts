@@ -26,19 +26,20 @@ const extractionSchema = {
 const PRIMARY_KEY = Deno.env.get('GEMINI_API_KEY');
 const BACKUP_KEY = Deno.env.get('GEMINI_API_KEY_BACKUP');
 
-const runExtraction = async (apiKey: string, text: string) => {
-  const genAI = new GoogleGenerativeAI(apiKey);
-  
-  // Using gemini-2.5-flash which is the latest stable high-performance model
-  const model = genAI.getGenerativeModel({ 
-    model: "gemini-2.5-flash",
-    generationConfig: {
-      responseMimeType: "application/json",
-      responseSchema: extractionSchema,
-    }
-  });
+const runExtraction = async (apiKey: string, text: string, retryCount = 0) => {
+  try {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    
+    // Using gemini-2.5-flash as requested
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-2.5-flash",
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: extractionSchema,
+      }
+    });
 
-  const prompt = `You are an expert music librarian. Analyze the following text extracted from a music score PDF and extract metadata into a single JSON object strictly following the provided JSON schema.
+    const prompt = `You are an expert music librarian. Analyze the following text extracted from a music score PDF and extract metadata into a single JSON object strictly following the provided JSON schema.
 
 Extracted Text:
 ---
@@ -46,9 +47,18 @@ ${text}
 ---
 `;
 
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  return JSON.parse(response.text());
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    return JSON.parse(response.text());
+  } catch (error: any) {
+    // Handle 503 Service Unavailable with a single retry after a short delay
+    if (error.message?.includes('503') && retryCount < 1) {
+      console.log(`[analyze-score-pdf] Gemini 503 detected. Retrying in 2s...`);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      return runExtraction(apiKey, text, retryCount + 1);
+    }
+    throw error;
+  }
 };
 
 serve(async (req: Request) => {
@@ -77,9 +87,8 @@ serve(async (req: Request) => {
     } catch (primaryError: any) {
       console.error('[analyze-score-pdf] Primary Key failed:', primaryError.message);
       
-      const isRateLimitError = primaryError.message?.includes('429') || primaryError.message?.includes('Quota');
-
-      if (isRateLimitError && BACKUP_KEY) {
+      // If primary fails (rate limit or other), try backup if available
+      if (BACKUP_KEY) {
         console.log('[analyze-score-pdf] Retrying with backup key...');
         extractedData = await runExtraction(BACKUP_KEY, text);
       } else {
