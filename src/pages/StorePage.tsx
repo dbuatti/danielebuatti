@@ -34,6 +34,7 @@ const StorePageContent: React.FC = () => {
       const { data, error } = await supabase
         .from('arrangements')
         .select('*')
+        .eq('status', 'published') // Only show published items
         .order('created_at', { ascending: false });
 
       if (error) {

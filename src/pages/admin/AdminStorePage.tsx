@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Loader2, Music, PlusCircle, Edit, Trash2, FileText } from 'lucide-react';
+import { Loader2, Music, PlusCircle, Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ArrangementForm } from '@/components/admin/ArrangementForm';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 interface Arrangement {
   id: string;
@@ -17,6 +18,7 @@ interface Arrangement {
   difficulty: string | null;
   price: number | null;
   is_purchasable: boolean;
+  status: 'draft' | 'published';
   preview_image_path: string | null;
   pdf_file_path: string | null;
   secondary_file_path: string | null;
@@ -65,9 +67,14 @@ const AdminStorePage: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleSuccess = () => {
-    setIsModalOpen(false);
-    setEditingArrangement(null);
+  const handleSuccess = (shouldClose = true, updatedArrangement?: any) => {
+    if (shouldClose) {
+      setIsModalOpen(false);
+      setEditingArrangement(null);
+    } else if (updatedArrangement) {
+      // If staying open, update the editing state so subsequent saves work correctly
+      setEditingArrangement(updatedArrangement);
+    }
     fetchArrangements();
   };
 
@@ -88,16 +95,13 @@ const AdminStorePage: React.FC = () => {
             <DialogHeader>
               <DialogTitle className="text-brand-primary">{editingArrangement ? 'Edit Arrangement' : 'Add New Arrangement'}</DialogTitle>
               <div className="text-sm text-muted-foreground">
-                Fill in the details below to manage your music arrangement.
+                Fill in the details below. You can save progress as a draft before publishing.
               </div>
             </DialogHeader>
             <ArrangementForm initialData={editingArrangement} onSuccess={handleSuccess} />
           </DialogContent>
         </Dialog>
       </div>
-      <p className="text-lg text-brand-dark/80 dark:text-brand-light/80">
-        Manage your music arrangements, upload PDFs, and use AI to extract metadata.
-      </p>
 
       <Card className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50">
         <CardHeader>
@@ -119,10 +123,10 @@ const AdminStorePage: React.FC = () => {
                   <TableRow className="bg-brand-secondary/10 dark:bg-brand-dark/50">
                     <TableHead className="text-brand-primary">Preview</TableHead>
                     <TableHead className="text-brand-primary">Title</TableHead>
-                    <TableHead className="text-brand-primary">Files</TableHead>
+                    <TableHead className="text-brand-primary">Status</TableHead>
                     <TableHead className="text-brand-primary">Composer</TableHead>
                     <TableHead className="text-brand-primary">Price</TableHead>
-                    <TableHead className="text-brand-primary">Status</TableHead>
+                    <TableHead className="text-brand-primary">Type</TableHead>
                     <TableHead className="text-brand-primary text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -144,21 +148,14 @@ const AdminStorePage: React.FC = () => {
                       </TableCell>
                       <TableCell className="font-medium text-brand-dark dark:text-brand-light">{arr.title}</TableCell>
                       <TableCell>
-                        <div className="flex flex-col gap-1">
-                          <div className="flex items-center gap-1 text-xs text-brand-dark/60">
-                            <FileText className="h-3 w-3" /> Main Score
-                          </div>
-                          {arr.secondary_file_path && (
-                            <div className="flex items-center gap-1 text-xs text-brand-primary font-medium">
-                              <FileText className="h-3 w-3" /> {arr.secondary_file_name || 'Secondary'}
-                            </div>
-                          )}
-                        </div>
+                        <Badge variant={arr.status === 'published' ? 'default' : 'outline'} className={cn(arr.status === 'draft' && "text-gray-400 border-gray-400")}>
+                          {arr.status === 'published' ? 'Published' : 'Draft'}
+                        </Badge>
                       </TableCell>
                       <TableCell className="text-brand-dark/80 dark:text-brand-light/80">{arr.composer || 'N/A'}</TableCell>
                       <TableCell className="font-semibold text-brand-primary">{arr.price ? `A$${arr.price.toFixed(2)}` : 'N/A'}</TableCell>
                       <TableCell>
-                        <Badge variant={arr.is_purchasable ? 'default' : 'secondary'}>
+                        <Badge variant="secondary">
                           {arr.is_purchasable ? 'Purchasable' : 'Inquiry Only'}
                         </Badge>
                       </TableCell>

@@ -8,7 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Wand2, FileText, Image as ImageIcon, X, Layers } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Loader2, Wand2, FileText, Image as ImageIcon, X, Layers, Save, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { processPDF } from '@/lib/pdf-utils';
 import { toast } from 'sonner';
@@ -26,6 +27,7 @@ const arrangementSchema = z.object({
   style: z.string().optional(),
   price: z.string().optional(),
   is_purchasable: z.boolean().default(false),
+  status: z.enum(['draft', 'published']).default('published'),
   secondary_file_name: z.string().optional(),
 });
 
@@ -33,7 +35,7 @@ type ArrangementFormValues = z.infer<typeof arrangementSchema>;
 
 interface ArrangementFormProps {
   initialData?: any;
-  onSuccess: () => void;
+  onSuccess: (shouldClose?: boolean, updatedArrangement?: any) => void;
 }
 
 export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, onSuccess }) => {
@@ -57,6 +59,7 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
       ...initialData,
       price: initialData.price?.toString() || '0',
       secondary_file_name: initialData.secondary_file_name || '',
+      status: initialData.status || 'published',
     } : {
       title: '',
       composer: '',
@@ -69,14 +72,13 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
       style: '',
       price: '0',
       is_purchasable: false,
+      status: 'published',
       secondary_file_name: '',
     },
   });
 
   const handleFiles = useCallback(async (files: FileList | File[]) => {
     const fileArray = Array.from(files);
-    console.log('[ArrangementForm] Processing files:', fileArray.map(f => f.name));
-    
     const pdfs = fileArray.filter(f => f.type === 'application/pdf');
     const images = fileArray.filter(f => f.type.startsWith('image/'));
 
@@ -109,37 +111,8 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
 
     if (pdfs.length > 0 || images.length > 0) {
       toast.success(`Processed ${pdfs.length} PDF(s) and ${images.length} image(s)`);
-    } else {
-      toast.error('No valid PDF or Image files detected.');
     }
   }, [form]);
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.dataTransfer.dropEffect = 'copy';
-  };
-
-  const handleDragEnter = (e: React.DragEvent, setter: (val: boolean) => void) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setter(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent, setter: (val: boolean) => void) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setter(false);
-  };
-
-  const handleDrop = (e: React.DragEvent, setter: (val: boolean) => void) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setter(false);
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFiles(e.dataTransfer.files);
-    }
-  };
 
   const handleAnalyze = async () => {
     if (!mainFile) {
@@ -178,8 +151,14 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
     }
   };
 
-  const onSubmit = async (values: ArrangementFormValues) => {
+  const handleSave = async (shouldClose: boolean) => {
+    const isValid = await form.trigger();
+    if (!isValid) return;
+
+    const values = form.getValues();
     setIsSubmitting(true);
+    const toastId = toast.loading(shouldClose ? 'Saving arrangement...' : 'Saving progress...');
+
     try {
       let mainPath = initialData?.pdf_file_path;
       let secondaryPath = initialData?.secondary_file_path;
@@ -192,6 +171,7 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
           .upload(fileName, mainFile);
         if (pdfError) throw pdfError;
         mainPath = pdfData.path;
+        setMainFile(null); // Clear after upload
       }
 
       if (secondaryFile) {
@@ -201,6 +181,7 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
           .upload(fileName, secondaryFile);
         if (secError) throw secError;
         secondaryPath = secData.path;
+        setSecondaryFile(null); // Clear after upload
       }
 
       if (manualPreviewFile) {
@@ -210,6 +191,7 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
           .upload(fileName, manualPreviewFile);
         if (imgError) throw imgError;
         previewPath = imgData.path;
+        setManualPreviewFile(null); // Clear after upload
       } else if (mainFile && previewUrl && previewUrl.startsWith('data:')) {
         const response = await fetch(previewUrl);
         const blob = await response.blob();
@@ -230,25 +212,29 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
         updated_at: new Date().toISOString(),
       };
 
+      let result;
       if (initialData?.id) {
-        const { error } = await supabase
+        result = await supabase
           .from('arrangements')
           .update(arrangementData)
-          .eq('id', initialData.id);
-        if (error) throw error;
-        toast.success('Arrangement updated!');
+          .eq('id', initialData.id)
+          .select()
+          .single();
       } else {
-        const { error } = await supabase
+        result = await supabase
           .from('arrangements')
-          .insert([arrangementData]);
-        if (error) throw error;
-        toast.success('Arrangement added!');
+          .insert([arrangementData])
+          .select()
+          .single();
       }
 
-      onSuccess();
+      if (result.error) throw result.error;
+
+      toast.success(shouldClose ? 'Arrangement saved!' : 'Progress saved!', { id: toastId });
+      onSuccess(shouldClose, result.data);
     } catch (error: any) {
       console.error('Submit error:', error);
-      toast.error('Error saving arrangement: ' + error.message);
+      toast.error('Error saving arrangement: ' + error.message, { id: toastId });
     } finally {
       setIsSubmitting(false);
     }
@@ -256,14 +242,13 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={(e) => e.preventDefault()} className="space-y-8">
         
         {/* Master Drop Zone */}
         <div 
-          onDragOver={handleDragOver}
-          onDragEnter={(e) => handleDragEnter(e, setIsDraggingMaster)}
-          onDragLeave={(e) => handleDragLeave(e, setIsDraggingMaster)}
-          onDrop={(e) => handleDrop(e, setIsDraggingMaster)}
+          onDragOver={(e) => { e.preventDefault(); setIsDraggingMaster(true); }}
+          onDragLeave={() => setIsDraggingMaster(false)}
+          onDrop={(e) => { e.preventDefault(); setIsDraggingMaster(false); handleFiles(e.dataTransfer.files); }}
           className={cn(
             "relative border-2 border-dashed rounded-[2rem] p-10 text-center transition-all duration-300 group",
             isDraggingMaster 
@@ -377,8 +362,8 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
             <div className="space-y-3">
               <FormLabel className="text-xs uppercase tracking-[0.2em] font-bold text-brand-primary">3. Store Preview Image</FormLabel>
               <div 
-                onDragOver={handleDragOver}
-                onDrop={(e) => { e.preventDefault(); e.stopPropagation(); const file = e.dataTransfer.files?.[0]; if (file && file.type.startsWith('image/')) handleFiles([file]); }}
+                onDragOver={(e) => { e.preventDefault(); }}
+                onDrop={(e) => { e.preventDefault(); const file = e.dataTransfer.files?.[0]; if (file && file.type.startsWith('image/')) handleFiles([file]); }}
                 className={cn(
                   "relative aspect-[3/4] rounded-3xl overflow-hidden border-2 border-dashed transition-all duration-300 group",
                   manualPreviewFile ? "border-brand-primary/50" : "border-brand-secondary/30 bg-brand-secondary/5"
@@ -421,19 +406,42 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
 
           {/* Right Column: Metadata Form */}
           <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Arrangement Title *</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g. Fly Me To The Moon" {...field} className="bg-white dark:bg-brand-dark h-12 rounded-xl border-brand-secondary/30 font-bold text-lg" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex items-center justify-between gap-4">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem className="flex-grow">
+                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Arrangement Title *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. Fly Me To The Moon" {...field} className="bg-white dark:bg-brand-dark h-12 rounded-xl border-brand-secondary/30 font-bold text-lg" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem className="w-32">
+                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Status</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="bg-white dark:bg-brand-dark h-12 rounded-xl border-brand-secondary/30">
+                          <SelectValue placeholder="Status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="draft">Draft</SelectItem>
+                        <SelectItem value="published">Published</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <div className="grid grid-cols-2 gap-4">
               <FormField
@@ -536,35 +544,6 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
               )}
             />
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="duration"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Duration</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. 3:30" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="style"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Style</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. Swing" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
             <div className="grid grid-cols-2 gap-4 items-end">
               <FormField
                 control={form.control}
@@ -600,10 +579,27 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
           </div>
         </div>
 
-        <Button type="submit" className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-16 text-xl font-bold rounded-full shadow-xl shadow-brand-primary/20 transition-all hover:scale-[1.01]" disabled={isSubmitting}>
-          {isSubmitting && <Loader2 className="mr-2 h-6 w-6 animate-spin" />}
-          {initialData ? 'Update Arrangement' : 'Add Arrangement to Store'}
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-4 pt-4">
+          <Button 
+            type="button" 
+            variant="outline" 
+            className="flex-1 h-16 text-lg font-bold rounded-full border-brand-secondary/50 hover:bg-brand-secondary/10 transition-all"
+            onClick={() => handleSave(false)}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Save className="mr-2 h-5 w-5" />}
+            Save Progress
+          </Button>
+          <Button 
+            type="button" 
+            className="flex-[2] bg-brand-primary hover:bg-brand-primary/90 text-white h-16 text-xl font-bold rounded-full shadow-xl shadow-brand-primary/20 transition-all hover:scale-[1.01]"
+            onClick={() => handleSave(true)}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? <Loader2 className="mr-2 h-6 w-6 animate-spin" /> : <CheckCircle className="mr-2 h-6 w-6" />}
+            {initialData ? 'Update & Close' : 'Add to Store & Close'}
+          </Button>
+        </div>
       </form>
     </Form>
   );
