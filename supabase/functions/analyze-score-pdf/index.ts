@@ -1,7 +1,6 @@
 // @ts-nocheck
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-// Use the /web entry point to fix the 'unspecified environment' error in Deno
-import { GoogleGenAI } from "https://esm.sh/@google/genai@0.21.0/web";
+import { GoogleGenAI } from "https://esm.sh/@google/genai@0.15.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -30,7 +29,6 @@ const BACKUP_KEY = Deno.env.get('GEMINI_API_KEY_BACKUP');
 const runExtraction = async (apiKey: string, text: string) => {
   const genAI = new GoogleGenAI(apiKey);
   
-  // Using gemini-1.5-flash as it is the current stable workhorse
   const model = genAI.getGenerativeModel({ 
     model: "gemini-1.5-flash",
     generationConfig: {

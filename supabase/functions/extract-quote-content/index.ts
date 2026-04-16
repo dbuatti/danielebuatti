@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { GoogleGenAI } from "https://esm.sh/@google/genai@0.21.0/web";
+import { GoogleGenAI } from "https://esm.sh/@google/genai@0.15.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
