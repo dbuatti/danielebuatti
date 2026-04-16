@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Trash2, Loader2 } from 'lucide-react';
+import { ShoppingCart, Trash2, Loader2, AlertCircle } from 'lucide-react';
 import { useCart } from './CartProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -10,8 +10,10 @@ export const CartDrawer: React.FC = () => {
   const { items, removeFromCart, total, clearCart } = useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
+  const isBelowMinimum = total > 0 && total < 0.5;
+
   const handleCheckout = async () => {
-    if (items.length === 0) return;
+    if (items.length === 0 || isBelowMinimum) return;
     setIsCheckingOut(true);
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout-session', {
@@ -87,11 +89,18 @@ export const CartDrawer: React.FC = () => {
               <span className="text-3xl font-bold text-brand-primary">A${total.toFixed(2)}</span>
             </div>
             
+            {isBelowMinimum && (
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-yellow-700 dark:text-yellow-500 text-xs">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                <span>Minimum checkout amount is A$0.50. Please add more items.</span>
+              </div>
+            )}
+
             <div className="flex flex-col gap-3">
               <Button 
                 className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-14 text-lg font-bold shadow-lg shadow-brand-primary/20 rounded-full" 
                 onClick={handleCheckout}
-                disabled={isCheckingOut}
+                disabled={isCheckingOut || isBelowMinimum}
               >
                 {isCheckingOut ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : 'Checkout with Stripe'}
               </Button>

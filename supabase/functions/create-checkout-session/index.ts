@@ -32,20 +32,34 @@ serve(async (req: Request) => {
       httpClient: Stripe.createFetchHttpClient(),
     });
 
-    const lineItems = items.map((item: any) => ({
-      price_data: {
-        currency: 'aud',
-        product_data: {
-          name: item.title,
-          description: `Arrangement by ${item.composer || 'Unknown'}`,
-          metadata: {
-            arrangement_id: item.id,
+    let totalCents = 0;
+    const lineItems = items.map((item: any) => {
+      const unitAmount = Math.round(parseFloat(item.price) * 100);
+      totalCents += unitAmount;
+      
+      return {
+        price_data: {
+          currency: 'aud',
+          product_data: {
+            name: item.title,
+            description: `Arrangement by ${item.composer || 'Unknown'}`,
+            metadata: {
+              arrangement_id: item.id,
+            },
           },
+          unit_amount: unitAmount,
         },
-        unit_amount: Math.round(parseFloat(item.price) * 100),
-      },
-      quantity: 1,
-    }));
+        quantity: 1,
+      };
+    });
+
+    // Stripe minimum for AUD is 50 cents
+    if (totalCents < 50) {
+      return new Response(JSON.stringify({ error: 'The total amount must be at least $0.50 AUD to process a payment.' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
