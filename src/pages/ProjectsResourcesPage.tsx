@@ -135,9 +135,9 @@ const ProjectsPage: React.FC = () => {
             <h2 className="text-4xl font-light text-center mb-12">Digital Products & Community</h2>
             <div className="space-y-12">
               <HorizontalProgramCard
-                title="Buattiverse"
-                description="Sheet music and backing tracks"
-                link="https://buattiverse.gumroad.com/"
+                title="Sheet Music Store"
+                description="Professional arrangements and vocal scores. Instant digital downloads."
+                link="/store"
                 imageSrc="/sheetmusic.png"
               />
               <PianoBackingsCard />

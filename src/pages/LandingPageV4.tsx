@@ -20,7 +20,8 @@ import {
   Music, 
   Quote, 
   ChevronLeft, 
-  ChevronRight 
+  ChevronRight,
+  ShoppingBag
 } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import CalEmbed from "@/components/CalEmbed";
@@ -209,12 +210,44 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* 4. KINESIOLOGY BANNER (NEW) */}
+        {/* 4. KINESIOLOGY BANNER */}
         <section className="mb-24 px-2">
           <KinesiologyBanner />
         </section>
 
-        {/* 5. WHO I WORK WITH */}
+        {/* 5. SHEET MUSIC STORE SECTION (NEW) */}
+        <section className="mb-24 px-2">
+          <Link to="/store" className="group block relative overflow-hidden rounded-[2.5rem] bg-white dark:bg-brand-dark-alt shadow-xl transition-all duration-500 hover:scale-[1.01] border border-brand-secondary/20">
+            <div className="absolute inset-0 bg-[url('/sheetmusic.png')] bg-cover bg-center opacity-5 grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />
+            
+            <div className="relative z-10 p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 text-left">
+              <div className="space-y-4 max-w-xl">
+                <div className="flex items-center gap-2 text-brand-primary mb-2">
+                  <ShoppingBag className="w-5 h-5" />
+                  <span className="text-xs uppercase tracking-[0.3em] font-bold">Digital Store</span>
+                </div>
+                <h2 className="text-3xl md:text-5xl font-light text-brand-dark dark:text-brand-light leading-tight">
+                  Professional <span className="italic font-serif text-brand-primary">Sheet Music</span>
+                </h2>
+                <p className="text-brand-dark/60 dark:text-brand-light/60 text-lg font-light leading-relaxed">
+                  Browse a curated collection of professional piano arrangements and vocal scores. 
+                  Instant digital downloads for performers and educators.
+                </p>
+              </div>
+              
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-20 h-20 rounded-full border border-brand-primary/30 flex items-center justify-center group-hover:border-brand-primary group-hover:bg-brand-primary/10 transition-all duration-500">
+                   <Music className="w-8 h-8 text-brand-primary" />
+                </div>
+                <span className="text-brand-primary text-sm uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0 font-bold">
+                  Enter Store
+                </span>
+              </div>
+            </div>
+          </Link>
+        </section>
+
+        {/* 6. WHO I WORK WITH */}
         <section className="mb-24">
           <h2 className="text-4xl font-light text-center mb-16 text-gray-900 dark:text-white">Who I Work With</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -233,7 +266,7 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* 6. APPROACH SECTION */}
+        {/* 7. APPROACH SECTION */}
         <section className="grid md:grid-cols-2 gap-20 items-center mb-24">
           <DynamicImage src="/pinkcarpet.jpg" alt="Daniele Buatti" className="w-full rounded-3xl shadow-xl" width={600} height={600} />
           <div className="space-y-8 text-left">
@@ -250,7 +283,7 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* 7. WHY WORK WITH ME SECTION */}
+        {/* 8. WHY WORK WITH ME SECTION */}
         <section className="mb-24 max-w-4xl mx-auto">
           <h2 className="text-4xl font-light text-center mb-16">Why Work With Me</h2>
           <div className="grid md:grid-cols-2 gap-8">
@@ -268,12 +301,12 @@ const LandingPageV4: React.FC = () => {
           </div>
         </section>
 
-        {/* 8. IT SERVICE BANNER */}
+        {/* 9. IT SERVICE BANNER */}
         <section className="mb-24 px-2">
           <ITServiceBanner />
         </section>
 
-        {/* 9. SIGNATURE SERVICE PORTAL */}
+        {/* 10. SIGNATURE SERVICE PORTAL */}
         <section className="mb-12 px-2">
           <Link to="/live-piano-services" className="group block relative overflow-hidden rounded-[2.5rem] bg-black shadow-2xl transition-all duration-500 hover:scale-[1.01]">
             <div className="absolute inset-0 bg-[url('/blacktie.avif')] bg-cover bg-center opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />
