@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { GoogleGenAI } from "https://esm.sh/@google/genai@0.15.0";
+// Use the /web entry point to fix the 'unspecified environment' error in Deno
+import { GoogleGenAI } from "https://esm.sh/@google/genai@0.21.0/web";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -29,8 +30,9 @@ const BACKUP_KEY = Deno.env.get('GEMINI_API_KEY_BACKUP');
 const runExtraction = async (apiKey: string, text: string) => {
   const genAI = new GoogleGenAI(apiKey);
   
+  // Using gemini-1.5-flash as it is the current stable workhorse
   const model = genAI.getGenerativeModel({ 
-    model: "gemini-2.5-flash",
+    model: "gemini-1.5-flash",
     generationConfig: {
       responseMimeType: "application/json",
       responseSchema: extractionSchema,
@@ -74,12 +76,12 @@ serve(async (req: Request) => {
     try {
       extractedData = await runExtraction(PRIMARY_KEY, text);
     } catch (primaryError: any) {
-      console.warn('[analyze-score-pdf] Primary Key failed. Checking for rate limit error...');
+      console.error('[analyze-score-pdf] Primary Key failed:', primaryError.message);
       
-      const isRateLimitError = primaryError.message?.includes('429 Too Many Requests') || primaryError.message?.includes('Quota exceeded');
+      const isRateLimitError = primaryError.message?.includes('429') || primaryError.message?.includes('Quota');
 
       if (isRateLimitError && BACKUP_KEY) {
-        console.log('[analyze-score-pdf] Rate limit detected. Retrying with backup key...');
+        console.log('[analyze-score-pdf] Retrying with backup key...');
         extractedData = await runExtraction(BACKUP_KEY, text);
       } else {
         throw primaryError;
@@ -94,16 +96,8 @@ serve(async (req: Request) => {
   } catch (error: any) {
     console.error('[analyze-score-pdf] AI Extraction Error:', error);
     
-    let status = 500;
-    let errorMessage = error.message || 'Failed to process AI extraction';
-
-    if (errorMessage.includes('429 Too Many Requests') || errorMessage.includes('Quota exceeded')) {
-      status = 429;
-      errorMessage = 'AI Quota Exceeded. Please wait a few minutes before trying again.';
-    }
-
-    return new Response(JSON.stringify({ error: errorMessage }), {
-      status: status,
+    return new Response(JSON.stringify({ error: error.message || 'Failed to process AI extraction' }), {
+      status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
