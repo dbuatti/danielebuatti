@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -7,7 +7,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Loader2, Upload, Wand2, FileText } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Loader2, Wand2, FileText, Image as ImageIcon, X, Layers } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { processPDF } from '@/lib/pdf-utils';
 import { toast } from 'sonner';
@@ -38,11 +39,11 @@ interface ArrangementFormProps {
 export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, onSuccess }) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isDraggingMain, setIsDraggingMain] = useState(false);
-  const [isDraggingSecondary, setIsDraggingSecondary] = useState(false);
+  const [isDraggingMaster, setIsDraggingMaster] = useState(false);
   
   const [mainFile, setMainFile] = useState<File | null>(null);
   const [secondaryFile, setSecondaryFile] = useState<File | null>(null);
+  const [manualPreviewFile, setManualPreviewFile] = useState<File | null>(null);
   
   const [previewUrl, setPreviewUrl] = useState<string | null>(
     initialData?.preview_image_path 
@@ -72,29 +73,45 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
     },
   });
 
-  const handleMainFile = async (file: File) => {
-    if (file.type !== 'application/pdf') {
-      toast.error('Please upload a PDF file for the main score');
-      return;
-    }
-    setMainFile(file);
-    toast.info('Main PDF uploaded.');
-    
-    try {
-      const { previewUrl: generatedPreview } = await processPDF(file);
-      setPreviewUrl(generatedPreview);
-    } catch (err) {
-      console.error('Preview generation error:', err);
-    }
-  };
+  const handleFiles = useCallback(async (files: FileList | File[]) => {
+    const fileArray = Array.from(files);
+    const pdfs = fileArray.filter(f => f.type === 'application/pdf');
+    const images = fileArray.filter(f => f.type.startsWith('image/'));
 
-  const handleSecondaryFile = (file: File) => {
-    setSecondaryFile(file);
-    if (!form.getValues('secondary_file_name')) {
-      form.setValue('secondary_file_name', file.name);
+    if (pdfs.length > 0) {
+      // Set first PDF as main
+      const firstPdf = pdfs[0];
+      setMainFile(firstPdf);
+      
+      // Auto-generate preview from first PDF (unless an image was also dropped)
+      if (images.length === 0) {
+        try {
+          const { previewUrl: generatedPreview } = await processPDF(firstPdf);
+          setPreviewUrl(generatedPreview);
+        } catch (err) {
+          console.error('Preview generation error:', err);
+        }
+      }
+
+      // Set second PDF as secondary if it exists
+      if (pdfs.length > 1) {
+        setSecondaryFile(pdfs[1]);
+        if (!form.getValues('secondary_file_name')) {
+          form.setValue('secondary_file_name', pdfs[1].name);
+        }
+      }
     }
-    toast.success('Secondary file attached');
-  };
+
+    if (images.length > 0) {
+      const firstImage = images[0];
+      setManualPreviewFile(firstImage);
+      setPreviewUrl(URL.createObjectURL(firstImage));
+    }
+
+    if (pdfs.length > 0 || images.length > 0) {
+      toast.success(`Processed ${pdfs.length} PDF(s) and ${images.length} image(s)`);
+    }
+  }, [form]);
 
   const handleAnalyze = async () => {
     if (!mainFile) {
@@ -104,11 +121,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
 
     setIsAnalyzing(true);
     try {
-      // Extract text from main file
       const { text: mainText } = await processPDF(mainFile);
       let combinedText = `MAIN FILE CONTENT:\n${mainText}`;
 
-      // If secondary file is also a PDF, extract its text too for more context
       if (secondaryFile && secondaryFile.type === 'application/pdf') {
         const { text: secondaryText } = await processPDF(secondaryFile);
         combinedText += `\n\nSECONDARY FILE CONTENT:\n${secondaryText}`;
@@ -126,7 +141,7 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
         }
       });
       
-      toast.success('Metadata extracted from all provided documents!');
+      toast.success('Metadata extracted using AI!');
     } catch (error: any) {
       console.error('Analysis error:', error);
       toast.error('Failed to analyze PDF: ' + error.message);
@@ -142,6 +157,7 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
       let secondaryPath = initialData?.secondary_file_path;
       let previewPath = initialData?.preview_image_path;
 
+      // Upload Main PDF
       if (mainFile) {
         const fileName = `${Date.now()}-main-${mainFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
         const { data: pdfData, error: pdfError } = await supabase.storage
@@ -149,19 +165,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
           .upload(fileName, mainFile);
         if (pdfError) throw pdfError;
         mainPath = pdfData.path;
-
-        if (previewUrl && previewUrl.startsWith('data:')) {
-          const response = await fetch(previewUrl);
-          const blob = await response.blob();
-          const previewFileName = `${Date.now()}-preview.jpg`;
-          const { data: previewData, error: previewError } = await supabase.storage
-            .from('arrangement-previews')
-            .upload(previewFileName, blob);
-          if (previewError) throw previewError;
-          previewPath = previewData.path;
-        }
       }
 
+      // Upload Secondary File
       if (secondaryFile) {
         const fileName = `${Date.now()}-secondary-${secondaryFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
         const { data: secData, error: secError } = await supabase.storage
@@ -169,6 +175,26 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
           .upload(fileName, secondaryFile);
         if (secError) throw secError;
         secondaryPath = secData.path;
+      }
+
+      // Upload Preview Image (Manual or Auto-generated)
+      if (manualPreviewFile) {
+        const fileName = `${Date.now()}-preview-${manualPreviewFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+        const { data: imgData, error: imgError } = await supabase.storage
+          .from('arrangement-previews')
+          .upload(fileName, manualPreviewFile);
+        if (imgError) throw imgError;
+        previewPath = imgData.path;
+      } else if (mainFile && previewUrl && previewUrl.startsWith('data:')) {
+        // Only upload auto-generated if we don't have a manual one and we just uploaded a new main PDF
+        const response = await fetch(previewUrl);
+        const blob = await response.blob();
+        const previewFileName = `${Date.now()}-preview-auto.jpg`;
+        const { data: previewData, error: previewError } = await supabase.storage
+          .from('arrangement-previews')
+          .upload(previewFileName, blob);
+        if (previewError) throw previewError;
+        previewPath = previewData.path;
       }
 
       const arrangementData = {
@@ -206,152 +232,178 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Main Score (PDF) *</FormLabel>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        
+        {/* Master Drop Zone */}
+        <div 
+          onDragOver={(e) => { e.preventDefault(); setIsDraggingMaster(true); }}
+          onDragLeave={() => setIsDraggingMaster(false)}
+          onDrop={(e) => { e.preventDefault(); setIsDraggingMaster(false); handleFiles(e.dataTransfer.files); }}
+          className={cn(
+            "relative border-2 border-dashed rounded-[2rem] p-10 text-center transition-all duration-300 group",
+            isDraggingMaster 
+              ? "border-brand-primary bg-brand-primary/5 scale-[1.01] shadow-2xl" 
+              : "border-brand-secondary/30 bg-brand-secondary/5 hover:bg-brand-secondary/10",
+            (mainFile || secondaryFile || manualPreviewFile) ? "border-brand-primary/40" : ""
+          )}
+        >
+          <div className="space-y-4">
+            <div className="w-20 h-20 bg-brand-primary/10 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-500">
+              <Layers className="h-10 w-10 text-brand-primary" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-brand-dark dark:text-brand-light">Master Drop Zone</h3>
+              <p className="text-sm text-brand-dark/60 dark:text-brand-light/60 mt-1">
+                Drag & drop multiple PDFs and an Image here to auto-populate the form.
+              </p>
+            </div>
+            <div className="flex justify-center gap-4 pt-2">
+              <Badge variant="outline" className="bg-white/50 dark:bg-black/50">PDF 1: Main Score</Badge>
+              <Badge variant="outline" className="bg-white/50 dark:bg-black/50">PDF 2: Secondary</Badge>
+              <Badge variant="outline" className="bg-white/50 dark:bg-black/50">Image: Preview</Badge>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          {/* Left Column: File Management */}
+          <div className="space-y-8">
+            
+            {/* Main Score PDF */}
+            <div className="space-y-3">
+              <FormLabel className="text-xs uppercase tracking-[0.2em] font-bold text-brand-primary">1. Main Score (PDF) *</FormLabel>
+              <div className={cn(
+                "p-4 rounded-2xl border bg-white dark:bg-brand-dark flex items-center justify-between gap-4 shadow-sm",
+                mainFile ? "border-brand-primary/30" : "border-brand-secondary/30"
+              )}>
+                <div className="flex items-center gap-3 overflow-hidden">
+                  <div className="w-10 h-10 rounded-lg bg-brand-primary/10 flex items-center justify-center shrink-0">
+                    <FileText className="h-5 w-5 text-brand-primary" />
+                  </div>
+                  <div className="overflow-hidden">
+                    <p className="text-sm font-bold truncate">{mainFile ? mainFile.name : (initialData?.pdf_file_path ? 'Existing Score' : 'No file selected')}</p>
+                    {mainFile && <p className="text-[10px] text-brand-dark/40 uppercase tracking-widest">Ready to upload</p>}
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Input type="file" accept=".pdf" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFiles([file]); }} className="hidden" id="main-pdf-input" />
+                  <Button type="button" variant="outline" size="sm" asChild className="rounded-full h-8 px-4 cursor-pointer">
+                    <label htmlFor="main-pdf-input">Change</label>
+                  </Button>
+                  {mainFile && (
+                    <Button 
+                      type="button" 
+                      size="sm" 
+                      onClick={handleAnalyze} 
+                      disabled={isAnalyzing}
+                      className="bg-brand-primary hover:bg-brand-primary/90 text-white rounded-full h-8 px-4"
+                    >
+                      {isAnalyzing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Wand2 className="h-3 w-3 mr-2" />}
+                      AI Extract
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Secondary File */}
+            <div className="space-y-3">
+              <FormLabel className="text-xs uppercase tracking-[0.2em] font-bold text-brand-primary">2. Secondary File (Parts/Audio)</FormLabel>
+              <div className={cn(
+                "p-4 rounded-2xl border bg-white dark:bg-brand-dark flex items-center justify-between gap-4 shadow-sm",
+                secondaryFile ? "border-brand-primary/30" : "border-brand-secondary/30"
+              )}>
+                <div className="flex items-center gap-3 overflow-hidden">
+                  <div className="w-10 h-10 rounded-lg bg-brand-secondary/10 flex items-center justify-center shrink-0">
+                    <Layers className="h-5 w-5 text-brand-dark/40" />
+                  </div>
+                  <div className="overflow-hidden">
+                    <p className="text-sm font-bold truncate">{secondaryFile ? secondaryFile.name : (initialData?.secondary_file_path ? 'Existing Secondary File' : 'Optional')}</p>
+                    {secondaryFile && <p className="text-[10px] text-brand-dark/40 uppercase tracking-widest">Ready to upload</p>}
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Input type="file" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFiles([file]); }} className="hidden" id="sec-file-input" />
+                  <Button type="button" variant="outline" size="sm" asChild className="rounded-full h-8 px-4 cursor-pointer">
+                    <label htmlFor="sec-file-input">{secondaryFile ? 'Change' : 'Select'}</label>
+                  </Button>
+                  {secondaryFile && (
+                    <Button type="button" variant="ghost" size="sm" onClick={() => setSecondaryFile(null)} className="h-8 w-8 p-0 rounded-full text-red-500">
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+              <FormField
+                control={form.control}
+                name="secondary_file_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Label (e.g. Instrumental Parts)" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30 text-xs" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Preview Image Area */}
+            <div className="space-y-3">
+              <FormLabel className="text-xs uppercase tracking-[0.2em] font-bold text-brand-primary">3. Store Preview Image</FormLabel>
               <div 
-                onDragOver={(e) => { e.preventDefault(); setIsDraggingMain(true); }}
-                onDragLeave={() => setIsDraggingMain(false)}
-                onDrop={(e) => { e.preventDefault(); setIsDraggingMain(false); const file = e.dataTransfer.files?.[0]; if (file) handleMainFile(file); }}
+                onDragOver={(e) => { e.preventDefault(); }}
+                onDrop={(e) => { e.preventDefault(); const file = e.dataTransfer.files?.[0]; if (file && file.type.startsWith('image/')) handleFiles([file]); }}
                 className={cn(
-                  "border-2 border-dashed rounded-2xl p-6 text-center space-y-3 transition-all duration-200 min-h-[200px] flex flex-col items-center justify-center",
-                  isDraggingMain 
-                    ? "border-brand-primary bg-brand-primary/5 scale-[1.02]" 
-                    : "border-brand-secondary/30 bg-brand-light/50 dark:bg-brand-dark/50",
-                  mainFile || initialData?.pdf_file_path ? "border-solid" : ""
+                  "relative aspect-[3/4] rounded-3xl overflow-hidden border-2 border-dashed transition-all duration-300 group",
+                  manualPreviewFile ? "border-brand-primary/50" : "border-brand-secondary/30 bg-brand-secondary/5"
                 )}
               >
                 {previewUrl ? (
-                  <div className="relative group w-full">
-                    <img src={previewUrl} alt="Preview" className="max-h-40 mx-auto rounded-lg shadow-md border border-brand-secondary/20" />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
-                      <p className="text-white text-xs font-medium">Drop new PDF to replace</p>
+                  <>
+                    <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3">
+                      <p className="text-white text-xs font-bold uppercase tracking-widest">Drop new image to replace</p>
+                      <div className="flex gap-2">
+                        <Input type="file" accept="image/*" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFiles([file]); }} className="hidden" id="preview-img-input" />
+                        <Button type="button" variant="secondary" size="sm" asChild className="rounded-full cursor-pointer">
+                          <label htmlFor="preview-img-input">Upload Manually</label>
+                        </Button>
+                      </div>
                     </div>
-                  </div>
+                    {manualPreviewFile && (
+                      <div className="absolute top-4 right-4">
+                        <Badge className="bg-brand-primary text-white">Custom Upload</Badge>
+                      </div>
+                    )}
+                  </>
                 ) : (
-                  <div className="space-y-2">
-                    <Upload className={cn("h-8 w-8 mx-auto", isDraggingMain ? "text-brand-primary" : "text-brand-secondary/50")} />
-                    <p className="text-sm font-medium">Main Score PDF</p>
-                  </div>
-                )}
-                
-                <Input type="file" accept=".pdf" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleMainFile(file); }} className="hidden" id="main-pdf-upload" />
-                <label htmlFor="main-pdf-upload">
-                  <Button type="button" variant="outline" size="sm" asChild className="cursor-pointer rounded-full">
-                    <span>{mainFile || initialData?.pdf_file_path ? 'Change PDF' : 'Select PDF'}</span>
-                  </Button>
-                </label>
-
-                {mainFile && (
-                  <div className="w-full space-y-2 pt-2">
-                    <div className="flex items-center gap-2 justify-center text-xs text-brand-primary font-medium">
-                      <FileText className="h-3 w-3" />
-                      <span className="truncate max-w-[150px]">{mainFile.name}</span>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+                    <ImageIcon className="h-12 w-12 text-brand-secondary/40" />
+                    <div className="text-center">
+                      <p className="text-sm font-bold">No Preview Image</p>
+                      <p className="text-[10px] text-brand-dark/40 uppercase tracking-widest mt-1">Drop image or auto-generate from PDF</p>
                     </div>
-                    <Button 
-                      type="button" 
-                      size="sm"
-                      onClick={handleAnalyze} 
-                      disabled={isAnalyzing} 
-                      className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white rounded-full"
-                    >
-                      {isAnalyzing ? <Loader2 className="h-3 w-3 animate-spin mr-2" /> : <Wand2 className="h-3 w-3 mr-2" />}
-                      AI Extract (All Pages)
+                    <Input type="file" accept="image/*" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFiles([file]); }} className="hidden" id="preview-img-input-init" />
+                    <Button type="button" variant="outline" size="sm" asChild className="rounded-full cursor-pointer">
+                      <label htmlFor="preview-img-input-init">Select Image</label>
                     </Button>
                   </div>
                 )}
               </div>
             </div>
+          </div>
 
-            <div className="space-y-2">
-              <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Secondary File (Parts, Audio, etc.)</FormLabel>
-              <div 
-                onDragOver={(e) => { e.preventDefault(); setIsDraggingSecondary(true); }}
-                onDragLeave={() => setIsDraggingSecondary(false)}
-                onDrop={(e) => { e.preventDefault(); setIsDraggingSecondary(false); const file = e.dataTransfer.files?.[0]; if (file) handleSecondaryFile(file); }}
-                className={cn(
-                  "border-2 border-dashed rounded-2xl p-6 text-center space-y-3 transition-all duration-200 min-h-[150px] flex flex-col items-center justify-center",
-                  isDraggingSecondary 
-                    ? "border-brand-primary bg-brand-primary/5 scale-[1.02]" 
-                    : "border-brand-secondary/30 bg-brand-light/50 dark:bg-brand-dark/50",
-                  secondaryFile || initialData?.secondary_file_path ? "border-solid" : ""
-                )}
-              >
-                {secondaryFile || initialData?.secondary_file_path ? (
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="h-10 w-10 bg-brand-primary/10 rounded-full flex items-center justify-center">
-                      <FileText className="h-5 w-5 text-brand-primary" />
-                    </div>
-                    <p className="text-xs font-medium truncate max-w-[200px]">
-                      {secondaryFile ? secondaryFile.name : (initialData?.secondary_file_name || 'Existing File')}
-                    </p>
-                    <div className="flex gap-2">
-                      <Input type="file" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleSecondaryFile(file); }} className="hidden" id="sec-file-upload" />
-                      <label htmlFor="sec-file-upload">
-                        <Button type="button" variant="outline" size="sm" asChild className="cursor-pointer rounded-full h-7 px-3 text-[10px]">
-                          <span>Replace</span>
-                        </Button>
-                      </label>
-                      <Button type="button" variant="ghost" size="sm" onClick={() => { setSecondaryFile(null); form.setValue('secondary_file_name', ''); }} className="h-7 px-3 text-[10px] text-red-500">
-                        Remove
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <Upload className={cn("h-6 w-6 mx-auto", isDraggingSecondary ? "text-brand-primary" : "text-brand-secondary/50")} />
-                    <p className="text-xs font-medium">Drag & Drop Secondary File</p>
-                    <Input type="file" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleSecondaryFile(file); }} className="hidden" id="sec-file-upload-init" />
-                    <label htmlFor="sec-file-upload-init">
-                      <Button type="button" variant="outline" size="sm" asChild className="cursor-pointer rounded-full h-7 px-3 text-[10px]">
-                        <span>Select File</span>
-                      </Button>
-                    </label>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <FormField
-              control={form.control}
-              name="secondary_file_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Secondary File Label</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g. Instrumental Parts, Backing Track" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
+          {/* Right Column: Metadata Form */}
+          <div className="space-y-6">
             <FormField
               control={form.control}
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Title *</FormLabel>
+                  <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Arrangement Title *</FormLabel>
                   <FormControl>
-                    <Input placeholder="Arrangement Title" {...field} className="bg-white dark:bg-brand-dark h-12 rounded-xl border-brand-secondary/30" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="composer"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Composer</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Original Composer" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" />
+                    <Input placeholder="e.g. Fly Me To The Moon" {...field} className="bg-white dark:bg-brand-dark h-12 rounded-xl border-brand-secondary/30 font-bold text-lg" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -359,6 +411,19 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
             />
 
             <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="composer"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Composer / Arranger</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Bart Howard" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="instrumentation"
@@ -372,6 +437,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
                   </FormItem>
                 )}
               />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="difficulty"
@@ -385,9 +453,6 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
                   </FormItem>
                 )}
               />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="key"
@@ -401,6 +466,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
                   </FormItem>
                 )}
               />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="genre"
@@ -409,6 +477,19 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
                     <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Genre</FormLabel>
                     <FormControl>
                       <Input placeholder="e.g. Jazz" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="duration"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Duration</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. 3:30" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -430,35 +511,6 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
               )}
             />
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="duration"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Duration</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. 3:30" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="style"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Style</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. Swing" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
             <div className="grid grid-cols-2 gap-4 items-end">
               <FormField
                 control={form.control}
@@ -467,7 +519,10 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
                   <FormItem>
                     <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Price (AUD)</FormLabel>
                     <FormControl>
-                      <Input type="number" step="0.01" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" />
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-dark/40 font-bold">$</span>
+                        <Input type="number" step="0.01" {...field} className="bg-white dark:bg-brand-dark h-10 pl-8 rounded-xl border-brand-secondary/30 font-bold" />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -491,8 +546,8 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
           </div>
         </div>
 
-        <Button type="submit" className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-14 text-lg font-bold rounded-full shadow-xl shadow-brand-primary/20 transition-all hover:scale-[1.01]" disabled={isSubmitting}>
-          {isSubmitting && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+        <Button type="submit" className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-16 text-xl font-bold rounded-full shadow-xl shadow-brand-primary/20 transition-all hover:scale-[1.01]" disabled={isSubmitting}>
+          {isSubmitting && <Loader2 className="mr-2 h-6 w-6 animate-spin" />}
           {initialData ? 'Update Arrangement' : 'Add Arrangement to Store'}
         </Button>
       </form>
