@@ -4,7 +4,7 @@ import { ArrangementCard } from '@/components/store/ArrangementCard';
 import { CartDrawer } from '@/components/store/CartDrawer';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, Search, Music, BookOpen, Download, ShieldCheck } from 'lucide-react';
+import { Loader2, Search, Music, BookOpen, Download, ShieldCheck, HelpCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';
 import { CartProvider } from '@/components/store/CartProvider';
@@ -12,6 +12,72 @@ import SeoMetadata from '@/components/SeoMetadata';
 import StoreStructuredData from '@/components/store/StoreStructuredData';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+
+const faqs = [
+  {
+    question: "How do I receive my sheet music after purchase?",
+    answer: "Immediately after a successful checkout via Stripe, you will receive an automated email containing secure download links for your PDF scores and any included secondary files (like instrumental parts or audio tracks)."
+  },
+  {
+    question: "Are these arrangements suitable for professional performance?",
+    answer: "Yes. Every arrangement in the store is crafted by Daniele Buatti, a professional Music Director and Pianist, with performance practicality and musical integrity in mind. They are used regularly in professional musical theatre and cabaret settings."
+  },
+  {
+    question: "Can I request a transposition of an existing arrangement?",
+    answer: "Absolutely. If you need a specific arrangement in a different key, please use the contact form to send an inquiry. Custom transpositions are usually processed within 48 hours for a small additional fee."
+  },
+  {
+    question: "What is included in a 'Digital Download'?",
+    answer: "Most downloads include a full Piano/Vocal score in PDF format. Some arrangements also include separate instrumental parts or rehearsal backing tracks where specified in the item details."
+  }
+];
+
+const StoreFaqSection: React.FC = () => {
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqs.map(faq => ({
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer
+      }
+    }))
+  };
+
+  return (
+    <section className="mt-24 pt-16 border-t border-brand-secondary/20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <div className="max-w-3xl mx-auto space-y-8">
+        <div className="text-center space-y-2">
+          <div className="w-12 h-12 bg-brand-primary/10 rounded-full flex items-center justify-center mx-auto text-brand-primary mb-4">
+            <HelpCircle className="h-6 w-6" />
+          </div>
+          <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Frequently Asked Questions</h2>
+          <p className="text-brand-dark/60 dark:text-brand-light/60">Everything you need to know about our digital sheet music store.</p>
+        </div>
+
+        <Accordion type="single" collapsible className="w-full">
+          {faqs.map((faq, index) => (
+            <AccordionItem key={index} value={`item-${index}`} className="border-brand-secondary/20">
+              <AccordionTrigger className="text-left font-semibold text-brand-dark dark:text-brand-light hover:text-brand-primary transition-colors">
+                {faq.question}
+              </AccordionTrigger>
+              <AccordionContent className="text-brand-dark/70 dark:text-brand-light/70 leading-relaxed">
+                {faq.answer}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </div>
+    </section>
+  );
+};
 
 const StorePageContent: React.FC = () => {
   const [arrangements, setArrangements] = useState<any[]>([]);
@@ -67,8 +133,8 @@ const StorePageContent: React.FC = () => {
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark">
       <SeoMetadata 
-        title="Music Arrangement Store | Daniele Buatti"
-        description="Browse and purchase professional musical scores and arrangements. Instant digital downloads for piano, vocals, and ensembles."
+        title="Sheet Music Store | Professional Piano & Vocal Arrangements | Daniele Buatti"
+        description="Browse a curated collection of professional sheet music PDFs, piano arrangements, and vocal scores. Instant digital downloads for performers and educators."
         url={`${window.location.origin}/store`}
       />
       <StoreStructuredData arrangements={arrangements} />
@@ -82,7 +148,7 @@ const StorePageContent: React.FC = () => {
               Music Arrangement <span className="text-brand-primary">Store</span>
             </h1>
             <p className="text-lg text-brand-dark/60 dark:text-brand-light/60 max-w-2xl">
-              Browse and purchase professional scores and arrangements. Digital downloads delivered instantly via email.
+              Professional sheet music, piano transcriptions, and vocal arrangements. Digital downloads delivered instantly.
             </p>
           </div>
           <div className="flex items-center gap-4">
@@ -151,11 +217,11 @@ const StorePageContent: React.FC = () => {
         <section className="mt-24 pt-16 border-t border-brand-secondary/20">
           <div className="max-w-4xl mx-auto space-y-12">
             <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Professional Music Arrangements</h2>
+              <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Professional Music Arrangements & Sheet Music</h2>
               <p className="text-brand-dark/60 dark:text-brand-light/60 leading-relaxed">
-                Explore a curated collection of musical scores designed for performers, educators, and ensembles. 
-                From contemporary musical theatre to classic jazz standards, each arrangement is crafted with 
-                professional performance in mind.
+                Explore a curated collection of professional sheet music PDFs designed for performers, educators, and ensembles. 
+                From contemporary musical theatre vocal selections to classic jazz piano transcriptions, each arrangement is 
+                crafted with professional performance standards in mind.
               </p>
             </div>
 
@@ -164,7 +230,7 @@ const StorePageContent: React.FC = () => {
                 <div className="w-12 h-12 bg-brand-primary/10 rounded-full flex items-center justify-center mx-auto text-brand-primary">
                   <BookOpen className="h-6 w-6" />
                 </div>
-                <h3 className="font-bold">Expertly Crafted</h3>
+                <h3 className="font-bold">Expertly Crafted Scores</h3>
                 <p className="text-sm text-brand-dark/60 dark:text-brand-light/60">
                   Arrangements by Daniele Buatti, drawing on over 12 years of experience as a Music Director and Pianist.
                 </p>
@@ -173,18 +239,18 @@ const StorePageContent: React.FC = () => {
                 <div className="w-12 h-12 bg-brand-primary/10 rounded-full flex items-center justify-center mx-auto text-brand-primary">
                   <Download className="h-6 w-6" />
                 </div>
-                <h3 className="font-bold">Instant Delivery</h3>
+                <h3 className="font-bold">Instant PDF Delivery</h3>
                 <p className="text-sm text-brand-dark/60 dark:text-brand-light/60">
-                  Receive secure download links instantly via email after a successful checkout.
+                  Receive secure download links for your sheet music instantly via email after a successful checkout.
                 </p>
               </div>
               <div className="space-y-3 text-center">
                 <div className="w-12 h-12 bg-brand-primary/10 rounded-full flex items-center justify-center mx-auto text-brand-primary">
                   <ShieldCheck className="h-6 w-6" />
                 </div>
-                <h3 className="font-bold">Secure Checkout</h3>
+                <h3 className="font-bold">Secure Stripe Checkout</h3>
                 <p className="text-sm text-brand-dark/60 dark:text-brand-light/60">
-                  Safe and secure payments processed via Stripe, supporting all major credit cards.
+                  Safe and secure payments processed via Stripe, supporting all major credit cards globally.
                 </p>
               </div>
             </div>
@@ -192,13 +258,16 @@ const StorePageContent: React.FC = () => {
             <div className="bg-brand-secondary/5 p-8 rounded-[2rem] border border-brand-secondary/10">
               <h3 className="text-xl font-bold mb-4 text-center">Custom Arrangements & Transcriptions</h3>
               <p className="text-brand-dark/70 dark:text-brand-light/70 text-center leading-relaxed">
-                Can't find what you're looking for? I also offer custom transcription and arrangement services 
-                tailored to your specific needs, key, and instrumentation. Whether it's a unique audition cut 
-                or a full ensemble score, feel free to reach out for a quote.
+                Can't find the specific score you're looking for? I also offer custom transcription and arrangement services 
+                tailored to your specific vocal range, key, and instrumentation. Whether it's a unique audition cut 
+                or a full ensemble score, feel free to reach out for a custom quote.
               </p>
             </div>
           </div>
         </section>
+
+        {/* FAQ Section */}
+        <StoreFaqSection />
       </main>
       
       <Footer />
