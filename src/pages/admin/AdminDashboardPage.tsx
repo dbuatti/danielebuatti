@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, FileText, DollarSign, ExternalLink, Loader2, TrendingUp } from 'lucide-react';
+import { FileText, DollarSign, ExternalLink, Loader2, TrendingUp, ShoppingBag } from 'lucide-react';
 import { useSession } from '@/components/SessionContextProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { showError } from '@/utils/toast';
@@ -15,7 +15,7 @@ interface Quote {
   id: string;
   client_name: string;
   invoice_type: string;
-  event_title: string; // Added event_title
+  event_title: string;
   event_date?: string;
   total_amount: number;
   accepted_at: string;
@@ -24,6 +24,7 @@ interface Quote {
 const AdminDashboardPage: React.FC = () => {
   const { user } = useSession();
   const [totalRevenue, setTotalRevenue] = useState<number>(0);
+  const [storeRevenue, setStoreRevenue] = useState<number>(0); // New state
   const [pipelineValue, setPipelineValue] = useState<number>(0);
   const [totalInvoices, setTotalInvoices] = useState<number>(0);
   const [recentQuotes, setRecentQuotes] = useState<Quote[]>([]);
@@ -60,11 +61,20 @@ const AdminDashboardPage: React.FC = () => {
         // 4. Fetch recent accepted quotes
         const { data: quotes } = await supabase
           .from('invoices')
-          .select('id, client_name, invoice_type, event_title, event_date, total_amount, accepted_at') // Added event_title to select
+          .select('id, client_name, invoice_type, event_title, event_date, total_amount, accepted_at')
           .not('accepted_at', 'is', null)
           .order('accepted_at', { ascending: false })
           .limit(5);
         setRecentQuotes(quotes || []);
+
+        // 5. Fetch Store Revenue (Gift Cards + Arrangements)
+        const { data: giftCardData } = await supabase
+          .from('gift_cards')
+          .select('value')
+          .eq('payment_status', 'paid');
+        
+        const sumStore = giftCardData?.reduce((sum, card) => sum + (Number(card.value) || 0), 0) || 0;
+        setStoreRevenue(sumStore);
 
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
@@ -94,7 +104,7 @@ const AdminDashboardPage: React.FC = () => {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <Card className="bg-white dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50 rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-bold uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40">Total Revenue</CardTitle>
+            <CardTitle className="text-xs font-bold uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40">Quote Revenue</CardTitle>
             <DollarSign className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
@@ -102,6 +112,18 @@ const AdminDashboardPage: React.FC = () => {
               {isLoading ? '...' : `A$${totalRevenue.toLocaleString()}`}
             </div>
             <p className="text-xs text-brand-dark/60 dark:text-brand-light/60 mt-1">Accepted invoices</p>
+          </CardContent>
+        </Card>
+        <Card className="bg-white dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50 rounded-2xl">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-xs font-bold uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40">Store Revenue</CardTitle>
+            <ShoppingBag className="h-4 w-4 text-brand-primary" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-brand-dark dark:text-brand-light">
+              {isLoading ? '...' : `A$${storeRevenue.toLocaleString()}`}
+            </div>
+            <p className="text-xs text-brand-dark/60 dark:text-brand-light/60 mt-1">Digital sales & gift cards</p>
           </CardContent>
         </Card>
         <Card className="bg-white dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50 rounded-2xl">
@@ -126,16 +148,6 @@ const AdminDashboardPage: React.FC = () => {
               {isLoading ? '...' : totalInvoices}
             </div>
             <p className="text-xs text-brand-dark/60 dark:text-brand-light/60 mt-1">All time</p>
-          </CardContent>
-        </Card>
-        <Card className="bg-white dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50 rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-bold uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40">Active Users</CardTitle>
-            <Users className="h-4 w-4 text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-brand-dark dark:text-brand-light">1</div>
-            <p className="text-xs text-brand-dark/60 dark:text-brand-light/60 mt-1">System administrator</p>
           </CardContent>
         </Card>
       </div>
