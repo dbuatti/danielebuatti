@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Music, ShoppingCart, Clock, User, ArrowLeft, ShieldCheck, Download, Info } from 'lucide-react';
 import { useCart } from '@/components/store/CartProvider';
+import { CartDrawer } from '@/components/store/CartDrawer'; // Import CartDrawer
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SeoMetadata from '@/components/SeoMetadata';
@@ -127,11 +128,14 @@ const ArrangementDetailsPage: React.FC = () => {
       <Navbar />
       
       <main className="container mx-auto px-4 py-12 max-w-6xl">
-        <Button asChild variant="ghost" className="mb-8 hover:bg-brand-secondary/10">
-          <Link to="/store">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Store
-          </Link>
-        </Button>
+        <div className="flex items-center justify-between mb-8">
+          <Button asChild variant="ghost" className="hover:bg-brand-secondary/10">
+            <Link to="/store">
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Store
+            </Link>
+          </Button>
+          <CartDrawer />
+        </div>
 
         <div className="grid md:grid-cols-2 gap-12">
           {/* Left: Preview Image */}
