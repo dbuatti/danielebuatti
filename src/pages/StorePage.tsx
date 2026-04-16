@@ -4,7 +4,7 @@ import { ArrangementCard } from '@/components/store/ArrangementCard';
 import { CartDrawer } from '@/components/store/CartDrawer';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, Search, Music } from 'lucide-react';
+import { Loader2, Search, Music, BookOpen, Download, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';
 import { CartProvider } from '@/components/store/CartProvider';
@@ -38,7 +38,7 @@ const StorePageContent: React.FC = () => {
       const { data, error } = await supabase
         .from('arrangements')
         .select('*')
-        .eq('status', 'published') // Only show published items
+        .eq('status', 'published')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -146,6 +146,59 @@ const StorePageContent: React.FC = () => {
             ))}
           </div>
         )}
+
+        {/* SEO Content Section */}
+        <section className="mt-24 pt-16 border-t border-brand-secondary/20">
+          <div className="max-w-4xl mx-auto space-y-12">
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl font-bold text-brand-dark dark:text-brand-light">Professional Music Arrangements</h2>
+              <p className="text-brand-dark/60 dark:text-brand-light/60 leading-relaxed">
+                Explore a curated collection of musical scores designed for performers, educators, and ensembles. 
+                From contemporary musical theatre to classic jazz standards, each arrangement is crafted with 
+                professional performance in mind.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="space-y-3 text-center">
+                <div className="w-12 h-12 bg-brand-primary/10 rounded-full flex items-center justify-center mx-auto text-brand-primary">
+                  <BookOpen className="h-6 w-6" />
+                </div>
+                <h3 className="font-bold">Expertly Crafted</h3>
+                <p className="text-sm text-brand-dark/60 dark:text-brand-light/60">
+                  Arrangements by Daniele Buatti, drawing on over 12 years of experience as a Music Director and Pianist.
+                </p>
+              </div>
+              <div className="space-y-3 text-center">
+                <div className="w-12 h-12 bg-brand-primary/10 rounded-full flex items-center justify-center mx-auto text-brand-primary">
+                  <Download className="h-6 w-6" />
+                </div>
+                <h3 className="font-bold">Instant Delivery</h3>
+                <p className="text-sm text-brand-dark/60 dark:text-brand-light/60">
+                  Receive secure download links instantly via email after a successful checkout.
+                </p>
+              </div>
+              <div className="space-y-3 text-center">
+                <div className="w-12 h-12 bg-brand-primary/10 rounded-full flex items-center justify-center mx-auto text-brand-primary">
+                  <ShieldCheck className="h-6 w-6" />
+                </div>
+                <h3 className="font-bold">Secure Checkout</h3>
+                <p className="text-sm text-brand-dark/60 dark:text-brand-light/60">
+                  Safe and secure payments processed via Stripe, supporting all major credit cards.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-brand-secondary/5 p-8 rounded-[2rem] border border-brand-secondary/10">
+              <h3 className="text-xl font-bold mb-4 text-center">Custom Arrangements & Transcriptions</h3>
+              <p className="text-brand-dark/70 dark:text-brand-light/70 text-center leading-relaxed">
+                Can't find what you're looking for? I also offer custom transcription and arrangement services 
+                tailored to your specific needs, key, and instrumentation. Whether it's a unique audition cut 
+                or a full ensemble score, feel free to reach out for a quote.
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
       
       <Footer />
