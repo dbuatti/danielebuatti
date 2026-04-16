@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart, Trash2, Loader2 } from 'lucide-react';
 import { useCart } from './CartProvider';
@@ -45,11 +45,12 @@ export const CartDrawer: React.FC = () => {
         </Button>
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-md flex flex-col bg-brand-light dark:bg-brand-dark-alt border-l border-brand-secondary/20">
-        <SheetHeader>
+        <SheetHeader className="pb-4 border-b border-brand-secondary/10">
           <SheetTitle className="text-brand-primary flex items-center gap-2 text-2xl">
             <ShoppingCart className="h-6 w-6" /> Your Cart
           </SheetTitle>
         </SheetHeader>
+        
         <div className="flex-grow overflow-y-auto py-6 space-y-4">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
@@ -78,28 +79,33 @@ export const CartDrawer: React.FC = () => {
             ))
           )}
         </div>
+
         {items.length > 0 && (
-          <SheetFooter className="flex-col gap-4 border-t border-brand-secondary/20 pt-6 mt-auto">
-            <div className="flex items-center justify-between w-full mb-2">
+          <div className="border-t border-brand-secondary/20 pt-6 pb-8 space-y-6">
+            <div className="flex items-center justify-between w-full px-1">
               <span className="text-lg font-medium text-brand-dark dark:text-brand-light">Total</span>
               <span className="text-3xl font-bold text-brand-primary">A${total.toFixed(2)}</span>
             </div>
-            <Button 
-              className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-14 text-lg font-bold shadow-lg shadow-brand-primary/20" 
-              onClick={handleCheckout}
-              disabled={isCheckingOut}
-            >
-              {isCheckingOut ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : 'Checkout with Stripe'}
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={clearCart} 
-              className="text-brand-dark/40 dark:text-brand-light/40 hover:text-red-500 transition-colors"
-            >
-              Clear Cart
-            </Button>
-          </SheetFooter>
+            
+            <div className="flex flex-col gap-3">
+              <Button 
+                className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-14 text-lg font-bold shadow-lg shadow-brand-primary/20 rounded-full" 
+                onClick={handleCheckout}
+                disabled={isCheckingOut}
+              >
+                {isCheckingOut ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : 'Checkout with Stripe'}
+              </Button>
+              
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={clearCart} 
+                className="text-brand-dark/40 dark:text-brand-light/40 hover:text-red-500 transition-colors w-full"
+              >
+                Clear Cart
+              </Button>
+            </div>
+          </div>
         )}
       </SheetContent>
     </Sheet>

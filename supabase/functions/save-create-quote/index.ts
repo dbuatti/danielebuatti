@@ -23,8 +23,18 @@ serve(async (req: Request) => {
       }
     );
 
+    // Verify Authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: 'No authorization header' }), { status: 401, headers: corsHeaders });
+    }
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser(authHeader.replace('Bearer ', ''));
+    if (authError || !user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: corsHeaders });
+    }
+
     const {
-      id, // Optional ID for updating existing quote
+      id,
       clientName,
       clientEmail,
       invoiceType,
@@ -32,20 +42,19 @@ serve(async (req: Request) => {
       eventDate,
       eventLocation,
       preparedBy,
-      totalAmount, // This is the total of the ACTIVE version
-      details, // This now contains { versions: QuoteVersion[] }
+      totalAmount,
+      details,
       slug,
-      status, // This is the status of the ACTIVE version
+      status,
     } = await req.json();
 
     if (!clientName || !clientEmail || !invoiceType || !eventTitle || !eventDate || !eventLocation || !preparedBy || totalAmount === undefined || !details || !slug || !status) {
-      return new Response(JSON.stringify({ error: 'Missing required fields for quote creation/update' }), {
+      return new Response(JSON.stringify({ error: 'Missing required fields' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
     
-    // Find the active version to set top-level accepted/rejected dates
     const activeVersion = details.versions.find(v => v.is_active);
     
     const quoteData = {
@@ -57,7 +66,7 @@ serve(async (req: Request) => {
       event_location: eventLocation,
       prepared_by: preparedBy,
       total_amount: totalAmount,
-      details: details, // Save the full versions array
+      details: details,
       slug: slug,
       status: status,
       accepted_at: activeVersion?.accepted_at || null,
@@ -68,33 +77,16 @@ serve(async (req: Request) => {
     let action = id ? 'Update' : 'Insert';
 
     if (id) {
-      // Update existing quote
-      result = await supabaseClient
-        .from('invoices')
-        .update(quoteData)
-        .eq('id', id)
-        .select()
-        .single();
+      result = await supabaseClient.from('invoices').update(quoteData).eq('id', id).select().single();
     } else {
-      // Insert new quote
-      result = await supabaseClient
-        .from('invoices')
-        .insert([quoteData])
-        .select()
-        .single();
+      result = await supabaseClient.from('invoices').insert([quoteData]).select().single();
     }
 
-    if (result.error) {
-      console.error(`Supabase ${action} error:`, result.error);
-      throw new Error(`Failed to ${action.toLowerCase()} quote: ${result.error.message}`);
-    }
+    if (result.error) throw new Error(`Failed to ${action.toLowerCase()} quote: ${result.error.message}`);
 
     const updatedRecord = result.data;
-    if (!updatedRecord) {
-      throw new Error('No record returned after operation.');
-    }
 
-    // --- Admin Notification (Only send if status is 'Created' and it's a new quote) ---
+    // Admin Notification
     if (status === 'Created' && action === 'Insert') {
       const EMAIL_SERVICE_API_KEY = Deno.env.get('EMAIL_SERVICE_API_KEY');
       const CONTACT_FORM_RECIPIENT_EMAIL = Deno.env.get('CONTACT_FORM_RECIPIENT_EMAIL');
@@ -110,46 +102,20 @@ serve(async (req: Request) => {
               <h2 style="color: #fdb813; text-align: center; margin-bottom: 20px;">New Quote Created!</h2>
               <p style="font-size: 16px; line-height: 1.6;">A new quote has been generated in your system:</p>
               <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Client Name:</td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${updatedRecord.client_name}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Quote Title:</td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${updatedRecord.event_title}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Total Amount:</td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">£${updatedRecord.total_amount.toFixed(2)}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Admin Link:</td>
-                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;"><a href="${adminQuoteLink}" style="color: #fdb813; text-decoration: none;">View in Admin Panel</a></td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Public Link:</td>
-                  <td style="padding: 8px 0; border-top: 1px solid #EEEEEE;"><a href="${publicQuoteLink}" style="color: #fdb813; text-decoration: none;">Share with Client</a></td>
-                </tr>
+                <tr><td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Client Name:</td><td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${updatedRecord.client_name}</td></tr>
+                <tr><td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Quote Title:</td><td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">${updatedRecord.event_title}</td></tr>
+                <tr><td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Total Amount:</td><td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">£${updatedRecord.total_amount.toFixed(2)}</td></tr>
+                <tr><td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Admin Link:</td><td style="padding: 8px 0; border-top: 1px solid #EEEEEE;"><a href="${adminQuoteLink}" style="color: #fdb813; text-decoration: none;">View in Admin Panel</a></td></tr>
+                <tr><td style="padding: 8px 0; border-top: 1px solid #EEEEEE; font-weight: bold; width: 150px;">Public Link:</td><td style="padding: 8px 0; border-top: 1px solid #EEEEEE;"><a href="${publicQuoteLink}" style="color: #fdb813; text-decoration: none;">Share with Client</a></td></tr>
               </table>
-              <p style="font-size: 14px; color: #666666; text-align: center; margin-top: 30px;">
-                This notification was sent from your website.
-              </p>
             </div>
           </div>
         `;
 
         await fetch(EMAIL_SERVICE_ENDPOINT, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${EMAIL_SERVICE_API_KEY}`,
-          },
-          body: JSON.stringify({
-            from: 'info@danielebuatti.com',
-            to: CONTACT_FORM_RECIPIENT_EMAIL,
-            subject: subject,
-            html: emailHtml,
-          }),
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${EMAIL_SERVICE_API_KEY}` },
+          body: JSON.stringify({ from: 'info@danielebuatti.com', to: CONTACT_FORM_RECIPIENT_EMAIL, subject: subject, html: emailHtml }),
         });
       }
     }
@@ -160,7 +126,6 @@ serve(async (req: Request) => {
     });
 
   } catch (error: unknown) {
-    console.error('Edge Function error:', (error as Error).message);
     return new Response(JSON.stringify({ error: (error as Error).message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
