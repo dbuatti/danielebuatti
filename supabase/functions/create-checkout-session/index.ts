@@ -37,14 +37,19 @@ serve(async (req: Request) => {
       const unitAmount = Math.round(parseFloat(item.price) * 100);
       totalCents += unitAmount;
       
+      const keysDescription = item.selectedKeys && item.selectedKeys.length > 0 
+        ? ` (Keys: ${item.selectedKeys.join(', ')})` 
+        : '';
+
       return {
         price_data: {
           currency: 'aud',
           product_data: {
-            name: item.title,
+            name: item.title + keysDescription,
             description: `Arrangement by ${item.composer || 'Unknown'}`,
             metadata: {
               arrangement_id: item.id,
+              selected_keys: item.selectedKeys ? item.selectedKeys.join(',') : '',
             },
           },
           unit_amount: unitAmount,
@@ -68,7 +73,11 @@ serve(async (req: Request) => {
       success_url: `${req.headers.get('origin')}/store/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get('origin')}/store?canceled=true`,
       metadata: {
-        arrangement_ids: items.map((i: any) => i.id).join(','),
+        // Store detailed purchase info in session metadata for the webhook
+        purchase_data: JSON.stringify(items.map(i => ({
+          id: i.id,
+          keys: i.selectedKeys || []
+        }))),
         type: 'arrangement_purchase'
       },
     });

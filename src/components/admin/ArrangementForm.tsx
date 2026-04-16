@@ -1,34 +1,42 @@
 import React, { useState, useCallback } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, Wand2, FileText, Image as ImageIcon, X, Layers, Save, CheckCircle } from 'lucide-react';
+import { Loader2, Wand2, FileText, Image as ImageIcon, X, Layers, Save, CheckCircle, Plus, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { processPDF } from '@/lib/pdf-utils';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+
+const variantSchema = z.object({
+  key: z.string().min(1, 'Key name is required'),
+  file_path: z.string().min(1, 'File is required'),
+  file_name: z.string().optional(),
+});
 
 const arrangementSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   composer: z.string().optional(),
   instrumentation: z.string().optional(),
   difficulty: z.string().optional(),
-  key: z.string().optional(),
+  key: z.string().optional(), // Primary/Default key
   genre: z.string().optional(),
   lyrics: z.string().optional(),
   duration: z.string().optional(),
   style: z.string().optional(),
   price: z.string().optional(),
+  additional_key_price: z.string().optional(),
   is_purchasable: z.boolean().default(false),
   status: z.enum(['draft', 'published']).default('published'),
   secondary_file_name: z.string().optional(),
+  key_variants: z.array(variantSchema).default([]),
 });
 
 type ArrangementFormValues = z.infer<typeof arrangementSchema>;
@@ -47,6 +55,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
   const [secondaryFile, setSecondaryFile] = useState<File | null>(null);
   const [manualPreviewFile, setManualPreviewFile] = useState<File | null>(null);
   
+  // Track files for variants
+  const [variantFiles, setVariantFiles] = useState<Record<number, File>>({});
+
   const [previewUrl, setPreviewUrl] = useState<string | null>(
     initialData?.preview_image_path 
       ? supabase.storage.from('arrangement-previews').getPublicUrl(initialData.preview_image_path).data.publicUrl 
@@ -58,8 +69,10 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
     defaultValues: initialData ? {
       ...initialData,
       price: initialData.price?.toString() || '0',
+      additional_key_price: initialData.additional_key_price?.toString() || '0',
       secondary_file_name: initialData.secondary_file_name || '',
       status: initialData.status || 'published',
+      key_variants: initialData.key_variants || [],
     } : {
       title: '',
       composer: '',
@@ -71,10 +84,17 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
       duration: '',
       style: '',
       price: '0',
+      additional_key_price: '0',
       is_purchasable: false,
       status: 'published',
       secondary_file_name: '',
+      key_variants: [],
     },
+  });
+
+  const { fields: variantFields, append: appendVariant, remove: removeVariant } = useFieldArray({
+    control: form.control,
+    name: 'key_variants',
   });
 
   const handleFiles = useCallback(async (files: FileList | File[]) => {
@@ -113,6 +133,12 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
       toast.success(`Processed ${pdfs.length} PDF(s) and ${images.length} image(s)`);
     }
   }, [form]);
+
+  const handleVariantFile = (index: number, file: File) => {
+    setVariantFiles(prev => ({ ...prev, [index]: file }));
+    form.setValue(`key_variants.${index}.file_name`, file.name);
+    form.setValue(`key_variants.${index}.file_path`, 'pending_upload'); // Placeholder to satisfy validation
+  };
 
   const handleAnalyze = async () => {
     if (!mainFile) {
@@ -164,6 +190,7 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
       let secondaryPath = initialData?.secondary_file_path;
       let previewPath = initialData?.preview_image_path;
 
+      // Upload Main File
       if (mainFile) {
         const fileName = `${Date.now()}-main-${mainFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
         const { data: pdfData, error: pdfError } = await supabase.storage
@@ -171,9 +198,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
           .upload(fileName, mainFile);
         if (pdfError) throw pdfError;
         mainPath = pdfData.path;
-        setMainFile(null); // Clear after upload
       }
 
+      // Upload Secondary File
       if (secondaryFile) {
         const fileName = `${Date.now()}-secondary-${secondaryFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
         const { data: secData, error: secError } = await supabase.storage
@@ -181,9 +208,9 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
           .upload(fileName, secondaryFile);
         if (secError) throw secError;
         secondaryPath = secData.path;
-        setSecondaryFile(null); // Clear after upload
       }
 
+      // Upload Preview Image
       if (manualPreviewFile) {
         const fileName = `${Date.now()}-preview-${manualPreviewFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
         const { data: imgData, error: imgError } = await supabase.storage
@@ -191,7 +218,6 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
           .upload(fileName, manualPreviewFile);
         if (imgError) throw imgError;
         previewPath = imgData.path;
-        setManualPreviewFile(null); // Clear after upload
       } else if (mainFile && previewUrl && previewUrl.startsWith('data:')) {
         const response = await fetch(previewUrl);
         const blob = await response.blob();
@@ -203,12 +229,28 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
         previewPath = previewData.path;
       }
 
+      // Upload Variant Files
+      const updatedVariants = [...values.key_variants];
+      for (let i = 0; i < updatedVariants.length; i++) {
+        const file = variantFiles[i];
+        if (file) {
+          const fileName = `${Date.now()}-variant-${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+          const { data: varData, error: varError } = await supabase.storage
+            .from('arrangements')
+            .upload(fileName, file);
+          if (varError) throw varError;
+          updatedVariants[i].file_path = varData.path;
+        }
+      }
+
       const arrangementData = {
         ...values,
         price: parseFloat(values.price || '0'),
+        additional_key_price: parseFloat(values.additional_key_price || '0'),
         pdf_file_path: mainPath,
         secondary_file_path: secondaryPath,
         preview_image_path: previewPath,
+        key_variants: updatedVariants,
         updated_at: new Date().toISOString(),
       };
 
@@ -316,9 +358,67 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
               </div>
             </div>
 
+            {/* Key Variants Section */}
+            <div className="space-y-4 p-6 rounded-3xl border border-brand-secondary/30 bg-brand-secondary/5">
+              <div className="flex items-center justify-between">
+                <FormLabel className="text-xs uppercase tracking-[0.2em] font-bold text-brand-primary">Additional Key Variants</FormLabel>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => appendVariant({ key: '', file_path: '', file_name: '' })}
+                  className="rounded-full h-8"
+                >
+                  <Plus className="h-4 w-4 mr-2" /> Add Key
+                </Button>
+              </div>
+              
+              <div className="space-y-4">
+                {variantFields.map((field, index) => (
+                  <div key={field.id} className="p-4 bg-white dark:bg-brand-dark rounded-2xl border border-brand-secondary/20 space-y-3 shadow-sm">
+                    <div className="flex items-center gap-3">
+                      <FormField
+                        control={form.control}
+                        name={`key_variants.${index}.key`}
+                        render={({ field }) => (
+                          <FormItem className="flex-grow">
+                            <FormControl>
+                              <Input placeholder="e.g. D Major" {...field} className="h-9 text-sm rounded-xl" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <Button type="button" variant="ghost" size="icon" onClick={() => removeVariant(index)} className="text-red-500 h-9 w-9">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <div className="flex-grow overflow-hidden">
+                        <p className="text-[10px] font-bold truncate text-brand-dark/60">
+                          {variantFiles[index] ? variantFiles[index].name : (field.file_name || 'No file selected')}
+                        </p>
+                      </div>
+                      <Input 
+                        type="file" 
+                        accept=".pdf" 
+                        onChange={(e) => { const file = e.target.files?.[0]; if (file) handleVariantFile(index, file); }} 
+                        className="hidden" 
+                        id={`variant-file-${index}`} 
+                      />
+                      <Button type="button" variant="outline" size="sm" asChild className="rounded-full h-7 px-3 text-[10px] cursor-pointer">
+                        <label htmlFor={`variant-file-${index}`}>Select PDF</label>
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Secondary File */}
             <div className="space-y-3">
-              <FormLabel className="text-xs uppercase tracking-[0.2em] font-bold text-brand-primary">2. Secondary File (Parts/Audio)</FormLabel>
+              <FormLabel className="text-xs uppercase tracking-[0.2em] font-bold text-brand-primary">Secondary File (Parts/Audio)</FormLabel>
               <div className={cn(
                 "p-4 rounded-2xl border bg-white dark:bg-brand-dark flex items-center justify-between gap-4 shadow-sm",
                 secondaryFile ? "border-brand-primary/30" : "border-brand-secondary/30"
@@ -360,7 +460,7 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
 
             {/* Preview Image Area */}
             <div className="space-y-3">
-              <FormLabel className="text-xs uppercase tracking-[0.2em] font-bold text-brand-primary">3. Store Preview Image</FormLabel>
+              <FormLabel className="text-xs uppercase tracking-[0.2em] font-bold text-brand-primary">Store Preview Image</FormLabel>
               <div 
                 onDragOver={(e) => { e.preventDefault(); }}
                 onDrop={(e) => { e.preventDefault(); const file = e.dataTransfer.files?.[0]; if (file && file.type.startsWith('image/')) handleFiles([file]); }}
@@ -491,7 +591,7 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
                 name="key"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Key</FormLabel>
+                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Default Key</FormLabel>
                     <FormControl>
                       <Input placeholder="e.g. C Major" {...field} className="bg-white dark:bg-brand-dark h-10 rounded-xl border-brand-secondary/30" />
                     </FormControl>
@@ -544,13 +644,13 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
               )}
             />
 
-            <div className="grid grid-cols-2 gap-4 items-end">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField
                 control={form.control}
                 name="price"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Price (AUD)</FormLabel>
+                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Base Price (1st Key)</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-dark/40 font-bold">$</span>
@@ -563,19 +663,38 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
               />
               <FormField
                 control={form.control}
-                name="is_purchasable"
+                name="additional_key_price"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-xl border border-brand-secondary/30 p-2 shadow-sm bg-white dark:bg-brand-dark h-10">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-brand-dark/60 dark:text-brand-light/60">Purchasable</FormLabel>
-                    </div>
+                  <FormItem>
+                    <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Additional Key Price</FormLabel>
                     <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-dark/40 font-bold">$</span>
+                        <Input type="number" step="0.01" {...field} className="bg-white dark:bg-brand-dark h-10 pl-8 rounded-xl border-brand-secondary/30 font-bold" />
+                      </div>
                     </FormControl>
+                    <FormDescription className="text-[10px]">Price for each extra key selected by the customer.</FormDescription>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
+
+            <FormField
+              control={form.control}
+              name="is_purchasable"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-xl border border-brand-secondary/30 p-4 shadow-sm bg-white dark:bg-brand-dark">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-xs font-bold uppercase tracking-widest text-brand-dark/60 dark:text-brand-light/60">Purchasable</FormLabel>
+                    <p className="text-[10px] text-muted-foreground">Enable instant digital checkout via Stripe.</p>
+                  </div>
+                  <FormControl>
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
           </div>
         </div>
 

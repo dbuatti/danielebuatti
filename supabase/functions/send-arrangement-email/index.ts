@@ -13,7 +13,7 @@ serve(async (req: Request) => {
   }
 
   try {
-    const { buyerEmail, arrangementIds } = await req.json();
+    const { buyerEmail, arrangementIds, purchaseData } = await req.json();
 
     if (!buyerEmail || !arrangementIds || !Array.isArray(arrangementIds)) {
       console.error("[send-arrangement-email] Missing required fields.");
@@ -40,33 +40,46 @@ serve(async (req: Request) => {
       throw fetchError;
     }
 
-    if (!arrangements || arrangements.length === 0) {
-      console.error("[send-arrangement-email] No arrangements found for IDs:", arrangementIds);
-      return new Response(JSON.stringify({ error: 'No arrangements found' }), {
-        status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    // Generate signed URLs for all files - Set to 10 years (effectively never expires)
+    // Generate signed URLs for all files - Set to 10 years
     const TEN_YEARS_IN_SECONDS = 60 * 60 * 24 * 365 * 10;
     
     const downloadLinks = await Promise.all(arrangements.map(async (arr: any) => {
       const files = [];
       
-      // Main PDF
-      if (arr.pdf_file_path) {
+      // Find the specific purchase info for this arrangement to know which keys were bought
+      const itemPurchaseInfo = purchaseData?.find(p => p.id === arr.id);
+      const selectedKeys = itemPurchaseInfo?.keys || [];
+
+      // 1. Main PDF (Default Key)
+      // Only include if the default key was selected or if no specific keys were provided (legacy)
+      if (arr.pdf_file_path && (selectedKeys.length === 0 || selectedKeys.includes(arr.key))) {
         const { data } = await supabaseClient.storage
           .from('arrangements')
           .createSignedUrl(arr.pdf_file_path, TEN_YEARS_IN_SECONDS);
         
         files.push({
-          label: 'Main Score (PDF)',
+          label: `Score - ${arr.key || 'Original Key'} (PDF)`,
           url: data?.signedUrl,
         });
       }
 
-      // Secondary File
+      // 2. Variant PDFs
+      if (arr.key_variants && Array.isArray(arr.key_variants)) {
+        for (const variant of arr.key_variants) {
+          if (selectedKeys.includes(variant.key) && variant.file_path) {
+            const { data } = await supabaseClient.storage
+              .from('arrangements')
+              .createSignedUrl(variant.file_path, TEN_YEARS_IN_SECONDS);
+            
+            files.push({
+              label: `Score - ${variant.key} (PDF)`,
+              url: data?.signedUrl,
+            });
+          }
+        }
+      }
+
+      // 3. Secondary File (Always include if present, e.g. backing track or parts)
       if (arr.secondary_file_path) {
         const { data } = await supabaseClient.storage
           .from('arrangements')
@@ -88,11 +101,6 @@ serve(async (req: Request) => {
     const EMAIL_SERVICE_API_KEY = Deno.env.get('EMAIL_SERVICE_API_KEY');
     const EMAIL_SERVICE_ENDPOINT = Deno.env.get('EMAIL_SERVICE_ENDPOINT');
     const CONTACT_FORM_RECIPIENT_EMAIL = Deno.env.get('CONTACT_FORM_RECIPIENT_EMAIL');
-
-    if (!EMAIL_SERVICE_API_KEY || !EMAIL_SERVICE_ENDPOINT || !CONTACT_FORM_RECIPIENT_EMAIL) {
-      console.error("[send-arrangement-email] Missing email service environment variables.");
-      throw new Error('Server configuration error: Missing email service credentials.');
-    }
 
     const itemsHtml = downloadLinks.map((item: any) => `
       <div style="margin-bottom: 25px; padding: 15px; background-color: #f9f9f9; border-radius: 12px; border: 1px solid #eeeeee;">
@@ -156,12 +164,8 @@ serve(async (req: Request) => {
     });
 
     if (!emailResponse.ok) {
-      const errorData = await emailResponse.json();
-      console.error('[send-arrangement-email] Email service error:', errorData);
       throw new Error(`Failed to send email: ${emailResponse.statusText}`);
     }
-
-    console.log(`[send-arrangement-email] Arrangement confirmation email sent successfully to ${buyerEmail}.`);
 
     return new Response(JSON.stringify({ message: `Arrangement confirmation email sent to ${buyerEmail}` }), {
       status: 200,

@@ -5,6 +5,7 @@ interface CartItem {
   title: string;
   price: number;
   composer: string;
+  selectedKeys?: string[]; // Added selectedKeys
 }
 
 interface CartContextType {
@@ -36,12 +37,20 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [items]);
 
   const addToCart = (item: CartItem) => {
-    if (!items.find(i => i.id === item.id)) {
+    // Check if item with same ID and same keys already exists
+    const existingItem = items.find(i => 
+      i.id === item.id && 
+      JSON.stringify(i.selectedKeys?.sort()) === JSON.stringify(item.selectedKeys?.sort())
+    );
+
+    if (!existingItem) {
       setItems([...items, item]);
     }
   };
 
   const removeFromCart = (id: string) => {
+    // For simplicity, we remove all instances of this arrangement ID
+    // In a more complex store, we'd remove by a unique cart item ID
     setItems(items.filter(i => i.id !== id));
   };
 
