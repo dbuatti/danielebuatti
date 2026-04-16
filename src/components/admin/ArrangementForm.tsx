@@ -78,7 +78,7 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
       return;
     }
     setMainFile(file);
-    toast.info('Main PDF uploaded. Click "Analyze with AI" to extract metadata.');
+    toast.info('Main PDF uploaded.');
     
     try {
       const { previewUrl: generatedPreview } = await processPDF(file);
@@ -104,21 +104,29 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
 
     setIsAnalyzing(true);
     try {
-      const { text } = await processPDF(mainFile);
+      // Extract text from main file
+      const { text: mainText } = await processPDF(mainFile);
+      let combinedText = `MAIN FILE CONTENT:\n${mainText}`;
+
+      // If secondary file is also a PDF, extract its text too for more context
+      if (secondaryFile && secondaryFile.type === 'application/pdf') {
+        const { text: secondaryText } = await processPDF(secondaryFile);
+        combinedText += `\n\nSECONDARY FILE CONTENT:\n${secondaryText}`;
+      }
 
       const { data, error } = await supabase.functions.invoke('analyze-score-pdf', {
-        body: { text },
+        body: { text: combinedText },
       });
 
       if (error) throw error;
 
       Object.keys(data).forEach((key) => {
-        if (key in arrangementSchema.shape) {
+        if (key in arrangementSchema.shape && data[key]) {
           form.setValue(key as any, data[key]);
         }
       });
       
-      toast.success('Metadata extracted successfully!');
+      toast.success('Metadata extracted from all provided documents!');
     } catch (error: any) {
       console.error('Analysis error:', error);
       toast.error('Failed to analyze PDF: ' + error.message);
@@ -134,7 +142,6 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
       let secondaryPath = initialData?.secondary_file_path;
       let previewPath = initialData?.preview_image_path;
 
-      // Upload Main File
       if (mainFile) {
         const fileName = `${Date.now()}-main-${mainFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
         const { data: pdfData, error: pdfError } = await supabase.storage
@@ -143,7 +150,6 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
         if (pdfError) throw pdfError;
         mainPath = pdfData.path;
 
-        // Upload Preview if generated
         if (previewUrl && previewUrl.startsWith('data:')) {
           const response = await fetch(previewUrl);
           const blob = await response.blob();
@@ -156,7 +162,6 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
         }
       }
 
-      // Upload Secondary File
       if (secondaryFile) {
         const fileName = `${Date.now()}-secondary-${secondaryFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
         const { data: secData, error: secError } = await supabase.storage
@@ -203,9 +208,7 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Left Column: Files & Core Info */}
           <div className="space-y-6">
-            {/* Main File Upload */}
             <div className="space-y-2">
               <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Main Score (PDF) *</FormLabel>
               <div 
@@ -255,14 +258,13 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
                       className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white rounded-full"
                     >
                       {isAnalyzing ? <Loader2 className="h-3 w-3 animate-spin mr-2" /> : <Wand2 className="h-3 w-3 mr-2" />}
-                      AI Extract
+                      AI Extract (All Pages)
                     </Button>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Secondary File Upload */}
             <div className="space-y-2">
               <FormLabel className="text-xs uppercase tracking-widest font-bold text-brand-dark/60 dark:text-brand-light/60">Secondary File (Parts, Audio, etc.)</FormLabel>
               <div 
@@ -341,7 +343,6 @@ export const ArrangementForm: React.FC<ArrangementFormProps> = ({ initialData, o
             />
           </div>
 
-          {/* Right Column: Metadata */}
           <div className="space-y-4">
             <FormField
               control={form.control}

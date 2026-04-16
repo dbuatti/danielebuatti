@@ -1,7 +1,6 @@
 import * as pdfjsLib from 'pdfjs-dist';
 
 // Use Vite's ?url suffix to get a stable local path for the worker
-// This is the most reliable way to handle PDF.js workers in a modern React/Vite app
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
@@ -15,15 +14,19 @@ export const processPDF = async (file: File): Promise<PDFData> => {
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
   
-  // Get first page for preview and text extraction
-  const page = await pdf.getPage(1);
+  let fullText = '';
   
-  // Extract text from the first page (usually contains title/composer)
-  const textContent = await page.getTextContent();
-  const text = textContent.items.map((item: any) => ('str' in item ? item.str : '')).join(' ');
+  // Loop through all pages to extract text for full context
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const textContent = await page.getTextContent();
+    const pageText = textContent.items.map((item: any) => ('str' in item ? item.str : '')).join(' ');
+    fullText += ` [Page ${i}] ${pageText}`;
+  }
 
-  // Generate preview image
-  const viewport = page.getViewport({ scale: 1.0 });
+  // Generate preview image from the first page only
+  const firstPage = await pdf.getPage(1);
+  const viewport = firstPage.getViewport({ scale: 1.0 });
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
   
@@ -34,9 +37,9 @@ export const processPDF = async (file: File): Promise<PDFData> => {
   canvas.height = viewport.height;
   canvas.width = viewport.width;
 
-  // @ts-ignore - The render function expects a specific context type that matches our canvas
-  await page.render({ canvasContext: context, viewport }).promise;
+  // @ts-ignore
+  await firstPage.render({ canvasContext: context, viewport }).promise;
   const previewUrl = canvas.toDataURL('image/jpeg', 0.8);
 
-  return { previewUrl, text };
+  return { previewUrl, text: fullText.trim() };
 };
