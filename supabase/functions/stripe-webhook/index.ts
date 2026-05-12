@@ -34,8 +34,10 @@ serve(async (req: Request) => {
     let event: Stripe.Event;
 
     try {
-      event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
+      // Use constructEvent instead of constructEventAsync to avoid Deno runMicrotasks error
+      event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
     } catch (err: any) {
+      console.error(`[stripe-webhook] Signature verification failed: ${err.message}`);
       return new Response(JSON.stringify({ error: `Webhook Error: ${err.message}` }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -72,10 +74,24 @@ serve(async (req: Request) => {
         }
       } else if (type === 'gift_card' || !type) {
         // --- Handle Gift Card Purchase ---
-        // Note: !type handles legacy Stripe Buy Links which don't have metadata set.
-        // In this specific app, those Buy Links are exclusively for Gift Cards.
         
-        const giftCardName = session.metadata?.giftCardName || session.line_items?.data[0]?.description || "Gift Card";
+        // GUARD: If there is no type (legacy Buy Link), verify this is actually a gift card 
+        // by checking the line item description. This prevents this app from processing 
+        // payments meant for your other apps (like Piano Backings).
+        const firstItemName = session.line_items?.data[0]?.description || "";
+        const isLikelyGiftCard = type === 'gift_card' || 
+                                 firstItemName.toLowerCase().includes('gift card') || 
+                                 firstItemName.toLowerCase().includes('credit');
+
+        if (!isLikelyGiftCard) {
+          console.log(`[stripe-webhook] Ignoring session ${session.id} - does not appear to be a gift card for this app.`);
+          return new Response(JSON.stringify({ received: true, ignored: true }), {
+            status: 200,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        const giftCardName = session.metadata?.giftCardName || firstItemName || "Gift Card";
         const value = (session.amount_total ?? 0) / 100;
         const stripeCheckoutSessionId = session.id;
         const giftCardType = session.metadata?.giftCardType || (giftCardName.toLowerCase().includes('credit') ? 'open_credit' : 'fixed_session');
