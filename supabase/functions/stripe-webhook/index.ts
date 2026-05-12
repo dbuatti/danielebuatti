@@ -52,11 +52,14 @@ serve(async (req: Request) => {
       );
 
       const type = session.metadata?.type;
+      const buyerEmail = session.customer_details?.email;
+
+      console.log(`[stripe-webhook] Processing completed session ${session.id} of type: ${type || 'unspecified'}`);
 
       if (type === 'arrangement_purchase') {
+        // --- Handle Sheet Music Store Purchase ---
         const arrangementIds = session.metadata?.arrangement_ids?.split(',') || [];
         const purchaseData = session.metadata?.purchase_data ? JSON.parse(session.metadata.purchase_data) : null;
-        const buyerEmail = session.customer_details?.email;
 
         if (buyerEmail) {
           await supabaseClient.functions.invoke('send-arrangement-email', {
@@ -67,18 +70,22 @@ serve(async (req: Request) => {
             },
           });
         }
-      } else {
-        // Gift card logic...
+      } else if (type === 'gift_card' || !type) {
+        // --- Handle Gift Card Purchase ---
+        // Note: !type handles legacy Stripe Buy Links which don't have metadata set.
+        // In this specific app, those Buy Links are exclusively for Gift Cards.
+        
         const giftCardName = session.metadata?.giftCardName || session.line_items?.data[0]?.description || "Gift Card";
         const value = (session.amount_total ?? 0) / 100;
-        const buyerEmail = session.customer_details?.email;
         const stripeCheckoutSessionId = session.id;
         const giftCardType = session.metadata?.giftCardType || (giftCardName.toLowerCase().includes('credit') ? 'open_credit' : 'fixed_session');
         const expirationDate = session.metadata?.expirationDate || null;
 
         if (buyerEmail) {
           const redemptionCode = generateGiftCardCode();
-          await supabaseClient.from('gift_cards').insert([{
+          
+          // 1. Record the gift card in the database
+          const { error: dbError } = await supabaseClient.from('gift_cards').insert([{
             name: giftCardName,
             type: giftCardType,
             value: value,
@@ -95,6 +102,11 @@ serve(async (req: Request) => {
             status: 'active',
           }]);
 
+          if (dbError) {
+            console.error(`[stripe-webhook] Error saving gift card to DB:`, dbError);
+          }
+
+          // 2. Send the confirmation email with the code
           await supabaseClient.functions.invoke('send-gift-card-email', {
             body: {
               buyerEmail: buyerEmail,
@@ -106,6 +118,9 @@ serve(async (req: Request) => {
             },
           });
         }
+      } else {
+        // --- Unknown Payment Type ---
+        console.warn(`[stripe-webhook] Received unknown payment type: "${type}". No automated action taken.`);
       }
     }
 
@@ -114,7 +129,7 @@ serve(async (req: Request) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error: any) {
-    console.error('[stripe-webhook] Error:', error.message);
+    console.error('[stripe-webhook] Critical Error:', error.message);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
