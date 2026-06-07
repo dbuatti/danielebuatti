@@ -1,8 +1,6 @@
 "use client";
 
 import React from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
 import SeoMetadata from "@/components/SeoMetadata";
 import ContactForm from "@/components/ContactForm";
@@ -20,8 +18,6 @@ const ContactPage: React.FC = () => {
         description="Get in touch with Daniele Buatti for coaching, performance bookings, or general inquiries."
         url={`${window.location.origin}/contact`}
       />
-      <Navbar />
-
       <main className="max-w-5xl mx-auto px-6 py-16">
         <header className="text-center mb-16">
           <h1 className="text-5xl md:text-6xl font-light mb-6">Get in Touch</h1>
@@ -82,9 +78,9 @@ const ContactPage: React.FC = () => {
                 </Dialog>
 
                 <Button asChild variant="outline" className="w-full justify-start border-2 text-lg py-7 rounded-full gap-3 transition-all hover:scale-[1.01]">
-                  <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
+                  <Link to="/book-voice-piano">
                     <ExternalLink className="w-5 h-5" /> Book a Coaching Session
-                  </a>
+                  </Link>
                 </Button>
                 
                 <Button asChild variant="outline" className="w-full justify-start border-2 text-lg py-7 rounded-full gap-3 transition-all hover:scale-[1.01]">
@@ -105,8 +101,6 @@ const ContactPage: React.FC = () => {
 
         </div>
       </main>
-
-      <Footer />
       <BackToTopButton />
     </div>
   );

@@ -1,8 +1,6 @@
 "use client";
 
 import React from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import DynamicImage from "@/components/DynamicImage";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -11,8 +9,6 @@ import { Mic2, Leaf, Megaphone, Calendar, ExternalLink } from "lucide-react"; //
 const CoachingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
-      <Navbar />
-
       <main className="max-w-5xl mx-auto px-6 py-16">
         {/* Hero – calm, authoritative */}
         <section className="text-center mb-20">
@@ -26,19 +22,12 @@ const CoachingPage: React.FC = () => {
           <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-12">
             This work integrates voice, piano, body awareness, and somatic intelligence to support sustainable, embodied expression.
           </p>
-          <p className="text-lg font-medium text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-16">
-            Not performance tricks. Not vocal hacks.<br />
-            This is about alignment — musical, physical, and psychological.
-          </p>
+
           <Button asChild size="lg" className="text-lg px-14 py-8 rounded-full shadow-xl bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-            <a
-              href="https://app.acuityscheduling.com/schedule.php?owner=22925011&appointmentType=category:1:1%20Coaching:%20Voice,%20Piano%20%26%20Performance"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <Link to="/book-voice-piano">
               <Calendar className="w-7 h-7 inline mr-4" />
               Check availability & book
-            </a>
+            </Link>
           </Button>
         </section>
 
@@ -77,6 +66,9 @@ const CoachingPage: React.FC = () => {
               <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
                 Where most vocal training stops — this work begins. Using kinesiology, breath work, and somatic practices to address unconscious holding patterns, performance stress, and disconnection between intention and sound.
               </p>
+              <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
+                I’m deeply passionate about posture, breath, and movement, and draw great influence from Feldenkrais, Alexander Technique, and yoga in my teaching. For me, the voice cannot be separated from the body it lives in — the interconnection between the two is everything.
+              </p>
               <p className="text-lg italic text-gray-600 dark:text-gray-400">
                 The aim is a voice that responds — not one that’s managed.
               </p>
@@ -112,8 +104,6 @@ const CoachingPage: React.FC = () => {
           </Button>
         </section>
       </main>
-
-      <Footer />
     </div>
   );
 };

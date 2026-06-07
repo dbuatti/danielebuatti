@@ -4,8 +4,6 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import DynamicImage from "@/components/DynamicImage";
 import { GraduationCap, ArrowLeft, Music, FileText } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import SectionHeading from "@/components/SectionHeading";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
@@ -16,7 +14,6 @@ const MusicDirectorPianistPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
-      <Navbar />
       <main className="max-w-5xl mx-auto px-6 py-16">
         {/* Header Section */}
         <div className="text-center space-y-4 mb-16">
@@ -109,7 +106,6 @@ const MusicDirectorPianistPage: React.FC = () => {
           </Button>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

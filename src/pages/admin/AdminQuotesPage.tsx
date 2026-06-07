@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import { Loader2, ExternalLink, Trash2, PlusCircle, FileText } from 'lucide-react';
 import { showError } from '@/utils/toast';
 import { Button } from '@/components/ui/button';
@@ -205,7 +205,7 @@ const AdminQuotesPage: React.FC = () => {
                         </div>
                       </TableCell>
                       <TableCell className="text-brand-dark/80 dark:text-brand-light/80">
-                        {item.event_date && format(new Date(item.event_date), 'EEEE d MMMM yyyy') || 'N/A'}
+                        {item.event_date && isValid(new Date(item.event_date)) ? format(new Date(item.event_date), 'EEEE d MMMM yyyy') : item.event_date || 'N/A'}
                       </TableCell>
                       <TableCell className="text-right font-semibold text-brand-primary">A${item.total_amount.toFixed(2)}</TableCell>
                       <TableCell>

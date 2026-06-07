@@ -6,8 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Mic, Piano, Brain, Lightbulb } from 'lucide-react';
 import DynamicImage from '@/components/DynamicImage';
-import Navbar from '@/components/Navbar'; // Import Navbar
-import Footer from '@/components/Footer'; // Import Footer
 import SectionHeading from '@/components/SectionHeading'; // Import SectionHeading
 import { Separator } from '@/components/ui/separator'; // Import Separator
 

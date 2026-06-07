@@ -1,8 +1,6 @@
 "use client";
 
 import React from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import SectionHeading from "@/components/SectionHeading";
 import AdditionalProgramBanner from "@/components/AdditionalProgramBanner";
 import BackToTopButton from "@/components/BackToTopButton";
@@ -10,7 +8,6 @@ import BackToTopButton from "@/components/BackToTopButton";
 const ArchivePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
-      <Navbar />
       <main className="container mx-auto px-4 pt-12 pb-12">
         <div className="text-center space-y-4 mb-10">
           <SectionHeading>Archived Content</SectionHeading>
@@ -44,7 +41,6 @@ const ArchivePage: React.FC = () => {
           />
         </section>
       </main>
-      <Footer />
       <BackToTopButton />
     </div>
   );

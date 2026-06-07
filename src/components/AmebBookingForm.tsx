@@ -78,19 +78,19 @@ const AmebBookingForm: React.FC = () => {
 
   if (isSubmitted) {
     return (
-      <div className="text-center space-y-6 p-8 bg-livePiano-darker rounded-xl shadow-lg border border-livePiano-border/30 max-w-lg mx-auto">
-        <CheckCircle2 className="h-24 w-24 text-livePiano-primary mx-auto animate-bounce" />
-        <h3 className="text-4xl font-bold text-livePiano-light">Booking Confirmed!</h3>
-        <p className="text-xl text-livePiano-light/90">
+      <div className="text-center space-y-6 p-8 bg-gray-900 dark:bg-gray-800 rounded-xl shadow-lg border border-gray-700 max-w-lg mx-auto">
+        <CheckCircle2 className="h-24 w-24 text-brand-primary mx-auto animate-bounce" />
+        <h3 className="text-4xl font-bold text-white">Booking Confirmed!</h3>
+        <p className="text-xl text-white/90">
           Thank you for your AMEB accompanying inquiry. Daniele will review your request and get back to you shortly to finalize the details.
         </p>
         <Button
           type="button"
           size="lg"
-          className="mt-6 bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-darker text-lg py-3 rounded-full"
+          className="mt-6 bg-brand-primary hover:bg-brand-primary/90 text-white text-lg py-3 rounded-full"
           onClick={() => {
-            setIsSubmitted(false); // Reset submitted state
-            form.reset(); // Reset the form fields
+            setIsSubmitted(false);
+            form.reset();
           }}
         >
           Book Another Inquiry
@@ -98,6 +98,10 @@ const AmebBookingForm: React.FC = () => {
       </div>
     );
   }
+
+  const inputClass = "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500";
+  const labelClass = "text-gray-800 dark:text-gray-200";
+  const checkboxClass = "h-5 w-5 border-gray-400 dark:border-gray-500 text-brand-primary data-[state=checked]:bg-brand-primary data-[state=checked]:text-white";
 
   return (
     <Form {...form}>
@@ -107,13 +111,9 @@ const AmebBookingForm: React.FC = () => {
           name="studentParentName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-livePiano-light">Student / Parent Name *</FormLabel>
+              <FormLabel className={labelClass}>Student / Parent Name *</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Your Name"
-                  {...field}
-                  className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
-                />
+                <Input placeholder="Your Name" {...field} className={inputClass} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -124,14 +124,9 @@ const AmebBookingForm: React.FC = () => {
           name="contactEmail"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-livePiano-light">Contact Email *</FormLabel>
+              <FormLabel className={labelClass}>Contact Email *</FormLabel>
               <FormControl>
-                <Input
-                  type="email"
-                  placeholder="your@email.com"
-                  {...field}
-                  className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
-                />
+                <Input type="email" placeholder="your@email.com" {...field} className={inputClass} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -143,13 +138,9 @@ const AmebBookingForm: React.FC = () => {
             name="examDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-livePiano-light">Exam Date *</FormLabel>
+                <FormLabel className={labelClass}>Exam Date *</FormLabel>
                 <FormControl>
-                  <Input
-                    type="date"
-                    {...field}
-                    className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
-                  />
+                  <Input type="date" {...field} className={inputClass} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -160,13 +151,9 @@ const AmebBookingForm: React.FC = () => {
             name="examTime"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-livePiano-light">Exam Time *</FormLabel>
+                <FormLabel className={labelClass}>Exam Time *</FormLabel>
                 <FormControl>
-                  <Input
-                    type="time"
-                    {...field}
-                    className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
-                  />
+                  <Input type="time" {...field} className={inputClass} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -178,13 +165,9 @@ const AmebBookingForm: React.FC = () => {
           name="examBoardGrade"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-livePiano-light">Exam Board & Grade *</FormLabel>
+              <FormLabel className={labelClass}>Exam Board & Grade *</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="e.g., AMEB Grade 7"
-                  {...field}
-                  className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
-                />
+                <Input placeholder="e.g., AMEB Grade 7" {...field} className={inputClass} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -195,13 +178,9 @@ const AmebBookingForm: React.FC = () => {
           name="teacherName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-livePiano-light">Teacher Name (Optional)</FormLabel>
+              <FormLabel className={labelClass}>Teacher Name (Optional)</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Your Teacher's Name"
-                  {...field}
-                  className="bg-livePiano-background border-livePiano-border/50 text-livePiano-light placeholder:text-livePiano-light/60"
-                />
+                <Input placeholder="Your Teacher's Name" {...field} className={inputClass} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -212,56 +191,24 @@ const AmebBookingForm: React.FC = () => {
           name="serviceRequired"
           render={({ field }) => (
             <FormItem className="space-y-3">
-              <FormLabel className="text-livePiano-light">Service Required *</FormLabel>
+              <FormLabel className={labelClass}>Service Required *</FormLabel>
               <div className="space-y-2">
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value?.includes("Exam Day Accompanying Only")}
-                      onCheckedChange={(checked) => {
-                        return checked
-                          ? field.onChange([...field.value, "Exam Day Accompanying Only"])
-                          : field.onChange(field.value?.filter((value) => value !== "Exam Day Accompanying Only"));
-                      }}
-                      className="h-5 w-5 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
-                    />
-                  </FormControl>
-                  <FormLabel className="text-livePiano-light font-normal">
-                    Exam Day Accompanying Only
-                  </FormLabel>
-                </FormItem>
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value?.includes("Rehearsal Only (specify duration: 15 / 30 / 45 min)")}
-                      onCheckedChange={(checked) => {
-                        return checked
-                          ? field.onChange([...field.value, "Rehearsal Only (specify duration: 15 / 30 / 45 min)"])
-                          : field.onChange(field.value?.filter((value) => value !== "Rehearsal Only (specify duration: 15 / 30 / 45 min)"));
-                      }}
-                      className="h-5 w-5 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
-                    />
-                  </FormControl>
-                  <FormLabel className="text-livePiano-light font-normal">
-                    Rehearsal Only (specify duration: 15 / 30 / 45 min)
-                  </FormLabel>
-                </FormItem>
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value?.includes("Both Exam Day & Rehearsal")}
-                      onCheckedChange={(checked) => {
-                        return checked
-                          ? field.onChange([...field.value, "Both Exam Day & Rehearsal"])
-                          : field.onChange(field.value?.filter((value) => value !== "Both Exam Day & Rehearsal"));
-                      }}
-                      className="h-5 w-5 border-livePiano-primary text-livePiano-darker data-[state=checked]:bg-livePiano-primary data-[state=checked]:text-livePiano-darker"
-                    />
-                  </FormControl>
-                  <FormLabel className="text-livePiano-light font-normal">
-                    Both Exam Day & Rehearsal
-                  </FormLabel>
-                </FormItem>
+                {["Exam Day Accompanying Only", "Rehearsal Only (specify duration: 15 / 30 / 45 min)", "Both Exam Day & Rehearsal"].map((service) => (
+                  <FormItem key={service} className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value?.includes(service)}
+                        onCheckedChange={(checked) => {
+                          return checked
+                            ? field.onChange([...field.value, service])
+                            : field.onChange(field.value?.filter((v) => v !== service));
+                        }}
+                        className={checkboxClass}
+                      />
+                    </FormControl>
+                    <FormLabel className={`${labelClass} font-normal`}>{service}</FormLabel>
+                  </FormItem>
+                ))}
               </div>
               <FormMessage />
             </FormItem>
@@ -270,7 +217,7 @@ const AmebBookingForm: React.FC = () => {
         <Button
           type="submit"
           size="lg"
-          className="w-full bg-livePiano-primary hover:bg-livePiano-primary/90 text-livePiano-darker text-lg py-3 rounded-full"
+          className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white text-lg py-3 rounded-full"
           disabled={loading}
         >
           {loading ? 'Sending Inquiry...' : 'Book Now / Inquire'}

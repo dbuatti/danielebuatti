@@ -1,8 +1,6 @@
 "use client";
 
 import React from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
 import SeoMetadata from "@/components/SeoMetadata";
 import { Button } from "@/components/ui/button";
@@ -63,8 +61,6 @@ const GiftCardsPage: React.FC = () => {
         description="Give the gift of transformative coaching sessions or open credit with Daniele Buatti."
         url={`${window.location.origin}/gift-cards`}
       />
-      <Navbar />
-
       <main className="container mx-auto px-4 pt-12 pb-12">
         <div className="text-center space-y-4 mb-10">
           <SectionHeading>Gift Cards</SectionHeading>
@@ -109,8 +105,6 @@ const GiftCardsPage: React.FC = () => {
           ))}
         </section>
       </main>
-
-      <Footer />
       <BackToTopButton />
     </div>
   );

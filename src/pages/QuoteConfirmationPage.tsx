@@ -4,7 +4,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import DynamicImage from "@/components/DynamicImage";
-import Footer from '@/components/Footer';
 import { CheckCircle2, ArrowLeft } from 'lucide-react'; // Added ArrowLeft for consistency
 import { useTheme } from "next-themes"; // Import useTheme to get current theme
 
@@ -62,8 +61,6 @@ const QuoteConfirmationPage: React.FC = () => {
           </Button>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 };

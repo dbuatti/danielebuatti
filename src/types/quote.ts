@@ -61,18 +61,17 @@ export interface Quote {
   client_name: string;
   client_email: string;
   event_title: string;
-  invoice_type: 'Quote' | 'Invoice';
+  invoice_type: string;
   event_date: string;
   event_location: string;
   prepared_by: string;
   
-  // These fields will now reflect the ACTIVE version's data for quick access/filtering
   total_amount: number; 
   accepted_at: string | null;
   rejected_at: string | null;
   created_at: string;
-  status: 'Draft' | 'Created' | 'Sent' | 'Accepted' | 'Rejected';
+  status: string;
   
-  // The JSONB column now holds the version history
   details: QuoteDetails;
+  [key: string]: any;
 }

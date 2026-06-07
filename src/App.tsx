@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
 
 // Layouts
@@ -10,7 +10,6 @@ import FaviconManager from './components/FaviconManager';
 import { CartProvider } from './components/store/CartProvider';
 
 // Public Pages
-import LandingPageV3 from './pages/LandingPageV3';
 import LandingPageV4 from './pages/LandingPageV4';
 import NotFound from './pages/NotFound';
 import LivePianoServicesPage from './pages/LivePianoServicesPage';
@@ -22,8 +21,6 @@ import AboutPage from './pages/AboutPage';
 import CoachingPage from './pages/CoachingPage';
 import VoicePianoServicesPage from './pages/VoicePianoServicesPage';
 import VoicePianoBookingPage from './pages/VoicePianoBookingPage';
-import EmbodimentSomaticBookingPage from './pages/EmbodimentSomaticBookingPage';
-import PresenceCommunicationBookingPage from './pages/PresenceCommunicationBookingPage';
 import DynamicQuotePage from './pages/DynamicQuotePage';
 import QuoteConfirmationPage from './pages/QuoteConfirmationPage';
 import ContactPage from './pages/ContactPage';
@@ -61,8 +58,7 @@ function App() {
             <Route path="/" element={<RootLayout />}>
               {/* Public Routes */}
               <Route index element={<LandingPageV4 />} />
-              <Route path="landing-v3" element={<LandingPageV3 />} />
-              <Route path="landing-v4" element={<LandingPageV4 />} />
+              <Route path="booking" element={<Navigate to="/book-voice-piano" replace />} />
               <Route path="coaching" element={<CoachingPage />} />
               <Route path="projects-resources" element={<ProjectsResourcesPage />} />
               <Route path="live-piano-services" element={<LivePianoServicesPage />} />
@@ -72,8 +68,6 @@ function App() {
               <Route path="about" element={<AboutPage />} />
               <Route path="voice-piano-services" element={<VoicePianoServicesPage />} />
               <Route path="book-voice-piano" element={<VoicePianoBookingPage />} />
-              <Route path="book-embodiment-somatic" element={<EmbodimentSomaticBookingPage />} />
-              <Route path="book-presence-communication" element={<PresenceCommunicationBookingPage />} />
               <Route path="quotes/:slug" element={<DynamicQuotePage />} />
               <Route path="live-piano-services/quote-confirmation" element={<QuoteConfirmationPage />} />
               <Route path="contact" element={<ContactPage />} />

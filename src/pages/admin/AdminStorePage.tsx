@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,7 +8,7 @@ import { Loader2, Music, PlusCircle, Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ArrangementForm } from '@/components/admin/ArrangementForm';
-import { toast } from 'sonner';
+import { showError, showSuccess } from '@/utils/toast';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
@@ -39,7 +41,7 @@ const AdminStorePage: React.FC = () => {
       .order('created_at', { ascending: false });
 
     if (error) {
-      toast.error('Failed to load arrangements');
+      showError('Failed to load arrangements');
     } else {
       setArrangements(data || []);
     }
@@ -55,9 +57,9 @@ const AdminStorePage: React.FC = () => {
 
     const { error } = await supabase.from('arrangements').delete().eq('id', id);
     if (error) {
-      toast.error('Failed to delete arrangement');
+      showError('Failed to delete arrangement');
     } else {
-      toast.success('Arrangement deleted');
+      showSuccess('Arrangement deleted');
       fetchArrangements();
     }
   };

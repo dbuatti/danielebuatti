@@ -3,8 +3,6 @@
 import React, { useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import Footer from '@/components/Footer';
-import Navbar from '@/components/Navbar';
 import { CheckCircle2, ArrowRight, Mail, Download } from 'lucide-react';
 import { useCart } from '@/components/store/CartProvider';
 
@@ -20,8 +18,6 @@ const StoreSuccessPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light flex flex-col">
-      <Navbar />
-
       <main className="flex-grow flex items-center justify-center px-4 py-16">
         <div className="max-w-3xl w-full mx-auto text-center bg-white dark:bg-brand-dark-alt p-10 md:p-16 rounded-[2.5rem] shadow-2xl border border-brand-primary/20 space-y-8">
           <div className="relative inline-block">
@@ -75,8 +71,6 @@ const StoreSuccessPage: React.FC = () => {
           )}
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 };

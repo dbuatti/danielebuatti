@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
 import SeoStructuredData from "@/components/SeoStructuredData";
 import SeoMetadata from "@/components/SeoMetadata";
@@ -65,8 +63,6 @@ const LandingPageV4: React.FC = () => {
         description="Professional embodied coaching for singers, performers, and speakers. Unlock your authentic voice through piano, vocal mastery, and somatic awareness."
         url={`${window.location.origin}`}
       />
-      <Navbar />
-
       {/* Floating Enquiry Button for Mobile */}
       <div className="fixed bottom-8 right-8 z-50 md:hidden">
         <Button asChild size="icon" className="h-14 w-14 rounded-full shadow-2xl bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900">
@@ -339,8 +335,6 @@ const LandingPageV4: React.FC = () => {
           </Link>
         </section>
       </main>
-
-      <Footer />
       <BackToTopButton />
     </div>
   );

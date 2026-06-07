@@ -78,7 +78,16 @@ serve(async (req: Request) => {
         // GUARD: If there is no type (legacy Buy Link), verify this is actually a gift card 
         // by checking the line item description. This prevents this app from processing 
         // payments meant for your other apps (like Piano Backings).
-        const firstItemName = session.line_items?.data[0]?.description || "";
+        // Note: line_items are not included in webhook payload by default, so retrieve them.
+        let firstItemName = session.line_items?.data[0]?.description || "";
+        if (!firstItemName) {
+          try {
+            const retrievedSession = await stripe.checkout.sessions.retrieve(session.id, { expand: ['line_items'] });
+            firstItemName = retrievedSession.line_items?.data[0]?.description || "";
+          } catch (err) {
+            console.warn(`[stripe-webhook] Could not retrieve line_items for session ${session.id}:`, err);
+          }
+        }
         const isLikelyGiftCard = type === 'gift_card' || 
                                  firstItemName.toLowerCase().includes('gift card') || 
                                  firstItemName.toLowerCase().includes('credit');

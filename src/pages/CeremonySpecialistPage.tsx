@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import DynamicImage from "@/components/DynamicImage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -64,8 +62,6 @@ const CeremonySpecialistPage: React.FC = () => {
         title="Wedding Ceremony Rescue Specialist | Daniele Buatti"
         description="Premium last-minute wedding ceremony performance. Professional piano and vocals for when you need a reliable, high-end musical solution."
       />
-      <Navbar />
-
       <main className="max-w-5xl mx-auto px-6 py-16">
         {/* Hero Section */}
         <motion.section 
@@ -226,8 +222,6 @@ const CeremonySpecialistPage: React.FC = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
     </div>
   );
 };

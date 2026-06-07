@@ -1,8 +1,6 @@
 "use client";
 
 import React from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
 import SeoStructuredData from "@/components/SeoStructuredData";
 import SeoMetadata from "@/components/SeoMetadata";
@@ -82,8 +80,6 @@ const ProjectsPage: React.FC = () => {
         description="Live performances, music direction, digital products, and community initiatives."
         url={`${window.location.origin}/projects`}
       />
-      <Navbar />
-
       <main className="max-w-5xl mx-auto px-6 py-16">
         <header className="text-center mb-20">
           <h1 className="text-5xl md:text-6xl font-light mb-6">Projects & Services</h1>
@@ -151,8 +147,6 @@ const ProjectsPage: React.FC = () => {
           </section>
         </div>
       </main>
-
-      <Footer />
       <BackToTopButton />
     </div>
   );

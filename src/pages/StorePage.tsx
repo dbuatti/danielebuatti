@@ -9,8 +9,6 @@ import { toast } from 'sonner';
 import { useSearchParams, Link } from 'react-router-dom';
 import SeoMetadata from '@/components/SeoMetadata';
 import StoreStructuredData from '@/components/store/StoreStructuredData';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from '@/components/ui/button';
 
@@ -144,9 +142,6 @@ const StorePage: React.FC = () => {
         url={`${window.location.origin}/store`}
       />
       <StoreStructuredData arrangements={arrangements} />
-      
-      <Navbar />
-      
       <main className="container mx-auto px-4 py-12 max-w-7xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
           <div className="space-y-2">
@@ -295,8 +290,6 @@ const StorePage: React.FC = () => {
         {/* FAQ Section */}
         <StoreFaqSection />
       </main>
-      
-      <Footer />
     </div>
   );
 };

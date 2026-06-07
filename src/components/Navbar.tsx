@@ -115,9 +115,9 @@ const Navbar = () => {
           <nav className="hidden md:flex items-center space-x-6">
             {navLinks.map((link) => renderNavLink(link))}
             <Button asChild size="sm" className="h-9 px-4 bg-brand-primary hover:bg-brand-primary/90 text-brand-light rounded-full transition-transform hover:scale-105">
-              <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
+              <Link to="/book-voice-piano">
                 Book Now
-              </a>
+              </Link>
             </Button>
           </nav>
 
@@ -133,9 +133,9 @@ const Navbar = () => {
                 <nav className="flex flex-col gap-4 pt-8">
                   {navLinks.map((link) => renderNavLink(link, true))}
                   <Button asChild size="lg" className="h-12 px-6 py-3 bg-brand-primary text-brand-light mt-6 rounded-full">
-                    <a href="https://danielebuatti.as.me/" target="_blank" rel="noopener noreferrer">
+                    <Link to="/book-voice-piano">
                       Book Now
-                    </a>
+                    </Link>
                   </Button>
                 </nav>
               </SheetContent>

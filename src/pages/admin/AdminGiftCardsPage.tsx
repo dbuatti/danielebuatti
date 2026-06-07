@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import GiftCardForm, { GiftCardFormValues } from '@/components/admin/GiftCardForm'; // Import the new form
+import GiftCardForm, { GiftCardFormValues } from '@/components/admin/GiftCardForm';
 
 interface GiftCard {
   id: string;

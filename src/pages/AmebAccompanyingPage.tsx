@@ -1,8 +1,6 @@
 "use client";
 
 import React from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import DynamicImage from "@/components/DynamicImage";
 import AmebBookingForm from "@/components/AmebBookingForm";
 import { Piano, Calendar, MapPin } from "lucide-react";
@@ -10,8 +8,6 @@ import { Piano, Calendar, MapPin } from "lucide-react";
 const AmebAccompanyingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
-      <Navbar />
-
       <main className="max-w-5xl mx-auto px-6 py-12">
         {/* Header */}
         <header className="text-center mb-16">
@@ -48,7 +44,7 @@ const AmebAccompanyingPage: React.FC = () => {
                 Exam Day
               </h2>
               <div className="inline-block bg-gray-50 dark:bg-gray-800 px-4 py-2 rounded-xl">
-                 <p className="text-2xl font-semibold">$180 per exam</p>
+                 <p className="text-2xl font-semibold">$100 per exam</p>
               </div>
               <ul className="space-y-3 text-lg text-gray-600 dark:text-gray-400">
                 <li className="flex items-start gap-2"><span>•</span> I arrive 15–20 minutes early to set up</li>
@@ -108,8 +104,6 @@ const AmebAccompanyingPage: React.FC = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
     </div>
   );
 };

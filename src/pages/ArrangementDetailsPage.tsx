@@ -7,8 +7,6 @@ import { Button } from '@/components/ui/button';
 import { Music, ShoppingCart, Clock, User, ArrowLeft, ShieldCheck, Download, Info, ChevronRight } from 'lucide-react';
 import { useCart } from '@/components/store/CartProvider';
 import { CartDrawer } from '@/components/store/CartDrawer';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import SeoMetadata from '@/components/SeoMetadata';
 import { Separator } from '@/components/ui/separator';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -124,9 +122,6 @@ const ArrangementDetailsPage: React.FC = () => {
         url={window.location.href}
       />
       <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
-      
-      <Navbar />
-      
       <main className="container mx-auto px-4 py-12 max-w-6xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40">
@@ -307,8 +302,6 @@ const ArrangementDetailsPage: React.FC = () => {
           </div>
         </section>
       </main>
-      
-      <Footer />
     </div>
   );
 };

@@ -1,8 +1,6 @@
 "use client";
 
 import React from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import DynamicImage from "@/components/DynamicImage";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -37,8 +35,6 @@ const images = [
 const AboutPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
-      <Navbar />
-
       <main className="max-w-5xl mx-auto px-6 py-16">
         {/* Hero Introduction */}
         <section className="text-center mb-24">
@@ -68,6 +64,9 @@ const AboutPage: React.FC = () => {
             </p>
             <p>
               My work centres on reducing unnecessary tension, increasing awareness, and creating the conditions for authentic expression to emerge naturally — whether on stage, in the studio, or in everyday communication.
+            </p>
+            <p>
+                I’m deeply passionate about posture, breath, and movement, and draw great influence from Feldenkrais, Alexander Technique, and yoga in my teaching. For me, the voice cannot be separated from the body it lives in — the interconnection between the two is everything.
             </p>
           </div>
         </section>
@@ -113,36 +112,7 @@ const AboutPage: React.FC = () => {
           </div>
         </section>
 
-        {/* Improved Image Gallery – modern carousel with swipe/drag support */}
-        <section className="mb-32">
-          <h2 className="text-4xl md:text-5xl font-light text-center mb-12">Moments from My Work</h2>
-          <Carousel
-            opts={{
-              align: "center",
-              loop: true,
-              dragFree: true,  // Enables trackpad/mouse drag & touch swipe
-            }}
-            className="w-full max-w-4xl mx-auto"
-          >
-            <CarouselContent className="-ml-4">
-              {images.map((image, index) => (
-                <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/2">
-                  <div className="p-1">
-                    <DynamicImage
-                      src={image.src}
-                      alt={image.alt}
-                      className="w-full h-[500px] object-cover rounded-3xl shadow-2xl"
-                      width={800}
-                      height={600}
-                    />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="left-4" />
-            <CarouselNext className="right-4" />
-          </Carousel>
-        </section>
+
 
         {/* Simple CTA */}
         <section className="text-center py-20 bg-white dark:bg-gray-900 rounded-3xl">
@@ -155,8 +125,6 @@ const AboutPage: React.FC = () => {
           </Button>
         </section>
       </main>
-
-      <Footer />
     </div>
   );
 };
