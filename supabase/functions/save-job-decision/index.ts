@@ -54,7 +54,10 @@ serve(async (req: Request) => {
       jobName, 
       emr, nsi, tc, tv, ia, et, frs, er, cc,
       totalScore, // This is the float from the client
-      decisionOutput 
+      decisionOutput,
+      gutFeeling,
+      timeOfDay,
+      currentLoad,
     } = payload;
 
     if (!jobName || totalScore === undefined || !decisionOutput) {
@@ -109,6 +112,9 @@ serve(async (req: Request) => {
       cc_details: ccData.details || null,
       total_score: integerTotalScore, // Use the rounded integer total score
       decision_output: decisionOutput,
+      gut_feeling: gutFeeling || null,
+      time_of_day: timeOfDay || null,
+      current_load: currentLoad || null,
       updated_at: new Date().toISOString(),
     };
 
