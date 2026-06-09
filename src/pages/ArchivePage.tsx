@@ -7,14 +7,13 @@ import BackToTopButton from "@/components/BackToTopButton";
 
 const ArchivePage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
+    <div>
       <main className="container mx-auto px-4 pt-12 pb-12">
         <div className="text-center space-y-4 mb-10">
           <SectionHeading>Archived Content</SectionHeading>
           <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 max-w-3xl mx-auto">
             This page contains content that is currently not featured on the main site but may be brought back in the future.
           </p>
-          {/* Removed redundant Separator here */}
         </div>
 
         <section className="py-12 space-y-12">

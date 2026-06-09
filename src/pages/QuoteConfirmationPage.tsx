@@ -14,7 +14,7 @@ const QuoteConfirmationPage: React.FC = () => {
   const textLogoSrc = theme === "dark" ? "/logo-white-trans-45.png" : "/logo-dark-blue-transparent-25.png";
 
   return (
-    <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light flex flex-col">
+    <div className="flex flex-col min-h-full">
       {/* Header */}
       <header className="bg-brand-light dark:bg-brand-dark py-4 px-6 md:px-12 shadow-lg relative z-10 border-b border-brand-secondary/50">
         <div className="max-w-7xl mx-auto flex items-center justify-between">

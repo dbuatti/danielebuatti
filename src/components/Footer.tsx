@@ -1,3 +1,5 @@
+"use client";
+
 import { Instagram, Youtube, Mail, Phone, Newspaper, Twitch, Facebook } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import DynamicImage from "@/components/DynamicImage";
