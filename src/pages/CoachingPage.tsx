@@ -24,7 +24,7 @@ const CoachingPage: React.FC = () => {
           </p>
 
           <Button asChild size="lg" className="text-lg px-14 py-8 rounded-full shadow-xl bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-            <Link to="/book-voice-piano">
+            <Link to="/voice-piano-services">
               <Calendar className="w-7 h-7 inline mr-4" />
               Check availability & book
             </Link>
@@ -57,6 +57,11 @@ const CoachingPage: React.FC = () => {
               <p className="text-lg italic text-gray-600 dark:text-gray-400">
                 Always in service of expression — never mechanics for their own sake.
               </p>
+              <Button asChild variant="link" className="text-lg p-0 h-auto text-brand-primary hover:text-brand-primary/80">
+                <Link to="/voice-piano-services" className="flex items-center justify-center mx-auto">
+                  See lesson details & pricing
+                </Link>
+              </Button>
             </div>
 
             {/* Body, Breath & Regulation */}
@@ -73,7 +78,7 @@ const CoachingPage: React.FC = () => {
                 The aim is a voice that responds — not one that’s managed.
               </p>
               <Button asChild variant="link" className="text-lg p-0 h-auto text-brand-primary hover:text-brand-primary/80">
-                <a href="https://resonance-kinesiology.vercel.app/" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center mx-auto">
+                <a href="https://kinesiology.danielebuatti.com/" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center mx-auto">
                   Book Pure Kinesiology Sessions <ExternalLink className="w-4 h-4 ml-2" />
                 </a>
               </Button>

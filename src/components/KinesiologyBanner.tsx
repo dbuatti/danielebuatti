@@ -42,12 +42,12 @@ const KinesiologyBanner: React.FC<KinesiologyBannerProps> = ({ className }) => {
             size="lg"
             className="bg-[#4a3f6b] hover:bg-[#5a4f7b] text-white font-medium px-10 py-8 rounded-full shadow-xl shadow-purple-900/20 transition-all hover:scale-105 border border-purple-400/20"
           >
-            <a href="https://resonance-kinesiology.vercel.app/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-lg">
+            <a href="https://kinesiology.danielebuatti.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-lg">
               Explore Kinesiology <ArrowRight className="w-5 h-5" />
             </a>
           </Button>
           <span className="text-purple-300/50 text-xs uppercase tracking-widest font-medium">
-            resonance-kinesiology.vercel.app
+            kinesiology.danielebuatti.com
           </span>
         </div>
       </div>

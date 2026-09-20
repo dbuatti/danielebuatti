@@ -172,7 +172,7 @@ const VoicePianoServicesPage: React.FC = () => {
             I'm also a kinesiologist and run a separate practice, Resonance Kinesiology. That's why this work starts in the body. If what's in the way turns out to be nervous system rather than technique, I'll say so, and there's somewhere to take it. You never have to go near that side to have singing lessons with me.
           </p>
           <a
-            href="https://resonance-kinesiology.vercel.app/"
+            href="https://kinesiology.danielebuatti.com/"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-primary hover:underline"
