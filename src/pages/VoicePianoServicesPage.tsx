@@ -1,11 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import DynamicImage from "@/components/DynamicImage";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Separator } from "@/components/ui/separator";
 import CalEmbed from "@/components/CalEmbed";
 import SeoStructuredData from "@/components/SeoStructuredData";
 import { usePageMeta } from "@/hooks/use-page-meta";
@@ -214,11 +213,26 @@ const VoicePianoServicesPage: React.FC = () => {
         </section>
 
         {/* About */}
-        <section id="about" className="container mx-auto px-4 py-16 max-w-2xl text-center">
-          <h2 className="font-display text-3xl font-bold mb-6">About</h2>
-          <p className="text-base text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-            I'm a pianist, vocal coach and music director based in Melbourne. Twelve years in music theatre, plus school and community productions most years. I'm also a kinesiologist, which is why the work starts in the body rather than the throat. Both sides run the same way: a real assessment before anything else, sessions that build on what actually happened last time, and no generic scripts.
-          </p>
+        <section id="about" className="container mx-auto px-4 py-16 max-w-2xl">
+          <div className="flex flex-col items-center text-center">
+            <DynamicImage
+              src="/headshot.jpeg"
+              alt="Daniele Buatti"
+              className="w-28 h-28 rounded-full object-cover mb-6 shadow-lg"
+              width={112}
+              height={112}
+            />
+            <h2 className="font-display text-3xl font-bold mb-6">About</h2>
+            <p className="text-base text-brand-dark/80 dark:text-brand-light/80 leading-relaxed mb-4">
+              Hi, I'm Daniele. I'm a pianist, vocal coach and music director based in Melbourne. Twelve years in music theatre, plus school and community productions most years.
+            </p>
+            <p className="text-base text-brand-dark/80 dark:text-brand-light/80 leading-relaxed mb-4">
+              What I care about most is the moment a song stops being an exercise and starts being something you actually mean. That's rarely a technique problem, it's usually an intention one, and it's the part I find most rewarding to work on.
+            </p>
+            <p className="text-base text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
+              I'm also a kinesiologist, which is why the work starts in the body rather than the throat. Both sides run the same way: a real assessment before anything else, sessions that build on what actually happened last time, and no generic scripts.
+            </p>
+          </div>
         </section>
 
         {/* FAQ */}
