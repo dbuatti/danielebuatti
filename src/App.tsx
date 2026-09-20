@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
+import { Analytics } from '@vercel/analytics/react';
 
 // Layouts
 import RootLayout from './layouts/RootLayout';
@@ -104,6 +105,7 @@ function App() {
         </CartProvider>
       </SessionContextProvider>
       <Toaster richColors position="top-right" />
+      <Analytics />
     </BrowserRouter>
   );
 }
