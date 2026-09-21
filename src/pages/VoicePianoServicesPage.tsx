@@ -121,6 +121,16 @@ const VoicePianoServicesPage: React.FC = () => {
           </p>
         </section>
 
+        <div className="max-w-4xl mx-auto px-4 mb-4">
+          <DynamicImage
+            src="/danielepianolaugh.jpeg"
+            alt="Daniele Buatti at the piano mid-performance"
+            className="w-full h-64 md:h-96 object-cover rounded-2xl shadow-lg"
+            width={1400}
+            height={800}
+          />
+        </div>
+
         {/* Credit strip */}
         <div className="border-y border-brand-secondary bg-[#F3ECE1] dark:bg-brand-dark-alt/30 py-3">
           <p className="text-center text-xs md:text-sm text-brand-dark/70 dark:text-brand-light/70 px-4">
