@@ -258,7 +258,7 @@ const VoicePianoServicesPage: React.FC = () => {
               </Button>
             ))}
           </div>
-          <div className="h-[600px]" key={duration}>
+          <div className="h-[850px] md:h-[900px]" key={duration}>
             <CalEmbed calLink={currentOption.calLink} layout="month_view" />
           </div>
         </section>
