@@ -8,7 +8,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import CalEmbed from "@/components/CalEmbed";
 import SeoStructuredData from "@/components/SeoStructuredData";
 import { usePageMeta } from "@/hooks/use-page-meta";
-import { ArrowRight, Mic, Piano, Theater, Sparkles, Quote } from "lucide-react";
+import { ArrowRight, Mic, Piano, Theater, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Duration = "45" | "60";
@@ -189,24 +189,6 @@ const VoicePianoServicesPage: React.FC = () => {
           >
             Explore Resonance Kinesiology <ArrowRight className="h-3.5 w-3.5" />
           </a>
-        </section>
-
-        {/* Testimonials — placeholders, real quotes pending */}
-        <section className="container mx-auto px-4 py-16 max-w-5xl">
-          <h2 className="font-display text-3xl font-bold text-center mb-10">What students say</h2>
-          <div className="grid sm:grid-cols-3 gap-6">
-            {[
-              "A performer currently in a production",
-              "A student, post-audition",
-              "An adult returning to singing",
-            ].map((context) => (
-              <Card key={context} className="border-dashed border-brand-secondary bg-transparent p-6 flex flex-col items-center text-center gap-3">
-                <Quote className="h-6 w-6 text-brand-primary/50" />
-                <p className="text-sm text-brand-dark/50 dark:text-brand-light/50 italic">Testimonial coming soon</p>
-                <p className="text-xs font-semibold text-brand-dark/70 dark:text-brand-light/70">{context}</p>
-              </Card>
-            ))}
-          </div>
         </section>
 
         {/* Practical */}
