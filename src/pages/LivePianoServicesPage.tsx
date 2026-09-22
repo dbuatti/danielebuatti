@@ -319,6 +319,27 @@ const LivePianoServicesPage: React.FC = () => {
         </motion.div>
       </section>
 
+      {/* Testimonial */}
+      <section className="py-20 px-4 max-w-3xl mx-auto text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="space-y-6"
+        >
+          <div className="flex justify-center gap-1">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star key={i} className="w-5 h-5 text-yellow-500 fill-current" />
+            ))}
+          </div>
+          <p className="text-xl md:text-2xl font-light text-gray-300 leading-relaxed italic">
+            "Nothing quite compares to the atmosphere of a live piano performance and Daniele Buatti has it all covered – any room, any mood, genre or occasion, he'll make sure it's a night to remember. Highly recommend. Book him for your next special event!"
+          </p>
+          <p className="text-yellow-500 text-sm uppercase tracking-widest font-medium">— Tommy</p>
+        </motion.div>
+      </section>
+
       {/* Contact Form Section */}
       <section id="enquire" className="py-32 px-4 max-w-5xl mx-auto">
         <motion.div 
