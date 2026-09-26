@@ -99,7 +99,7 @@ const LandingPageV4: React.FC = () => {
               </DialogTrigger>
               <DialogContent className="max-w-4xl h-[90vh] p-0">
                 <DialogTitle className="sr-only">Book a discovery call</DialogTitle>
-                <CalEmbed calLink="danielebuatti/30min" />
+                <CalEmbed calLink="danielebuatti/30min" fill />
               </DialogContent>
             </Dialog>
             <Link to="/contact" className="group inline-flex items-center gap-2 text-base font-medium text-brand-dark">

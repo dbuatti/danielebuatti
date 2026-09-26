@@ -70,7 +70,7 @@ const ContactPage: React.FC = () => {
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-4xl h-[90vh] p-0">
-                    <CalEmbed calLink="danielebuatti/30min" />
+                    <CalEmbed calLink="danielebuatti/30min" fill />
                   </DialogContent>
                 </Dialog>
 
