@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useSession } from '@/components/SessionContextProvider';
 import { Button } from '@/components/ui/button';
-import { LogOut, LayoutDashboard, FileText, Home, Music, MailOpen, Gift, ClipboardList, Users, ShoppingBag } from 'lucide-react';
+import { LogOut, LayoutDashboard, FileText, Home, Music, MailOpen, Gift, ClipboardList, Users, ShoppingBag, Globe } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useTheme } from 'next-themes';
 import DynamicImage from '@/components/DynamicImage';
@@ -13,6 +13,7 @@ import { usePageMeta } from "@/hooks/use-page-meta";
 
 const navItems = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
+  { to: '/admin/overview', label: 'All Businesses', icon: Globe },
   { to: '/admin/leads', label: 'Leads', icon: Users },
   { to: '/admin/quotes', label: 'Quotes', icon: FileText },
   { to: '/admin/store', label: 'Store', icon: ShoppingBag },
@@ -24,6 +25,7 @@ const navItems = [
 
 const headerTitles: Record<string, string> = {
   '/admin': 'Admin Dashboard',
+  '/admin/overview': 'All Businesses',
   '/admin/leads': 'Leads',
   '/admin/store': 'Store Management',
   '/admin/ameb-bookings': 'AMEB Bookings',
