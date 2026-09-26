@@ -37,6 +37,7 @@ const ArrangementDetailsPage = lazy(() => import('./pages/ArrangementDetailsPage
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'));
 const Login = lazy(() => import('./pages/Login'));
 const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage'));
+const AdminOverviewPage = lazy(() => import('./pages/admin/AdminOverviewPage'));
 const AdminQuotesPage = lazy(() => import('./pages/admin/AdminQuotesPage'));
 const AdminQuoteDetailsPage = lazy(() => import('./pages/admin/AdminQuoteDetailsPage'));
 const AdminQuoteBuilderPage = lazy(() => import('./pages/admin/AdminQuoteBuilderPage'));
@@ -88,6 +89,7 @@ function App() {
               {/* Admin Routes */}
               <Route path="admin" element={<AdminLayout />}>
                 <Route index element={<AdminDashboardPage />} />
+                <Route path="overview" element={<AdminOverviewPage />} />
                 <Route path="leads" element={<AdminLeadsPage />} />
                 <Route path="leads/:id" element={<AdminLeadDetailsPage />} />
                 <Route path="quotes" element={<AdminQuotesPage />} />
