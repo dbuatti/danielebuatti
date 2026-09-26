@@ -143,6 +143,7 @@ Leave **"Verify JWT"** switched **on**, which is the default. The page sends you
 
 **Totals at the top**
 - **Income (last 30 days / this financial year):** the income figures from each site added together. The financial year runs from 1 July.
+- **Income over the last 12 months:** one bar per month for the ticked businesses. Hover over or tap a month to see how it splits across sites. "Show as a table" lists every month and site.
 - **Needs attention:** overdue invoices, unpaid sessions, open tickets, quotes awaiting a reply and backing requests in the queue.
 - **Income by business:** a bar for each site. **Untick a site to leave it out of the totals.** This matters because some money can appear twice. For example, if a quote accepted on this site is also invoiced in Invoicify, it counts in both. Your ticks are remembered in your browser.
 

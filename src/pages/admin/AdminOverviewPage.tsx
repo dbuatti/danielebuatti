@@ -32,7 +32,7 @@ type Site = {
   missingSecrets?: string[];
   metrics: Metric[];
   recent: Activity[];
-  revenue: { last30: number; fy: number; label: string } | null;
+  revenue: { last30: number; fy: number; label: string; monthly?: { month: string; amount: number }[] } | null;
   warnings: string[];
 };
 
@@ -77,6 +77,124 @@ const cardClass = 'bg-white dark:bg-brand-dark-alt shadow-lg border-brand-second
 const labelClass = 'text-xs font-bold uppercase tracking-widest text-brand-dark/50 dark:text-brand-light/50';
 const mutedClass = 'text-brand-dark/60 dark:text-brand-light/60';
 
+type MonthTotal = { month: string; total: number; parts: { name: string; amount: number }[] };
+
+// Combined monthly income for the ticked sites, as one bar per month.
+const IncomeTrend: React.FC<{ sites: Site[] }> = ({ sites }) => {
+  const [active, setActive] = useState<number | null>(null);
+  const months = sites[0]?.revenue?.monthly?.map((m) => m.month) ?? [];
+  const data: MonthTotal[] = months.map((month, i) => {
+    const parts = sites
+      .map((s) => ({ name: s.name, amount: s.revenue?.monthly?.[i]?.amount ?? 0 }))
+      .filter((p) => p.amount > 0)
+      .sort((a, b) => b.amount - a.amount);
+    return { month, total: parts.reduce((sum, p) => sum + p.amount, 0), parts };
+  });
+  if (!data.length) return null;
+
+  const max = Math.max(1, ...data.map((d) => d.total));
+  const monthLabel = (m: string, long = false) => format(new Date(`${m}-01T00:00:00`), long ? 'MMMM yyyy' : 'MMM');
+  const shown = active ?? data.length - 1;
+  const focus = data[shown];
+  const average = data.reduce((sum, d) => sum + d.total, 0) / data.length;
+
+  return (
+    <Card className={cardClass}>
+      <CardHeader className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 space-y-0">
+        <div>
+          <CardTitle className="text-xl font-bold text-brand-primary">Income · last 12 months</CardTitle>
+          <p className={cn('text-sm', mutedClass)}>All ticked businesses combined. Average {aud(average)} a month.</p>
+        </div>
+        <div className="sm:text-right" aria-live="polite">
+          <p className={labelClass}>{monthLabel(focus.month, true)}</p>
+          <p className="text-2xl font-bold text-brand-dark dark:text-brand-light">{aud(focus.total)}</p>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="relative h-48">
+          {/* Recessive gridlines at the top value and halfway */}
+          {[1, 0.5].map((f) => (
+            <div key={f} className="absolute inset-x-0 border-t border-dashed border-brand-secondary/30" style={{ bottom: `${f * 100}%` }}>
+              <span className={cn('absolute -top-4 left-0 text-[10px]', mutedClass)}>{aud(max * f)}</span>
+            </div>
+          ))}
+          <div className="absolute inset-0 flex items-end gap-0.5 border-b border-brand-secondary/40" onMouseLeave={() => setActive(null)}>
+            {data.map((d, i) => (
+              <button
+                key={d.month}
+                type="button"
+                className="group relative flex h-full flex-1 items-end focus:outline-none"
+                onMouseEnter={() => setActive(i)}
+                onFocus={() => setActive(i)}
+                onBlur={() => setActive(null)}
+                onClick={() => setActive(i)}
+                aria-label={`${monthLabel(d.month, true)}: ${aud(d.total)}`}
+              >
+                <span
+                  className={cn(
+                    'mx-auto block w-full max-w-10 rounded-t bg-brand-primary transition-opacity',
+                    shown === i ? 'opacity-100' : 'opacity-60 group-hover:opacity-100',
+                    'group-focus-visible:ring-2 group-focus-visible:ring-brand-primary group-focus-visible:ring-offset-2',
+                  )}
+                  style={{ height: `${(d.total / max) * 100}%`, minHeight: d.total > 0 ? 2 : 0 }}
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="flex gap-0.5 mt-1.5">
+          {data.map((d, i) => (
+            <span key={d.month} className={cn('flex-1 text-center text-[10px]', shown === i ? 'font-bold text-brand-dark dark:text-brand-light' : mutedClass)}>
+              {monthLabel(d.month).slice(0, 3)}
+            </span>
+          ))}
+        </div>
+
+        <div className="mt-4 min-h-[3rem]">
+          {focus.parts.length === 0 ? (
+            <p className={cn('text-sm', mutedClass)}>No income recorded in {monthLabel(focus.month, true)}.</p>
+          ) : (
+            <ul className="grid gap-x-6 gap-y-1 sm:grid-cols-2 text-sm">
+              {focus.parts.map((p) => (
+                <li key={p.name} className="flex justify-between gap-3">
+                  <span className={cn('truncate', mutedClass)}>{p.name}</span>
+                  <span className="font-semibold shrink-0">{aud(p.amount)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <details className="mt-4 text-sm">
+          <summary className={cn('cursor-pointer text-xs', mutedClass)}>Show as a table</summary>
+          <div className="mt-2 overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className={cn('text-xs', mutedClass)}>
+                  <th className="py-1 pr-4 font-medium">Month</th>
+                  {sites.map((s) => <th key={s.id} className="py-1 pr-4 font-medium text-right whitespace-nowrap">{s.name}</th>)}
+                  <th className="py-1 font-medium text-right">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[...data].reverse().map((d) => (
+                  <tr key={d.month} className="border-t border-brand-secondary/20">
+                    <td className="py-1 pr-4 whitespace-nowrap">{monthLabel(d.month, true)}</td>
+                    {sites.map((s) => (
+                      <td key={s.id} className="py-1 pr-4 text-right">{aud(s.revenue?.monthly?.find((m) => m.month === d.month)?.amount ?? 0)}</td>
+                    ))}
+                    <td className="py-1 text-right font-semibold">{aud(d.total)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
+      </CardContent>
+    </Card>
+  );
+};
+
 const StatTile: React.FC<{ label: string; value: string; hint?: string; icon: React.ElementType; loading?: boolean }> = ({ label, value, hint, icon: Icon, loading }) => (
   <Card className={cardClass}>
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -84,7 +202,7 @@ const StatTile: React.FC<{ label: string; value: string; hint?: string; icon: Re
       <Icon className="h-4 w-4 text-brand-primary" aria-hidden />
     </CardHeader>
     <CardContent>
-      <div className="text-3xl font-bold text-brand-dark dark:text-brand-light">{loading ? '…' : value}</div>
+      <div className="text-2xl md:text-3xl font-bold text-brand-dark dark:text-brand-light">{loading ? '…' : value}</div>
       {hint && <p className={cn('text-xs mt-1', mutedClass)}>{hint}</p>}
     </CardContent>
   </Card>
@@ -291,7 +409,7 @@ const AdminOverviewPage: React.FC = () => {
         </Card>
       )}
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4">
         <StatTile label="Income · last 30 days" value={aud(total30)} hint={`${counted.length} of ${earning.length} income sources counted`} icon={Wallet} loading={isLoading} />
         <StatTile label="Income · this FY" value={aud(totalFy)} hint={fyLabel} icon={TrendingUp} loading={isLoading} />
         <StatTile label="Needs attention" value={String(attention.length)} hint="Overdue, unpaid or waiting items" icon={AlertTriangle} loading={isLoading} />
@@ -303,6 +421,8 @@ const AdminOverviewPage: React.FC = () => {
           <Loader2 className="h-10 w-10 animate-spin text-brand-primary" aria-label="Loading" />
         </div>
       )}
+
+      {counted.some((s) => s.revenue?.monthly) && <IncomeTrend sites={counted} />}
 
       {earning.length > 0 && (
         <div className="grid gap-6 lg:grid-cols-5">

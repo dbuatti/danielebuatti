@@ -42,6 +42,49 @@ const inRange = (date: unknown, from: Date) => {
   return Number.isFinite(t) && t >= from.getTime();
 };
 
+// First day of the month, 11 months back: 12 whole months including this one.
+function trendStart(): Date {
+  const d = now();
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() - 11, 1));
+}
+
+// Earliest date any income figure needs (FY start or the 12-month trend).
+const historyStart = () => new Date(Math.min(financialYearStart().getTime(), trendStart().getTime()));
+
+type Income = { date: unknown; amount: number };
+
+// Turns a site's dated income entries into the totals and 12-month trend the page shows.
+function revenueSummary(label: string, entries: Income[]) {
+  const start = trendStart();
+  const monthly = Array.from({ length: 12 }, (_, i) => {
+    const m = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + i, 1));
+    return { month: m.toISOString().slice(0, 7), amount: 0 };
+  });
+  const index = Object.fromEntries(monthly.map((m, i) => [m.month, i]));
+  for (const e of entries) {
+    if (!e.date) continue;
+    const d = new Date(e.date as string);
+    if (Number.isNaN(d.getTime())) continue;
+    const i = index[d.toISOString().slice(0, 7)];
+    if (i !== undefined) monthly[i].amount += e.amount;
+  }
+  const since = (from: Date) => entries.reduce((s, e) => (inRange(e.date, from) ? s + e.amount : s), 0);
+  return { label, last30: since(daysAgo(30)), fy: since(financialYearStart()), monthly };
+}
+
+// Signup dates from the site's login system (the profiles tables don't record them).
+async function signupDates(client): Promise<string[]> {
+  const dates: string[] = [];
+  for (let page = 1; page <= 50; page++) {
+    const { data, error } = await client.auth.admin.listUsers({ page, perPage: 1000 });
+    if (error) throw new Error(`auth users: ${error.message}`);
+    const users = data?.users ?? [];
+    dates.push(...users.map((u) => u.created_at));
+    if (users.length < 1000) break;
+  }
+  return dates;
+}
+
 const sumWhere = <T>(rows: T[], amount: (r: T) => number, date: (r: T) => unknown, from: Date) =>
   rows.reduce((s, r) => (inRange(date(r), from) ? s + amount(r) : s), 0);
 
@@ -132,9 +175,10 @@ async function danieleBuatti() {
   const paidCards = giftCards.filter((g) => lower(g.payment_status) === 'paid');
   const openLeads = leads.filter((l) => !['lost', 'converted'].includes(lower(l.status)));
 
-  const rev = (from: Date) =>
-    sumWhere(accepted, (q) => num(q.total_amount), (q) => q.accepted_at, from) +
-    sumWhere(paidCards, (g) => num(g.value), (g) => g.created_at, from);
+  const revenue = revenueSummary('Accepted quotes + gift cards', [
+    ...accepted.map((q) => ({ date: q.accepted_at, amount: num(q.total_amount) })),
+    ...paidCards.map((g) => ({ date: g.created_at, amount: num(g.value) })),
+  ]);
 
   const metrics: Metric[] = [
     { label: 'Accepted quotes (FY)', value: sumWhere(accepted, (q) => num(q.total_amount), (q) => q.accepted_at, fy), format: 'currency' },
@@ -151,7 +195,7 @@ async function danieleBuatti() {
     ...pending.map((q) => ({ title: `Quote sent: ${q.client_name ?? 'Client'}`, subtitle: q.event_title, date: q.created_at, amount: num(q.total_amount) })),
   ];
 
-  return done(meta, metrics, recent, { last30: rev(d30), fy: rev(fy), label: 'Accepted quotes + gift cards' }, warnings);
+  return done(meta, metrics, recent, revenue, warnings);
 }
 
 async function resonance() {
@@ -164,7 +208,7 @@ async function resonance() {
 
   const [members, newMembers, interest, events, orders, expenses, suggestions] = await Promise.all([
     safe(() => count(client, 'profiles'), null),
-    safe(() => count(client, 'profiles', (q) => q.gte('created_at', d30.toISOString())), null),
+    safe(async () => (await signupDates(client)).filter((d) => inRange(d, d30)).length, null),
     safe(() => count(client, 'interest_submissions'), null),
     safe(() => selectAll(client, 'events', 'id, title, date, location'), []),
     safe(() => selectAll(client, 'event_orders', 'event_id, first_name, last_name, order_date, valid_tickets, your_earnings, status'), []),
@@ -178,7 +222,7 @@ async function resonance() {
   const validOrders = orders.filter((o) => !['cancelled', 'refunded'].includes(lower(o.status)));
   const eventTitle = Object.fromEntries(events.map((e) => [e.id, e.title]));
 
-  const earnings = (from: Date) => sumWhere(validOrders, (o) => num(o.your_earnings), (o) => o.order_date, from);
+  const revenue = revenueSummary('Ticket earnings', validOrders.map((o) => ({ date: o.order_date, amount: num(o.your_earnings) })));
   const totalEarnings = validOrders.reduce((s, o) => s + num(o.your_earnings), 0);
   const totalExpenses = expenses.reduce((s, e) => s + num(e.amount), 0);
 
@@ -187,7 +231,7 @@ async function resonance() {
     { label: 'Interest sign-ups', value: interest, format: 'number' },
     { label: 'Upcoming events', value: upcoming.length, format: 'number', hint: upcoming[0] ? `Next: ${upcoming[0].title}` : undefined },
     { label: 'Tickets sold (FY)', value: validOrders.filter((o) => inRange(o.order_date, fy)).reduce((s, o) => s + num(o.valid_tickets), 0), format: 'number' },
-    { label: 'Ticket earnings (FY)', value: earnings(fy), format: 'currency' },
+    { label: 'Ticket earnings (FY)', value: revenue.fy, format: 'currency' },
     { label: 'Profit, all events', value: totalEarnings - totalExpenses, format: 'currency', tone: totalEarnings - totalExpenses >= 0 ? 'good' : 'warn', hint: `after ${totalExpenses.toLocaleString('en-AU', { style: 'currency', currency: 'AUD', maximumFractionDigits: 0 })} expenses` },
     { label: 'Song suggestions', value: suggestions, format: 'number' },
   ];
@@ -197,7 +241,7 @@ async function resonance() {
     ...validOrders.map((o) => ({ title: `Ticket order: ${[o.first_name, o.last_name].filter(Boolean).join(' ') || 'Guest'}`, subtitle: eventTitle[o.event_id], date: o.order_date, amount: num(o.your_earnings) })),
   ];
 
-  return done(meta, metrics, recent, { last30: earnings(d30), fy: earnings(fy), label: 'Ticket earnings' }, warnings);
+  return done(meta, metrics, recent, revenue, warnings);
 }
 
 // db-it and Invoicify share one database.
@@ -259,11 +303,11 @@ async function billing() {
   const overdue = outstanding.filter((i) => i.due_date && String(i.due_date).slice(0, 10) < todayIso());
   const drafts = customer.filter((i) => lower(i.status) === 'draft');
 
-  const income = (from: Date) => sumWhere(paid, (i) => num(i.total_amount), (i) => i.invoice_date, from);
+  const revenue = revenueSummary('Paid invoices', paid.map((i) => ({ date: i.invoice_date, amount: num(i.total_amount) })));
 
   const metrics: Metric[] = [
-    { label: 'Paid (FY)', value: income(fy), format: 'currency', tone: 'good' },
-    { label: 'Paid (30d)', value: income(d30), format: 'currency' },
+    { label: 'Paid (FY)', value: revenue.fy, format: 'currency', tone: 'good' },
+    { label: 'Paid (30d)', value: revenue.last30, format: 'currency' },
     { label: 'Outstanding', value: outstanding.reduce((s, i) => s + num(i.total_amount), 0), format: 'currency', hint: `${outstanding.length} invoice${outstanding.length === 1 ? '' : 's'}` },
     { label: 'Overdue', value: overdue.length, format: 'number', tone: overdue.length ? 'warn' : 'good', hint: overdue.length ? overdue.reduce((s, i) => s + num(i.total_amount), 0).toLocaleString('en-AU', { style: 'currency', currency: 'AUD' }) : undefined },
     { label: 'Drafts', value: drafts.length, format: 'number' },
@@ -277,7 +321,7 @@ async function billing() {
     amount: num(i.total_amount),
   }));
 
-  return done(meta, metrics, recent, { last30: income(d30), fy: income(fy), label: 'Paid invoices' }, warnings);
+  return done(meta, metrics, recent, revenue, warnings);
 }
 
 async function kinesiology() {
@@ -287,12 +331,12 @@ async function kinesiology() {
   const warnings: string[] = [];
   const safe = makeSafe(warnings);
   const d30 = daysAgo(30), fy = financialYearStart();
-  const fyIso = fy.toISOString();
+  const fromIso = historyStart().toISOString();
 
   const [clients, appointments, voice] = await Promise.all([
     safe(() => selectAll(client, 'clients', 'id, name, lifecycle_status, created_at'), []),
-    safe(() => selectAll(client, 'appointments', 'id, client_id, date, tag, status, price_amount, is_paid, payment_received', (q) => q.gte('date', fyIso)), []),
-    safe(() => selectAll(client, 'voice_bookings', 'id, student_name, lesson_date, discipline, cost, status', (q) => q.gte('lesson_date', fyIso.slice(0, 10))), []),
+    safe(() => selectAll(client, 'appointments', 'id, client_id, date, tag, status, price_amount, is_paid, payment_received', (q) => q.gte('date', fromIso)), []),
+    safe(() => selectAll(client, 'voice_bookings', 'id, student_name, lesson_date, discipline, cost, status', (q) => q.gte('lesson_date', fromIso.slice(0, 10))), []),
   ]);
 
   const clientName = Object.fromEntries(clients.map((c) => [c.id, c.name]));
@@ -305,9 +349,10 @@ async function kinesiology() {
   const paidAppts = liveAppts.filter((a) => a.payment_received || a.is_paid);
   const pastVoice = liveVoice.filter((v) => new Date(v.lesson_date).getTime() < t);
 
-  const income = (from: Date) =>
-    sumWhere(paidAppts, (a) => num(a.price_amount), (a) => a.date, from) +
-    sumWhere(pastVoice, (v) => num(v.cost), (v) => v.lesson_date, from);
+  const revenue = revenueSummary('Paid sessions + lessons', [
+    ...paidAppts.map((a) => ({ date: a.date, amount: num(a.price_amount) })),
+    ...pastVoice.map((v) => ({ date: v.lesson_date, amount: num(v.cost) })),
+  ]);
 
   const disciplineCount = (name: string) => upcomingVoice.filter((v) => lower(v.discipline).includes(name)).length;
   const unpaid = liveAppts.filter((a) => new Date(a.date).getTime() < t && !(a.payment_received || a.is_paid) && num(a.price_amount) > 0);
@@ -319,7 +364,7 @@ async function kinesiology() {
     { label: 'Upcoming lessons', value: upcomingVoice.length, format: 'number', hint: `${disciplineCount('voice')} voice · ${disciplineCount('piano')} piano` },
     { label: 'Sessions (30d)', value: liveAppts.filter((a) => inRange(a.date, d30) && new Date(a.date).getTime() < t).length + pastVoice.filter((v) => inRange(v.lesson_date, d30)).length, format: 'number' },
     { label: 'Unpaid sessions', value: unpaid.length, format: 'number', tone: unpaid.length ? 'warn' : 'good', hint: unpaid.length ? unpaid.reduce((s, a) => s + num(a.price_amount), 0).toLocaleString('en-AU', { style: 'currency', currency: 'AUD' }) : undefined },
-    { label: 'Session income (FY)', value: income(fy), format: 'currency' },
+    { label: 'Session income (FY)', value: revenue.fy, format: 'currency' },
   ];
 
   const recent: Activity[] = [
@@ -328,7 +373,7 @@ async function kinesiology() {
   ].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   // Upcoming sessions read best soonest-first, so skip done()'s newest-first sort.
-  return { ...done(meta, metrics, [], { last30: income(d30), fy: income(fy), label: 'Paid sessions + lessons' }, warnings), recent: recent.slice(0, 6) };
+  return { ...done(meta, metrics, [], revenue, warnings), recent: recent.slice(0, 6) };
 }
 
 async function pianoBackings() {
@@ -344,19 +389,20 @@ async function pianoBackings() {
     safe(() => selectAll(client, 'backing_requests', 'id, name, song_title, musical_or_artist, status, is_paid, cost, delivery_date, created_at'), []),
     safe(() => count(client, 'products', (q) => q.eq('is_active', true)), null),
     safe(() => count(client, 'profiles'), null),
-    safe(() => count(client, 'profiles', (q) => q.gte('created_at', d30.toISOString())), null),
+    safe(async () => (await signupDates(client)).filter((d) => inRange(d, d30)).length, null),
   ]);
 
   const sales = orders.filter((o) => ['completed', 'paid'].includes(lower(o.status)));
   const paidRequests = requests.filter((r) => r.is_paid && lower(r.status) !== 'cancelled');
   const queue = requests.filter((r) => ['pending', 'in-progress', 'in_progress'].includes(lower(r.status)));
 
-  const income = (from: Date) =>
-    sumWhere(sales, (o) => num(o.amount), (o) => o.created_at, from) +
-    sumWhere(paidRequests, (r) => num(r.cost), (r) => r.created_at, from);
+  const revenue = revenueSummary('Shop orders + paid requests', [
+    ...sales.map((o) => ({ date: o.created_at, amount: num(o.amount) })),
+    ...paidRequests.map((r) => ({ date: r.created_at, amount: num(r.cost) })),
+  ]);
 
   const metrics: Metric[] = [
-    { label: 'Sales (FY)', value: income(fy), format: 'currency', tone: 'good' },
+    { label: 'Sales (FY)', value: revenue.fy, format: 'currency', tone: 'good' },
     { label: 'Shop orders (30d)', value: sales.filter((o) => inRange(o.created_at, d30)).length, format: 'number', hint: sumWhere(sales, (o) => num(o.amount), (o) => o.created_at, d30).toLocaleString('en-AU', { style: 'currency', currency: 'AUD' }) },
     { label: 'Requests in queue', value: queue.length, format: 'number', tone: queue.length ? 'warn' : 'good', hint: `${queue.filter((r) => lower(r.status) === 'pending').length} not started` },
     { label: 'Custom requests (30d)', value: requests.filter((r) => inRange(r.created_at, d30)).length, format: 'number' },
@@ -370,7 +416,7 @@ async function pianoBackings() {
     ...requests.map((r) => ({ title: `Request: ${r.song_title}`, subtitle: [r.name, r.status].filter(Boolean).join(' · '), date: r.created_at, amount: num(r.cost) || null })),
   ];
 
-  return done(meta, metrics, recent, { last30: income(d30), fy: income(fy), label: 'Shop orders + paid requests' }, warnings);
+  return done(meta, metrics, recent, revenue, warnings);
 }
 
 async function guidebook() {
@@ -391,14 +437,14 @@ async function guidebook() {
 
   // Stripe stores amounts in cents.
   const dollars = (p) => num(p.amount_total) / 100;
-  const income = (from: Date) => sumWhere(purchases, dollars, (p) => p.created_at, from);
+  const revenue = revenueSummary('Course sales', purchases.map((p) => ({ date: p.created_at, amount: dollars(p) })));
   const paidUsers = users.filter((u) => u.is_paid);
 
   const metrics: Metric[] = [
     { label: 'Members', value: users.length, format: 'number', hint: `+${users.filter((u) => inRange(u.created_at, d30)).length} in 30 days` },
     { label: 'Paid members', value: paidUsers.length, format: 'number', tone: 'good', hint: users.length ? `${Math.round((paidUsers.length / users.length) * 100)}% conversion` : undefined },
-    { label: 'Sales (FY)', value: income(fy), format: 'currency' },
-    { label: 'Sales (30d)', value: income(d30), format: 'currency', hint: `${purchases.filter((p) => inRange(p.created_at, d30)).length} purchases` },
+    { label: 'Sales (FY)', value: revenue.fy, format: 'currency' },
+    { label: 'Sales (30d)', value: revenue.last30, format: 'currency', hint: `${purchases.filter((p) => inRange(p.created_at, d30)).length} purchases` },
     { label: 'Lessons published', value: lessonStats[0]?.published ?? null, format: 'number', hint: lessonStats[0]?.total != null ? `of ${lessonStats[0].total} planned` : undefined },
     { label: 'Lessons completed (30d)', value: completions30[0]?.n ?? null, format: 'number' },
   ];
@@ -408,7 +454,7 @@ async function guidebook() {
     ...users.map((u) => ({ title: `New member: ${u.name || u.email}`, subtitle: u.is_paid ? 'Paid' : 'Free', date: new Date(u.created_at).toISOString() })),
   ];
 
-  return done(meta, metrics, recent, { last30: income(d30), fy: income(fy), label: 'Course sales' }, warnings);
+  return done(meta, metrics, recent, revenue, warnings);
 }
 
 const SITES = [danieleBuatti, resonance, dbIt, billing, kinesiology, pianoBackings, guidebook];
