@@ -326,6 +326,22 @@ const LivePianoServicesPage: React.FC = () => {
         </motion.div>
       </section>
 
+      {/* Personal note on weddings */}
+      <section className="px-4 pb-8">
+        <motion.figure
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="max-w-3xl mx-auto text-center border-t border-white/10 pt-16"
+        >
+          <blockquote className="text-xl md:text-2xl font-serif font-light italic leading-relaxed text-gray-300">
+            "I understand that wedding planning can be unpredictable. My goal is to step in and ensure the music for your ceremony is seamless, elegant, and exactly as you envisioned—no matter the timeline."
+          </blockquote>
+          <figcaption className="mt-6 text-yellow-500 text-sm uppercase tracking-widest font-medium">— Daniele Buatti</figcaption>
+        </motion.figure>
+      </section>
+
       {/* Contact Form Section */}
       <section id="enquire" className="py-32 px-4 max-w-5xl mx-auto">
         <motion.div 
