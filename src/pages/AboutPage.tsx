@@ -11,7 +11,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { usePageMeta } from "@/hooks/use-page-meta";
+import { useRouteMeta } from "@/hooks/use-page-meta";
 
 const images = [
   {
@@ -34,10 +34,7 @@ const images = [
 ];
 
 const AboutPage: React.FC = () => {
-  usePageMeta(
-    "About Daniele Buatti | Pianist, Vocal Coach & Music Director",
-    "Daniele Buatti is a Melbourne-based pianist, vocal coach and music director working across music theatre, cabaret, events and education.",
-  );
+  useRouteMeta("/about");
 
   return (
     <div className="min-h-screen bg-background text-gray-800 dark:text-gray-200">

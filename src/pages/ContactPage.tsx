@@ -2,22 +2,19 @@
 
 import React from "react";
 import BackToTopButton from "@/components/BackToTopButton";
-import SeoMetadata from "@/components/SeoMetadata";
 import ContactForm from "@/components/ContactForm";
 import CalEmbed from "@/components/CalEmbed";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin, Calendar, ExternalLink } from "lucide-react";
+import { useRouteMeta } from "@/hooks/use-page-meta";
 
 const ContactPage: React.FC = () => {
+  useRouteMeta("/contact");
+
   return (
     <div className="min-h-screen bg-background text-gray-800 dark:text-gray-200">
-      <SeoMetadata 
-        title="Contact Daniele Buatti"
-        description="Get in touch with Daniele Buatti for coaching, performance bookings, or general inquiries."
-        url="https://danielebuatti.com/contact"
-      />
       <div className="max-w-5xl mx-auto px-5 sm:px-6 py-16">
         <header className="text-center mb-16">
           <h1 className="text-5xl md:text-6xl font-light mb-6">Get in Touch</h1>

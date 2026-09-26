@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import CalEmbed from '@/components/CalEmbed';
 import SectionHeading from '@/components/SectionHeading';
 import { Button } from '@/components/ui/button';
-import { usePageMeta } from "@/hooks/use-page-meta";
+import { useRouteMeta } from "@/hooks/use-page-meta";
 
 type Duration = "45" | "60";
 
@@ -14,10 +14,7 @@ const durationOptions: { value: Duration; label: string; calLink: string }[] = [
 ];
 
 const VoicePianoBookingPage: React.FC = () => {
-  usePageMeta(
-    "Book a Voice or Piano Lesson | Daniele Buatti",
-    "Choose a 45 or 60 minute voice and piano lesson and book a time that suits you, in Toorak, Melbourne, or online.",
-  );
+  useRouteMeta("/book-voice-piano");
 
   const [selectedDuration, setSelectedDuration] = useState<Duration>("45");
 

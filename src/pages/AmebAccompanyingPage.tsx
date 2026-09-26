@@ -4,13 +4,10 @@ import React from "react";
 import DynamicImage from "@/components/DynamicImage";
 import AmebBookingForm from "@/components/AmebBookingForm";
 import { Piano, Calendar, MapPin } from "lucide-react";
-import { usePageMeta } from "@/hooks/use-page-meta";
+import { useRouteMeta } from "@/hooks/use-page-meta";
 
 const AmebAccompanyingPage: React.FC = () => {
-  usePageMeta(
-    "AMEB Exam Accompanist Melbourne | Daniele Buatti",
-    "Calm, reliable piano accompaniment for AMEB exams of all grades and instruments, with optional rehearsals beforehand. Book an accompanist in Melbourne.",
-  );
+  useRouteMeta("/ameb-accompanying");
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-12">

@@ -2,11 +2,11 @@
 
 import React from "react";
 import BackToTopButton from "@/components/BackToTopButton";
-import SeoMetadata from "@/components/SeoMetadata";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Gift, CalendarDays } from "lucide-react"; // Removed Clock, Added CalendarDays
 import SectionHeading from "@/components/SectionHeading";
+import { useRouteMeta } from "@/hooks/use-page-meta";
 // import { cn } from "@/lib/utils"; // Removed unused import
 
 interface GiftCardItem {
@@ -53,13 +53,10 @@ const giftCards: GiftCardItem[] = [
 ];
 
 const GiftCardsPage: React.FC = () => {
+  useRouteMeta("/gift-cards");
+
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
-      <SeoMetadata 
-        title="Gift Cards - Daniele Buatti"
-        description="Give the gift of transformative coaching sessions or open credit with Daniele Buatti."
-        url="https://danielebuatti.com/gift-cards"
-      />
       <div className="container mx-auto px-4 pt-12 pb-12">
         <div className="text-center space-y-4 mb-10">
           <SectionHeading as="h1">Gift Cards</SectionHeading>

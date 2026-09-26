@@ -2,13 +2,13 @@
 
 import React from "react";
 import SeoStructuredData from "@/components/SeoStructuredData";
-import SeoMetadata from "@/components/SeoMetadata";
 import DynamicImage from "@/components/DynamicImage";
 import ITServiceBanner from "@/components/ITServiceBanner";
 import KinesiologyBanner from "@/components/KinesiologyBanner";
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useRouteMeta } from "@/hooks/use-page-meta";
 
 // Image card linking to a service or project (internal route or external site).
 const ProjectCard: React.FC<{
@@ -74,14 +74,11 @@ const Group = ({ eyebrow, title, children }: { eyebrow: string; title: string; c
 );
 
 const ProjectsPage: React.FC = () => {
+  useRouteMeta("/projects-resources");
+
   return (
     <div>
       <SeoStructuredData />
-      <SeoMetadata
-        title="Projects & Services - Daniele Buatti"
-        description="Live performances, music direction, digital products, and community initiatives."
-        url="https://danielebuatti.com/projects-resources"
-      />
       <div className="container py-14 md:py-20">
         <header className="max-w-3xl">
           <p className="eyebrow">Projects &amp; resources</p>

@@ -7,7 +7,7 @@ import DynamicImage from "@/components/DynamicImage";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import CalEmbed from "@/components/CalEmbed";
 import SeoStructuredData from "@/components/SeoStructuredData";
-import { usePageMeta } from "@/hooks/use-page-meta";
+import { useRouteMeta } from "@/hooks/use-page-meta";
 import { ArrowRight, Mic, Piano, Theater, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -81,10 +81,7 @@ const VoicePianoServicesPage: React.FC = () => {
   const [duration, setDuration] = useState<Duration>("60");
   const currentOption = durationOptions.find((o) => o.value === duration)!;
 
-  usePageMeta(
-    "Singing and Piano Lessons Toorak, Melbourne | Daniele Buatti",
-    "Singing and piano lessons in Toorak, Melbourne, and online with vocal coach and music theatre music director Daniele Buatti. Audition coaching, repertoire, and technique that holds up on stage.",
-  );
+  useRouteMeta("/voice-piano-services");
 
   return (
     <div className="min-h-screen bg-background dark:bg-brand-dark text-brand-dark dark:text-brand-light">

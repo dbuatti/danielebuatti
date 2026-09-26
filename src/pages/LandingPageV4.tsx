@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import SeoStructuredData from "@/components/SeoStructuredData";
-import SeoMetadata from "@/components/SeoMetadata";
 import DynamicImage from "@/components/DynamicImage";
 import ITServiceBanner from "@/components/ITServiceBanner";
 import KinesiologyBanner from "@/components/KinesiologyBanner";
@@ -15,6 +14,7 @@ import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/com
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import { serviceLinks } from "@/constants/navigation";
 import { cn } from "@/lib/utils";
+import { useRouteMeta } from "@/hooks/use-page-meta";
 
 const testimonials = [
   { quote: "Daniele's clear, direct, and thoughtful communication is truly exceptional...", author: "Em", title: "Creative Collaborator" },
@@ -54,6 +54,8 @@ const SectionIntro = ({ eyebrow, title, children, className }: { eyebrow: string
 );
 
 const LandingPageV4: React.FC = () => {
+  useRouteMeta("/");
+
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
@@ -72,11 +74,6 @@ const LandingPageV4: React.FC = () => {
   return (
     <div className="relative">
       <SeoStructuredData />
-      <SeoMetadata
-        title="Daniele Buatti | Pianist, Vocal Coach & Music Director"
-        description="Professional embodied coaching for singers, performers, and speakers. Unlock your authentic voice through piano, vocal mastery, and somatic awareness."
-        url="https://danielebuatti.com/"
-      />
 
       {/* Floating enquiry button on mobile */}
       <Link

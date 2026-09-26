@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-
-const SITE_URL = "https://danielebuatti.com";
+import { SITE_URL, pageMeta, type PagePath } from "@/seo/pages";
 
 type MetaAttr = "name" | "property";
 
@@ -28,6 +27,8 @@ function setMeta(attr: MetaAttr, key: string, content: string): () => void {
 interface PageMetaOptions {
   // Keep this page out of search results (404s, confirmation pages, etc.).
   noindex?: boolean;
+  // Share image path under /public, e.g. "/og/home.jpg".
+  image?: string;
 }
 
 // This SPA has no per-route <head> management (no react-helmet), so every page
@@ -38,7 +39,7 @@ interface PageMetaOptions {
 // route.
 export function usePageMeta(title: string, description: string, options: PageMetaOptions = {}) {
   const { pathname } = useLocation();
-  const { noindex = false } = options;
+  const { noindex = false, image } = options;
 
   useEffect(() => {
     const prevTitle = document.title;
@@ -55,6 +56,10 @@ export function usePageMeta(title: string, description: string, options: PageMet
       setMeta("property", "twitter:url", url),
     ];
     if (noindex) restorers.push(setMeta("name", "robots", "noindex, follow"));
+    if (image) {
+      restorers.push(setMeta("property", "og:image", `${SITE_URL}${image}`));
+      restorers.push(setMeta("property", "twitter:image", `${SITE_URL}${image}`));
+    }
 
     let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     const createdCanonical = !canonical;
@@ -66,15 +71,28 @@ export function usePageMeta(title: string, description: string, options: PageMet
         document.head.appendChild(canonical);
       }
       canonical.href = url;
+    } else if (canonical) {
+      // A noindex page shouldn't claim the canonical URL index.html ships with.
+      canonical.remove();
     }
 
     return () => {
       document.title = prevTitle;
       restorers.forEach((restore) => restore());
-      if (!noindex && canonical) {
-        if (createdCanonical) canonical.remove();
-        else if (prevCanonical !== null) canonical.setAttribute("href", prevCanonical);
+      if (!canonical) return;
+      if (noindex) {
+        document.head.appendChild(canonical);
+      } else if (createdCanonical) {
+        canonical.remove();
+      } else if (prevCanonical !== null) {
+        canonical.setAttribute("href", prevCanonical);
       }
     };
-  }, [title, description, pathname, noindex]);
+  }, [title, description, pathname, noindex, image]);
+}
+
+// Applies a public page's entry from src/seo/pages.ts.
+export function useRouteMeta(path: PagePath) {
+  const { title, description, image } = pageMeta[path];
+  usePageMeta(title, description, { image });
 }

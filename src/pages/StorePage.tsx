@@ -9,10 +9,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Loader2, Search, Music, BookOpen, Download, ShieldCheck, HelpCircle, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { useSearchParams, Link } from 'react-router-dom';
-import SeoMetadata from '@/components/SeoMetadata';
 import StoreStructuredData from '@/components/store/StoreStructuredData';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from '@/components/ui/button';
+import { useRouteMeta } from "@/hooks/use-page-meta";
 
 const faqs = [
   {
@@ -80,6 +80,8 @@ const StoreFaqSection: React.FC = () => {
 };
 
 const StorePage: React.FC = () => {
+  useRouteMeta("/store");
+
   const [arrangements, setArrangements] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -138,11 +140,6 @@ const StorePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark">
-      <SeoMetadata 
-        title="Sheet Music Store | Professional Piano & Vocal Arrangements | Daniele Buatti"
-        description="Browse a curated collection of professional sheet music PDFs, piano arrangements, and vocal scores. Digital downloads delivered instantly."
-        url="https://danielebuatti.com/store"
-      />
       <StoreStructuredData arrangements={arrangements} />
       <div className="container mx-auto px-4 py-12 max-w-7xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
