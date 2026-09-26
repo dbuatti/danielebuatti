@@ -13,7 +13,7 @@ const AmebAccompanyingPage: React.FC = () => {
   );
 
   return (
-    <main className="max-w-5xl mx-auto px-6 py-12">
+    <div className="max-w-5xl mx-auto px-6 py-12">
         {/* Header */}
         <header className="text-center mb-16">
           <h1 className="text-5xl md:text-6xl font-light mb-4 text-brand-dark dark:text-brand-light">AMEB Accompanying</h1>
@@ -27,7 +27,7 @@ const AmebAccompanyingPage: React.FC = () => {
           <DynamicImage
             src="/danieleatkeyboard.jpeg"
             alt="Daniele Buatti at the keyboard"
-            className="w-full h-[400px] md:h-[500px] object-cover object-center rounded-3xl shadow-2xl"
+            className="w-full h-[400px] md:h-[500px] object-cover object-center rounded-2xl shadow-lifted"
             width={1200}
             height={600}
           />
@@ -41,7 +41,7 @@ const AmebAccompanyingPage: React.FC = () => {
         </section>
 
         {/* Exam Day */}
-        <section className="mb-12 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-3xl p-8 md:p-12 shadow-lg border border-brand-secondary/30">
+        <section className="mb-12 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-2xl p-8 md:p-12 shadow-soft border border-brand-secondary/30">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <h2 className="text-3xl font-medium flex items-center gap-4 text-brand-dark dark:text-brand-light">
@@ -67,7 +67,7 @@ const AmebAccompanyingPage: React.FC = () => {
         </section>
 
         {/* Rehearsals */}
-        <section className="mb-12 py-12 px-8 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-3xl shadow-lg border border-brand-secondary/30">
+        <section className="mb-12 py-12 px-8 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-2xl shadow-soft border border-brand-secondary/30">
           <h2 className="text-3xl font-medium text-center mb-10 flex items-center justify-center gap-4 text-brand-dark dark:text-brand-light">
             <Calendar className="w-10 h-10 text-brand-dark/70 dark:text-brand-light/70" />
             Rehearsal Sessions
@@ -99,7 +99,7 @@ const AmebAccompanyingPage: React.FC = () => {
         </section>
 
         {/* Booking Form */}
-        <section className="py-12 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-3xl shadow-lg border border-brand-secondary/30">
+        <section className="py-12 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-2xl shadow-soft border border-brand-secondary/30">
           <h2 className="text-4xl font-light text-center mb-8 text-brand-dark dark:text-brand-light">Book or Inquire</h2>
           <div className="max-w-3xl mx-auto px-6 md:px-10">
             <AmebBookingForm />
@@ -108,7 +108,7 @@ const AmebAccompanyingPage: React.FC = () => {
             </p>
           </div>
         </section>
-      </main>
+      </div>
   );
 };
 

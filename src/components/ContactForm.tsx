@@ -136,7 +136,7 @@ const ContactForm: React.FC = () => {
         <Button
           type="submit"
           size="lg"
-          className="w-full rounded-full py-7 text-lg font-medium shadow-xl transition-all duration-300 hover:scale-105 bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
+          className="w-full rounded-full py-7 text-lg font-medium shadow-lifted transition-all duration-300 hover:scale-105 bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
           disabled={form.formState.isSubmitting}
         >
           {form.formState.isSubmitting ? "Sending..." : "Send Message"}

@@ -12,13 +12,13 @@ import { Mail, Phone, MapPin, Calendar, ExternalLink } from "lucide-react";
 
 const ContactPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
+    <div className="min-h-screen bg-background text-gray-800 dark:text-gray-200">
       <SeoMetadata 
         title="Contact Daniele Buatti"
         description="Get in touch with Daniele Buatti for coaching, performance bookings, or general inquiries."
-        url={`${window.location.origin}/contact`}
+        url="https://danielebuatti.com/contact"
       />
-      <main className="max-w-5xl mx-auto px-6 py-16">
+      <div className="max-w-5xl mx-auto px-5 sm:px-6 py-16">
         <header className="text-center mb-16">
           <h1 className="text-5xl md:text-6xl font-light mb-6">Get in Touch</h1>
           <p className="text-xl max-w-3xl mx-auto text-gray-600 dark:text-gray-400">
@@ -27,10 +27,10 @@ const ContactPage: React.FC = () => {
         </header>
 
         {/* Updated grid with items-stretch to ensure equal height */}
-        <div className="grid md:grid-cols-2 gap-12 items-stretch">
+        <div className="grid md:grid-cols-2 gap-12 items-stretch [&>*]:min-w-0">
           
           {/* Left Column: Contact Details & Quick Links */}
-          <div className="flex flex-col p-8 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
+          <div className="flex flex-col p-8 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-2xl shadow-soft border border-gray-200/50 dark:border-gray-800/50">
             <div className="flex-grow">
               <h2 className="text-3xl font-medium mb-8">Direct Contact</h2>
               <div className="space-y-6">
@@ -38,7 +38,7 @@ const ContactPage: React.FC = () => {
                   <Mail className="w-7 h-7 text-gray-700 dark:text-gray-300 flex-shrink-0" />
                   <div>
                     <p className="font-semibold text-sm text-gray-500 uppercase tracking-wide">Email</p>
-                    <a href="mailto:info@danielebuatti.com" className="text-lg text-blue-600 dark:text-blue-400 hover:underline">
+                    <a href="mailto:info@danielebuatti.com" className="text-lg text-brand-dark underline decoration-brand-primary/40 underline-offset-4 hover:decoration-brand-primary">
                       info@danielebuatti.com
                     </a>
                   </div>
@@ -47,7 +47,7 @@ const ContactPage: React.FC = () => {
                   <Phone className="w-7 h-7 text-gray-700 dark:text-gray-300 flex-shrink-0" />
                   <div>
                     <p className="font-semibold text-sm text-gray-500 uppercase tracking-wide">WhatsApp</p>
-                    <a href="https://wa.me/61424174067" target="_blank" rel="noopener noreferrer" className="text-lg text-blue-600 dark:text-blue-400 hover:underline">
+                    <a href="https://wa.me/61424174067" target="_blank" rel="noopener noreferrer" className="text-lg text-brand-dark underline decoration-brand-primary/40 underline-offset-4 hover:decoration-brand-primary">
                       +61 424 174 067
                     </a>
                   </div>
@@ -92,7 +92,7 @@ const ContactPage: React.FC = () => {
           </div>
 
           {/* Right Column: Contact Form */}
-          <div className="flex flex-col p-8 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
+          <div className="flex flex-col p-8 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-2xl shadow-soft border border-gray-200/50 dark:border-gray-800/50">
             <h2 className="text-3xl font-medium mb-6">Send a Message</h2>
             <div className="flex-grow">
                 <ContactForm />
@@ -100,7 +100,7 @@ const ContactPage: React.FC = () => {
           </div>
 
         </div>
-      </main>
+      </div>
       <BackToTopButton />
     </div>
   );

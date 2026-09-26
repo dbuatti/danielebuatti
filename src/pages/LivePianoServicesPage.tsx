@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
-import { Mail, Phone, Play, ArrowLeft, Music, Star } from 'lucide-react';
+import { Mail, Phone, Play, Music, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -121,33 +121,10 @@ const LivePianoServicesPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden selection:bg-yellow-500/30 selection:text-yellow-200">
-      {/* Navigation Overlay */}
-      <nav className="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center pointer-events-none">
-        <motion.div 
-          initial={{ opacity: 0, x: -20 }} 
-          animate={{ opacity: 1, x: 0 }} 
-          className="pointer-events-auto"
-        >
-          <Button asChild variant="ghost" className="text-white/70 hover:text-white hover:bg-white/10 rounded-full gap-2 backdrop-blur-sm">
-            <Link to="/">
-              <ArrowLeft className="w-4 h-4" /> Back to Home
-            </Link>
-          </Button>
-        </motion.div>
-        <motion.div 
-          initial={{ opacity: 0, x: 20 }} 
-          animate={{ opacity: 1, x: 0 }} 
-          className="pointer-events-auto"
-        >
-          <Button asChild className="bg-yellow-500 hover:bg-yellow-400 text-black font-semibold rounded-full shadow-lg shadow-yellow-500/20">
-            <a href="#enquire">Enquire Now</a>
-          </Button>
-        </motion.div>
-      </nav>
+    <div data-no-reveal className="bg-black text-white overflow-x-hidden selection:bg-yellow-500/30 selection:text-yellow-200">
 
       {/* Hero Section */}
-      <header className="relative w-full h-screen flex items-center justify-center overflow-hidden">
+      <header className="relative w-full h-[calc(100svh-72px)] min-h-[560px] flex items-center justify-center overflow-hidden">
         <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover brightness-75">
           <source src="/Daniele Buatti - Gatsby Event Gala 1.mov" type="video/mp4" />
         </video>
@@ -178,6 +155,9 @@ const LivePianoServicesPage: React.FC = () => {
           <p className="text-lg md:text-xl mt-4 text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
             Sophisticated musical curation for elegant weddings, <br className="hidden md:block" /> high-tier galas, and intimate private soirées.
           </p>
+          <Button asChild className="mt-10 h-12 rounded-full bg-yellow-500 px-8 font-semibold text-black shadow-lg shadow-yellow-500/20 hover:bg-yellow-400">
+            <a href="#enquire">Enquire now</a>
+          </Button>
         </motion.div>
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-[pulse_3s_ease-in-out_infinite]">
           <div className="w-8 h-12 border-2 border-white/50 rounded-full flex justify-center">
@@ -476,20 +456,6 @@ const LivePianoServicesPage: React.FC = () => {
         </motion.div>
       </section>
 
-      <footer className="relative pt-24 pb-16 text-center border-t border-white/5">
-        <div className="relative z-10 space-y-10">
-          <DynamicImage src="/gold-36.png" alt="Logo" className="h-16 mx-auto opacity-60" width={64} height={64} />
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 text-white/60 font-light">
-            <a href="https://wa.me/61424174067" className="hover:text-yellow-500 transition-colors flex items-center gap-2">
-              <Phone size={18} /> 0424 174 067
-            </a>
-            <a href="mailto:info@danielebuatti.com" className="hover:text-yellow-500 transition-colors flex items-center gap-2">
-              <Mail size={18} /> info@danielebuatti.com
-            </a>
-          </div>
-          <p className="text-zinc-600 text-xs uppercase tracking-[0.3em]">© {new Date().getFullYear()} Daniele Buatti. All rights reserved.</p>
-        </div>
-      </footer>
     </div>
   );
 };

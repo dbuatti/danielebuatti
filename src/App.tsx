@@ -108,7 +108,7 @@ function App() {
           </Routes>
         </CartProvider>
       </SessionContextProvider>
-      <Toaster richColors position="top-right" />
+      <Toaster richColors position="top-right" offset={88} />
       <Analytics />
     </BrowserRouter>
   );

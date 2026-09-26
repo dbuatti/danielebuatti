@@ -5,7 +5,6 @@ import BackToTopButton from "@/components/BackToTopButton";
 import SeoMetadata from "@/components/SeoMetadata";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Gift, CalendarDays } from "lucide-react"; // Removed Clock, Added CalendarDays
 import SectionHeading from "@/components/SectionHeading";
 // import { cn } from "@/lib/utils"; // Removed unused import
@@ -59,27 +58,26 @@ const GiftCardsPage: React.FC = () => {
       <SeoMetadata 
         title="Gift Cards - Daniele Buatti"
         description="Give the gift of transformative coaching sessions or open credit with Daniele Buatti."
-        url={`${window.location.origin}/gift-cards`}
+        url="https://danielebuatti.com/gift-cards"
       />
-      <main className="container mx-auto px-4 pt-12 pb-12">
+      <div className="container mx-auto px-4 pt-12 pb-12">
         <div className="text-center space-y-4 mb-10">
-          <SectionHeading>Gift Cards</SectionHeading>
+          <SectionHeading as="h1">Gift Cards</SectionHeading>
           <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 max-w-3xl mx-auto">
             Give the gift of a transformative session. Each gift card comes with a private redemption code emailed to the recipient. Perfect for Kinesiology, Voice Coaching, Audition Support, or open credit.
           </p>
-          <Separator className="max-w-xs mx-auto bg-brand-secondary" />
         </div>
 
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto py-8">
           {giftCards.map((card) => (
             <Card 
               key={card.name} 
-              className="bg-brand-light dark:bg-brand-dark-alt shadow-lg border-brand-secondary/50 p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
+              className="bg-brand-light dark:bg-brand-dark-alt shadow-soft border-brand-secondary/50 p-6 flex flex-col justify-between hover:shadow-lifted hover:scale-[1.02] transition-all duration-300"
             >
               <CardHeader className="p-0 pb-4">
                 <div className="flex items-center gap-3 mb-2">
                   <Gift className="h-7 w-7 text-brand-primary" />
-                  <CardTitle className="text-2xl font-bold text-brand-primary">{card.name}</CardTitle>
+                  <CardTitle className="text-2xl font-normal text-brand-dark">{card.name}</CardTitle>
                 </div>
                 <p className="text-lg font-semibold text-brand-dark/80 dark:text-brand-light/80">
                   A${card.price.toFixed(2)}
@@ -95,7 +93,7 @@ const GiftCardsPage: React.FC = () => {
                 )}
               </CardContent>
               <div className="mt-6">
-                <Button asChild size="lg" className="w-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105">
+                <Button asChild size="lg" className="w-full bg-brand-dark hover:bg-brand-primary text-brand-light text-lg px-8 py-6 rounded-full shadow-soft transition-all duration-300 ease-in-out transform hover:scale-105">
                   <a href={card.stripeLink} target="_blank" rel="noopener noreferrer">
                     Buy Now
                   </a>
@@ -104,7 +102,7 @@ const GiftCardsPage: React.FC = () => {
             </Card>
           ))}
         </section>
-      </main>
+      </div>
       <BackToTopButton />
     </div>
   );

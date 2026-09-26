@@ -24,7 +24,12 @@ const formSchema = z.object({
   lastName: z.string().optional(),  // Added last name
 });
 
-const NewsletterSignup: React.FC = () => {
+interface NewsletterSignupProps {
+  // "dark" styles the fields for the navy footer.
+  variant?: "light" | "dark";
+}
+
+const NewsletterSignup: React.FC<NewsletterSignupProps> = ({ variant = "light" }) => {
   const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -77,68 +82,61 @@ const NewsletterSignup: React.FC = () => {
     }
   }
 
+  const inputClass =
+    variant === "dark"
+      ? "h-11 rounded-full border-white/15 bg-white/5 px-5 text-brand-light placeholder:text-brand-light/45 focus-visible:ring-brand-primary focus-visible:ring-offset-0"
+      : "h-11 rounded-full border-border bg-card px-5 text-brand-dark placeholder:text-muted-foreground focus-visible:ring-brand-primary";
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col sm:flex-row gap-4 max-w-sm mx-auto">
-        <div className="flex flex-col gap-4 w-full"> {/* Wrapper for name fields */}
-          <div className="flex gap-4">
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <FormItem className="flex-grow">
-                  <FormControl>
-                    <Input
-                      placeholder="First Name (Optional)"
-                      {...field}
-                      className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem className="flex-grow">
-                  <FormControl>
-                    <Input
-                      placeholder="Last Name (Optional)"
-                      {...field}
-                      className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-3">
+        <div className="grid grid-cols-2 gap-3">
           <FormField
             control={form.control}
-            name="email"
+            name="firstName"
             render={({ field }) => (
-              <FormItem className="flex-grow">
+              <FormItem>
                 <FormControl>
-                  <Input
-                    placeholder="Your email address"
-                    {...field}
-                    className="bg-brand-light dark:bg-brand-dark border-brand-secondary text-brand-dark dark:text-brand-light placeholder:text-brand-dark/50 dark:placeholder:text-brand-light/50 focus-visible:ring-brand-primary"
-                  />
+                  <Input placeholder="First name" aria-label="First name (optional)" autoComplete="given-name" {...field} className={inputClass} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input placeholder="Last name" aria-label="Last name (optional)" autoComplete="family-name" {...field} className={inputClass} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        <Button
-          type="submit"
-          className="bg-brand-primary hover:bg-brand-primary/90 text-brand-light shadow-md"
-          disabled={loading}
-        >
-          {loading ? "Subscribing..." : "Subscribe"}
-        </Button>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormControl>
+                  <Input type="email" placeholder="Email address" aria-label="Email address" autoComplete="email" {...field} className={inputClass} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            type="submit"
+            className="h-11 rounded-full bg-brand-primary px-6 text-white hover:bg-brand-primary/90"
+            disabled={loading}
+          >
+            {loading ? "Subscribing…" : "Subscribe"}
+          </Button>
+        </div>
       </form>
     </Form>
   );

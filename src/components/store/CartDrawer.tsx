@@ -38,7 +38,7 @@ export const CartDrawer: React.FC = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" className="relative border-brand-primary text-brand-primary hover:bg-brand-primary/10 bg-white dark:bg-brand-dark rounded-full px-4">
+        <Button variant="outline" className="relative border-brand-primary text-brand-primary hover:bg-brand-primary/10 bg-card dark:bg-brand-dark rounded-full px-4">
           <ShoppingCart className="h-5 w-5" />
           <AnimatePresence>
             {items.length > 0 && (
@@ -76,7 +76,7 @@ export const CartDrawer: React.FC = () => {
             </div>
           ) : (
             items.map((item) => (
-              <div key={item.id} className="flex items-center justify-between p-4 bg-white dark:bg-brand-dark rounded-xl border border-brand-secondary/20 shadow-sm transition-all hover:shadow-md">
+              <div key={item.id} className="flex items-center justify-between p-4 bg-card dark:bg-brand-dark rounded-xl border border-brand-secondary/20 shadow-sm transition-all hover:shadow-md">
                 <div className="flex-grow">
                   <h4 className="font-semibold text-brand-dark dark:text-brand-light leading-tight">{item.title}</h4>
                   <p className="text-xs text-brand-dark/60 dark:text-brand-light/60 mt-0.5">{item.composer}</p>
@@ -111,7 +111,7 @@ export const CartDrawer: React.FC = () => {
 
             <div className="flex flex-col gap-3">
               <Button 
-                className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-14 text-lg font-bold shadow-lg shadow-brand-primary/20 rounded-full" 
+                className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-14 text-lg font-bold shadow-soft shadow-brand-primary/20 rounded-full" 
                 onClick={handleCheckout}
                 disabled={isCheckingOut || isBelowMinimum}
               >

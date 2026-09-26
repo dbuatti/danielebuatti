@@ -75,7 +75,7 @@ const AdditionalProgramBanner: React.FC<AdditionalProgramBannerProps> = ({
           <div className="text-lg md:text-xl leading-relaxed font-medium">
             {description}
           </div>
-          <Button asChild size="lg" className={cn("text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
+          <Button asChild size="lg" className={cn("text-lg px-8 py-6 rounded-full shadow-soft transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
             <a href={link} target="_blank" rel="noopener noreferrer">
               {linkText}
             </a>

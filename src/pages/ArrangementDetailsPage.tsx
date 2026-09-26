@@ -122,7 +122,7 @@ const ArrangementDetailsPage: React.FC = () => {
         url={window.location.href}
       />
       <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
-      <main className="container mx-auto px-4 py-12 max-w-6xl">
+      <div className="container mx-auto px-4 py-12 max-w-6xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40">
             <Link to="/" className="hover:text-brand-primary transition-colors">Home</Link>
@@ -144,7 +144,7 @@ const ArrangementDetailsPage: React.FC = () => {
         <div className="grid md:grid-cols-2 gap-12">
           {/* Left: Preview Image */}
           <div className="space-y-6">
-            <div className="aspect-[3/4] rounded-[2rem] overflow-hidden border-4 border-brand-secondary/20 shadow-2xl bg-white dark:bg-brand-dark-alt">
+            <div className="aspect-[3/4] rounded-2xl overflow-hidden border-4 border-brand-secondary/20 shadow-lifted bg-card dark:bg-brand-dark-alt">
               {previewUrl ? (
                 <img src={previewUrl} alt={`${arrangement.title} Score Preview`} className="w-full h-full object-cover" />
               ) : (
@@ -214,7 +214,7 @@ const ArrangementDetailsPage: React.FC = () => {
                     className={cn(
                       "flex items-center justify-between p-4 rounded-2xl border-2 transition-all cursor-pointer",
                       selectedKeys.includes(k.key) 
-                        ? "border-brand-primary bg-brand-primary/5 shadow-md" 
+                        ? "border-brand-primary bg-brand-primary/5 shadow-soft" 
                         : "border-brand-secondary/20 hover:border-brand-primary/30"
                     )}
                     onClick={() => toggleKey(k.key)}
@@ -229,7 +229,7 @@ const ArrangementDetailsPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-8 rounded-[2.5rem] bg-brand-secondary/10 dark:bg-brand-dark-alt border border-brand-secondary/20 space-y-6">
+            <div className="p-8 rounded-2xl bg-brand-secondary/10 dark:bg-brand-dark-alt border border-brand-secondary/20 space-y-6">
               <div className="flex items-baseline justify-between">
                 <span className="text-sm font-bold uppercase tracking-widest opacity-40">Total Investment</span>
                 <div className="text-right">
@@ -243,7 +243,7 @@ const ArrangementDetailsPage: React.FC = () => {
               {arrangement.is_purchasable ? (
                 <Button 
                   size="lg" 
-                  className="w-full h-16 rounded-full bg-brand-primary hover:bg-brand-primary/90 text-white text-xl font-bold shadow-xl shadow-brand-primary/20 transition-all hover:scale-[1.02]"
+                  className="w-full h-16 rounded-full bg-brand-primary hover:bg-brand-primary/90 text-white text-xl font-bold shadow-lifted shadow-brand-primary/20 transition-all hover:scale-[1.02]"
                   onClick={handleAddToCart}
                   disabled={selectedKeys.length === 0}
                 >
@@ -269,7 +269,7 @@ const ArrangementDetailsPage: React.FC = () => {
             </div>
 
             {arrangement.lyrics && (
-              <div className="p-6 rounded-3xl bg-brand-secondary/5 border border-brand-secondary/10 italic text-brand-dark/60 dark:text-brand-light/60">
+              <div className="p-6 rounded-2xl bg-brand-secondary/5 border border-brand-secondary/10 italic text-brand-dark/60 dark:text-brand-light/60">
                 <p className="text-[10px] uppercase font-bold not-italic mb-3 opacity-40 tracking-widest">Lyrics Snippet</p>
                 "{arrangement.lyrics}"
               </div>
@@ -301,7 +301,7 @@ const ArrangementDetailsPage: React.FC = () => {
             <p className="text-sm text-brand-dark/60 dark:text-brand-light/60">Need a specific key or instrumentation? Contact Daniele for custom transpositions.</p>
           </div>
         </section>
-      </main>
+      </div>
     </div>
   );
 };

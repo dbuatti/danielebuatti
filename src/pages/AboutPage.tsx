@@ -40,8 +40,8 @@ const AboutPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
-      <main className="max-w-5xl mx-auto px-6 py-16">
+    <div className="min-h-screen bg-background text-gray-800 dark:text-gray-200">
+      <div className="max-w-5xl mx-auto px-6 py-16">
         {/* Hero Introduction */}
         <section className="text-center mb-24">
           <h1 className="text-5xl md:text-6xl font-light mb-8">About Daniele Buatti</h1>
@@ -56,7 +56,7 @@ const AboutPage: React.FC = () => {
             <DynamicImage
               src="/daniele simple.jpeg"
               alt="Daniele Buatti"
-              className="w-full max-w-md rounded-3xl shadow-2xl"
+              className="w-full max-w-md rounded-2xl shadow-lifted"
               width={600}
               height={600}
             />
@@ -121,7 +121,7 @@ const AboutPage: React.FC = () => {
 
 
         {/* Simple CTA */}
-        <section className="text-center py-20 bg-white dark:bg-gray-900 rounded-3xl">
+        <section className="text-center py-20 bg-card dark:bg-gray-900 rounded-2xl">
           <h2 className="text-4xl md:text-5xl font-light mb-8">Get in Touch</h2>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">
             If you’d like to talk about coaching, performance work, or anything else, feel free to reach out.
@@ -130,7 +130,7 @@ const AboutPage: React.FC = () => {
             <Link to="/contact">Contact me</Link>
           </Button>
         </section>
-      </main>
+      </div>
     </div>
   );
 };

@@ -141,10 +141,10 @@ const StorePage: React.FC = () => {
       <SeoMetadata 
         title="Sheet Music Store | Professional Piano & Vocal Arrangements | Daniele Buatti"
         description="Browse a curated collection of professional sheet music PDFs, piano arrangements, and vocal scores. Digital downloads delivered instantly."
-        url={`${window.location.origin}/store`}
+        url="https://danielebuatti.com/store"
       />
       <StoreStructuredData arrangements={arrangements} />
-      <main className="container mx-auto px-4 py-12 max-w-7xl">
+      <div className="container mx-auto px-4 py-12 max-w-7xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-brand-dark/40 dark:text-brand-light/40 mb-2">
@@ -171,7 +171,7 @@ const StorePage: React.FC = () => {
               placeholder="Search by title or composer..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-10 bg-white dark:bg-brand-dark border-brand-secondary/20 h-11"
+              className="pl-10 pr-10 bg-card dark:bg-brand-dark border-brand-secondary/20 h-11"
             />
             {searchTerm && (
               <button 
@@ -183,10 +183,10 @@ const StorePage: React.FC = () => {
             )}
           </div>
           <Select value={instrumentFilter} onValueChange={setInstrumentFilter}>
-            <SelectTrigger className="bg-white dark:bg-brand-dark border-brand-secondary/20 h-11">
+            <SelectTrigger className="bg-card dark:bg-brand-dark border-brand-secondary/20 h-11">
               <SelectValue placeholder="Instrumentation" />
             </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-brand-dark border-brand-secondary/20">
+            <SelectContent className="bg-card dark:bg-brand-dark border-brand-secondary/20">
               <SelectItem value="all">All Instruments</SelectItem>
               {instruments.map(inst => (
                 <SelectItem key={inst} value={inst}>{inst}</SelectItem>
@@ -194,10 +194,10 @@ const StorePage: React.FC = () => {
             </SelectContent>
           </Select>
           <Select value={difficultyFilter} onValueChange={setDifficultyFilter}>
-            <SelectTrigger className="bg-white dark:bg-brand-dark border-brand-secondary/20 h-11">
+            <SelectTrigger className="bg-card dark:bg-brand-dark border-brand-secondary/20 h-11">
               <SelectValue placeholder="Difficulty" />
             </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-brand-dark border-brand-secondary/20">
+            <SelectContent className="bg-card dark:bg-brand-dark border-brand-secondary/20">
               <SelectItem value="all">All Difficulties</SelectItem>
               {difficulties.map(diff => (
                 <SelectItem key={diff} value={diff}>{diff}</SelectItem>
@@ -212,7 +212,7 @@ const StorePage: React.FC = () => {
             <p className="text-brand-dark/60 font-medium">Loading arrangements...</p>
           </div>
         ) : filteredArrangements.length === 0 ? (
-          <div className="text-center py-32 bg-brand-secondary/5 rounded-3xl border-2 border-dashed border-brand-secondary/20">
+          <div className="text-center py-32 bg-brand-secondary/5 rounded-2xl border-2 border-dashed border-brand-secondary/20">
             <div className="h-20 w-20 bg-brand-secondary/10 rounded-full flex items-center justify-center mx-auto mb-6">
               <Music className="h-10 w-10 text-brand-secondary/30" />
             </div>
@@ -278,7 +278,7 @@ const StorePage: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-brand-secondary/5 p-8 rounded-[2rem] border border-brand-secondary/10">
+            <div className="bg-brand-secondary/5 p-8 rounded-2xl border border-brand-secondary/10">
               <h3 className="text-xl font-bold mb-4 text-center">Custom Arrangements & Transcriptions</h3>
               <p className="text-brand-dark/70 dark:text-brand-light/70 text-center leading-relaxed">
                 Can't find the specific score you're looking for? I also offer custom transcription and arrangement services 
@@ -291,7 +291,7 @@ const StorePage: React.FC = () => {
 
         {/* FAQ Section */}
         <StoreFaqSection />
-      </main>
+      </div>
     </div>
   );
 };

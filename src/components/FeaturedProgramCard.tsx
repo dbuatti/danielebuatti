@@ -52,7 +52,7 @@ const FeaturedProgramCard: React.FC<FeaturedProgramCardProps> = ({
       className={cn(
         "relative w-full max-w-6xl mx-auto h-[300px] rounded-xl overflow-hidden",
         "flex items-center justify-center text-center",
-        "shadow-xl transition-all duration-300 ease-in-out transform hover:scale-[1.01]",
+        "shadow-lifted transition-all duration-300 ease-in-out transform hover:scale-[1.01]",
         hasSolidBackgroundWithLogo ? backgroundColorClass : "", // Apply solid background if present
         hasBackgroundImage ? "bg-brand-dark-alt" : "", // Fallback background for image cards
         className
@@ -72,7 +72,7 @@ const FeaturedProgramCard: React.FC<FeaturedProgramCardProps> = ({
       )}
 
       {/* Content Card */}
-      <Card className={cn("relative z-10 p-6 md:p-8 max-w-md mx-auto border-brand-secondary shadow-lg", cardBgClass, cardTextClass)}>
+      <Card className={cn("relative z-10 p-6 md:p-8 max-w-md mx-auto border-brand-secondary shadow-soft", cardBgClass, cardTextClass)}>
         <CardHeader className="p-0 pb-4">
           <CardTitle className="text-3xl font-extrabold leading-tight">
             {title}
@@ -82,7 +82,7 @@ const FeaturedProgramCard: React.FC<FeaturedProgramCardProps> = ({
           <p className="text-lg">
             {description}
           </p>
-          <Button asChild size="lg" className={cn("text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
+          <Button asChild size="lg" className={cn("text-lg px-8 py-6 rounded-full shadow-soft transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass, buttonTextClass)}>
             {isInternalLink ? (
               <Link to={link}>
                 {linkText}

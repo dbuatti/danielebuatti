@@ -74,7 +74,7 @@ const AdminLayout: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
+    <div data-no-reveal className="flex min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
       <aside className="w-64 bg-brand-light dark:bg-brand-dark-alt border-r border-brand-secondary/50 p-6 flex flex-col shadow-lg">
         <div className="flex flex-col items-center mb-8">
           <DynamicImage
@@ -139,11 +139,11 @@ const AdminLayout: React.FC = () => {
             </span>
           </div>
         </header>
-        <main className="flex-1 p-8 overflow-y-auto">
+        <div className="flex-1 p-8 overflow-y-auto">
           <Suspense fallback={<PageLoader />}>
             <Outlet />
           </Suspense>
-        </main>
+        </div>
       </div>
     </div>
   );

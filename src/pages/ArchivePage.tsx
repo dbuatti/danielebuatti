@@ -15,9 +15,9 @@ const ArchivePage: React.FC = () => {
 
   return (
     <div>
-      <main className="container mx-auto px-4 pt-12 pb-12">
+      <div className="container mx-auto px-4 pt-12 pb-12">
         <div className="text-center space-y-4 mb-10">
-          <SectionHeading>Archived Content</SectionHeading>
+          <SectionHeading as="h1">Archived Content</SectionHeading>
           <p className="text-xl font-medium text-brand-dark/70 dark:text-brand-light/70 max-w-3xl mx-auto">
             This page contains content that is currently not featured on the main site but may be brought back in the future.
           </p>
@@ -46,7 +46,7 @@ const ArchivePage: React.FC = () => {
             backgroundPosition="80% center"
           />
         </section>
-      </main>
+      </div>
       <BackToTopButton />
     </div>
   );

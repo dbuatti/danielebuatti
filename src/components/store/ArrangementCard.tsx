@@ -24,7 +24,7 @@ export const ArrangementCard: React.FC<ArrangementCardProps> = ({ arrangement })
   return (
     <article className="h-full">
       <Link to={detailUrl} className="block h-full group">
-        <Card className="overflow-hidden flex flex-col h-full hover:shadow-2xl transition-all duration-500 border-brand-secondary/20 bg-white dark:bg-brand-dark-alt">
+        <Card className="overflow-hidden flex flex-col h-full hover:shadow-lifted transition-all duration-500 border-brand-secondary/20 bg-card dark:bg-brand-dark-alt">
           <div className="aspect-[3/4] relative bg-brand-secondary/5 flex items-center justify-center overflow-hidden">
             {previewUrl ? (
               <img 
@@ -37,14 +37,14 @@ export const ArrangementCard: React.FC<ArrangementCardProps> = ({ arrangement })
             )}
             
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              <div className="bg-white text-brand-dark px-6 py-3 rounded-full font-bold flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+              <div className="bg-card text-brand-dark px-6 py-3 rounded-full font-bold flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                 <Info className="h-4 w-4" /> View Details
               </div>
             </div>
 
             {arrangement.difficulty && (
               <div className="absolute top-4 right-4">
-                <span className="bg-brand-primary text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg uppercase tracking-widest">
+                <span className="bg-brand-primary text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-soft uppercase tracking-widest">
                   {arrangement.difficulty}
                 </span>
               </div>

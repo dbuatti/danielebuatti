@@ -22,7 +22,7 @@ const ResonanceProgramCard: React.FC<ResonanceProgramCardProps> = ({ className }
       className={cn(
         "relative w-full max-w-6xl mx-auto h-[300px] rounded-xl overflow-hidden",
         "flex items-center justify-center text-center",
-        "shadow-xl transition-all duration-300 ease-in-out transform hover:scale-[1.01]",
+        "shadow-lifted transition-all duration-300 ease-in-out transform hover:scale-[1.01]",
         className
       )}
       style={{ backgroundImage: `url(${backgroundImageSrc})`, backgroundSize: 'cover', backgroundPosition: "center" }}
@@ -31,7 +31,7 @@ const ResonanceProgramCard: React.FC<ResonanceProgramCardProps> = ({ className }
       <div className={cn("absolute inset-0 bg-black/30")}></div>
 
       {/* Content Card */}
-      <Card className="relative z-10 bg-brand-dark/80 dark:bg-brand-dark/90 text-brand-light p-6 md:p-8 max-w-md mx-auto border-brand-secondary shadow-lg">
+      <Card className="relative z-10 bg-brand-dark/80 dark:bg-brand-dark/90 text-brand-light p-6 md:p-8 max-w-md mx-auto border-brand-secondary shadow-soft">
         <CardHeader className="p-0 pb-4">
           <CardTitle className="text-3xl font-extrabold leading-tight">
             {title}
@@ -41,7 +41,7 @@ const ResonanceProgramCard: React.FC<ResonanceProgramCardProps> = ({ className }
           <p className="text-lg">
             {description}
           </p>
-          <Button asChild size="lg" className={cn("text-lg px-8 py-6 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass)}>
+          <Button asChild size="lg" className={cn("text-lg px-8 py-6 rounded-full shadow-soft transition-all duration-300 ease-in-out transform hover:scale-105", buttonBgClass)}>
             <a href={link} target="_blank" rel="noopener noreferrer">
               {linkText}
             </a>

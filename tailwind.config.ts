@@ -12,19 +12,42 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: {
+        DEFAULT: "1.25rem",
+        sm: "1.5rem",
+        lg: "2rem",
+      },
       screens: {
         "2xl": "1400px",
       },
     },
     extend: {
+      // One editorial type system: Fraunces for display, Inter for everything
+      // else. The legacy family names (display, montserrat, libre-baskerville)
+      // are kept as aliases so existing markup falls into the same system.
       fontFamily: {
-        sans: ["Outfit", "sans-serif"],
-        display: ["Roboto Slab", "serif"],
-        montserrat: ["Montserrat", "sans-serif"], // Added Montserrat
-        "libre-baskerville": ["Libre Baskerville", "serif"], // Added Libre Baskerville
+        sans: ["Inter Variable", "Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+        serif: ["Fraunces Variable", "Fraunces", "ui-serif", "Georgia", "serif"],
+        display: ["Fraunces Variable", "Fraunces", "ui-serif", "Georgia", "serif"],
+        montserrat: ["Inter Variable", "Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+        "libre-baskerville": ["Fraunces Variable", "Fraunces", "ui-serif", "Georgia", "serif"],
       },
       colors: {
+        // Warm-to-ink neutral scale replacing Tailwind's cool greys, so every
+        // text-gray-* / bg-gray-* on the site sits in the ivory + navy palette.
+        gray: {
+          50: "#FAF7F2",
+          100: "#F3EEE6",
+          200: "#E7E0D5",
+          300: "#D3CBBE",
+          400: "#A39E97",
+          500: "#76767C",
+          600: "#585C6B",
+          700: "#40455A",
+          800: "#2A3048",
+          900: "#1A2039",
+          950: "#10142A",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -89,6 +112,8 @@ export default {
         },
       },
       borderRadius: {
+        "2xl": "calc(var(--radius) + 8px)",
+        xl: "calc(var(--radius) + 4px)",
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
@@ -110,6 +135,14 @@ export default {
             height: "0",
           },
         },
+      },
+      boxShadow: {
+        // Soft, ink-tinted elevation used for cards and floating UI.
+        soft: "0 1px 2px hsl(229 44% 14% / 0.04), 0 8px 24px -12px hsl(229 44% 14% / 0.12)",
+        lifted: "0 2px 4px hsl(229 44% 14% / 0.05), 0 24px 48px -20px hsl(229 44% 14% / 0.25)",
+      },
+      transitionTimingFunction: {
+        "out-expo": "cubic-bezier(0.16, 1, 0.3, 1)",
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",

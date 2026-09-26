@@ -62,7 +62,7 @@ const CeremonySpecialistPage: React.FC = () => {
         title="Wedding Ceremony Rescue Specialist | Daniele Buatti"
         description="Premium last-minute wedding ceremony performance. Professional piano and vocals for when you need a reliable, high-end musical solution."
       />
-      <main className="max-w-5xl mx-auto px-6 py-16">
+      <div className="max-w-5xl mx-auto px-6 py-16">
         {/* Hero Section */}
         <motion.section 
           initial={{ opacity: 0, y: 20 }}
@@ -221,7 +221,7 @@ const CeremonySpecialistPage: React.FC = () => {
             </Button>
           </div>
         </section>
-      </main>
+      </div>
     </div>
   );
 };

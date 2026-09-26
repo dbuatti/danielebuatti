@@ -70,7 +70,7 @@ const faqItems = [
 ];
 
 const BookButton = ({ className = "", children = "Book a lesson" }: { className?: string; children?: React.ReactNode }) => (
-  <Button asChild size="lg" className={cn("h-14 px-8 text-base font-bold rounded-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light gap-2 shadow-lg transition-transform hover:scale-105", className)}>
+  <Button asChild size="lg" className={cn("h-14 px-8 text-base font-bold rounded-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light gap-2 shadow-soft transition-transform hover:scale-105", className)}>
     <a href="#book">
       {children} <ArrowRight className="h-4 w-4" />
     </a>
@@ -87,7 +87,7 @@ const VoicePianoServicesPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#FBF7F1] dark:bg-brand-dark text-brand-dark dark:text-brand-light">
+    <div className="min-h-screen bg-background dark:bg-brand-dark text-brand-dark dark:text-brand-light">
       <SeoStructuredData />
 
       {/* Page-local nav for this page's own sections, distinct from the site nav above it */}
@@ -101,7 +101,7 @@ const VoicePianoServicesPage: React.FC = () => {
         </nav>
       </div>
 
-      <main>
+      <div>
         {/* Hero */}
         <section id="lessons" className="container mx-auto px-4 pt-16 pb-12 max-w-3xl text-center">
           <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight mb-6">
@@ -125,14 +125,14 @@ const VoicePianoServicesPage: React.FC = () => {
           <DynamicImage
             src="/danielepianolaugh.jpeg"
             alt="Daniele Buatti at the piano mid-performance"
-            className="w-full h-64 md:h-96 object-cover rounded-2xl shadow-lg"
+            className="w-full h-64 md:h-96 object-cover rounded-2xl shadow-soft"
             width={1400}
             height={800}
           />
         </div>
 
         {/* Credit strip */}
-        <div className="border-y border-brand-secondary bg-[#F3ECE1] dark:bg-brand-dark-alt/30 py-3">
+        <div className="border-y border-brand-secondary bg-secondary dark:bg-brand-dark-alt/30 py-3">
           <p className="text-center text-xs md:text-sm text-brand-dark/70 dark:text-brand-light/70 px-4">
             Twelve years in Melbourne music theatre as music director, répétiteur and vocal coach. <span className="font-semibold">Wicked. The Bodyguard. Into the Woods</span> at the VCA.
           </p>
@@ -142,7 +142,7 @@ const VoicePianoServicesPage: React.FC = () => {
         <section className="container mx-auto px-4 py-16 max-w-5xl">
           <div className="grid sm:grid-cols-2 gap-6">
             {selfSelectCards.map(({ icon: Icon, title, body }) => (
-              <Card key={title} className="bg-brand-light dark:bg-brand-dark shadow-lg border-brand-secondary p-6 hover:shadow-xl hover:border-brand-primary/40 transition-all duration-300">
+              <Card key={title} className="bg-brand-light dark:bg-brand-dark shadow-soft border-brand-secondary p-6 hover:shadow-lifted hover:border-brand-primary/40 transition-all duration-300">
                 <CardContent className="p-0 space-y-3">
                   <div className="flex items-center gap-2.5 text-brand-primary">
                     <Icon className="h-5 w-5" />
@@ -156,7 +156,7 @@ const VoicePianoServicesPage: React.FC = () => {
         </section>
 
         {/* How the work goes */}
-        <section id="approach" className="bg-[#F3ECE1] dark:bg-brand-dark-alt/30 py-16">
+        <section id="approach" className="bg-secondary dark:bg-brand-dark-alt/30 py-16">
           <div className="container mx-auto px-4 max-w-5xl">
             <h2 className="font-display text-3xl font-bold text-center mb-10">How the work goes</h2>
             <div className="grid sm:grid-cols-3 gap-6 mb-10">
@@ -192,7 +192,7 @@ const VoicePianoServicesPage: React.FC = () => {
         </section>
 
         {/* Practical */}
-        <section className="bg-[#F3ECE1] dark:bg-brand-dark-alt/30 py-16">
+        <section className="bg-secondary dark:bg-brand-dark-alt/30 py-16">
           <div className="container mx-auto px-4 max-w-2xl">
             <h2 className="font-display text-3xl font-bold text-center mb-8">Practical</h2>
             <ul className="space-y-2.5 text-center text-sm text-brand-dark/80 dark:text-brand-light/80">
@@ -210,7 +210,7 @@ const VoicePianoServicesPage: React.FC = () => {
             <DynamicImage
               src="/headshot.jpeg"
               alt="Daniele Buatti"
-              className="w-28 h-28 rounded-full object-cover mb-6 shadow-lg"
+              className="w-28 h-28 rounded-full object-cover mb-6 shadow-soft"
               width={112}
               height={112}
             />
@@ -262,7 +262,7 @@ const VoicePianoServicesPage: React.FC = () => {
             <CalEmbed calLink={currentOption.calLink} layout="month_view" />
           </div>
         </section>
-      </main>
+      </div>
     </div>
   );
 };

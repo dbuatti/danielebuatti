@@ -11,6 +11,8 @@ interface DynamicImageProps {
   height?: number;
   style?: React.CSSProperties;
   href?: string; // Added optional href prop for linking
+  // Above-the-fold images (heroes) load eagerly with high fetch priority.
+  priority?: boolean;
 }
 
 const DynamicImage: React.FC<DynamicImageProps> = ({
@@ -21,6 +23,7 @@ const DynamicImage: React.FC<DynamicImageProps> = ({
   height = 400,
   style,
   href, // Destructure href
+  priority = false,
 }) => {
   // Use the local placeholder.svg if src is not provided or is the placeholder itself
   const imageSource = src && src !== "/public/placeholder.svg" ? src : "/public/placeholder.svg";
@@ -32,7 +35,9 @@ const DynamicImage: React.FC<DynamicImageProps> = ({
       className={className}
       width={width}
       height={height}
-      loading="lazy"
+      loading={priority ? "eager" : "lazy"}
+      decoding="async"
+      {...(priority ? { fetchpriority: "high" } : {})}
       style={style}
     />
   );

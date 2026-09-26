@@ -19,11 +19,11 @@ const MusicDirectorPianistPage: React.FC = () => {
   const imageSrc = "/daniele simple.jpeg";
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
-      <main className="max-w-5xl mx-auto px-6 py-16">
+    <div className="min-h-screen bg-background text-gray-800 dark:text-gray-200">
+      <div className="max-w-5xl mx-auto px-6 py-16">
         {/* Header Section */}
         <div className="text-center space-y-4 mb-16">
-          <SectionHeading>Music Director & Pianist</SectionHeading>
+          <SectionHeading as="h1">Music Director & Pianist</SectionHeading>
           <p className="text-xl font-medium text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
             Collaborative musical leadership for stage, studio, and performance development.
           </p>
@@ -37,17 +37,17 @@ const MusicDirectorPianistPage: React.FC = () => {
               <DynamicImage
                 src={imageSrc}
                 alt="Daniele Buatti"
-                className="w-full h-auto rounded-[2.5rem] shadow-2xl object-cover border-4 border-white dark:border-gray-800"
+                className="w-full h-auto rounded-2xl shadow-lifted object-cover border-4 border-white dark:border-gray-800"
                 width={400}
                 height={400}
               />
-              <div className="absolute -bottom-4 -right-4 bg-brand-primary p-4 rounded-2xl shadow-lg">
+              <div className="absolute -bottom-4 -right-4 bg-brand-primary p-4 rounded-2xl shadow-soft">
                 <Music className="h-6 w-6 text-white" />
               </div>
             </div>
             
             <div className="space-y-4 pt-4">
-              <Button asChild size="lg" className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white text-lg py-7 rounded-full shadow-xl transition-all hover:scale-[1.02]">
+              <Button asChild size="lg" className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white text-lg py-7 rounded-full shadow-lifted transition-all hover:scale-[1.02]">
                 <a href={cvLink} target="_blank" rel="noopener noreferrer">
                   <FileText className="mr-2 h-5 w-5" /> View Full CV
                 </a>
@@ -65,7 +65,7 @@ const MusicDirectorPianistPage: React.FC = () => {
                 I'm a music theatre practitioner based in Melbourne, with over a decade of experience as a music director, pianist, vocal coach, and performer.
               </p>
               <p>
-                My work spans large-scale productions and intimate workshops. Credits include <span className="font-semibold text-brand-primary">Paw Patrol Live, Beetlejuice, Heathers, A Chorus Line, Shrek, Legally Blonde, Mary Poppins</span>, and <span className="font-semibold text-brand-primary">Madiba the Musical</span> at Melbourne's Comedy Theatre.
+                My work spans large-scale productions and intimate workshops. Credits include <span className="font-medium text-brand-dark">Paw Patrol Live, Beetlejuice, Heathers, A Chorus Line, Shrek, Legally Blonde, Mary Poppins</span>, and <span className="font-medium text-brand-dark">Madiba the Musical</span> at Melbourne's Comedy Theatre.
               </p>
               <p>
                 As a music director and pianist, I bring a collaborative, detail-oriented approach to every production — supporting performers, serving the narrative, and building a musical environment where the whole cast can do their best work.
@@ -111,7 +111,7 @@ const MusicDirectorPianistPage: React.FC = () => {
             </Link>
           </Button>
         </div>
-      </main>
+      </div>
     </div>
   );
 };

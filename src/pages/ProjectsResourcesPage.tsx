@@ -1,153 +1,121 @@
 "use client";
 
 import React from "react";
-import BackToTopButton from "@/components/BackToTopButton";
 import SeoStructuredData from "@/components/SeoStructuredData";
 import SeoMetadata from "@/components/SeoMetadata";
 import DynamicImage from "@/components/DynamicImage";
 import ITServiceBanner from "@/components/ITServiceBanner";
-import KinesiologyBanner from "@/components/KinesiologyBanner"; // Import the new banner
+import KinesiologyBanner from "@/components/KinesiologyBanner";
+import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-// Horizontal card – same as landing page
-const HorizontalProgramCard: React.FC<{
+// Image card linking to a service or project (internal route or external site).
+const ProjectCard: React.FC<{
   title: string;
   description: string;
   link: string;
   imageSrc: string;
-}> = ({ title, description, link, imageSrc }) => {
-  const isInternalLink = link.startsWith("/") || link.startsWith("#");
-
-  return (
-    <div
-      className="group relative h-80 rounded-3xl overflow-hidden shadow-2xl cursor-pointer"
-      onClick={() => window.open(link, isInternalLink ? "_self" : "_blank")}
-      tabIndex={0}
-      role="link"
-      aria-label={`Go to ${title}`}
-    >
+  className?: string;
+}> = ({ title, description, link, imageSrc, className }) => {
+  const isInternal = link.startsWith("/");
+  const content = (
+    <>
       <DynamicImage
         src={imageSrc}
-        alt={title}
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        width={1200}
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 ease-out-expo group-hover:scale-105"
+        width={800}
         height={600}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/20" />
-      <div className="relative z-10 h-full flex flex-col justify-end p-10 text-left">
-        <h3 className="text-3xl font-bold text-white mb-3 drop-shadow-2xl">
-          {title}
-        </h3>
-        <p className="text-lg text-white/95 drop-shadow-lg">
-          {description}
-        </p>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/0" />
+      <div className="relative z-10 flex h-full flex-col justify-end p-7">
+        <h3 className="text-2xl font-normal leading-snug text-white">{title}</h3>
+        <p className="mt-2 text-[15px] text-white/80">{description}</p>
+        <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-white">
+          {isInternal ? "Learn more" : "Visit site"}
+          <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+        </span>
       </div>
-      <div className="absolute inset-0 ring-4 ring-white/0 group-hover:ring-white/30 transition-all duration-300 pointer-events-none" />
-    </div>
+    </>
+  );
+  const cardClass = cn("group relative block h-80 overflow-hidden rounded-2xl bg-brand-dark shadow-soft transition-shadow duration-500 hover:shadow-lifted", className);
+  return isInternal ? (
+    <Link to={link} className={cardClass}>{content}</Link>
+  ) : (
+    <a href={link} target="_blank" rel="noopener noreferrer" className={cardClass}>{content}</a>
   );
 };
 
-// Piano Backings Card
-const PianoBackingsCard: React.FC = () => {
-  return (
-    <div
-      className="group relative h-80 rounded-3xl overflow-hidden shadow-2xl cursor-pointer"
-      onClick={() => window.open("https://pianobackingsbydaniele.vercel.app", "_blank")}
-      tabIndex={0}
-      role="link"
-      aria-label="Go to Piano Backing Tracks"
-    >
-      <div className="absolute inset-0 bg-[#ff00b3]" />
-      <div className="absolute inset-0 flex items-center justify-center p-12">
-        <DynamicImage
-          src="/pianobackingslogo.png"
-          alt="Piano Backing Tracks"
-          className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
-          width={1200}
-          height={600}
-        />
-      </div>
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-    </div>
-  );
-};
+const PianoBackingsCard: React.FC = () => (
+  <a
+    href="https://pianobackingsbydaniele.vercel.app"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Piano Backings by Daniele"
+    className="group relative flex h-80 items-center justify-center overflow-hidden rounded-2xl bg-[#ff00b3] p-10 shadow-soft transition-shadow duration-500 hover:shadow-lifted"
+  >
+    <DynamicImage
+      src="/pianobackingslogo.png"
+      alt="Piano Backings by Daniele"
+      className="max-h-full max-w-full object-contain transition-transform duration-700 ease-out-expo group-hover:scale-105"
+      width={1200}
+      height={600}
+    />
+  </a>
+);
+
+const Group = ({ eyebrow, title, children }: { eyebrow: string; title: string; children: React.ReactNode }) => (
+  <section>
+    <p className="eyebrow">{eyebrow}</p>
+    <h2 className="mt-3 text-3xl md:text-4xl font-light text-brand-dark">{title}</h2>
+    <div className="mt-8">{children}</div>
+  </section>
+);
 
 const ProjectsPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
+    <div>
       <SeoStructuredData />
-      <SeoMetadata 
+      <SeoMetadata
         title="Projects & Services - Daniele Buatti"
         description="Live performances, music direction, digital products, and community initiatives."
-        url={`${window.location.origin}/projects`}
+        url="https://danielebuatti.com/projects-resources"
       />
-      <main className="max-w-5xl mx-auto px-6 py-16">
-        <header className="text-center mb-20">
-          <h1 className="text-5xl md:text-6xl font-light mb-6">Projects & Services</h1>
-          <p className="text-xl max-w-3xl mx-auto text-gray-600 dark:text-gray-400">
+      <div className="container py-14 md:py-20">
+        <header className="max-w-3xl">
+          <p className="eyebrow">Projects &amp; resources</p>
+          <h1 className="mt-4 text-5xl md:text-6xl font-light leading-[1.05] text-brand-dark">Projects &amp; Services</h1>
+          <p className="mt-5 text-lg md:text-xl leading-relaxed text-muted-foreground">
             Explore my work beyond one-to-one coaching — from live performance and music direction to digital resources and community singing.
           </p>
         </header>
 
-        <div className="space-y-20">
-          {/* Specialised Services */}
-          <section>
-            <h2 className="text-4xl font-light text-center mb-12">Specialised Services</h2>
-            <div className="space-y-12">
-              <HorizontalProgramCard
-                title="Music Director & Pianist"
-                description="Music theatre direction, vocal coaching, and performance."
-                link="/music-director-pianist"
-                imageSrc="/daniele-conducting.jpeg"
-              />
-              <HorizontalProgramCard
-                title="Live Piano Services"
-                description="Weddings, events, and private functions."
-                link="/live-piano-services"
-                imageSrc="/blacktie.avif"
-              />
-              <HorizontalProgramCard
-                title="AMEB Accompanying"
-                description="Exam day and rehearsal accompaniment."
-                link="/ameb-accompanying"
-                imageSrc="/ameb-placeholder.jpg"
-              />
+        <div className="mt-16 space-y-20">
+          <Group eyebrow="On stage" title="Specialised services">
+            <div className="grid gap-6 md:grid-cols-3">
+              <ProjectCard title="Music Director & Pianist" description="Music theatre direction, vocal coaching, and performance." link="/music-director-pianist" imageSrc="/daniele-conducting.jpeg" />
+              <ProjectCard title="Live Piano Services" description="Weddings, events, and private functions." link="/live-piano-services" imageSrc="/blacktie.avif" />
+              <ProjectCard title="AMEB Accompanying" description="Exam day and rehearsal accompaniment." link="/ameb-accompanying" imageSrc="/ameb-placeholder.jpg" />
             </div>
-          </section>
+          </Group>
 
-          {/* Kinesiology Banner Section */}
-          <section>
-            <h2 className="text-4xl font-light text-center mb-12">Somatic Health</h2>
-            <KinesiologyBanner />
-          </section>
-
-          {/* IT Service Banner Section */}
-          <section>
-            <h2 className="text-4xl font-light text-center mb-12">Digital Architecture</h2>
-            <ITServiceBanner />
-          </section>
-
-          {/* Digital & Community */}
-          <section>
-            <h2 className="text-4xl font-light text-center mb-12">Digital Products & Community</h2>
-            <div className="space-y-12">
-              <HorizontalProgramCard
-                title="Sheet Music Store"
-                description="Professional arrangements and vocal scores. Instant digital downloads."
-                link="/store"
-                imageSrc="/sheetmusic.png"
-              />
+          <Group eyebrow="Online & in the community" title="Digital products & community">
+            <div className="grid gap-6 md:grid-cols-3">
+              <ProjectCard title="Sheet Music Store" description="Professional arrangements and vocal scores. Instant digital downloads." link="/store" imageSrc="/sheetmusic.png" />
               <PianoBackingsCard />
-              <HorizontalProgramCard
-                title="Resonance with Daniele: A Joyful Pop-Up Choir for All Voices"
-                description="Join a welcoming community to sing, connect, and shine, with no experience needed."
-                link="https://resonance-with-daniele.vercel.app"
-                imageSrc="/conduct.jpeg"
-              />
+              <ProjectCard title="Resonance with Daniele" description="A joyful pop-up choir for all voices. No experience needed." link="https://resonance-with-daniele.vercel.app" imageSrc="/conduct.jpeg" />
             </div>
-          </section>
+          </Group>
+
+          <Group eyebrow="Beyond music" title="Somatic health & digital architecture">
+            <div className="grid gap-6 md:grid-cols-2">
+              <KinesiologyBanner />
+              <ITServiceBanner />
+            </div>
+          </Group>
         </div>
-      </main>
-      <BackToTopButton />
+      </div>
     </div>
   );
 };

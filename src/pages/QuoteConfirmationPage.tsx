@@ -23,7 +23,7 @@ const QuoteConfirmationPage: React.FC = () => {
   return (
     <div className="flex flex-col min-h-full">
       {/* Header */}
-      <header className="bg-brand-light dark:bg-brand-dark py-4 px-6 md:px-12 shadow-lg relative z-10 border-b border-brand-secondary/50">
+      <header className="bg-brand-light dark:bg-brand-dark py-4 px-6 md:px-12 shadow-soft relative z-10 border-b border-brand-secondary/50">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Button asChild variant="ghost" className="text-brand-dark dark:text-brand-light hover:text-brand-primary transition-colors duration-200 px-0 py-0 h-auto">
             <Link to="/">
@@ -51,8 +51,8 @@ const QuoteConfirmationPage: React.FC = () => {
         </div>
       </header>
 
-      <main className="flex-grow flex items-center justify-center px-4 py-16">
-        <div className="max-w-3xl mx-auto text-center bg-brand-light dark:bg-brand-dark-alt p-10 md:p-16 rounded-xl shadow-2xl border border-brand-primary/50 space-y-8">
+      <div className="flex-grow flex items-center justify-center px-4 py-16">
+        <div className="max-w-3xl mx-auto text-center bg-brand-light dark:bg-brand-dark-alt p-10 md:p-16 rounded-xl shadow-lifted border border-brand-primary/50 space-y-8">
           <CheckCircle2 className="h-24 w-24 text-brand-primary mx-auto animate-bounce" />
           <h2 className="text-5xl font-extrabold text-brand-primary leading-tight"> {/* Removed font-libre-baskerville and text-shadow-sm */}
             Thank You for Your Acceptance!
@@ -63,11 +63,11 @@ const QuoteConfirmationPage: React.FC = () => {
           <p className="text-xl text-brand-dark/90 dark:text-brand-light/90 max-w-2xl mx-auto font-semibold">
             Daniele will be in touch very shortly to finalize all the details and confirm your booking.
           </p>
-          <Button asChild size="lg" className="mt-8 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+          <Button asChild size="lg" className="mt-8 bg-brand-primary hover:bg-brand-primary/90 text-brand-light text-lg px-8 py-6 rounded-full shadow-soft transition-all duration-300 ease-in-out transform hover:scale-105">
             <Link to="/">Return to Home</Link>
           </Button>
         </div>
-      </main>
+      </div>
     </div>
   );
 };

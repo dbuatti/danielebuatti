@@ -78,7 +78,7 @@ const AmebBookingForm: React.FC = () => {
 
   if (isSubmitted) {
     return (
-      <div className="text-center space-y-6 p-8 bg-gray-900 dark:bg-gray-800 rounded-xl shadow-lg border border-gray-700 max-w-lg mx-auto">
+      <div className="text-center space-y-6 p-8 bg-gray-900 dark:bg-gray-800 rounded-xl shadow-soft border border-gray-700 max-w-lg mx-auto">
         <CheckCircle2 className="h-24 w-24 text-brand-primary mx-auto animate-bounce" />
         <h3 className="text-4xl font-bold text-white">Booking Confirmed!</h3>
         <p className="text-xl text-white/90">
@@ -99,7 +99,7 @@ const AmebBookingForm: React.FC = () => {
     );
   }
 
-  const inputClass = "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500";
+  const inputClass = "bg-card dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500";
   const labelClass = "text-gray-800 dark:text-gray-200";
   const checkboxClass = "h-5 w-5 border-gray-400 dark:border-gray-500 text-brand-primary data-[state=checked]:bg-brand-primary data-[state=checked]:text-white";
 

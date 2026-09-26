@@ -25,8 +25,8 @@ const StoreSuccessPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light flex flex-col">
-      <main className="flex-grow flex items-center justify-center px-4 py-16">
-        <div className="max-w-3xl w-full mx-auto text-center bg-white dark:bg-brand-dark-alt p-10 md:p-16 rounded-[2.5rem] shadow-2xl border border-brand-primary/20 space-y-8">
+      <div className="flex-grow flex items-center justify-center px-4 py-16">
+        <div className="max-w-3xl w-full mx-auto text-center bg-card dark:bg-brand-dark-alt p-10 md:p-16 rounded-2xl shadow-lifted border border-brand-primary/20 space-y-8">
           <div className="relative inline-block">
             <div className="absolute inset-0 bg-brand-primary/20 blur-2xl rounded-full animate-pulse" />
             <CheckCircle2 className="h-24 w-24 text-brand-primary mx-auto relative z-10" />
@@ -61,7 +61,7 @@ const StoreSuccessPage: React.FC = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
-            <Button asChild size="lg" className="w-full sm:w-auto bg-brand-primary hover:bg-brand-primary/90 text-white rounded-full px-10 py-7 text-lg shadow-lg transition-all hover:scale-105">
+            <Button asChild size="lg" className="w-full sm:w-auto bg-brand-primary hover:bg-brand-primary/90 text-white rounded-full px-10 py-7 text-lg shadow-soft transition-all hover:scale-105">
               <Link to="/store">Continue Shopping</Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="w-full sm:w-auto border-brand-secondary rounded-full px-10 py-7 text-lg hover:bg-brand-secondary/10">
@@ -77,7 +77,7 @@ const StoreSuccessPage: React.FC = () => {
             </p>
           )}
         </div>
-      </main>
+      </div>
     </div>
   );
 };

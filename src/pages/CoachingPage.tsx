@@ -14,8 +14,8 @@ const CoachingPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
-      <main className="max-w-5xl mx-auto px-6 py-16">
+    <div className="min-h-screen bg-background text-gray-800 dark:text-gray-200">
+      <div className="max-w-5xl mx-auto px-6 py-16">
         {/* Hero – calm, authoritative */}
         <section className="text-center mb-20">
           <h1 className="text-5xl md:text-6xl font-light mb-8">Coaching</h1>
@@ -29,7 +29,7 @@ const CoachingPage: React.FC = () => {
             This work integrates voice, piano, body awareness, and somatic intelligence to support sustainable, embodied expression.
           </p>
 
-          <Button asChild size="lg" className="text-lg px-14 py-8 rounded-full shadow-xl bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
+          <Button asChild size="lg" className="text-lg h-auto whitespace-normal px-8 sm:px-14 py-5 sm:py-8 rounded-full shadow-lifted bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
             <Link to="/voice-piano-services">
               <Calendar className="w-7 h-7 inline mr-4" />
               Check availability & book
@@ -42,7 +42,7 @@ const CoachingPage: React.FC = () => {
           <DynamicImage
             src="/danielecalmatpiano.jpeg"
             alt="Daniele Buatti in flow at the piano"
-            className="w-full h-[700px] object-cover shadow-2xl"
+            className="w-full h-[700px] object-cover shadow-lifted"
             style={{ objectPosition: "center 7%" }}  // fine-tuned for your head + piano
             width={1400}
             height={800}
@@ -105,16 +105,16 @@ const CoachingPage: React.FC = () => {
         </section>
 
         {/* Additional Services – simple, elegant */}
-        <section className="py-20 bg-white dark:bg-gray-900 rounded-3xl text-center">
+        <section className="py-20 bg-card dark:bg-gray-900 rounded-2xl text-center">
           <h2 className="text-4xl font-light mb-10">Additional Musical Services</h2>
           <p className="text-xl max-w-3xl mx-auto text-gray-600 dark:text-gray-400 mb-12 leading-relaxed">
             Alongside coaching, I work professionally as a pianist, music director, and arranger — including live performance, music direction, AMEB accompaniment, custom sheet music, and backing tracks.
           </p>
-          <Button asChild size="lg" variant="outline" className="border-2 text-lg px-14 py-8 rounded-full">
+          <Button asChild size="lg" variant="outline" className="border-2 text-lg h-auto whitespace-normal px-8 sm:px-14 py-5 sm:py-8 rounded-full">
             <Link to="/projects-resources">Explore all services</Link>
           </Button>
         </section>
-      </main>
+      </div>
     </div>
   );
 };

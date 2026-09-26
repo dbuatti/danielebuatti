@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import CalEmbed from '@/components/CalEmbed';
 import SectionHeading from '@/components/SectionHeading';
-import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { usePageMeta } from "@/hooks/use-page-meta";
 
@@ -28,10 +27,9 @@ const VoicePianoBookingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light">
-      <main className="container mx-auto px-4 pt-12 pb-12">
+      <div className="container mx-auto px-4 pt-12 pb-12">
         <div className="text-center space-y-4 mb-10">
-          <SectionHeading>{pageTitle}</SectionHeading>
-          <Separator className="max-w-xs mx-auto bg-brand-secondary" />
+          <SectionHeading as="h1">{pageTitle}</SectionHeading>
         </div>
 
         <div className="flex justify-center gap-4 mb-8">
@@ -53,7 +51,7 @@ const VoicePianoBookingPage: React.FC = () => {
         <div className="max-w-4xl mx-auto" key={selectedDuration}>
           <CalEmbed calLink={currentOption.calLink} layout="month_view" />
         </div>
-      </main>
+      </div>
     </div>
   );
 };

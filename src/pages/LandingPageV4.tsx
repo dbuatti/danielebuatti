@@ -1,36 +1,20 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import BackToTopButton from "@/components/BackToTopButton";
 import SeoStructuredData from "@/components/SeoStructuredData";
 import SeoMetadata from "@/components/SeoMetadata";
 import DynamicImage from "@/components/DynamicImage";
 import ITServiceBanner from "@/components/ITServiceBanner";
 import KinesiologyBanner from "@/components/KinesiologyBanner";
 import { Link } from "react-router-dom";
-import { 
-  Mic2, 
-  Leaf, 
-  Megaphone, 
-  CheckCircle2, 
-  Mail, 
-  Star, 
-  Music, 
-  Quote, 
-  ChevronLeft, 
-  ChevronRight,
-  ShoppingBag
-} from "lucide-react";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { ArrowRight, ArrowUpRight, ChevronLeft, ChevronRight, Mail, Music, ShoppingBag, Star } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import CalEmbed from "@/components/CalEmbed";
 import { Button } from "@/components/ui/button";
-import { 
-  Carousel, 
-  CarouselContent, 
-  CarouselItem, 
-  type CarouselApi 
-} from "@/components/ui/carousel";
-import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
+import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
+import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
+import { serviceLinks } from "@/constants/navigation";
+import { cn } from "@/lib/utils";
 
 const testimonials = [
   { quote: "Daniele's clear, direct, and thoughtful communication is truly exceptional...", author: "Em", title: "Creative Collaborator" },
@@ -41,6 +25,34 @@ const testimonials = [
   { quote: "Daniele is an exceptional teacher, leader, and encourager...", author: "Experienced Educator", title: "Colleague" },
 ];
 
+const expertise = [
+  { title: "Voice & Piano", text: "Technique, repertoire, theory, audition prep, and expressive performance." },
+  { title: "Body & Breath", text: "Kinesiology and somatic work to release tension and support natural resonance." },
+  { title: "Presence & Communication", text: "Public speaking, on-camera work, and building calm, authentic presence." },
+];
+
+const audiences = [
+  { label: "Singers & Musicians", desc: "Technical skill and expressive freedom" },
+  { label: "Public Speakers", desc: "Confident and impactful communication" },
+  { label: "Film & Streaming", desc: "Nuanced presence on camera" },
+  { label: "Professionals", desc: "Sustainable long-term practice" },
+];
+
+const reasons = [
+  { title: "Holistic expertise", text: "Voice, piano, presence, kinesiology, and mindset." },
+  { title: "Embodiment-based", text: "Build skill without tension or burnout." },
+  { title: "Results-focused", text: "Leave sessions more confident and capable." },
+  { title: "Creative freedom", text: "Technique meets artistry and authentic expression." },
+];
+
+const SectionIntro = ({ eyebrow, title, children, className }: { eyebrow: string; title: React.ReactNode; children?: React.ReactNode; className?: string }) => (
+  <div className={cn("max-w-2xl", className)}>
+    <p className="eyebrow">{eyebrow}</p>
+    <h2 className="mt-4 text-4xl md:text-5xl font-light leading-[1.08] text-brand-dark">{title}</h2>
+    {children && <p className="mt-5 text-lg leading-relaxed text-muted-foreground">{children}</p>}
+  </div>
+);
+
 const LandingPageV4: React.FC = () => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
@@ -48,294 +60,285 @@ const LandingPageV4: React.FC = () => {
 
   useEffect(() => {
     if (!api) return;
+    const onSelect = () => setCurrent(api.selectedScrollSnap());
     setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap());
-    api.on("select", () => {
-      setCurrent(api.selectedScrollSnap());
-    });
+    onSelect();
+    api.on("select", onSelect);
+    return () => {
+      api.off("select", onSelect);
+    };
   }, [api]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200 relative">
+    <div className="relative">
       <SeoStructuredData />
-      <SeoMetadata 
+      <SeoMetadata
         title="Daniele Buatti | Pianist, Vocal Coach & Music Director"
         description="Professional embodied coaching for singers, performers, and speakers. Unlock your authentic voice through piano, vocal mastery, and somatic awareness."
-        url={`${window.location.origin}`}
+        url="https://danielebuatti.com/"
       />
-      {/* Floating Enquiry Button for Mobile */}
-      <div className="fixed bottom-8 right-8 z-50 md:hidden">
-        <Button asChild size="icon" className="h-14 w-14 rounded-full shadow-2xl bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900">
-          <Link to="/contact">
-            <Mail className="h-6 w-6" />
+
+      {/* Floating enquiry button on mobile */}
+      <Link
+        to="/contact"
+        aria-label="Make an enquiry"
+        className="fixed bottom-6 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-brand-dark text-brand-light shadow-lifted md:hidden"
+      >
+        <Mail className="h-6 w-6" />
+      </Link>
+
+      {/* 1. HERO */}
+      <section className="container grid items-center gap-12 pb-20 pt-10 md:pt-16 lg:grid-cols-[1.05fr_1fr] lg:gap-20 lg:pb-28">
+        <div>
+          <p className="eyebrow">Melbourne &middot; Studio &amp; stage</p>
+          <h1 className="mt-5 text-[52px] leading-[0.98] sm:text-7xl lg:text-[88px] font-light text-brand-dark">
+            Daniele <em className="italic text-brand-primary">Buatti</em>
+          </h1>
+          <p className="mt-6 text-base md:text-lg font-medium text-brand-dark/80">
+            Pianist &middot; Vocal Coach &middot; Music Director &middot; Embodiment Practitioner
+          </p>
+          <p className="mt-5 max-w-xl text-lg md:text-xl leading-relaxed text-muted-foreground">
+            I help singers, performers, and speakers connect body, breath, and voice for authentic and easeful expression.
+          </p>
+
+          <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size="lg" className="h-14 rounded-full bg-brand-primary px-8 text-base text-white shadow-soft hover:bg-brand-primary/90">
+                  Book a discovery call
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl h-[90vh] p-0">
+                <DialogTitle className="sr-only">Book a discovery call</DialogTitle>
+                <CalEmbed calLink="danielebuatti/30min" />
+              </DialogContent>
+            </Dialog>
+            <Link to="/contact" className="group inline-flex items-center gap-2 text-base font-medium text-brand-dark">
+              Make an enquiry
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
+        </div>
+
+        <div className="relative mx-auto w-full max-w-md lg:mr-5">
+          <div className="absolute -bottom-3 -right-3 sm:-bottom-5 sm:-right-5 h-full w-full rounded-2xl bg-secondary" aria-hidden="true" />
+          <DynamicImage
+            src="/headshot.jpeg"
+            alt="Daniele Buatti"
+            className="relative aspect-[4/5] w-full rounded-2xl object-cover shadow-lifted"
+            width={600}
+            height={750}
+            priority
+          />
+        </div>
+      </section>
+
+      {/* 2. EXPERTISE */}
+      <section className="border-y border-border bg-card/60">
+        <div className="container py-20 lg:py-28">
+          <SectionIntro eyebrow="Voice · Body · Presence" title="My expertise" />
+          <ol className="mt-14 grid gap-10 md:grid-cols-3 md:gap-12">
+            {expertise.map((item, i) => (
+              <li key={item.title} className="border-t border-brand-dark/15 pt-6">
+                <span className="font-serif text-sm text-brand-primary">0{i + 1}</span>
+                <h3 className="mt-3 text-2xl font-light text-brand-dark">{item.title}</h3>
+                <p className="mt-3 leading-relaxed text-muted-foreground">{item.text}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* 3. WAYS TO WORK TOGETHER */}
+      <section className="container py-20 lg:py-28">
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <SectionIntro eyebrow="Work with me" title="Ways to work together" />
+          <Link to="/book-voice-piano" className="group inline-flex items-center gap-2 font-medium text-brand-dark">
+            Check lesson availability
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
-        </Button>
-      </div>
+        </div>
+        <ul className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+          {serviceLinks.map((s) => (
+            <li key={s.href} className="bg-card">
+              <Link to={s.href} className="group flex h-full flex-col gap-6 p-7 transition-colors hover:bg-secondary/60">
+                <div className="flex items-start justify-between">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-brand-dark/70 transition-colors group-hover:border-brand-primary group-hover:bg-brand-primary group-hover:text-white">
+                    <s.icon className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <ArrowUpRight className="h-5 w-5 text-brand-dark/30 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand-primary" aria-hidden="true" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-normal text-brand-dark">{s.name}</h3>
+                  <p className="mt-1.5 text-[15px] text-muted-foreground">{s.description}</p>
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
 
-      <main className="max-w-5xl mx-auto px-6 pt-16 pb-8">
-        
-        {/* 1. HERO SECTION */}
-        <section className="grid md:grid-cols-2 gap-16 items-center mb-24">
-          <div className="space-y-8">
-            <h1 className="text-5xl md:text-6xl font-light leading-tight text-gray-900 dark:text-white">Daniele Buatti</h1>
-            <p className="text-2xl text-gray-700 dark:text-gray-300 font-light text-left">
-              Pianist • Vocal Coach • Music Director • Embodiment Practitioner
-            </p>
-            <p className="text-xl leading-relaxed text-gray-600 dark:text-gray-400 text-left">
-              I help singers, performers, and speakers connect body, breath, and voice for authentic and easeful expression.
-            </p>
-            
-            <div className="flex flex-wrap gap-4">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button size="lg" className="text-lg px-8 py-7 rounded-full bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-                    Book a discovery call
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-4xl h-[90vh] p-0">
-                  <CalEmbed calLink="danielebuatti/30min" />
-                </DialogContent>
-              </Dialog>
-              
-              <Button asChild variant="outline" size="lg" className="text-lg px-8 py-7 rounded-full border-2 text-brand-dark dark:text-brand-light border-brand-secondary hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50">
-                <Link to="/contact">Make an Enquiry</Link>
-              </Button>
-            </div>
-          </div>
-          <div className="flex justify-center">
-            <DynamicImage src="/headshot.jpeg" alt="Daniele Buatti" className="w-full max-w-lg rounded-3xl shadow-2xl" width={600} height={600} />
-          </div>
-        </section>
-
-        {/* 2. EXPERTISE SECTION */}
-        <section className="mb-24">
-          <h2 className="text-4xl font-light text-center mb-16">My Expertise</h2>
-          <div className="grid md:grid-cols-3 gap-12 text-center">
-            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
-              <Mic2 className="w-16 h-16 mx-auto mb-6 text-gray-400 dark:text-gray-600" />
-              <h3 className="text-2xl font-medium mb-4 text-left md:text-center">Voice & Piano</h3>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-left md:text-center">
-                Technique, repertoire, theory, audition prep, and expressive performance.
-              </p>
-            </div>
-            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
-              <Leaf className="w-16 h-16 mx-auto mb-6 text-gray-400 dark:text-gray-600" />
-              <h3 className="text-2xl font-medium mb-4 text-left md:text-center">Body & Breath</h3>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-left md:text-center">
-                Kinesiology and somatic work to release tension and support natural resonance.
-              </p>
-            </div>
-            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-10 rounded-3xl shadow-md border border-gray-200/50 dark:border-gray-800/50">
-              <Megaphone className="w-16 h-16 mx-auto mb-6 text-gray-400 dark:text-gray-600" />
-              <h3 className="text-2xl font-medium mb-4 text-left md:text-center">Presence & Communication</h3>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-left md:text-center">
-                Public speaking, on-camera work, and building calm, authentic presence.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* 3. CLIENT FEEDBACK */}
-        <section className="mb-24 relative">
-          <div className="flex items-end justify-between mb-12 px-2 text-left">
+      {/* 4. CLIENT FEEDBACK */}
+      <section className="bg-brand-dark text-brand-light">
+        <div className="container py-20 lg:py-28">
+          <div className="flex items-end justify-between gap-6">
             <div>
-              <h2 className="text-4xl font-light">Client Feedback</h2>
-              <p className="text-gray-500 mt-2">Stories from the studio and stage</p>
+              <p className="eyebrow text-[hsl(325_72%_72%)]">Client feedback</p>
+              <h2 className="mt-4 text-4xl md:text-5xl font-light text-brand-light">Stories from the studio and stage</h2>
             </div>
-            <div className="hidden md:flex gap-3">
-              <Button 
-                variant="outline" 
-                size="icon" 
-                onClick={() => api?.scrollPrev()}
-                className="rounded-full border-gray-200 dark:border-gray-800 hover:bg-white dark:hover:bg-gray-900 transition-all"
-              >
-                <ChevronLeft className="w-5 h-5" />
+            <div className="hidden md:flex gap-2">
+              <Button variant="outline" size="icon" onClick={() => api?.scrollPrev()} aria-label="Previous testimonial" className="h-11 w-11 rounded-full border-white/20 bg-transparent text-brand-light hover:bg-white/10 hover:text-brand-light">
+                <ChevronLeft className="h-5 w-5" />
               </Button>
-              <Button 
-                variant="outline" 
-                size="icon" 
-                onClick={() => api?.scrollNext()}
-                className="rounded-full border-gray-200 dark:border-gray-800 hover:bg-white dark:hover:bg-gray-900 transition-all"
-              >
-                <ChevronRight className="w-5 h-5" />
+              <Button variant="outline" size="icon" onClick={() => api?.scrollNext()} aria-label="Next testimonial" className="h-11 w-11 rounded-full border-white/20 bg-transparent text-brand-light hover:bg-white/10 hover:text-brand-light">
+                <ChevronRight className="h-5 w-5" />
               </Button>
             </div>
           </div>
 
-          <div className="relative pb-12">
-            <Carousel
-              opts={{ align: "start", loop: true }}
-              plugins={[WheelGesturesPlugin()]}
-              setApi={setApi}
-              className="w-full"
-            >
-              <CarouselContent className="-ml-4 items-stretch">
-                {testimonials.map((t, i) => (
-                  <CarouselItem key={i} className="pl-4 md:basis-1/2 lg:basis-1/3 flex">
-                    <div className="group h-full flex flex-col justify-between bg-white/70 dark:bg-gray-900/60 backdrop-blur-md p-10 rounded-[2rem] border border-gray-200/50 dark:border-gray-800/50 shadow-sm hover:shadow-xl hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-500 w-full h-full flex-1">
-                      <div className="text-left">
-                        <div className="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                          <Quote className="w-5 h-5 text-gray-400" />
-                        </div>
-                        <p className="text-lg italic text-gray-700 dark:text-gray-300 leading-relaxed mb-8">
-                          "{t.quote}"
-                        </p>
-                      </div>
-                      <div className="pt-6 border-t border-gray-100 dark:border-gray-800 text-left">
-                        <p className="font-semibold text-gray-900 dark:text-white">{t.author}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-widest mt-1">{t.title}</p>
-                      </div>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
-          </div>
+          <Carousel opts={{ align: "start", loop: true }} plugins={[WheelGesturesPlugin()]} setApi={setApi} className="mt-12 w-full">
+            <CarouselContent className="-ml-5 items-stretch">
+              {testimonials.map((t) => (
+                <CarouselItem key={t.author} className="flex pl-5 md:basis-1/2 lg:basis-1/3">
+                  <figure className="flex w-full flex-col justify-between rounded-2xl border border-white/10 bg-white/[0.04] p-8 md:p-9">
+                    <blockquote>
+                      <span className="block font-serif text-5xl leading-none text-brand-primary" aria-hidden="true">&ldquo;</span>
+                      <p className="mt-2 font-serif text-xl font-light italic leading-relaxed text-brand-light/90">{t.quote}</p>
+                    </blockquote>
+                    <figcaption className="mt-8 border-t border-white/10 pt-5">
+                      <p className="font-medium text-brand-light">{t.author}</p>
+                      <p className="mt-1 text-xs uppercase tracking-[0.18em] text-brand-light/50">{t.title}</p>
+                    </figcaption>
+                  </figure>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
 
-          <div className="flex justify-center gap-2">
+          <div className="mt-10 flex justify-center gap-2">
             {Array.from({ length: count }).map((_, i) => (
               <button
                 key={i}
                 onClick={() => api?.scrollTo(i)}
-                className={`transition-all duration-500 rounded-full ${
-                  current === i ? "w-8 h-1.5 bg-gray-400 dark:bg-gray-500" : "w-1.5 h-1.5 bg-gray-200 dark:bg-gray-800"
-                }`}
+                className={cn(
+                  "h-1.5 rounded-full transition-all duration-500",
+                  current === i ? "w-8 bg-brand-primary" : "w-1.5 bg-white/25 hover:bg-white/40",
+                )}
                 aria-label={`Go to slide ${i + 1}`}
+                aria-current={current === i}
               />
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* 4. KINESIOLOGY BANNER */}
-        <section className="mb-24 px-2">
+      {/* 5. APPROACH */}
+      <section className="container grid items-center gap-12 py-20 lg:grid-cols-2 lg:gap-20 lg:py-28">
+        <DynamicImage
+          src="/pinkcarpet.jpg"
+          alt="Daniele Buatti on the red carpet"
+          className="aspect-[4/5] w-full rounded-2xl object-cover object-top shadow-lifted"
+          width={600}
+          height={750}
+        />
+        <div>
+          <SectionIntro eyebrow="Why work with me" title="My approach" />
+          <div className="mt-6 space-y-5 text-lg leading-relaxed text-muted-foreground">
+            <p>I help performers connect body, breath, and voice so they can express themselves with freedom and ease.</p>
+            <p>
+              With over 12 years as a music director, pianist, vocal coach, and educator, I combine music theatre expertise with
+              kinesiology and somatic practices.
+            </p>
+          </div>
+
+          <dl className="mt-10 grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+            {reasons.map((r) => (
+              <div key={r.title} className="border-l-2 border-brand-primary/60 pl-4">
+                <dt className="font-medium text-brand-dark">{r.title}</dt>
+                <dd className="mt-1 text-[15px] text-muted-foreground">{r.text}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <Link to="/coaching" className="group mt-10 inline-flex items-center gap-2 font-medium text-brand-dark">
+            Read more about my approach
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Link>
+        </div>
+      </section>
+
+      {/* 6. WHO I WORK WITH */}
+      <section className="border-y border-border bg-secondary/50">
+        <div className="container py-16 lg:py-20">
+          <p className="eyebrow text-center">Who I work with</p>
+          <ul className="mt-10 grid grid-cols-2 gap-y-10 lg:grid-cols-4">
+            {audiences.map((a) => (
+              <li key={a.label} className="px-4 text-center">
+                <p className="font-serif text-xl md:text-2xl font-light text-brand-dark">{a.label}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{a.desc}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* 7. FEATURES: live piano + store */}
+      <section className="container grid gap-6 py-20 lg:grid-cols-[1.35fr_1fr] lg:py-28">
+        <Link
+          to="/live-piano-services"
+          className="group relative flex min-h-[420px] flex-col justify-end overflow-hidden rounded-2xl bg-black p-8 md:p-12 text-white"
+        >
+          <div className="absolute inset-0 bg-[url('/blacktie.avif')] bg-cover bg-center opacity-50 grayscale transition-all duration-1000 ease-out-expo group-hover:scale-105 group-hover:grayscale-0" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/10" />
+          <div className="relative">
+            <div className="flex items-center gap-2 text-yellow-500">
+              <Star className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
+              <span className="text-xs uppercase tracking-[0.25em]">Signature service</span>
+            </div>
+            <h2 className="mt-4 text-4xl md:text-5xl font-light leading-tight text-white">
+              Live Piano <em className="italic text-yellow-500">&amp;</em> Vocals
+            </h2>
+            <p className="mt-4 max-w-md text-lg font-light leading-relaxed text-white/70">
+              Sophisticated musical curation for private soirées and high-tier events. An intimate black-tie experience available by private enquiry.
+            </p>
+            <span className="mt-8 inline-flex items-center gap-2 text-sm uppercase tracking-[0.2em] text-yellow-500">
+              Enter the gallery <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </span>
+          </div>
+        </Link>
+
+        <Link
+          to="/store"
+          className="group relative flex min-h-[420px] flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-8 md:p-12 transition-shadow duration-500 hover:shadow-lifted"
+        >
+          <div className="absolute inset-0 bg-[url('/sheetmusic.png')] bg-cover bg-center opacity-[0.06] transition-transform duration-1000 ease-out-expo group-hover:scale-105" />
+          <div className="relative flex items-center gap-2 text-brand-primary">
+            <ShoppingBag className="h-4 w-4" aria-hidden="true" />
+            <span className="text-xs font-medium uppercase tracking-[0.22em]">Digital store</span>
+          </div>
+          <div className="relative">
+            <Music className="h-9 w-9 text-brand-primary" aria-hidden="true" />
+            <h2 className="mt-5 text-4xl font-light leading-tight text-brand-dark">
+              Professional <em className="italic">sheet music</em>
+            </h2>
+            <p className="mt-3 text-muted-foreground">
+              Piano arrangements and vocal scores, as instant digital downloads for performers and educators.
+            </p>
+            <span className="mt-8 inline-flex items-center gap-2 font-medium text-brand-dark group-hover:text-brand-primary transition-colors">
+              Browse the store <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </span>
+          </div>
+        </Link>
+      </section>
+
+      {/* 8. OTHER PRACTICES */}
+      <section className="container pb-24 lg:pb-32">
+        <SectionIntro eyebrow="Beyond the studio" title="Other practices" />
+        <div className="mt-10 grid gap-6 md:grid-cols-2">
           <KinesiologyBanner />
-        </section>
-
-        {/* 5. SHEET MUSIC STORE SECTION (NEW) */}
-        <section className="mb-24 px-2">
-          <Link to="/store" className="group block relative overflow-hidden rounded-[2.5rem] bg-white dark:bg-brand-dark-alt shadow-xl transition-all duration-500 hover:scale-[1.01] border border-brand-secondary/20">
-            <div className="absolute inset-0 bg-[url('/sheetmusic.png')] bg-cover bg-center opacity-5 grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />
-            
-            <div className="relative z-10 p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 text-left">
-              <div className="space-y-4 max-w-xl">
-                <div className="flex items-center gap-2 text-brand-primary mb-2">
-                  <ShoppingBag className="w-5 h-5" />
-                  <span className="text-xs uppercase tracking-[0.3em] font-bold">Digital Store</span>
-                </div>
-                <h2 className="text-3xl md:text-5xl font-light text-brand-dark dark:text-brand-light leading-tight">
-                  Professional <span className="italic font-serif text-brand-primary">Sheet Music</span>
-                </h2>
-                <p className="text-brand-dark/60 dark:text-brand-light/60 text-lg font-light leading-relaxed">
-                  Browse a curated collection of professional piano arrangements and vocal scores. 
-                  Instant digital downloads for performers and educators.
-                </p>
-              </div>
-              
-              <div className="flex flex-col items-center gap-4">
-                <div className="w-20 h-20 rounded-full border border-brand-primary/30 flex items-center justify-center group-hover:border-brand-primary group-hover:bg-brand-primary/10 transition-all duration-500">
-                   <Music className="w-8 h-8 text-brand-primary" />
-                </div>
-                <span className="text-brand-primary text-sm uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0 font-bold">
-                  Enter Store
-                </span>
-              </div>
-            </div>
-          </Link>
-        </section>
-
-        {/* 6. WHO I WORK WITH */}
-        <section className="mb-24">
-          <h2 className="text-4xl font-light text-center mb-16 text-gray-900 dark:text-white">Who I Work With</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
-            {[
-              { icon: Mic2, label: "Singers & Musicians", desc: "Technical skill and expressive freedom" },
-              { icon: Megaphone, label: "Public Speakers", desc: "Confident and impactful communication" },
-              { icon: Leaf, label: "Film & Streaming", desc: "Nuanced presence on camera" },
-              { icon: CheckCircle2, label: "Professionals", desc: "Sustainable long-term practice" }
-            ].map((item, idx) => (
-              <div key={idx} className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-8 rounded-3xl shadow-sm border border-gray-200/50 dark:border-gray-800/50 text-center">
-                <item.icon className="w-12 h-12 mx-auto mb-4 text-gray-400 dark:text-gray-600" />
-                <h3 className="text-xl font-medium mb-2">{item.label}</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* 7. APPROACH SECTION */}
-        <section className="grid md:grid-cols-2 gap-20 items-center mb-24">
-          <DynamicImage src="/pinkcarpet.jpg" alt="Daniele Buatti" className="w-full rounded-3xl shadow-xl" width={600} height={600} />
-          <div className="space-y-8 text-left">
-            <h2 className="text-4xl font-light">My Approach</h2>
-            <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
-              I help performers connect body, breath, and voice so they can express themselves with freedom and ease.
-            </p>
-            <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
-              With over 12 years as a music director, pianist, vocal coach, and educator, I combine music theatre expertise with kinesiology and somatic practices.
-            </p>
-            <Button asChild size="lg" variant="outline" className="border-2 rounded-full text-brand-dark dark:text-brand-light border-brand-secondary hover:bg-brand-secondary/10 dark:hover:bg-brand-dark/50">
-              <Link to="/coaching">Read more about my approach</Link>
-            </Button>
-          </div>
-        </section>
-
-        {/* 8. WHY WORK WITH ME SECTION */}
-        <section className="mb-24 max-w-4xl mx-auto">
-          <h2 className="text-4xl font-light text-center mb-16">Why Work With Me</h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            {[
-              "Holistic expertise — voice, piano, presence, kinesiology, and mindset.",
-              "Embodiment-based — build skill without tension or burnout.",
-              "Results-focused — leave sessions more confident and capable.",
-              "Creative freedom — technique meets artistry and authentic expression."
-            ].map((text, idx) => (
-              <div key={idx} className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-8 rounded-3xl shadow-sm border border-gray-200/50 dark:border-gray-800/50 flex items-start gap-4">
-                <CheckCircle2 className="w-8 h-8 text-gray-400 flex-shrink-0" />
-                <p className="text-lg text-gray-700 dark:text-gray-300 leading-snug text-left">{text}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* 9. IT SERVICE BANNER */}
-        <section className="mb-24 px-2">
           <ITServiceBanner />
-        </section>
-
-        {/* 10. SIGNATURE SERVICE PORTAL */}
-        <section className="mb-12 px-2">
-          <Link to="/live-piano-services" className="group block relative overflow-hidden rounded-[2.5rem] bg-black shadow-2xl transition-all duration-500 hover:scale-[1.01]">
-            <div className="absolute inset-0 bg-[url('/blacktie.avif')] bg-cover bg-center opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent" />
-            
-            <div className="relative z-10 p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 text-left">
-              <div className="space-y-4 max-w-xl">
-                <div className="flex items-center gap-2 text-yellow-500/80 mb-2">
-                  <Star className="w-4 h-4 fill-current" />
-                  <span className="text-xs uppercase tracking-[0.3em] font-medium text-yellow-500/80">Signature Service</span>
-                </div>
-                <h2 className="text-3xl md:text-5xl font-light text-white leading-tight">
-                  Live Piano <span className="italic font-serif text-yellow-500/90">&</span> Vocals
-                </h2>
-                <p className="text-gray-400 text-lg font-light leading-relaxed">
-                  Sophisticated musical curation for private soirées and high-tier events. 
-                  An intimate black-tie experience available by private enquiry.
-                </p>
-              </div>
-              
-              <div className="flex flex-col items-center gap-4">
-                <div className="w-20 h-20 rounded-full border border-yellow-500/30 flex items-center justify-center group-hover:border-yellow-500 group-hover:bg-yellow-500/10 transition-all duration-500">
-                   <Music className="w-8 h-8 text-yellow-500" />
-                </div>
-                <span className="text-yellow-500 text-sm uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
-                  Enter Gallery
-                </span>
-              </div>
-            </div>
-          </Link>
-        </section>
-      </main>
-      <BackToTopButton />
+        </div>
+      </section>
     </div>
   );
 };
