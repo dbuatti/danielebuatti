@@ -1,18 +1,14 @@
 "use client";
 
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 const NotFound = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    console.error(
-      "404 Error: User attempted to access non-existent route:",
-      location.pathname,
-    );
-  }, [location.pathname]);
+  usePageMeta(
+    "Page Not Found | Daniele Buatti",
+    "The page you're looking for doesn't exist.",
+    { noindex: true },
+  );
 
   return (
     <div className="flex items-center justify-center py-24">

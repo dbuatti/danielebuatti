@@ -5,8 +5,15 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, ArrowRight, Mail, Download } from 'lucide-react';
 import { useCart } from '@/components/store/CartProvider';
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 const StoreSuccessPage: React.FC = () => {
+  usePageMeta(
+    "Order Complete | Daniele Buatti",
+    "Thanks for your purchase. Your download links are on their way to your inbox.",
+    { noindex: true },
+  );
+
   const { clearCart } = useCart();
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id');

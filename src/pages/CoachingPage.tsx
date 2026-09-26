@@ -5,8 +5,14 @@ import DynamicImage from "@/components/DynamicImage";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Mic2, Leaf, Megaphone, Calendar, ExternalLink } from "lucide-react"; // Import ExternalLink
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 const CoachingPage: React.FC = () => {
+  usePageMeta(
+    "Voice & Performance Coaching Melbourne | Daniele Buatti",
+    "One-to-one coaching for performers, speakers and creatives, integrating voice, piano and body awareness for clear, embodied expression. Melbourne and online.",
+  );
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
       <main className="max-w-5xl mx-auto px-6 py-16">

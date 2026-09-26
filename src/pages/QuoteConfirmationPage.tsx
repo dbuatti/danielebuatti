@@ -6,8 +6,15 @@ import { Button } from "@/components/ui/button";
 import DynamicImage from "@/components/DynamicImage";
 import { CheckCircle2, ArrowLeft } from 'lucide-react'; // Added ArrowLeft for consistency
 import { useTheme } from "next-themes"; // Import useTheme to get current theme
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 const QuoteConfirmationPage: React.FC = () => {
+  usePageMeta(
+    "Quote Request Received | Daniele Buatti",
+    "Thanks for your enquiry. Daniele will be in touch shortly with your quote.",
+    { noindex: true },
+  );
+
   const { theme } = useTheme(); // Get the current theme
 
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";

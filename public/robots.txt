@@ -1,4 +1,10 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /login
+Disallow: /quotes/
+Disallow: /quote/
+Disallow: /store/success
+Disallow: /live-piano-services/quote-confirmation
 
 Sitemap: https://danielebuatti.com/sitemap.xml

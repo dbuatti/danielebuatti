@@ -7,8 +7,14 @@ import { GraduationCap, ArrowLeft, Music, FileText } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 const MusicDirectorPianistPage: React.FC = () => {
+  usePageMeta(
+    "Music Director & Pianist Melbourne | Daniele Buatti",
+    "Collaborative musical leadership for stage, studio and performance development. Music direction and rehearsal piano for music theatre and concerts.",
+  );
+
   const cvLink = "https://rxresu.me/daniele.buatti/daniele-buatti-md";
   const imageSrc = "/daniele simple.jpeg";
 

@@ -9,8 +9,15 @@ import DynamicImage from '@/components/DynamicImage';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 const Login: React.FC = () => {
+  usePageMeta(
+    "Login | Daniele Buatti",
+    "Admin login.",
+    { noindex: true },
+  );
+
   const { theme } = useTheme();
 
   const brandSymbolSrc = theme === "dark" ? "/logo-pinkwhite.png" : "/blue-pink-ontrans.png";

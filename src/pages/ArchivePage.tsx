@@ -4,8 +4,15 @@ import React from "react";
 import SectionHeading from "@/components/SectionHeading";
 import AdditionalProgramBanner from "@/components/AdditionalProgramBanner";
 import BackToTopButton from "@/components/BackToTopButton";
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 const ArchivePage: React.FC = () => {
+  usePageMeta(
+    "Archive | Daniele Buatti",
+    "Past programs and offerings from Daniele Buatti.",
+    { noindex: true },
+  );
+
   return (
     <div>
       <main className="container mx-auto px-4 pt-12 pb-12">

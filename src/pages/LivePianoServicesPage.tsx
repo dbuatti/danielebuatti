@@ -33,6 +33,7 @@ import {
 import DynamicImage from "@/components/DynamicImage";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required." }),
@@ -51,6 +52,11 @@ type GalleryItem = {
 };
 
 const LivePianoServicesPage: React.FC = () => {
+  usePageMeta(
+    "Live Pianist & Vocalist for Weddings and Events Melbourne | Daniele Buatti",
+    "Live piano and vocals for weddings, galas, corporate events and private parties in Melbourne. Request a tailored quote from pianist and vocalist Daniele Buatti.",
+  );
+
   const [loading, setLoading] = useState(false);
   const [api, setApi] = useState<CarouselApi>();
   const [selectedIndex, setSelectedIndex] = useState(0);

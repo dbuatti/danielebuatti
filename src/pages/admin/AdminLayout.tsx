@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useSession } from '@/components/SessionContextProvider';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,8 @@ import { useTheme } from 'next-themes';
 import DynamicImage from '@/components/DynamicImage';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
+import PageLoader from '@/components/PageLoader';
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 const navItems = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
@@ -45,6 +47,12 @@ function getHeaderTitle(pathname: string): string {
 }
 
 const AdminLayout: React.FC = () => {
+  usePageMeta(
+    "Admin | Daniele Buatti",
+    "Admin dashboard.",
+    { noindex: true },
+  );
+
   const { user, isLoading } = useSession();
   const navigate = useNavigate();
   const location = useLocation();
@@ -132,7 +140,9 @@ const AdminLayout: React.FC = () => {
           </div>
         </header>
         <main className="flex-1 p-8 overflow-y-auto">
-          <Outlet />
+          <Suspense fallback={<PageLoader />}>
+            <Outlet />
+          </Suspense>
         </main>
       </div>
     </div>
