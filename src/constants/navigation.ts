@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { Mic2, Leaf, Sparkles, Music, Piano, Heart } from "lucide-react";
+import { Mic2, Leaf, Sparkles, Music, Piano } from "lucide-react";
 
 export interface NavLink {
   name: string;
@@ -42,12 +42,6 @@ export const serviceLinks: ServiceLink[] = [
     href: "/ameb-accompanying",
     description: "Calm, reliable accompaniment for exams.",
     icon: Piano,
-  },
-  {
-    name: "Ceremony Rescue",
-    href: "/ceremony-specialist",
-    description: "Last-minute wedding ceremony music.",
-    icon: Heart,
   },
 ];
 

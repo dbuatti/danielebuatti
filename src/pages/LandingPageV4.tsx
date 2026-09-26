@@ -175,6 +175,17 @@ const LandingPageV4: React.FC = () => {
               </Link>
             </li>
           ))}
+          <li className="bg-brand-dark sm:col-span-2 lg:col-span-1">
+            <Link to="/contact" className="group flex h-full flex-col justify-between gap-6 p-7 text-brand-light">
+              <p className="eyebrow text-[hsl(325_72%_72%)]">Not sure where to start?</p>
+              <div>
+                <h3 className="text-xl font-normal text-brand-light">Tell me what you're working on</h3>
+                <span className="mt-3 inline-flex items-center gap-2 text-[15px] text-brand-light/80 group-hover:text-brand-light transition-colors">
+                  Get in touch <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                </span>
+              </div>
+            </Link>
+          </li>
         </ul>
       </section>
 

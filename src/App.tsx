@@ -29,7 +29,6 @@ const DynamicQuotePage = lazy(() => import('./pages/DynamicQuotePage'));
 const QuoteConfirmationPage = lazy(() => import('./pages/QuoteConfirmationPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const GiftCardsPage = lazy(() => import('./pages/GiftCardsPage'));
-const CeremonySpecialistPage = lazy(() => import('./pages/CeremonySpecialistPage'));
 const StorePage = lazy(() => import('./pages/StorePage'));
 const StoreSuccessPage = lazy(() => import('./pages/StoreSuccessPage'));
 const ArrangementDetailsPage = lazy(() => import('./pages/ArrangementDetailsPage'));
@@ -77,7 +76,8 @@ function App() {
               <Route path="live-piano-services/quote-confirmation" element={<QuoteConfirmationPage />} />
               <Route path="contact" element={<ContactPage />} />
               <Route path="gift-cards" element={<GiftCardsPage />} />
-              <Route path="ceremony-specialist" element={<CeremonySpecialistPage />} />
+              {/* Retired page; send old links to the live piano services instead. */}
+              <Route path="ceremony-specialist" element={<Navigate to="/live-piano-services" replace />} />
               <Route path="store" element={<StorePage />} />
               <Route path="store/success" element={<StoreSuccessPage />} />
               <Route path="store/arrangements/:slug" element={<ArrangementDetailsPage />} />

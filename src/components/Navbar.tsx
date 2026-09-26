@@ -182,10 +182,11 @@ const Navbar = () => {
                     <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-lifted">
                       <div className="grid grid-cols-[1fr_220px]">
                         <ul className="grid grid-cols-2 gap-1 p-3">
-                          {serviceLinks.map((s) => {
+                          {serviceLinks.map((s, i) => {
                             const active = pathname.startsWith(s.href);
                             return (
-                              <li key={s.href}>
+                              // Lessons (the main offering) takes the full top row.
+                              <li key={s.href} className={i === 0 ? "col-span-2" : undefined}>
                                 <Link
                                   to={s.href}
                                   className={cn(
