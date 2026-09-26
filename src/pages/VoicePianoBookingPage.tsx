@@ -45,7 +45,7 @@ const VoicePianoBookingPage: React.FC = () => {
           ))}
         </div>
 
-        <div className="max-w-4xl mx-auto" key={selectedDuration}>
+        <div className="max-w-6xl mx-auto" key={selectedDuration}>
           <CalEmbed calLink={currentOption.calLink} layout="month_view" />
         </div>
       </div>

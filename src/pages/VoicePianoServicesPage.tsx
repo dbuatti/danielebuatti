@@ -238,24 +238,27 @@ const VoicePianoServicesPage: React.FC = () => {
         </section>
 
         {/* Book — inline Cal.com embed */}
-        <section id="book" className="container mx-auto px-4 py-16 max-w-3xl">
-          <h2 className="font-display text-3xl font-bold text-center mb-2">Book a lesson</h2>
-          <p className="text-center text-sm text-brand-dark/60 dark:text-brand-light/60 mb-8">
-            Pick a time, no account needed. From $75 a lesson.
-          </p>
-          <div className="flex justify-center gap-3 mb-8">
-            {durationOptions.map((opt) => (
-              <Button
-                key={opt.value}
-                onClick={() => setDuration(opt.value)}
-                variant={duration === opt.value ? "default" : "outline"}
-                className={duration === opt.value ? "bg-brand-primary text-brand-light" : "border-brand-primary text-brand-primary"}
-              >
-                {opt.label}
-              </Button>
-            ))}
+        <section id="book" className="container mx-auto px-4 py-16">
+          <div className="mx-auto max-w-3xl">
+            <h2 className="font-display text-3xl font-bold text-center mb-2">Book a lesson</h2>
+            <p className="text-center text-sm text-brand-dark/60 dark:text-brand-light/60 mb-8">
+              Pick a time, no account needed. From $75 a lesson.
+            </p>
+            <div className="flex justify-center gap-3 mb-8">
+              {durationOptions.map((opt) => (
+                <Button
+                  key={opt.value}
+                  onClick={() => setDuration(opt.value)}
+                  variant={duration === opt.value ? "default" : "outline"}
+                  className={duration === opt.value ? "bg-brand-primary text-brand-light" : "border-brand-primary text-brand-primary"}
+                >
+                  {opt.label}
+                </Button>
+              ))}
+            </div>
           </div>
-          <div key={duration}>
+          {/* Wide enough (>1024px) for Cal.com's desktop layout: details, calendar and times side by side. */}
+          <div key={duration} className="mx-auto max-w-6xl">
             <CalEmbed calLink={currentOption.calLink} layout="month_view" />
           </div>
         </section>
