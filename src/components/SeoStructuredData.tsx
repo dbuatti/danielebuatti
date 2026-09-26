@@ -1,5 +1,5 @@
 import React from 'react';
-import { testimonials } from '@/components/pages/landing-page-v3/TestimonialsSection';
+import { testimonials } from '@/constants/testimonials';
 
 const SeoStructuredData: React.FC = () => {
   const schema = {
