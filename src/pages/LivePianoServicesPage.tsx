@@ -69,8 +69,8 @@ const LivePianoServicesPage: React.FC = () => {
     { type: "image", src: "/blacktie1.avif" },
     { type: "image", src: "/blacktie3.avif" },
     { type: "image", src: "/blacktie4.avif" },
-    { type: "video", src: "/IMG_5103.mov", poster: "/IMG_5103-poster.jpg" },
-    { type: "video", src: "/IMG_4436.MOV", poster: "/IMG_4436-poster.jpg" },
+    { type: "video", src: "/IMG_5103.mp4", poster: "/IMG_5103-poster.jpg" },
+    { type: "video", src: "/IMG_4436.mp4", poster: "/IMG_4436-poster.jpg" },
   ];
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -125,8 +125,8 @@ const LivePianoServicesPage: React.FC = () => {
 
       {/* Hero Section */}
       <header className="relative w-full h-[calc(100svh-72px)] min-h-[560px] flex items-center justify-center overflow-hidden">
-        <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover brightness-75">
-          <source src="/Daniele Buatti - Gatsby Event Gala 1.mov" type="video/mp4" />
+        <video autoPlay loop muted playsInline poster="/gatsby-gala-hero-poster.jpg" className="absolute inset-0 w-full h-full object-cover brightness-75">
+          <source src="/gatsby-gala-hero.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
         <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.5, ease: "easeOut" }} className="relative z-10 text-center px-6">
@@ -269,15 +269,19 @@ const LivePianoServicesPage: React.FC = () => {
           </div>
 
           {/* Performance Video - REDUCED SIZE */}
-          <div className="max-w-2xl mx-auto rounded-[2rem] overflow-hidden shadow-[0_0_60px_rgba(0,0,0,0.8)] border border-white/5 bg-black group relative">
+          <div className="w-fit max-w-full mx-auto rounded-[2rem] overflow-hidden shadow-[0_0_60px_rgba(0,0,0,0.8)] border border-white/5 bg-black group relative">
             <video 
               autoPlay 
               loop 
               muted 
               playsInline 
-              className="w-full h-auto transition-transform duration-700 group-hover:scale-[1.02]"
+              preload="metadata"
+              poster="/live-piano-performance-poster.jpg"
+              width={900}
+              height={1600}
+              className="block h-[75vh] max-h-[760px] w-auto max-w-full transition-transform duration-700 group-hover:scale-[1.02]"
             >
-              <source src="/live-piano-performance.MOV" />
+              <source src="/live-piano-performance.mp4" type="video/mp4" />
             </video>
             <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-[2rem] pointer-events-none" />
           </div>
