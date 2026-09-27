@@ -13,6 +13,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
+// Countries listed in the Product schema's shipping and return policy.
+const SALES_COUNTRIES = ['AU', 'US', 'GB', 'NZ', 'CA', 'IE'];
+
 const ArrangementDetailsPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
@@ -93,12 +96,18 @@ const ArrangementDetailsPage: React.FC = () => {
   const seoTitle = `${arrangement.title} - ${arrangement.composer} - Sheet Music Arrangement | Daniele Buatti`;
   const seoDescription = `Professional ${arrangement.instrumentation || 'piano'} arrangement of ${arrangement.title} by ${arrangement.composer}. Available in ${allAvailableKeys.map(k => k.key).join(', ')}. Instant digital download.`;
 
-  // Structured Data for Google Product Search
+  // Structured Data for Google Product Search.
+  // No review/aggregateRating: there are no genuine product reviews to cite,
+  // and Google penalises fabricated ones. Search Console flags their absence
+  // as a non-critical suggestion only.
+  const productUrl = `${window.location.origin}/store/arrangements/${arrangement.slug || arrangement.id}`;
   const productSchema = {
     "@context": "https://schema.org/",
     "@type": "Product",
     "name": arrangement.title,
-    "image": previewUrl,
+    "url": productUrl,
+    "sku": arrangement.id,
+    ...(previewUrl && { "image": previewUrl }),
     "description": arrangement.description || seoDescription,
     "brand": {
       "@type": "Brand",
@@ -106,10 +115,29 @@ const ArrangementDetailsPage: React.FC = () => {
     },
     "offers": {
       "@type": "Offer",
-      "url": window.location.href,
+      "url": productUrl,
       "priceCurrency": "AUD",
       "price": basePrice,
-      "availability": "https://schema.org/InStock"
+      "availability": "https://schema.org/InStock",
+      // Digital PDF download: free, instant delivery by email, no returns.
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": { "@type": "MonetaryAmount", "value": 0, "currency": "AUD" },
+        "shippingDestination": SALES_COUNTRIES.map(country => ({
+          "@type": "DefinedRegion",
+          "addressCountry": country
+        })),
+        "deliveryTime": {
+          "@type": "ShippingDeliveryTime",
+          "handlingTime": { "@type": "QuantitativeValue", "minValue": 0, "maxValue": 0, "unitCode": "DAY" },
+          "transitTime": { "@type": "QuantitativeValue", "minValue": 0, "maxValue": 0, "unitCode": "DAY" }
+        }
+      },
+      "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": SALES_COUNTRIES,
+        "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+      }
     }
   };
 
@@ -266,6 +294,12 @@ const ArrangementDetailsPage: React.FC = () => {
                   <Download className="h-4 w-4 text-blue-500" /> Instant Download
                 </div>
               </div>
+
+              <p className="text-xs text-brand-dark/60 dark:text-brand-light/60">
+                Digital downloads can't be returned. If your file is faulty or not as described,{' '}
+                <Link to="/contact" className="underline hover:text-brand-primary">get in touch</Link>{' '}
+                and I'll make it right.
+              </p>
             </div>
 
             {arrangement.lyrics && (
