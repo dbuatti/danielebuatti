@@ -1,5 +1,4 @@
 import React from 'react';
-import { testimonials } from '@/constants/testimonials';
 
 const SeoStructuredData: React.FC = () => {
   const schema = {
@@ -188,24 +187,7 @@ const SeoStructuredData: React.FC = () => {
               ]
             }
           ]
-        },
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "5",
-          "reviewCount": testimonials.length
-        },
-        "review": testimonials.map(t => ({
-          "@type": "Review",
-          "reviewRating": {
-            "@type": "Rating",
-            "ratingValue": "5"
-          },
-          "author": {
-            "@type": "Person",
-            "name": t.author
-          },
-          "reviewBody": t.quote
-        }))
+        }
       }
     ]
   };
