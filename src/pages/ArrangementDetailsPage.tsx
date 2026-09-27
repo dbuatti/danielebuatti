@@ -93,12 +93,18 @@ const ArrangementDetailsPage: React.FC = () => {
   const seoTitle = `${arrangement.title} - ${arrangement.composer} - Sheet Music Arrangement | Daniele Buatti`;
   const seoDescription = `Professional ${arrangement.instrumentation || 'piano'} arrangement of ${arrangement.title} by ${arrangement.composer}. Available in ${allAvailableKeys.map(k => k.key).join(', ')}. Instant digital download.`;
 
-  // Structured Data for Google Product Search
+  // Structured Data for Google Product Search.
+  // No review/aggregateRating: there are no genuine product reviews to cite,
+  // and Google penalises fabricated ones. Search Console flags their absence
+  // as a non-critical suggestion only.
+  const productUrl = `${window.location.origin}/store/arrangements/${arrangement.slug || arrangement.id}`;
   const productSchema = {
     "@context": "https://schema.org/",
     "@type": "Product",
     "name": arrangement.title,
-    "image": previewUrl,
+    "url": productUrl,
+    "sku": arrangement.id,
+    ...(previewUrl && { "image": previewUrl }),
     "description": arrangement.description || seoDescription,
     "brand": {
       "@type": "Brand",
@@ -106,7 +112,7 @@ const ArrangementDetailsPage: React.FC = () => {
     },
     "offers": {
       "@type": "Offer",
-      "url": window.location.href,
+      "url": productUrl,
       "priceCurrency": "AUD",
       "price": basePrice,
       "availability": "https://schema.org/InStock"

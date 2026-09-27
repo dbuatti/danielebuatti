@@ -2,18 +2,17 @@ import React from 'react';
 
 interface Arrangement {
   id: string;
+  slug?: string | null;
   title: string;
-  composer: string | null;
-  price: number | null;
-  instrumentation: string | null;
-  difficulty: string | null;
-  preview_image_path: string | null;
 }
 
 interface StoreStructuredDataProps {
   arrangements: Arrangement[];
 }
 
+// Summary-page markup: each ListItem only points at the arrangement's detail
+// page, which carries the full Product schema. Marking up full Products here
+// would duplicate them in Search Console's Product snippets report.
 const StoreStructuredData: React.FC<StoreStructuredDataProps> = ({ arrangements }) => {
   if (!arrangements || arrangements.length === 0) return null;
 
@@ -27,22 +26,8 @@ const StoreStructuredData: React.FC<StoreStructuredDataProps> = ({ arrangements 
     "itemListElement": arrangements.map((arr, index) => ({
       "@type": "ListItem",
       "position": index + 1,
-      "item": {
-        "@type": "Product",
-        "name": arr.title,
-        "description": `${arr.instrumentation || 'Musical arrangement'} by ${arr.composer || 'Daniele Buatti'}. Difficulty: ${arr.difficulty || 'N/A'}.`,
-        "brand": {
-          "@type": "Brand",
-          "name": "Daniele Buatti"
-        },
-        "offers": {
-          "@type": "Offer",
-          "price": arr.price || 0,
-          "priceCurrency": "AUD",
-          "availability": "https://schema.org/InStock",
-          "url": `${window.location.origin}/store`
-        }
-      }
+      "name": arr.title,
+      "url": `${window.location.origin}/store/arrangements/${arr.slug || arr.id}`
     }))
   };
 
