@@ -294,6 +294,12 @@ const ArrangementDetailsPage: React.FC = () => {
                   <Download className="h-4 w-4 text-blue-500" /> Instant Download
                 </div>
               </div>
+
+              <p className="text-xs text-brand-dark/60 dark:text-brand-light/60">
+                Digital downloads can't be returned. If your file is faulty or not as described,{' '}
+                <Link to="/contact" className="underline hover:text-brand-primary">get in touch</Link>{' '}
+                and I'll make it right.
+              </p>
             </div>
 
             {arrangement.lyrics && (
