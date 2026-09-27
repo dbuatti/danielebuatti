@@ -13,6 +13,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
+// Countries listed in the Product schema's shipping and return policy.
+const SALES_COUNTRIES = ['AU', 'US', 'GB', 'NZ', 'CA', 'IE'];
+
 const ArrangementDetailsPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
@@ -115,7 +118,26 @@ const ArrangementDetailsPage: React.FC = () => {
       "url": productUrl,
       "priceCurrency": "AUD",
       "price": basePrice,
-      "availability": "https://schema.org/InStock"
+      "availability": "https://schema.org/InStock",
+      // Digital PDF download: free, instant delivery by email, no returns.
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": { "@type": "MonetaryAmount", "value": 0, "currency": "AUD" },
+        "shippingDestination": SALES_COUNTRIES.map(country => ({
+          "@type": "DefinedRegion",
+          "addressCountry": country
+        })),
+        "deliveryTime": {
+          "@type": "ShippingDeliveryTime",
+          "handlingTime": { "@type": "QuantitativeValue", "minValue": 0, "maxValue": 0, "unitCode": "DAY" },
+          "transitTime": { "@type": "QuantitativeValue", "minValue": 0, "maxValue": 0, "unitCode": "DAY" }
+        }
+      },
+      "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": SALES_COUNTRIES,
+        "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+      }
     }
   };
 
