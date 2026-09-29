@@ -1,111 +1,134 @@
 "use client";
 
 import React from "react";
+import { Check, MapPin, TramFront } from "lucide-react";
 import DynamicImage from "@/components/DynamicImage";
 import AmebBookingForm from "@/components/AmebBookingForm";
-import { Piano, Calendar, MapPin } from "lucide-react";
+import { ArrowLink, PageHeader, SectionIntro } from "@/components/editorial";
+import { primaryButton } from "@/lib/button-styles";
 import { useRouteMeta } from "@/hooks/use-page-meta";
+
+const examDay = [
+  "I arrive 15–20 minutes early to set up",
+  "Repertoire fully prepared in advance",
+  "Clear communication about tempo and feel",
+  "Calm, supportive presence throughout",
+];
+
+const rehearsals = [
+  { length: "15 min", price: 30 },
+  { length: "30 min", price: 50 },
+  { length: "45 min", price: 75 },
+];
 
 const AmebAccompanyingPage: React.FC = () => {
   useRouteMeta("/ameb-accompanying");
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-12">
-        {/* Header */}
-        <header className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-light mb-4 text-brand-dark dark:text-brand-light">AMEB Accompanying</h1>
-          <p className="text-xl max-w-3xl mx-auto text-brand-dark/70 dark:text-brand-light/70">
-            Professional piano accompaniment for your AMEB exams and rehearsals.
-          </p>
-        </header>
+    <div>
+      <PageHeader
+        eyebrow="Exams · All grades & instruments"
+        title={
+          <>
+            AMEB <em className="italic text-brand-primary">Accompanying</em>
+          </>
+        }
+        lede="I provide calm, reliable accompaniment for AMEB exams (all grades and instruments) and optional rehearsals beforehand. My goal is to help you feel prepared and supported on the day."
+        actions={
+          <>
+            <a href="#book" className={primaryButton}>
+              Book or enquire
+            </a>
+            <ArrowLink to="/contact">Ask a question</ArrowLink>
+          </>
+        }
+      />
 
-        {/* Hero Image */}
-        <div className="mb-16">
+      <section className="container">
+        <div className="overflow-hidden rounded-3xl shadow-lifted">
           <DynamicImage
             src="/danieleatkeyboard.jpeg"
             alt="Daniele Buatti at the keyboard"
-            className="w-full h-[400px] md:h-[500px] object-cover object-center rounded-2xl shadow-lifted"
-            width={1200}
-            height={600}
+            className="h-[300px] w-full object-cover sm:h-[420px] lg:h-[500px]"
+            width={1400}
+            height={700}
+            priority
           />
         </div>
+      </section>
 
-        {/* Overview */}
-        <section className="mb-16 text-center">
-          <p className="text-xl max-w-3xl mx-auto leading-relaxed text-brand-dark/70 dark:text-brand-light/70">
-            I provide calm, reliable accompaniment for AMEB exams (all grades and instruments) and optional rehearsals beforehand. My goal is to help you feel prepared and supported on the day.
-          </p>
-        </section>
+      {/* Pricing */}
+      <section className="container py-24 lg:py-32">
+        <SectionIntro eyebrow="Fees" title="Simple, clear pricing" />
 
-        {/* Exam Day */}
-        <section className="mb-12 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-2xl p-8 md:p-12 shadow-soft border border-brand-secondary/30">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <h2 className="text-3xl font-medium flex items-center gap-4 text-brand-dark dark:text-brand-light">
-                <Piano className="w-10 h-10 text-brand-dark/70 dark:text-brand-light/70" />
-                Exam Day
-              </h2>
-              <div className="inline-block bg-brand-secondary/20 dark:bg-brand-dark/50 px-4 py-2 rounded-xl">
-                 <p className="text-2xl font-semibold text-brand-dark dark:text-brand-light">$100 per exam</p>
+        <div className="mt-14 grid gap-5 lg:grid-cols-[1.1fr_1fr]">
+          {/* Exam day */}
+          <div className="flex flex-col justify-between gap-10 rounded-2xl bg-brand-dark p-8 text-brand-light md:p-10">
+            <div>
+              <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+                <h3 className="text-3xl font-light text-brand-light">Exam day</h3>
+                <p className="whitespace-nowrap font-serif text-4xl font-light">
+                  <span className="align-top text-lg">$</span>100
+                  <span className="ml-1 font-sans text-sm text-brand-light/60">per exam</span>
+                </p>
               </div>
-              <ul className="space-y-3 text-lg text-brand-dark/70 dark:text-brand-light/70">
-                <li className="flex items-start gap-2"><span>•</span> I arrive 15–20 minutes early to set up</li>
-                <li className="flex items-start gap-2"><span>•</span> Repertoire fully prepared in advance</li>
-                <li className="flex items-start gap-2"><span>•</span> Clear communication about tempo and feel</li>
-                <li className="flex items-start gap-2"><span>•</span> Calm, supportive presence throughout</li>
+              <ul className="mt-8 space-y-3">
+                {examDay.map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-brand-light/80">
+                    <Check className="mt-1 h-4 w-4 shrink-0 text-[hsl(325_72%_72%)]" aria-hidden="true" />
+                    {item}
+                  </li>
+                ))}
               </ul>
             </div>
-            <div className="bg-brand-secondary/20 dark:bg-brand-dark/50 rounded-2xl p-8 border border-brand-secondary/30">
-              <p className="text-xl italic text-brand-dark/80 dark:text-brand-light/80 leading-relaxed">
-                “Having a reliable accompanist who knows the music inside out makes a huge difference on exam day.”
-              </p>
-            </div>
+            <p className="border-t border-white/15 pt-6 font-serif text-lg italic leading-relaxed text-brand-light/85">
+              “Having a reliable accompanist who knows the music inside out makes a huge difference on exam day.”
+            </p>
           </div>
-        </section>
 
-        {/* Rehearsals */}
-        <section className="mb-12 py-12 px-8 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-2xl shadow-soft border border-brand-secondary/30">
-          <h2 className="text-3xl font-medium text-center mb-10 flex items-center justify-center gap-4 text-brand-dark dark:text-brand-light">
-            <Calendar className="w-10 h-10 text-brand-dark/70 dark:text-brand-light/70" />
-            Rehearsal Sessions
-          </h2>
-          <div className="max-w-2xl mx-auto space-y-8">
-            <div className="grid grid-cols-3 gap-4 md:gap-8 text-center">
-              <div className="p-4 rounded-2xl bg-brand-secondary/20 dark:bg-brand-dark/50">
-                <p className="text-2xl md:text-3xl font-light text-brand-dark dark:text-brand-light">15 min</p>
-                <p className="text-lg md:text-xl mt-2 font-semibold text-brand-primary">$30</p>
-              </div>
-              <div className="p-4 rounded-2xl bg-brand-secondary/20 dark:bg-brand-dark/50">
-                <p className="text-2xl md:text-3xl font-light text-brand-dark dark:text-brand-light">30 min</p>
-                <p className="text-lg md:text-xl mt-2 font-semibold text-brand-primary">$50</p>
-              </div>
-              <div className="p-4 rounded-2xl bg-brand-secondary/20 dark:bg-brand-dark/50">
-                <p className="text-2xl md:text-3xl font-light text-brand-dark dark:text-brand-light">45 min</p>
-                <p className="text-lg md:text-xl mt-2 font-semibold text-brand-primary">$75</p>
-              </div>
+          {/* Rehearsals */}
+          <div className="flex flex-col justify-between gap-8 rounded-2xl border border-border bg-card p-8 md:p-10">
+            <div>
+              <h3 className="text-3xl font-light text-brand-dark">Rehearsal sessions</h3>
+              <p className="mt-2 text-muted-foreground">Optional, and well worth it in the weeks before.</p>
+              <ul className="mt-8 divide-y divide-border border-y border-border">
+                {rehearsals.map((r) => (
+                  <li key={r.length} className="flex items-baseline justify-between py-4">
+                    <span className="text-lg text-brand-dark">{r.length}</span>
+                    <span className="font-serif text-2xl font-light text-brand-dark">${r.price}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="flex flex-col md:flex-row items-center justify-center gap-4 text-lg border-t border-brand-secondary/30 pt-8 text-brand-dark/70 dark:text-brand-light/70">
-              <div className="flex items-center gap-3">
-                <MapPin className="w-6 h-6 text-brand-dark/50 dark:text-brand-light/50" />
-                <p className="font-medium">Studio in Toorak, Melbourne</p>
-              </div>
-              <p className="hidden md:block text-brand-secondary/50">|</p>
-              <p className="text-brand-dark/70 dark:text-brand-light/70">Trams 58 & 16 • Free street parking</p>
-            </div>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-brand-primary" aria-hidden="true" /> Studio in Toorak, Melbourne
+              </li>
+              <li className="flex items-center gap-2">
+                <TramFront className="h-4 w-4 text-brand-primary" aria-hidden="true" /> Trams 58 &amp; 16 · Free street parking
+              </li>
+            </ul>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Booking Form */}
-        <section className="py-12 bg-brand-secondary/10 dark:bg-brand-dark/30 rounded-2xl shadow-soft border border-brand-secondary/30">
-          <h2 className="text-4xl font-light text-center mb-8 text-brand-dark dark:text-brand-light">Book or Inquire</h2>
-          <div className="max-w-3xl mx-auto px-6 md:px-10">
-            <AmebBookingForm />
-            <p className="text-center mt-10 text-brand-dark/60 dark:text-brand-light/60 italic">
+      {/* Booking form */}
+      <section id="book" className="border-t border-border bg-card/60">
+        <div className="container grid gap-12 py-24 lg:grid-cols-[1fr_1.4fr] lg:gap-20 lg:py-32">
+          <div>
+            <SectionIntro eyebrow="Book" title="Book or enquire">
+              Tell me about the exam and I’ll confirm availability.
+            </SectionIntro>
+            <p className="mt-8 border-l-2 border-brand-primary/60 pl-5 text-brand-dark/75">
               Please send sheet music at least two weeks before the exam so I can prepare properly.
             </p>
           </div>
-        </section>
-      </div>
+          <div className="rounded-2xl border border-border bg-background p-6 shadow-soft md:p-10">
+            <AmebBookingForm />
+          </div>
+        </div>
+      </section>
+    </div>
   );
 };
 

@@ -191,6 +191,7 @@ const Navbar = () => {
                                   to={s.href}
                                   className={cn(
                                     "group flex gap-3 rounded-xl p-3 transition-colors hover:bg-secondary",
+                                    i === 0 && "items-center border-b border-border rounded-b-none pb-4 mb-1 hover:rounded-b-xl",
                                     active && "bg-secondary",
                                   )}
                                 >
@@ -198,7 +199,14 @@ const Navbar = () => {
                                     <s.icon className="h-[18px] w-[18px]" aria-hidden="true" />
                                   </span>
                                   <span>
-                                    <span className="block text-[15px] font-medium text-brand-dark">{s.name}</span>
+                                    <span className="flex items-center gap-2 text-[15px] font-medium text-brand-dark">
+                                      {s.name}
+                                      {i === 0 && (
+                                        <span className="rounded-full bg-brand-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-brand-primary">
+                                          Start here
+                                        </span>
+                                      )}
+                                    </span>
                                     <span className="mt-0.5 block text-[13px] leading-snug text-muted-foreground">
                                       {s.description}
                                     </span>

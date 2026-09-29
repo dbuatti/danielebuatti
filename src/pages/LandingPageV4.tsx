@@ -17,6 +17,20 @@ import { testimonials } from "@/constants/testimonials";
 import { cn } from "@/lib/utils";
 import { useRouteMeta } from "@/hooks/use-page-meta";
 
+const credits = [
+  "Wicked",
+  "The Bodyguard",
+  "Into the Woods · VCA",
+  "Beetlejuice",
+  "Heathers",
+  "A Chorus Line",
+  "Legally Blonde",
+  "Mary Poppins",
+  "Shrek",
+  "Madiba the Musical",
+  "Paw Patrol Live",
+];
+
 const expertise = [
   { title: "Voice & Piano", text: "Technique, repertoire, theory, audition prep, and expressive performance." },
   { title: "Body & Breath", text: "Kinesiology and somatic work to release tension and support natural resonance." },
@@ -119,6 +133,29 @@ const LandingPageV4: React.FC = () => {
             height={750}
             priority
           />
+        </div>
+      </section>
+
+      {/* 1b. CREDITS */}
+      <section aria-label="Selected credits" className="border-t border-border py-6">
+        <div className="container flex items-center gap-8">
+          <p className="hidden shrink-0 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground md:block">
+            Selected credits
+          </p>
+          <div className="relative min-w-0 flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+            <ul className="flex w-max animate-marquee items-center hover:[animation-play-state:paused] motion-reduce:animate-none">
+              {[...credits, ...credits].map((c, i) => (
+                <li
+                  key={`${c}-${i}`}
+                  aria-hidden={i >= credits.length ? true : undefined}
+                  className="flex items-center gap-10 whitespace-nowrap pr-10 font-serif text-xl font-light italic text-brand-dark/75"
+                >
+                  {c}
+                  <span className="h-1 w-1 rounded-full bg-brand-primary/60" aria-hidden="true" />
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 

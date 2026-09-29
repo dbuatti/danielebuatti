@@ -1,104 +1,103 @@
 "use client";
 
 import React from "react";
-import BackToTopButton from "@/components/BackToTopButton";
+import { Link } from "react-router-dom";
+import { ArrowRight, Calendar, Mail, MapPin, MessageCircle } from "lucide-react";
 import ContactForm from "@/components/ContactForm";
 import CalEmbed from "@/components/CalEmbed";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Mail, Phone, MapPin, Calendar, ExternalLink } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { PageHeader } from "@/components/editorial";
 import { useRouteMeta } from "@/hooks/use-page-meta";
+
+const details = [
+  { icon: Mail, label: "Email", value: "info@danielebuatti.com", href: "mailto:info@danielebuatti.com" },
+  { icon: MessageCircle, label: "WhatsApp", value: "+61 424 174 067", href: "https://wa.me/61424174067", external: true },
+  { icon: MapPin, label: "Studio", value: "Toorak, Melbourne, VIC" },
+];
+
+const quickLinks = [
+  { label: "Book a coaching session", to: "/book-voice-piano" },
+  { label: "AMEB rates & booking", to: "/ameb-accompanying" },
+  { label: "Live piano for your event", to: "/live-piano-services" },
+];
 
 const ContactPage: React.FC = () => {
   useRouteMeta("/contact");
 
   return (
-    <div className="min-h-screen bg-background text-gray-800 dark:text-gray-200">
-      <div className="max-w-5xl mx-auto px-5 sm:px-6 py-16">
-        <header className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-light mb-6">Get in Touch</h1>
-          <p className="text-xl max-w-3xl mx-auto text-gray-600 dark:text-gray-400">
-            I look forward to hearing from you. Please use the form below for general inquiries, or check the dedicated links for bookings.
-          </p>
-        </header>
+    <div>
+      <PageHeader
+        eyebrow="Contact"
+        title={
+          <>
+            Get in <em className="italic text-brand-primary">touch</em>
+          </>
+        }
+        lede="I look forward to hearing from you. Use the form for general enquiries, or jump straight to a booking below."
+      />
 
-        {/* Updated grid with items-stretch to ensure equal height */}
-        <div className="grid md:grid-cols-2 gap-12 items-stretch [&>*]:min-w-0">
-          
-          {/* Left Column: Contact Details & Quick Links */}
-          <div className="flex flex-col p-8 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-2xl shadow-soft border border-gray-200/50 dark:border-gray-800/50">
-            <div className="flex-grow">
-              <h2 className="text-3xl font-medium mb-8">Direct Contact</h2>
-              <div className="space-y-6">
-                <div className="flex items-center space-x-4">
-                  <Mail className="w-7 h-7 text-gray-700 dark:text-gray-300 flex-shrink-0" />
-                  <div>
-                    <p className="font-semibold text-sm text-gray-500 uppercase tracking-wide">Email</p>
-                    <a href="mailto:info@danielebuatti.com" className="text-lg text-brand-dark underline decoration-brand-primary/40 underline-offset-4 hover:decoration-brand-primary">
-                      info@danielebuatti.com
-                    </a>
+      <section className="container pb-24 lg:pb-32">
+        <div className="grid gap-5 lg:grid-cols-[1fr_1.35fr] [&>*]:min-w-0">
+          {/* Details */}
+          <aside className="flex flex-col justify-between gap-10 rounded-2xl bg-brand-dark p-8 text-brand-light md:p-10">
+            <ul className="space-y-7">
+              {details.map(({ icon: Icon, label, value, href, external }) => (
+                <li key={label} className="flex items-start gap-4">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/10">
+                    <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-brand-light/50">{label}</p>
+                    {href ? (
+                      <a
+                        href={href}
+                        {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                        className="mt-1 block break-words text-lg text-brand-light underline decoration-white/25 underline-offset-4 transition-colors hover:decoration-[hsl(325_72%_72%)]"
+                      >
+                        {value}
+                      </a>
+                    ) : (
+                      <p className="mt-1 text-lg text-brand-light">{value}</p>
+                    )}
                   </div>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <Phone className="w-7 h-7 text-gray-700 dark:text-gray-300 flex-shrink-0" />
-                  <div>
-                    <p className="font-semibold text-sm text-gray-500 uppercase tracking-wide">WhatsApp</p>
-                    <a href="https://wa.me/61424174067" target="_blank" rel="noopener noreferrer" className="text-lg text-brand-dark underline decoration-brand-primary/40 underline-offset-4 hover:decoration-brand-primary">
-                      +61 424 174 067
-                    </a>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-4">
-                  <MapPin className="w-7 h-7 text-gray-700 dark:text-gray-300 flex-shrink-0 mt-1" />
-                  <div>
-                    <p className="font-semibold text-sm text-gray-500 uppercase tracking-wide">Studio Location</p>
-                    <p className="text-lg text-gray-600 dark:text-gray-400">Toorak, Melbourne, VIC</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Quick Links Section anchored to the bottom */}
-            <div className="pt-8 mt-8 border-t border-gray-200 dark:border-gray-800 space-y-4">
-                <h3 className="text-xl font-medium mb-4">Quick Actions</h3>
-                
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button className="w-full justify-start text-lg py-7 rounded-full gap-3 shadow-sm transition-all hover:scale-[1.01] bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-                      <Calendar className="w-5 h-5" /> Book a discovery call
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-4xl h-[90vh] p-0">
-                    <CalEmbed calLink="danielebuatti/30min" fill />
-                  </DialogContent>
-                </Dialog>
+                </li>
+              ))}
+            </ul>
 
-                <Button asChild variant="outline" className="w-full justify-start border-2 text-lg py-7 rounded-full gap-3 transition-all hover:scale-[1.01]">
-                  <Link to="/book-voice-piano">
-                    <ExternalLink className="w-5 h-5" /> Book a Coaching Session
-                  </Link>
-                </Button>
-                
-                <Button asChild variant="outline" className="w-full justify-start border-2 text-lg py-7 rounded-full gap-3 transition-all hover:scale-[1.01]">
-                    <Link to="/ameb-accompanying">
-                        <ExternalLink className="w-5 h-5" /> View AMEB Rates & Book
+            <div className="border-t border-white/15 pt-8">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-brand-primary px-8 text-base font-medium text-white transition-all duration-300 hover:bg-brand-primary/90">
+                    <Calendar className="h-5 w-5" aria-hidden="true" /> Book a discovery call
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl h-[90vh] p-0">
+                  <DialogTitle className="sr-only">Book a discovery call</DialogTitle>
+                  <CalEmbed calLink="danielebuatti/30min" fill />
+                </DialogContent>
+              </Dialog>
+              <ul className="mt-6 divide-y divide-white/10">
+                {quickLinks.map((l) => (
+                  <li key={l.to}>
+                    <Link to={l.to} className="group flex items-center justify-between py-3.5 text-brand-light/85 transition-colors hover:text-brand-light">
+                      {l.label}
+                      <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
                     </Link>
-                </Button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </aside>
+
+          {/* Form */}
+          <div className="rounded-2xl border border-border bg-card p-8 shadow-soft md:p-10">
+            <h2 className="text-3xl font-light text-brand-dark">Send a message</h2>
+            <div className="mt-8">
+              <ContactForm />
             </div>
           </div>
-
-          {/* Right Column: Contact Form */}
-          <div className="flex flex-col p-8 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-2xl shadow-soft border border-gray-200/50 dark:border-gray-800/50">
-            <h2 className="text-3xl font-medium mb-6">Send a Message</h2>
-            <div className="flex-grow">
-                <ContactForm />
-            </div>
-          </div>
-
         </div>
-      </div>
-      <BackToTopButton />
+      </section>
     </div>
   );
 };

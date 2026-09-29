@@ -1,117 +1,138 @@
 "use client";
 
 import React from "react";
-import DynamicImage from "@/components/DynamicImage";
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Mic2, Leaf, Megaphone, Calendar, ExternalLink } from "lucide-react"; // Import ExternalLink
+import { ArrowUpRight, Leaf, Megaphone, Mic2 } from "lucide-react";
+import DynamicImage from "@/components/DynamicImage";
+import { ArrowLink, CtaBand, PageHeader, SectionIntro } from "@/components/editorial";
+import { primaryButton } from "@/lib/button-styles";
 import { useRouteMeta } from "@/hooks/use-page-meta";
+
+const strands = [
+  {
+    icon: Mic2,
+    title: "Voice & Piano",
+    body: [
+      "Refined, musical work grounded in real-world performance. Vocal technique that prioritises ease and resonance. Piano skills for singers and directors. Repertoire, interpretation, and stylistic clarity. Audition and performance preparation. Sight-reading, theory, and musical literacy.",
+    ],
+    line: "Always in service of expression — never mechanics for their own sake.",
+    link: { label: "See lesson details & pricing", to: "/voice-piano-services" },
+  },
+  {
+    icon: Leaf,
+    title: "Body, Breath & Regulation",
+    body: [
+      "Where most vocal training stops — this work begins. Using kinesiology, breath work, and somatic practices to address unconscious holding patterns, performance stress, and disconnection between intention and sound.",
+      "I’m deeply passionate about posture, breath, and movement, and draw great influence from Feldenkrais, Alexander Technique, and yoga in my teaching. For me, the voice cannot be separated from the body it lives in — the interconnection between the two is everything.",
+    ],
+    line: "The aim is a voice that responds — not one that’s managed.",
+    link: { label: "Book pure kinesiology sessions", href: "https://kinesiology.danielebuatti.com/" },
+  },
+  {
+    icon: Megaphone,
+    title: "Presence & Communication",
+    body: [
+      "For moments where clarity matters. Public speaking and presentations. On-camera confidence. Acting and text delivery. Leadership presence. Focused on nervous system regulation, clarity of intention, and grounded delivery.",
+    ],
+    line: "So you’re felt, not just heard.",
+  },
+];
 
 const CoachingPage: React.FC = () => {
   useRouteMeta("/coaching");
 
   return (
-    <div className="min-h-screen bg-background text-gray-800 dark:text-gray-200">
-      <div className="max-w-5xl mx-auto px-6 py-16">
-        {/* Hero – calm, authoritative */}
-        <section className="text-center mb-20">
-          <h1 className="text-5xl md:text-6xl font-light mb-8">Coaching</h1>
-          <p className="text-2xl md:text-3xl text-gray-700 dark:text-gray-300 mb-10 max-w-4xl mx-auto">
-            Voice. Presence. Musical Authority.
-          </p>
-          <p className="text-xl leading-relaxed text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-12">
-            One-to-one work for performers, speakers, and creatives who want to communicate with clarity, depth, and ease — without forcing or over-efforting.
-          </p>
-          <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-12">
-            This work integrates voice, piano, body awareness, and somatic intelligence to support sustainable, embodied expression.
-          </p>
-
-          <Button asChild size="lg" className="text-lg h-auto whitespace-normal px-8 sm:px-14 py-5 sm:py-8 rounded-full shadow-lifted bg-brand-primary hover:bg-brand-primary/90 text-brand-light">
-            <Link to="/voice-piano-services">
-              <Calendar className="w-7 h-7 inline mr-4" />
-              Check availability & book
+    <div>
+      <PageHeader
+        eyebrow="One-to-one coaching"
+        title={
+          <>
+            Voice. Presence. <em className="italic text-brand-primary">Musical authority.</em>
+          </>
+        }
+        lede="One-to-one work for performers, speakers, and creatives who want to communicate with clarity, depth, and ease — without forcing or over-efforting."
+        actions={
+          <>
+            <Link to="/voice-piano-services#book" className={primaryButton}>
+              Check availability &amp; book
             </Link>
-          </Button>
-        </section>
+            <ArrowLink to="/contact">Ask a question first</ArrowLink>
+          </>
+        }
+      >
+        <p className="mt-8 max-w-xl border-l-2 border-brand-primary/60 pl-5 text-base leading-relaxed text-brand-dark/75">
+          This work integrates voice, piano, body awareness, and somatic intelligence to support sustainable, embodied
+          expression.
+        </p>
+      </PageHeader>
 
-        {/* Hero Image – refined crop, elegant */}
-        <div className="mb-28 -mx-6">
+      {/* Wide image */}
+      <section className="container">
+        <div className="overflow-hidden rounded-3xl shadow-lifted">
           <DynamicImage
             src="/danielecalmatpiano.jpeg"
             alt="Daniele Buatti in flow at the piano"
-            className="w-full h-[700px] object-cover shadow-lifted"
-            style={{ objectPosition: "center 7%" }}  // fine-tuned for your head + piano
+            className="h-[340px] w-full object-cover sm:h-[460px] lg:h-[560px]"
+            style={{ objectPosition: "center 12%" }}
             width={1400}
             height={800}
+            priority
           />
         </div>
+      </section>
 
-        {/* The Work – calm, spacious, no bullets */}
-        <section className="mb-32">
-          <h2 className="text-4xl font-light text-center mb-20">The Work</h2>
-          <div className="grid md:grid-cols-3 gap-16">
-            {/* Voice & Piano */}
-            <div className="space-y-8 text-center">
-              <Mic2 className="w-16 h-16 mx-auto text-gray-700 dark:text-gray-300" />
-              <h3 className="text-3xl font-medium">Voice & Piano</h3>
-              <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
-                Refined, musical work grounded in real-world performance. Vocal technique that prioritises ease and resonance. Piano skills for singers and directors. Repertoire, interpretation, and stylistic clarity. Audition and performance preparation. Sight-reading, theory, and musical literacy.
-              </p>
-              <p className="text-lg italic text-gray-600 dark:text-gray-400">
-                Always in service of expression — never mechanics for their own sake.
-              </p>
-              <Button asChild variant="link" className="text-lg p-0 h-auto text-brand-primary hover:text-brand-primary/80">
-                <Link to="/voice-piano-services" className="flex items-center justify-center mx-auto">
-                  See lesson details & pricing
-                </Link>
-              </Button>
-            </div>
+      {/* The work */}
+      <section className="container py-24 lg:py-32">
+        <SectionIntro eyebrow="The work" title="Three strands, one practice">
+          Most sessions draw on all three. We start wherever you are and follow what the voice is asking for.
+        </SectionIntro>
 
-            {/* Body, Breath & Regulation */}
-            <div className="space-y-8 text-center">
-              <Leaf className="w-16 h-16 mx-auto text-gray-700 dark:text-gray-300" />
-              <h3 className="text-3xl font-medium">Body, Breath & Regulation</h3>
-              <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
-                Where most vocal training stops — this work begins. Using kinesiology, breath work, and somatic practices to address unconscious holding patterns, performance stress, and disconnection between intention and sound.
-              </p>
-              <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
-                I’m deeply passionate about posture, breath, and movement, and draw great influence from Feldenkrais, Alexander Technique, and yoga in my teaching. For me, the voice cannot be separated from the body it lives in — the interconnection between the two is everything.
-              </p>
-              <p className="text-lg italic text-gray-600 dark:text-gray-400">
-                The aim is a voice that responds — not one that’s managed.
-              </p>
-              <Button asChild variant="link" className="text-lg p-0 h-auto text-brand-primary hover:text-brand-primary/80">
-                <a href="https://kinesiology.danielebuatti.com/" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center mx-auto">
-                  Book Pure Kinesiology Sessions <ExternalLink className="w-4 h-4 ml-2" />
-                </a>
-              </Button>
-            </div>
+        <ol className="mt-16 divide-y divide-border border-y border-border">
+          {strands.map(({ icon: Icon, title, body, line, link }, i) => (
+            <li key={title} className="grid gap-6 py-12 md:grid-cols-[180px_1fr] lg:grid-cols-[240px_1fr_1fr] lg:gap-12">
+              <div className="flex items-center gap-4 md:flex-col md:items-start">
+                <span className="font-serif text-sm text-brand-primary">0{i + 1}</span>
+                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-brand-dark/80">
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </span>
+              </div>
+              <div>
+                <h3 className="text-3xl font-light leading-tight text-brand-dark">{title}</h3>
+                <p className="mt-5 font-serif text-xl italic leading-snug text-brand-dark/80">{line}</p>
+                {link &&
+                  ("href" in link && link.href ? (
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group mt-6 inline-flex items-center gap-1.5 font-medium text-brand-primary"
+                    >
+                      {link.label}
+                      <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                    </a>
+                  ) : (
+                    <ArrowLink to={(link as { to: string }).to} className="mt-6 text-brand-primary">
+                      {link.label}
+                    </ArrowLink>
+                  ))}
+              </div>
+              <div className="space-y-4 text-[17px] leading-relaxed text-muted-foreground md:col-start-2 lg:col-start-3">
+                {body.map((p) => (
+                  <p key={p.slice(0, 24)}>{p}</p>
+                ))}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
 
-            {/* Presence & Communication */}
-            <div className="space-y-8 text-center">
-              <Megaphone className="w-16 h-16 mx-auto text-gray-700 dark:text-gray-300" />
-              <h3 className="text-3xl font-medium">Presence & Communication</h3>
-              <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
-                For moments where clarity matters. Public speaking and presentations. On-camera confidence. Acting and text delivery. Leadership presence. Focused on nervous system regulation, clarity of intention, and grounded delivery.
-              </p>
-              <p className="text-lg italic text-gray-600 dark:text-gray-400">
-                So you’re felt, not just heard.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Additional Services – simple, elegant */}
-        <section className="py-20 bg-card dark:bg-gray-900 rounded-2xl text-center">
-          <h2 className="text-4xl font-light mb-10">Additional Musical Services</h2>
-          <p className="text-xl max-w-3xl mx-auto text-gray-600 dark:text-gray-400 mb-12 leading-relaxed">
-            Alongside coaching, I work professionally as a pianist, music director, and arranger — including live performance, music direction, AMEB accompaniment, custom sheet music, and backing tracks.
-          </p>
-          <Button asChild size="lg" variant="outline" className="border-2 text-lg h-auto whitespace-normal px-8 sm:px-14 py-5 sm:py-8 rounded-full">
-            <Link to="/projects-resources">Explore all services</Link>
-          </Button>
-        </section>
-      </div>
+      <CtaBand
+        eyebrow="Beyond coaching"
+        title="Additional musical services"
+        text="Alongside coaching, I work professionally as a pianist, music director, and arranger — including live performance, music direction, AMEB accompaniment, custom sheet music, and backing tracks."
+        primary={{ label: "Book a session", to: "/voice-piano-services#book" }}
+        secondary={{ label: "Explore all services", to: "/projects-resources" }}
+      />
     </div>
   );
 };

@@ -1,30 +1,40 @@
 "use client";
 
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
+// On navigation: jump to the #hash target if there is one (waiting briefly for
+// lazy routes to mount it), otherwise to the top. Uses an instant jump so the
+// page transition isn't fighting a long smooth scroll from the old position.
 const ScrollToTop: React.FC = () => {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
 
   useEffect(() => {
-    // Use a timeout to ensure the scroll command executes after the DOM update cycle completes.
-    const timer = setTimeout(() => {
-      // 1. Scroll the window (most common target)
-      window.scrollTo(0, 0);
-      
-      // 2. Explicitly target the document element (HTML)
-      if (document.documentElement) {
-        document.documentElement.scrollTop = 0;
-      }
-      
-      // 3. Explicitly target the body (fallback for older browsers/specific layouts)
-      if (document.body) {
-        document.body.scrollTop = 0;
-      }
-    }, 0); // 0ms timeout defers execution until after the current render cycle
+    let cancelled = false;
+    let tries = 0;
 
-    return () => clearTimeout(timer);
-  }, [pathname]);
+    const run = () => {
+      if (cancelled) return;
+      if (hash) {
+        const el = document.getElementById(decodeURIComponent(hash.slice(1)));
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+          return;
+        }
+        if (tries++ < 20) {
+          setTimeout(run, 50);
+          return;
+        }
+      }
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+    };
+
+    const timer = setTimeout(run, 0);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [pathname, hash]);
 
   return null;
 };
