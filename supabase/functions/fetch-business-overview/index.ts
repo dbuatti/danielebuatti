@@ -384,12 +384,18 @@ async function pianoBackings() {
   const safe = makeSafe(warnings);
   const d30 = daysAgo(30), fy = financialYearStart();
 
-  const [orders, requests, activeProducts, customers, newCustomers] = await Promise.all([
+  const [orders, requests, activeProducts, customers, newCustomers, crm] = await Promise.all([
     safe(() => selectAll(client, 'orders', 'id, amount, status, customer_email, created_at, products(title)'), []),
     safe(() => selectAll(client, 'backing_requests', 'id, name, song_title, musical_or_artist, status, is_paid, cost, delivery_date, created_at'), []),
     safe(() => count(client, 'products', (q) => q.eq('is_active', true)), null),
     safe(() => count(client, 'profiles'), null),
     safe(async () => (await signupDates(client)).filter((d) => inRange(d, d30)).length, null),
+    // CRM headline numbers, computed in Piano Backings' own database (crm_stats(), migration 0033).
+    safe(async () => {
+      const { data, error } = await client.rpc('crm_stats');
+      if (error) throw new Error(`crm_stats: ${error.message}`);
+      return data;
+    }, null),
   ]);
 
   const sales = orders.filter((o) => ['completed', 'paid'].includes(lower(o.status)));
@@ -408,7 +414,12 @@ async function pianoBackings() {
     { label: 'Custom requests (30d)', value: requests.filter((r) => inRange(r.created_at, d30)).length, format: 'number' },
     { label: 'Unpaid requests', value: requests.filter((r) => !r.is_paid && lower(r.status) !== 'cancelled').length, format: 'number' },
     { label: 'Products for sale', value: activeProducts, format: 'number' },
-    { label: 'Customers', value: customers, format: 'number', hint: newCustomers != null ? `+${newCustomers} in 30 days` : undefined },
+    { label: 'Accounts', value: customers, format: 'number', hint: newCustomers != null ? `+${newCustomers} in 30 days` : undefined },
+    { label: 'Customers', value: crm?.total_customers ?? null, format: 'number', hint: 'anyone who has ordered' },
+    { label: 'Repeat rate', value: crm?.repeat_rate != null ? `${crm.repeat_rate}%` : null, format: 'text', hint: crm ? `${crm.repeat_customers} repeat customers` : undefined },
+    { label: 'Reviews left', value: crm?.reviews_left ?? null, format: 'number', hint: crm ? `${crm.reviews_requested} requested` : undefined },
+    { label: 'Due for follow-up', value: crm?.due_for_follow_up ?? null, format: 'number', tone: crm?.due_for_follow_up ? 'warn' : 'neutral' },
+    { label: 'Waitlist', value: crm?.waitlist_size ?? null, format: 'number', hint: 'waiting for orders to reopen' },
   ];
 
   const recent: Activity[] = [
