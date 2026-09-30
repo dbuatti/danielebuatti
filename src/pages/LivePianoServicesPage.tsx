@@ -70,6 +70,13 @@ const LivePianoServicesPage: React.FC = () => {
     { type: "video", src: "/IMG_4436.mp4", poster: "/IMG_4436-poster.jpg" },
   ];
 
+  // Aspect ratios match the source photos so the row lines up at equal heights.
+  const tommyEventPhotos = [
+    { src: "/splendide-singalong.jpg", aspect: 4 / 3, alt: "Guests singing along around the piano as Daniele plays" },
+    { src: "/splendide-cabaret-piano.jpg", aspect: 3 / 4, alt: "Daniele singing at the piano beside a lit-up cabaret sign" },
+    { src: "/splendide-laughing.jpg", aspect: 3 / 2, alt: "Daniele laughing at the piano while a guest sings" },
+  ];
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -324,6 +331,27 @@ const LivePianoServicesPage: React.FC = () => {
             "Nothing quite compares to the atmosphere of a live piano performance and Daniele Buatti has it all covered – any room, any mood, genre or occasion, he'll make sure it's a night to remember. Highly recommend. Book him for your next special event!"
           </p>
           <p className="text-yellow-500 text-sm uppercase tracking-widest font-medium">— Tommy</p>
+        </motion.div>
+      </section>
+
+      {/* Photos from Tommy's event */}
+      <section className="px-4 pb-20 max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-col md:flex-row gap-4"
+        >
+          {tommyEventPhotos.map((photo) => (
+            <div
+              key={photo.src}
+              style={{ "--aspect": photo.aspect, aspectRatio: photo.aspect } as React.CSSProperties}
+              className="md:[flex:var(--aspect)_1_0%] rounded-2xl overflow-hidden border border-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-zinc-900"
+            >
+              <img src={photo.src} alt={photo.alt} loading="lazy" className="w-full h-full object-cover" />
+            </div>
+          ))}
         </motion.div>
       </section>
 
