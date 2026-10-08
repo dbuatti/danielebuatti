@@ -7,4 +7,4 @@ Disallow: /quote/
 Disallow: /store/success
 Disallow: /live-piano-services/quote-confirmation
 
-Sitemap: https://danielebuatti.com/sitemap.xml
+Sitemap: https://www.danielebuatti.com/sitemap.xml

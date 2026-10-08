@@ -4,7 +4,7 @@
 // search engines see the right details without running JavaScript.
 // Keep this file free of browser-only imports: vite.config.ts loads it.
 
-export const SITE_URL = "https://danielebuatti.com";
+export const SITE_URL = "https://www.danielebuatti.com";
 
 export interface PageMeta {
   title: string;

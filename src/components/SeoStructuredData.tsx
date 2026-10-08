@@ -6,10 +6,10 @@ const SeoStructuredData: React.FC = () => {
     "@graph": [
       {
         "@type": "Person",
-        "@id": "https://danielebuatti.com/#person",
+        "@id": "https://www.danielebuatti.com/#person",
         "name": "Daniele Buatti",
-        "url": "https://danielebuatti.com/",
-        "image": "https://danielebuatti.com/headshot.jpeg",
+        "url": "https://www.danielebuatti.com/",
+        "image": "https://www.danielebuatti.com/headshot.jpeg",
         "sameAs": [
           "https://instagram.com/daniele.buatti",
           "http://youtube.com/danielebuatti",
@@ -25,13 +25,13 @@ const SeoStructuredData: React.FC = () => {
       },
       {
         "@type": "LocalBusiness",
-        "@id": "https://danielebuatti.com/#organisation",
+        "@id": "https://www.danielebuatti.com/#organisation",
         "name": "Daniele Buatti Coaching",
-        "url": "https://danielebuatti.com/",
-        "logo": "https://danielebuatti.com/logo-pinkwhite.png",
+        "url": "https://www.danielebuatti.com/",
+        "logo": "https://www.danielebuatti.com/logo-pinkwhite.png",
         "image": [
-          "https://danielebuatti.com/headshot.jpeg",
-          "https://danielebuatti.com/blackgoldquoteimage1.jpg"
+          "https://www.danielebuatti.com/headshot.jpeg",
+          "https://www.danielebuatti.com/blackgoldquoteimage1.jpg"
         ],
         "description": "Daniele Buatti offers embodied coaching for performers and communicators, blending musical training with body awareness and mindset techniques for confident, authentic expression.",
         "telephone": "+61424174067",
