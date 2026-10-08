@@ -1,6 +1,33 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/book-embodiment-somatic",
+      "destination": "/coaching",
+      "permanent": true
+    },
+    {
+      "source": "/book-presence-communication",
+      "destination": "/coaching",
+      "permanent": true
+    },
+    {
+      "source": "/services/ameb-accompanying",
+      "destination": "/ameb-accompanying",
+      "permanent": true
+    },
+    {
+      "source": "/ceremony-specialist",
+      "destination": "/live-piano-services",
+      "permanent": true
+    },
+    {
+      "source": "/booking",
+      "destination": "/book-voice-piano",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/sitemap.xml",
