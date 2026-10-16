@@ -128,15 +128,25 @@ const mediaData = {
       { name: "The Audition Guidebook", role: "Author · online course for music theatre auditionees" },
     ] as Credit[],
   },
-  // TODO: Add real testimonials here. This section is hidden entirely while the
-  // array is empty — do NOT invent quotes. There are three slots; to fill them,
-  // replace [] with:
-  //   [
-  //     { quote: "TODO: quote from a venue, booker or music director", attribution: "TODO: name, role, venue" },
-  //     { quote: "TODO: quote from a venue, booker or music director", attribution: "TODO: name, role, venue" },
-  //     { quote: "TODO: quote from a venue, booker or music director", attribution: "TODO: name, role, venue" },
-  //   ] as Testimonial[],
-  testimonials: [] as Testimonial[],
+  // Real quotes already published on the site (src/constants/testimonials.ts),
+  // attributed by first name only. The section hides itself if this is empty.
+  testimonials: [
+    {
+      quote:
+        "Nothing quite compares to the atmosphere of a live piano performance and Daniele Buatti has it all covered – any room, any mood, genre or occasion, he'll make sure it's a night to remember. Highly recommend. Book him for your next special event!",
+      attribution: "Tommy, live piano & vocals client",
+    },
+    {
+      quote:
+        "The show was awesome! Daniele's energy and piano playing were amazing, truly had me grooving along. An unforgettable performance.",
+      attribution: "Alex, audience member",
+    },
+    {
+      quote:
+        "Daniele is an awesome Music Director, guiding us with such thought and care. His positive energy makes every session a joy, and I always look forward to returning.",
+      attribution: "Joanne, choir member",
+    },
+  ] as Testimonial[],
   tech: [
     "Solo setup: can bring own keyboard, PA and vocal mic, or use a house piano",
     "Typical set lengths: 2 × 45 min or a 2-hour evening; flexible",
@@ -541,7 +551,7 @@ const MediaPage = () => {
 
       {/* ===== Testimonials — hidden entirely while the array is empty ===== */}
       {mediaData.testimonials.length > 0 && (
-        <section aria-label="Testimonials" className="container pb-16 md:pb-20">
+        <section aria-label="Testimonials" data-print="hide" className="container pb-16 md:pb-20">
           <SectionHeading eyebrow="Testimonials" title="What people say" />
           <div className="grid gap-6 md:grid-cols-3">
             {mediaData.testimonials.slice(0, 3).map((t, i) => (
