@@ -1,13 +1,49 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Copy, Mail, Phone, ExternalLink, Play } from "lucide-react";
+import { Copy, Download, ExternalLink, Mail, Phone, Play } from "lucide-react";
 import { useRouteMeta } from "@/hooks/use-page-meta";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
+import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
+/* ---------------------------------------------------------------------------
+ * /media — Media & Press Kit (one-link EPK)
+ *
+ * Palette (matches the printed brand + /athome):
+ *   black      #0B0B0B   hero panel + primary button text
+ *   ivory      #F7F3EA   page background
+ *   gold       #D4A208   accents, rules, primary buttons
+ *   charcoal   #1F1C19   body text on ivory
+ *   gold ink   #8A6900   small gold text on ivory (AA contrast)
+ * ------------------------------------------------------------------------- */
+
+type BioKey = "short" | "medium" | "long";
+
+interface Video {
+  id: string;
+  title: string;
+}
+
+interface Photo {
+  src: string;
+  alt: string;
+  /** Optional filename suggested when the full-size file is downloaded. */
+  downloadName?: string;
+}
+
+interface Credit {
+  name: string;
+  role: string;
+}
+
+interface Testimonial {
+  quote: string;
+  attribution: string;
+}
+
 /* ========================================================================== */
-/*  DATA — edit everything here without touching layout                        */
+/*  DATA — edit everything here without touching the layout below              */
 /* ========================================================================== */
 
 const mediaData = {
@@ -18,281 +54,114 @@ const mediaData = {
     email: "info@danielebuatti.com",
     phone: "0424 174 067",
     servicesPage: "/live-piano-services",
+    servicesLabel: "Live piano services",
   },
+  // privacy-enhanced, click-to-load YouTube embeds (see VideoCard below).
   videos: [
-    {
-      id: "DcVOldCIbgE",
-      title: "Misty (Erroll Garner)",
-      thumbnail: "https://img.youtube.com/vi/DcVOldCIbgE/hqdefault.jpg",
-    },
-    {
-      id: "vW_-D9AhZag",
-      title: "Dangerous Woman (Ariana Grande, jazz arrangement)",
-      thumbnail: "https://img.youtube.com/vi/vW_-D9AhZag/hqdefault.jpg",
-    },
-    {
-      id: "0Oq5SCM_OIE",
-      title: "Bridge Over Troubled Water, with Kala Gare",
-      thumbnail: "https://img.youtube.com/vi/0Oq5SCM_OIE/hqdefault.jpg",
-    },
-    {
-      id: "qOsEDG8td1Q",
-      title: "Piano improvisation",
-      thumbnail: "https://img.youtube.com/vi/qOsEDG8td1Q/hqdefault.jpg",
-    },
-  ],
+    { id: "DcVOldCIbgE", title: "Misty (Erroll Garner)" },
+    { id: "vW_-D9AhZag", title: "Dangerous Woman (Ariana Grande, jazz arrangement)" },
+    { id: "0Oq5SCM_OIE", title: "Bridge Over Troubled Water, with Kala Gare" },
+    { id: "qOsEDG8td1Q", title: "Piano improvisation" },
+  ] as Video[],
   photos: [
-    { src: "/media/photo-1.jpg", alt: "Daniele Buatti at the piano" },
-    { src: "/media/photo-2.jpg", alt: "Daniele Buatti at the piano" },
-    { src: "/media/photo-3.jpg", alt: "Daniele Buatti at the piano" },
-    { src: "/media/photo-4.jpg", alt: "Daniele Buatti at the piano" },
-    { src: "/media/photo-5.jpg", alt: "Daniele Buatti at the piano" },
-    { src: "/media/photo-6.jpg", alt: "Daniele Buatti at the piano" },
-  ],
+    { src: "/media/photo-1.jpg", alt: "Daniele Buatti at the piano", downloadName: "daniele-buatti-photo-1.jpg" },
+    { src: "/media/photo-2.jpg", alt: "Daniele Buatti at the piano", downloadName: "daniele-buatti-photo-2.jpg" },
+    { src: "/media/photo-3.jpg", alt: "Daniele Buatti at the piano", downloadName: "daniele-buatti-photo-3.jpg" },
+    { src: "/media/photo-4.jpg", alt: "Daniele Buatti at the piano", downloadName: "daniele-buatti-photo-4.jpg" },
+    { src: "/media/photo-5.jpg", alt: "Daniele Buatti at the piano", downloadName: "daniele-buatti-photo-5.jpg" },
+    { src: "/media/photo-6.jpg", alt: "Daniele Buatti at the piano", downloadName: "daniele-buatti-photo-6.jpg" },
+  ] as Photo[],
+  photosArchiveLabel: "Full photo and video archive",
+  photosArchiveUrl:
+    "https://drive.google.com/drive/folders/1jKpXpOYhZmYOG5Sx2VqixQFvcV_hZpf1",
   bios: {
-    short:
-      "Daniele Buatti is a Melbourne pianist, vocalist and music director.",
+    short: "Daniele Buatti is a Melbourne pianist, vocalist and music director.",
     medium:
       "Daniele Buatti is a Melbourne pianist, vocalist and music director with over 12 years in the city's music theatre scene. He performs solo piano and vocals for private events, functions and venues, moving easily between jazz standards, music theatre and contemporary songs reimagined at the piano.",
-    long:
-      "Daniele Buatti is a Melbourne pianist, vocalist and music director with over 12 years in the city's music theatre scene. His theatre work includes rehearsal pianist on Wicked, deputy keyboard on The Bodyguard and assistant music director on Into the Woods at the VCA. For about 12 years he ran Broadway Unplugged, a not-for-profit music theatre concert series. Today he performs solo piano and vocals for private events, functions and venues, blending jazz standards, music theatre and contemporary songs in his own arrangements. He also coaches voice and piano, and creates custom audition tracks for performers through Piano Backings by Daniele.",
-  },
+    long: "Daniele Buatti is a Melbourne pianist, vocalist and music director with over 12 years in the city's music theatre scene. His theatre work includes rehearsal pianist on Wicked, deputy keyboard on The Bodyguard and assistant music director on Into the Woods at the VCA. For about 12 years he ran Broadway Unplugged, a not-for-profit music theatre concert series. Today he performs solo piano and vocals for private events, functions and venues, blending jazz standards, music theatre and contemporary songs in his own arrangements. He also coaches voice and piano, and creates custom audition tracks for performers through Piano Backings by Daniele.",
+  } satisfies Record<BioKey, string>,
   offers: [
     {
       title: "Solo piano and vocals",
-      description:
-        "Jazz, cocktail and piano-bar sets for events and venues.",
+      description: "Jazz, cocktail and piano-bar sets for events and venues.",
       icon: "music",
     },
     {
       title: "Music theatre",
-      description:
-        "Rehearsal pianist, keys and music direction.",
+      description: "Rehearsal pianist, keys and music direction.",
       icon: "theater",
     },
     {
       title: "Bands and arrangements",
-      description:
-        "Larger line-ups and custom arrangements on request.",
+      description: "Larger line-ups and custom arrangements on request.",
       icon: "users",
     },
     {
       title: "Custom backing tracks",
-      description:
-        "Audition tracks and rehearsal backings.",
+      description: "Audition tracks and rehearsal backings.",
       icon: "disc",
       link: "https://pianobackings.danielebuatti.com",
     },
-  ],
+  ] as { title: string; description: string; icon: string; link?: string }[],
   credits: [
-    { role: "Wicked", description: "Rehearsal pianist" },
-    { role: "The Bodyguard", description: "Deputy keyboard" },
-    { role: "Into the Woods (VCA)", description: "Assistant music director" },
-    { role: "Broadway Unplugged", description: "Creator and host, ~12 years" },
-  ],
-  // TODO: Replace with real testimonials when available.
-  testimonials: [],
+    { name: "Wicked", role: "Rehearsal pianist" },
+    { name: "The Bodyguard", role: "Deputy keyboard" },
+    { name: "Into the Woods (VCA)", role: "Assistant music director" },
+    { name: "Broadway Unplugged", role: "Creator and host, ~12 years" },
+  ] as Credit[],
+  // TODO: Add real testimonials here. This section is hidden entirely while the
+  // array is empty — do NOT invent quotes. There are three slots; to fill them,
+  // replace [] with:
+  //   [
+  //     { quote: "TODO: quote from a venue, booker or music director", attribution: "TODO: name, role, venue" },
+  //     { quote: "TODO: quote from a venue, booker or music director", attribution: "TODO: name, role, venue" },
+  //     { quote: "TODO: quote from a venue, booker or music director", attribution: "TODO: name, role, venue" },
+  //   ] as Testimonial[],
+  testimonials: [] as Testimonial[],
   tech: [
     "Solo setup: can bring own keyboard, PA and vocal mic, or use a house piano",
     "Typical set lengths: 2 × 45 min or a 2-hour evening; flexible",
     "Dress: to suit the event (black tie available)",
   ],
-  photoArchiveUrl:
-    "https://drive.google.com/drive/folders/1jKpXpOYhZmYOG5Sx2VqixQFvcV_hZpf1",
 };
 
 /* ========================================================================== */
-/*  COMPONENTS                                                                */
+/*  Small shared pieces                                                        */
 /* ========================================================================== */
 
-const BioTabs = () => {
-  const [active, setActive] = useState<"short" | "medium" | "long">("medium");
-  const [, copy] = useCopyToClipboard();
-
-  const labels = {
-    short: "Short",
-    medium: "Medium",
-    long: "Long",
-  };
-
-  const handleCopy = (text: string) => {
-    copy(text);
-    toast.success("Copied to clipboard");
-  };
-
-  return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-1.5" role="tablist">
-        {(["short", "medium", "long"] as const).map((key) => (
-          <button
-            key={key}
-            type="button"
-            role="tab"
-            aria-selected={active === key}
-            aria-controls={`bio-panel-${key}`}
-            id={`bio-tab-${key}`}
-            onClick={() => setActive(key)}
-            className={`
-              px-4 py-2 text-sm font-medium transition-all
-              ${
-                active === key
-                  ? "bg-brand-primary text-white"
-                  : "bg-secondary text-brand-dark/70 hover:text-brand-dark"
-              }
-              rounded-lg
-            `}
-          >
-            {labels[key]}
-          </button>
-        ))}
-      </div>
-
-      <div
-        id={`bio-panel-${active}`}
-        role="tabpanel"
-        aria-labelledby={`bio-tab-${active}`}
-        className="relative"
-      >
-        <p className="max-w-none text-brand-dark/80 leading-relaxed">
-          {mediaData.bios[active]}
-        </p>
-        <button
-          type="button"
-          onClick={() => handleCopy(mediaData.bios[active])}
-          className="absolute top-0 right-0 inline-flex items-center gap-1.5 text-xs font-medium text-brand-primary hover:text-brand-primary/80 print-hide"
-        >
-          <Copy className="h-3.5 w-3.5" />
-          Copy
-        </button>
-      </div>
-    </div>
-  );
-};
-
-const VideoCard = ({
-  video,
+const SectionHeading = ({
+  eyebrow,
+  title,
+  description,
 }: {
-  video: {
-    id: string;
-    title: string;
-    thumbnail: string;
-  };
-}) => {
-  const [loaded, setLoaded] = useState(false);
-  const embedUrl = `https://www.youtube-nocookie.com/embed/${video.id}?autoplay=1`;
-  const watchUrl = `https://www.youtube.com/watch?v=${video.id}`;
+  eyebrow: string;
+  title: string;
+  description?: string;
+}) => (
+  <div className="mb-10 max-w-2xl">
+    <p className="text-xs font-medium uppercase tracking-[0.3em] text-[#8A6900]">{eyebrow}</p>
+    <h2 className="mt-3 text-3xl font-light text-[#1F1C19] md:text-4xl">{title}</h2>
+    {description && <p className="mt-4 leading-relaxed text-[#1F1C19]/70">{description}</p>}
+  </div>
+);
 
-  return (
-    <div className="group relative aspect-video w-full overflow-hidden rounded-2xl border border-border bg-secondary">
-      {loaded ? (
-        <iframe
-          src={embedUrl}
-          title={video.title}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
-          allowFullScreen
-          className="h-full w-full border-0"
-          loading="lazy"
-        />
-      ) : (
-        <button
-          type="button"
-          onClick={() => setLoaded(true)}
-          className="flex h-full w-full flex-col items-center justify-center gap-3 p-4 text-center transition-transform group-hover:scale-[1.02]"
-        >
-          <img
-            src={video.thumbnail}
-            alt={video.title}
-            className="absolute inset-0 h-full w-full object-cover brightness-75"
-            loading="lazy"
-            width={480}
-            height={270}
-          />
-          <div className="relative z-10 flex h-16 w-16 items-center justify-center rounded-full bg-brand-primary/90 text-white shadow-lg">
-            <Play className="h-7 w-7" />
-          </div>
-          <span className="relative z-10 text-sm font-medium text-brand-light">
-            {video.title}
-          </span>
-        </button>
-      )}
-      {/* Print-friendly title and link */}
-      <a
-        href={watchUrl}
-        className="print-video-title text-sm text-brand-dark/70"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {video.title}
-      </a>
-    </div>
-  );
-};
-
-const OfferCard = ({
-  offer,
-}: {
-  offer: {
-    title: string;
-    description: string;
-    icon: string;
-    link?: string;
-  };
-}) => {
-  const IconMap: Record<string, ReactNode> = {
-    music: <MusicIcon />,
-    theater: <TheaterIcon />,
-    users: <UsersIcon />,
-    disc: <DiscIcon />,
-  };
-
-  const content = (
-    <>
-      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
-        {IconMap[offer.icon]}
-      </div>
-      <h3 className="mb-2 text-xl font-semibold text-brand-dark">{offer.title}</h3>
-      <p className="text-sm leading-relaxed text-brand-dark/70">{offer.description}</p>
-    </>
-  );
-
-  if (offer.link) {
-    return (
-      <a
-        href={offer.link}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="group block rounded-2xl border border-border bg-card p-6 text-left shadow-soft transition-all hover:shadow-lg"
-      >
-        {content}
-        <ExternalLink className="mt-3 h-4 w-4 text-brand-primary opacity-0 transition-opacity group-hover:opacity-100" />
-      </a>
-    );
-  }
-
-  return (
-    <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
-      {content}
-    </div>
-  );
-};
-
-/* Simple line icons (matching the brand's line-icon aesthetic) */
+/* Simple line icons matching the brand's line-icon aesthetic */
 const MusicIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M9 18V5l12-2v13" />
     <circle cx="9" cy="18" r="3" />
     <circle cx="21" cy="16" r="3" />
   </svg>
 );
 const TheaterIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M2 12V4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8" />
     <path d="M2 12v8a2 2 0 0 0 2 2h16a2 2 0 0 1-2-2V12" />
     <path d="M4 16h16" />
   </svg>
 );
 const UsersIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M17 21v-2a4 4 0 0 0-3.87-4H8.83a4 4 0 0 0-3.86 4 2 2 0 0 0 2 2h10Z" />
     <circle cx="9" cy="7" r="2" />
     <path d="M21 15.5a4 4 0 0 0-3.87-4H16" />
@@ -300,137 +169,329 @@ const UsersIcon = () => (
   </svg>
 );
 const DiscIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <circle cx="12" cy="12" r="10" />
     <circle cx="12" cy="12" r="3" />
     <path d="M12 1v6m0 10v6" />
   </svg>
 );
 
+const OfferCard = ({ offer }: { offer: { title: string; description: string; icon: string; link?: string } }) => {
+  const IconMap: Record<string, ReactNode> = {
+    music: <MusicIcon />,
+    theater: <TheaterIcon />,
+    users: <UsersIcon />,
+    disc: <DiscIcon />,
+  };
+
+  const body = (
+    <>
+      <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-[#D4A208]/15 text-[#8A6900]">
+        {IconMap[offer.icon]}
+      </div>
+      <h3 className="mb-2 text-lg font-medium text-[#1F1C19]">{offer.title}</h3>
+      <p className="text-sm leading-relaxed text-[#1F1C19]/70">{offer.description}</p>
+    </>
+  );
+
+  const base = "offer-card flex flex-col rounded-2xl border border-[#1F1C19]/10 bg-white/60 p-6 shadow-sm";
+
+  if (offer.link) {
+    return (
+      <a
+        href={offer.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={cn(base, "group transition-colors hover:border-[#D4A208]")}
+      >
+        {body}
+        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-[#8A6900]">
+          pianobackings.danielebuatti.com
+          <ExternalLink className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+        </span>
+      </a>
+    );
+  }
+
+  return <div className={base}>{body}</div>;
+};
+
 /* ========================================================================== */
-/*  PAGE                                                                       */
+/*  Bio with length tabs + copy buttons                                        */
+/* ========================================================================== */
+
+const BioTabs = () => {
+  const [active, setActive] = useState<BioKey>("medium");
+  const [, copy] = useCopyToClipboard();
+  const keys: BioKey[] = ["short", "medium", "long"];
+  const labels: Record<BioKey, string> = { short: "Short", medium: "Medium", long: "Long" };
+
+  const handleCopy = (key: BioKey) => {
+    copy(mediaData.bios[key]);
+    toast.success("Bio copied to clipboard");
+  };
+
+  return (
+    <div>
+      <div className="bio-tabs flex flex-wrap gap-2" role="tablist" aria-label="Bio length">
+        {keys.map((key) => (
+          <button
+            key={key}
+            type="button"
+            role="tab"
+            id={`bio-tab-${key}`}
+            aria-selected={active === key}
+            aria-controls={`bio-panel-${key}`}
+            onClick={() => setActive(key)}
+            className={cn(
+              "rounded-full px-5 py-2 text-sm font-medium transition-colors",
+              active === key
+                ? "bg-[#D4A208] text-[#0B0B0B]"
+                : "border border-[#1F1C19]/15 text-[#1F1C19]/70 hover:border-[#D4A208] hover:text-[#1F1C19]",
+            )}
+          >
+            {labels[key]}
+          </button>
+        ))}
+      </div>
+
+      {/* All three panels stay in the DOM so print always shows the medium bio. */}
+      <div className="mt-6">
+        {keys.map((key) => (
+          <div
+            key={key}
+            id={`bio-panel-${key}`}
+            role="tabpanel"
+            aria-labelledby={`bio-tab-${key}`}
+            data-bio={key}
+            className={cn(
+              "relative rounded-2xl border border-[#1F1C19]/10 bg-white/60 p-6",
+              active !== key && "hidden",
+            )}
+          >
+            <p className="max-w-3xl pr-16 leading-relaxed text-[#1F1C19]/85 sm:pr-20">
+              {mediaData.bios[key]}
+            </p>
+            <button
+              type="button"
+              onClick={() => handleCopy(key)}
+              className="bio-copy absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-[#D4A208]/15 px-3 py-1.5 text-xs font-medium text-[#8A6900] transition-colors hover:bg-[#D4A208]/25"
+            >
+              <Copy className="h-3.5 w-3.5" />
+              Copy
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+/* ========================================================================== */
+/*  Video card — click-to-load YouTube (privacy-enhanced)                     */
+/* ========================================================================== */
+
+const VideoCard = ({ video }: { video: Video }) => {
+  const [loaded, setLoaded] = useState(false);
+  const embedUrl = `https://www.youtube-nocookie.com/embed/${video.id}?autoplay=1&rel=0&modestbranding=1`;
+  const watchUrl = `https://www.youtube.com/watch?v=${video.id}`;
+
+  return (
+    <figure className="m-0">
+      {/* On screen: poster → iframe. Hidden in print. */}
+      <div className="print-hide-video relative aspect-video w-full overflow-hidden rounded-2xl border border-[#1F1C19]/10 bg-[#0B0B0B]">
+        {loaded ? (
+          <iframe
+            src={embedUrl}
+            title={video.title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture; fullscreen"
+            allowFullScreen
+            loading="lazy"
+            className="absolute inset-0 h-full w-full border-0"
+          />
+        ) : (
+          <button
+            type="button"
+            onClick={() => setLoaded(true)}
+            className="group absolute inset-0 h-full w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A208]"
+            aria-label={`Play video: ${video.title}`}
+          >
+            <img
+              src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              width={480}
+              height={360}
+              className="absolute inset-0 h-full w-full object-cover brightness-[0.72] transition-transform duration-500 ease-out-expo group-hover:scale-[1.03]"
+            />
+            <span className="relative z-10 flex h-16 w-16 items-center justify-center rounded-full bg-[#D4A208] text-[#0B0B0B] shadow-lifted transition-transform duration-300 ease-out-expo group-active:scale-95">
+              <Play className="ml-0.5 h-7 w-7" fill="currentColor" strokeWidth={0} aria-hidden="true" />
+            </span>
+          </button>
+        )}
+      </div>
+      {/* Title stays visible on screen and in print; the URL only prints. */}
+      <figcaption className="mt-3 text-sm font-medium text-[#1F1C19]">
+        <a
+          href={watchUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="transition-colors hover:text-[#8A6900]"
+        >
+          {video.title}
+        </a>
+        <span className="print-video-url"> — {watchUrl}</span>
+      </figcaption>
+    </figure>
+  );
+};
+
+/* ========================================================================== */
+/*  Page                                                                       */
 /* ========================================================================== */
 
 const MediaPage = () => {
   useRouteMeta("/media");
 
   const handlePrint = () => {
-    // TODO: Replace with a static /media/daniele-buatti-one-sheet.pdf download
-    // once the PDF is generated. For now, use window.print().
+    // TODO: Replace with a static download once the one-sheet is generated:
+    //   const a = document.createElement("a");
+    //   a.href = "/media/daniele-buatti-one-sheet.pdf";
+    //   a.download = "daniele-buatti-one-sheet.pdf";
+    //   a.click();
+    // For now, print the page (see the print stylesheet for the A4 layout).
     window.print();
   };
 
+  const mailto = `mailto:${mediaData.contact.email}?subject=${encodeURIComponent(
+    `Booking enquiry — ${mediaData.name}`,
+  )}`;
+
   return (
-    <>
+    <div className="media-page overflow-x-hidden bg-[#F7F3EA] text-[#1F1C19] selection:bg-[#D4A208]/30">
       {/* ===== Hero ===== */}
-      <section className="container py-16 md:py-24 lg:py-32 print:py-8">
-        <div className="grid gap-12 lg:grid-cols-[1fr_1fr] lg:gap-20">
-          <div className="flex flex-col justify-center">
-            <h1 className="text-[44px] leading-[1.02] sm:text-6xl lg:text-7xl font-light text-brand-dark">
-              {mediaData.name}
-            </h1>
-            <p className="mt-4 text-xl text-brand-dark/70">{mediaData.tagline}</p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <button
-                type="button"
-                onClick={handlePrint}
-                className="inline-flex items-center justify-center rounded-full bg-brand-primary px-6 py-3 text-sm font-medium text-white shadow-soft transition-all hover:bg-brand-primary/90 hover:shadow-lg print-hide"
-              >
-                Download one-sheet (PDF)
-              </button>
-              <a
-                href={`mailto:${mediaData.contact.email}?subject=Booking enquiry — ${mediaData.name}`}
-                className="inline-flex items-center justify-center rounded-full border border-brand-primary px-6 py-3 text-sm font-medium text-brand-primary transition-all hover:bg-brand-primary hover:text-white print-hide"
-              >
-                Book me
-              </a>
+      <section className="media-hero bg-[#0B0B0B] text-[#F7F3EA]">
+        <div className="container py-16 md:py-24">
+          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,380px)_1fr] lg:gap-16">
+            {/* Headshot (left) — stacked above the text on mobile */}
+            <div className="mx-auto w-full max-w-xs sm:max-w-sm lg:mx-0">
+              <img
+                src={mediaData.headshot}
+                alt={`${mediaData.name}, pianist and vocalist`}
+                loading="eager"
+                decoding="async"
+                width={400}
+                height={533}
+                className="aspect-[3/4] w-full rounded-2xl border border-[#D4A208]/35 object-cover"
+              />
             </div>
-          </div>
-          <div className="relative mx-auto w-full max-w-md lg:mr-0 lg:max-w-sm">
-            <div className="absolute -bottom-3 -right-3 h-full w-full rounded-2xl bg-secondary" aria-hidden="true" />
-            <img
-              src={mediaData.headshot}
-              alt={mediaData.name}
-              className="relative aspect-[3/4] w-full rounded-2xl object-cover shadow-lifted"
-              loading="eager"
-              fetchPriority="high"
-              width={400}
-              height={533}
-            />
+
+            {/* Text */}
+            <div>
+              <p className="text-xs font-medium uppercase tracking-[0.3em] text-[#D4A208]">
+                Media &amp; Press Kit
+              </p>
+              <h1 className="mt-4 text-[40px] font-light leading-[1.05] text-[#F7F3EA] sm:text-6xl">
+                {mediaData.name}
+              </h1>
+              <div className="mt-5 h-px w-24 bg-[#D4A208]" aria-hidden="true" />
+              <p className="media-tagline mt-5 text-lg text-[#F7F3EA]/80">{mediaData.tagline}</p>
+
+              <div className="mt-8 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={handlePrint}
+                  className="print-hide inline-flex items-center justify-center gap-2 rounded-full bg-[#D4A208] px-6 py-3 text-sm font-medium text-[#0B0B0B] transition-all hover:brightness-95 active:scale-[0.98]"
+                >
+                  <Download className="h-4 w-4" aria-hidden="true" />
+                  Download one-sheet (PDF)
+                </button>
+                <a
+                  href={mailto}
+                  className="print-hide inline-flex items-center justify-center rounded-full border border-[#D4A208] px-6 py-3 text-sm font-medium text-[#D4A208] transition-colors hover:bg-[#D4A208] hover:text-[#0B0B0B]"
+                >
+                  Book me
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ===== Watch ===== */}
-      <section className="container py-16 md:py-24" aria-label="Watch">
-        <h2 className="mb-4 text-3xl md:text-4xl font-light text-brand-dark">Watch</h2>
-        <p className="mb-10 max-w-2xl text-brand-dark/70">
-          Selected performances and arrangements. All videos are embedded from YouTube
-          (privacy-enhanced mode) and load only when you click play.
-        </p>
-        <div className="grid gap-6 sm:grid-cols-2 lg:gap-8">
+      <section aria-label="Watch" className="container py-16 md:py-20">
+        <SectionHeading
+          eyebrow="Watch"
+          title="Selected performances"
+          description="All videos are embedded from YouTube in privacy-enhanced mode and load only when you press play."
+        />
+        <div className="grid gap-8 sm:grid-cols-2">
           {mediaData.videos.map((v) => (
             <VideoCard key={v.id} video={v} />
           ))}
         </div>
       </section>
 
-      {/* ===== Photos ===== */}
-      <section className="container py-16 md:py-24" aria-label="Photos">
-        <h2 className="mb-4 text-3xl md:text-4xl font-light text-brand-dark">Photos</h2>
-        <p className="mb-10 max-w-2xl text-brand-dark/70">
-          High-resolution photos available for download. All images are lazy-loaded.
-        </p>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {mediaData.photos.map((photo, i) => (
-            <div key={photo.src} className="group relative overflow-hidden rounded-2xl border border-border bg-secondary">
-              <img
-                src={photo.src}
-                alt={photo.alt}
-                className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                loading="lazy"
-                width={500}
-                height={375}
-              />
-              <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+      {/* ===== Photos (hidden in print) ===== */}
+      <section aria-label="Photos" data-print="hide" className="container pb-16 md:pb-20">
+        <SectionHeading
+          eyebrow="Photos"
+          title="Press photos"
+          description="High-resolution images for print and online. Click download for the full-size file."
+        />
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+          {mediaData.photos.map((photo) => (
+            <figure key={photo.src} className="m-0 overflow-hidden rounded-2xl border border-[#1F1C19]/10 bg-white/60">
+              <div className="overflow-hidden">
+                <img
+                  src={photo.src}
+                  alt={photo.alt}
+                  loading="lazy"
+                  decoding="async"
+                  width={500}
+                  height={375}
+                  className="aspect-[4/3] w-full object-cover transition-transform duration-500 ease-out-expo hover:scale-[1.04]"
+                />
+              </div>
+              <figcaption className="flex items-center justify-between gap-2 border-t border-[#1F1C19]/10 px-3 py-2.5">
+                <span className="truncate text-xs text-[#1F1C19]/60">{photo.alt}</span>
                 <a
                   href={photo.src}
-                  download
-                  className="rounded-full bg-brand-primary px-4 py-2 text-sm font-medium text-white"
+                  download={photo.downloadName}
+                  className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-[#8A6900] transition-colors hover:text-[#1F1C19]"
                 >
+                  <Download className="h-3.5 w-3.5" aria-hidden="true" />
                   Download
                 </a>
-              </div>
-            </div>
+              </figcaption>
+            </figure>
           ))}
         </div>
         <div className="mt-8">
           <a
-            href={mediaData.photoArchiveUrl}
+            href={mediaData.photosArchiveUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-brand-primary hover:underline"
+            className="inline-flex items-center gap-2 font-medium text-[#8A6900] underline-offset-4 transition-colors hover:text-[#1F1C19] hover:underline"
           >
-            Full photo and video archive
-            <ExternalLink className="h-4 w-4" />
+            {mediaData.photosArchiveLabel}
+            <ExternalLink className="h-4 w-4" aria-hidden="true" />
           </a>
         </div>
       </section>
 
       {/* ===== Bio ===== */}
-      <section className="container py-16 md:py-24" aria-label="Bio">
-        <h2 className="mb-4 text-3xl md:text-4xl font-light text-brand-dark">Bio</h2>
+      <section aria-label="Bio" className="container pb-16 md:pb-20">
+        <SectionHeading eyebrow="Bio" title="About Daniele" description="Three lengths for programmes, listings and press. Copy the one you need." />
         <BioTabs />
       </section>
 
       {/* ===== What I offer ===== */}
-      <section className="container py-16 md:py-24" aria-label="What I offer">
-        <h2 className="mb-4 text-3xl md:text-4xl font-light text-brand-dark">What I offer</h2>
-        <p className="mb-10 max-w-2xl text-brand-dark/70">
-          Solo piano and vocals, music direction, bands and arrangements, and custom
-          backing tracks — all tailored to your event or project.
-        </p>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <section aria-label="What I offer" className="container pb-16 md:pb-20">
+        <SectionHeading eyebrow="What I offer" title="Services" />
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {mediaData.offers.map((offer) => (
             <OfferCard key={offer.title} offer={offer} />
           ))}
@@ -438,40 +499,42 @@ const MediaPage = () => {
       </section>
 
       {/* ===== Selected credits ===== */}
-      <section className="container py-16 md:py-24" aria-label="Selected credits">
-        <h2 className="mb-4 text-3xl md:text-4xl font-light text-brand-dark">Selected credits</h2>
-        <div className="grid gap-4 sm:grid-cols-2">
+      <section aria-label="Selected credits" className="container pb-16 md:pb-20">
+        <SectionHeading eyebrow="Selected credits" title="Credits" />
+        <ul className="grid gap-x-10 gap-y-4 sm:grid-cols-2">
           {mediaData.credits.map((credit) => (
-            <div key={credit.role} className="border-b border-border pb-3">
-              <span className="font-semibold text-brand-dark">{credit.role}</span>
-              <span className="text-brand-dark/60"> · {credit.description}</span>
-            </div>
+            <li key={credit.name} className="flex items-baseline justify-between gap-4 border-b border-[#1F1C19]/10 pb-3">
+              <span className="font-medium text-[#1F1C19]">{credit.name}</span>
+              <span className="text-right text-sm text-[#1F1C19]/60">{credit.role}</span>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
 
-      {/* ===== Testimonials (hidden if empty) ===== */}
+      {/* ===== Testimonials — hidden entirely while the array is empty ===== */}
       {mediaData.testimonials.length > 0 && (
-        <section className="container py-16 md:py-24" aria-label="Testimonials">
-          <h2 className="mb-4 text-3xl md:text-4xl font-light text-brand-dark">Testimonials</h2>
-          <div className="space-y-8">
-            {mediaData.testimonials.map((t, i) => (
-              <blockquote key={i} className="border-l-4 border-brand-primary pl-6">
-                <p className="text-lg italic text-brand-dark/80">"{t.quote}"</p>
-                <footer className="mt-2 text-sm text-brand-dark/60">— {t.attribution}</footer>
-              </blockquote>
+        <section aria-label="Testimonials" className="container pb-16 md:pb-20">
+          <SectionHeading eyebrow="Testimonials" title="What people say" />
+          <div className="grid gap-6 md:grid-cols-3">
+            {mediaData.testimonials.slice(0, 3).map((t, i) => (
+              <figure key={i} className="m-0 rounded-2xl border border-[#1F1C19]/10 bg-white/60 p-6">
+                <blockquote className="text-base italic leading-relaxed text-[#1F1C19]/85">
+                  &ldquo;{t.quote}&rdquo;
+                </blockquote>
+                <figcaption className="mt-4 text-sm text-[#8A6900]">— {t.attribution}</figcaption>
+              </figure>
             ))}
           </div>
         </section>
       )}
 
-      {/* ===== Tech and logistics ===== */}
-      <section className="container py-16 md:py-24" aria-label="Tech and logistics">
-        <h2 className="mb-4 text-3xl md:text-4xl font-light text-brand-dark">Tech and logistics</h2>
-        <ul className="space-y-3 text-brand-dark/80">
+      {/* ===== Tech and logistics (hidden in print) ===== */}
+      <section aria-label="Tech and logistics" data-print="hide" className="container pb-16 md:pb-20">
+        <SectionHeading eyebrow="Tech and logistics" title="On the day" />
+        <ul className="space-y-3">
           {mediaData.tech.map((item) => (
-            <li key={item} className="flex items-start gap-2">
-              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-brand-primary" />
+            <li key={item} className="flex items-start gap-3 text-[#1F1C19]/80">
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#D4A208]" aria-hidden="true" />
               <span>{item}</span>
             </li>
           ))}
@@ -479,33 +542,35 @@ const MediaPage = () => {
       </section>
 
       {/* ===== Contact ===== */}
-      <section className="container py-16 md:py-24" aria-label="Contact">
-        <h2 className="mb-4 text-3xl md:text-4xl font-light text-brand-dark">Contact</h2>
-        <div className="space-y-4">
-          <a
-            href={`mailto:${mediaData.contact.email}`}
-            className="flex items-center gap-3 text-brand-dark hover:text-brand-primary"
-          >
-            <Mail className="h-5 w-5 text-brand-primary" />
-            <span>{mediaData.contact.email}</span>
-          </a>
-          <a
-            href={`tel:${mediaData.contact.phone.replace(/\s/g, "")}`}
-            className="flex items-center gap-3 text-brand-dark hover:text-brand-primary"
-          >
-            <Phone className="h-5 w-5 text-brand-primary" />
-            <span>{mediaData.contact.phone}</span>
-          </a>
-          <a
-            href={mediaData.contact.servicesPage}
-            className="flex items-center gap-3 text-brand-dark hover:text-brand-primary"
-          >
-            <ExternalLink className="h-5 w-5 text-brand-primary" />
-            <span>Live piano services</span>
-          </a>
+      <section aria-label="Contact" className="border-t border-[#1F1C19]/10">
+        <div className="container py-16 md:py-20">
+          <SectionHeading eyebrow="Contact" title="Get in touch" />
+          <div className="flex flex-col gap-4">
+            <a
+              href={`mailto:${mediaData.contact.email}`}
+              className="inline-flex w-fit items-center gap-3 text-[#1F1C19] transition-colors hover:text-[#8A6900]"
+            >
+              <Mail className="h-5 w-5 text-[#8A6900]" aria-hidden="true" />
+              {mediaData.contact.email}
+            </a>
+            <a
+              href={`tel:${mediaData.contact.phone.replace(/\s/g, "")}`}
+              className="inline-flex w-fit items-center gap-3 text-[#1F1C19] transition-colors hover:text-[#8A6900]"
+            >
+              <Phone className="h-5 w-5 text-[#8A6900]" aria-hidden="true" />
+              {mediaData.contact.phone}
+            </a>
+            <a
+              href={mediaData.contact.servicesPage}
+              className="inline-flex w-fit items-center gap-3 text-[#1F1C19] transition-colors hover:text-[#8A6900]"
+            >
+              <ExternalLink className="h-5 w-5 text-[#8A6900]" aria-hidden="true" />
+              {mediaData.contact.servicesLabel}
+            </a>
+          </div>
         </div>
       </section>
-    </>
+    </div>
   );
 };
 

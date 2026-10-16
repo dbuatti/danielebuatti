@@ -185,13 +185,14 @@
   background-color: hsl(45 100% 40%);
 }
 
-/* Print-only elements — hidden on screen, shown when printing */
-.print-video-title {
+/* Print-only element — the plain URL shown beside a video title in print */
+.print-video-url {
   display: none;
 }
 
 /* ========================================================================== */
-/*  Print stylesheet — one-sheet A4 PDF                                       */
+/*  Print stylesheet — /media one-sheet (A4)                                  */
+/*  Scoped to .media-page so it never changes how other pages print.           */
 /* ========================================================================== */
 @media print {
   @page {
@@ -199,169 +200,149 @@
     margin: 12mm 14mm;
   }
 
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-
+  html,
   body {
-    background: white !important;
+    background: #fff !important;
     color: #000 !important;
-    font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
-    font-size: 10pt;
-    line-height: 1.4;
   }
 
-  /* Hide nav, footer, and anything not part of the one-sheet */
+  /* Hide site chrome and anything marked screen-only. */
   header,
   footer,
   .print-hide,
-  [aria-label="Watch"] iframe,
-  [aria-label="Watch"] button,
-  .print-hide-video {
+  .print-hide-video,
+  .media-page [data-print="hide"] {
     display: none !important;
   }
 
-  /* Show video titles and links instead of embeds */
-  [aria-label="Watch"] .print-video-title {
-    display: block !important;
-    margin-top: 1rem;
-    font-size: 9pt;
-    color: #000;
+  /* The one-sheet always prints as black on white, whatever the screen theme. */
+  .media-page {
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+    font-size: 10pt;
+    line-height: 1.45;
   }
 
-  [aria-label="Watch"] .print-video-title a {
-    color: #000;
-    text-decoration: underline;
+  .media-page *,
+  .media-page *::before,
+  .media-page *::after {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    border-color: #ccc !important;
   }
 
-  /* Layout */
-  .container {
+  .media-page section {
+    padding: 0 !important;
+  }
+
+  .media-page section + section {
+    margin-top: 1.1rem !important;
+  }
+
+  .media-page .container {
     max-width: none !important;
     padding: 0 !important;
   }
 
-  h1, h2, h3 {
+  .media-page h1,
+  .media-page h2,
+  .media-page h3 {
     font-family: "Fraunces", ui-serif, Georgia, serif !important;
-    color: #000 !important;
     page-break-after: avoid;
+    break-after: avoid;
   }
 
-  h1 {
+  .media-page h1 {
     font-size: 24pt !important;
-    margin-bottom: 0.5rem !important;
+    margin: 0 0 0.25rem !important;
   }
 
-  h2 {
-    font-size: 16pt !important;
-    margin-top: 1.5rem !important;
-    margin-bottom: 0.5rem !important;
+  .media-page h2 {
+    font-size: 15pt !important;
+    margin: 0 0 0.4rem !important;
   }
 
-  p {
-    page-break-inside: avoid;
+  .media-page h3 {
+    font-size: 11pt !important;
+  }
+
+  .media-page p,
+  .media-page li {
     orphans: 3;
     widows: 3;
   }
 
-  /* Hero: stack vertically for print */
-  section:first-of-type .grid {
-    display: block !important;
-  }
-
-  section:first-of-type img {
+  /* Hero: drop the photo, stack the text. */
+  .media-page .media-hero img {
     display: none !important;
   }
 
-  section:first-of-type h1 {
-    font-size: 24pt !important;
+  .media-page .media-hero .grid {
+    display: block !important;
   }
 
-  section:first-of-type p {
+  .media-page .media-tagline {
     font-size: 11pt !important;
   }
 
-  section:first-of-type .flex {
-    flex-direction: column !important;
-    gap: 0.5rem !important;
+  /* Watch: embeds/posters are gone; the title link remains, plus the URL. */
+  .media-page .print-video-url {
+    display: inline !important;
+    word-break: break-all;
   }
 
-  section:first-of-type button,
-  section:first-of-type a {
+  .media-page figcaption {
+    font-size: 9.5pt !important;
+  }
+
+  /* Bio: show the medium version only, without the tab UI. */
+  .media-page .bio-tabs,
+  .media-page .bio-copy {
+    display: none !important;
+  }
+
+  .media-page [data-bio] {
+    display: none !important;
+    border: 0 !important;
+    padding: 0 !important;
+  }
+
+  .media-page [data-bio="medium"] {
     display: block !important;
-    width: auto !important;
-    text-align: center !important;
-    padding: 0.5rem 1rem !important;
-    margin: 0.25rem 0 !important;
-    border: 1px solid #000 !important;
-    background: white !important;
-    color: #000 !important;
   }
 
-  /* Bio: use medium length only — hide tab UI */
-  [aria-label="Bio"] .flex-wrap {
-    display: none !important;
+  /* Offer cards: one per row. */
+  .media-page [aria-label="What I offer"] .grid {
+    display: block !important;
   }
 
-  [aria-label="Bio"] button[role="tab"] {
-    display: none !important;
-  }
-
-  [aria-label="Bio"] p {
-    font-size: 10pt !important;
-  }
-
-  [aria-label="Bio"] .absolute {
-    display: none !important;
-  }
-
-  /* Offer cards */
-  [aria-label="What I offer"] .grid {
-    grid-template-columns: 1fr !important;
-  }
-
-  [aria-label="What I offer"] > div > div {
+  .media-page .offer-card {
     border: 1px solid #ccc !important;
-    padding: 0.75rem !important;
-    page-break-inside: avoid;
+    padding: 0.6rem 0.75rem !important;
+    margin-bottom: 0.35rem !important;
+    break-inside: avoid;
   }
 
-  [aria-label="What I offer"] h3 {
-    font-size: 11pt !important;
-  }
-
-  [aria-label="What I offer"] p {
-    font-size: 9pt !important;
-  }
-
-  /* Credits */
-  [aria-label="Selected credits"] .grid {
-    grid-template-columns: 1fr !important;
-  }
-
-  [aria-label="Selected credits"] > div {
-    border-bottom: 1px solid #ccc !important;
-    padding: 0.5rem 0 !important;
-  }
-
-  /* Contact */
-  [aria-label="Contact"] a {
-    color: #000 !important;
-    text-decoration: underline !important;
-  }
-
-  [aria-label="Contact"] svg {
+  .media-page .offer-card svg {
     display: none !important;
   }
 
-  /* Hide testimonials section if empty (it won't render anyway) */
-  [aria-label="Testimonials"] {
+  /* Credits: one per row. */
+  .media-page [aria-label="Selected credits"] ul {
+    display: block !important;
+  }
+
+  .media-page [aria-label="Selected credits"] li {
+    break-inside: avoid;
+  }
+
+  /* Contact reads as plain underlined text. */
+  .media-page [aria-label="Contact"] svg {
     display: none !important;
   }
 
-  /* Hide download buttons and external links that don't make sense in print */
-  a[download],
-  a[target="_blank"] {
+  .media-page [aria-label="Contact"] a,
+  .media-page a[target="_blank"] {
     text-decoration: underline !important;
   }
 }

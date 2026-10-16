@@ -55,7 +55,11 @@ export default function pageMetaPlugin(): Plugin {
       outDir = path.resolve(config.root, config.build.outDir);
     },
     closeBundle() {
-      const template = fs.readFileSync(path.join(outDir, "index.html"), "utf8");
+      const entry = path.join(outDir, "index.html");
+      // If the build failed, Rollup still calls closeBundle from its error path.
+      // Bail out so we don't mask the real error with an ENOENT here.
+      if (!fs.existsSync(entry)) return;
+      const template = fs.readFileSync(entry, "utf8");
       const stripped = REPLACED_TAGS.reduce((html, re) => html.replace(re, ""), template);
       for (const [route, meta] of Object.entries(pageMeta)) {
         const html = stripped.replace("</head>", `${headFor(route, meta)}</head>`);
