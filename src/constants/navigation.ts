@@ -58,6 +58,7 @@ export const exploreLinks: NavLink[] = [
   { name: "Projects & Resources", href: "/projects-resources" },
   { name: "Gift Cards", href: "/gift-cards" },
   { name: "About", href: "/about" },
+  { name: "Media", href: "/media" },
   { name: "Contact", href: "/contact" },
 ];
 

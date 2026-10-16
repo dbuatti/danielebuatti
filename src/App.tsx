@@ -33,6 +33,7 @@ const GiftCardsPage = lazy(() => import('./pages/GiftCardsPage'));
 const StorePage = lazy(() => import('./pages/StorePage'));
 const StoreSuccessPage = lazy(() => import('./pages/StoreSuccessPage'));
 const ArrangementDetailsPage = lazy(() => import('./pages/ArrangementDetailsPage'));
+const MediaPage = lazy(() => import('./pages/MediaPage'));
 
 // Admin Pages
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'));
@@ -85,6 +86,7 @@ function App() {
               <Route path="store" element={<StorePage />} />
               <Route path="store/success" element={<StoreSuccessPage />} />
               <Route path="store/arrangements/:slug" element={<ArrangementDetailsPage />} />
+              <Route path="media" element={<MediaPage />} />
 
               {/* Auth Route */}
               <Route path="login" element={<Login />} />

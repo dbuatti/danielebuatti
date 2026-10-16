@@ -184,3 +184,179 @@
 .hover\:bg-gold-600:hover {
   background-color: hsl(45 100% 40%);
 }
+
+/* ========================================================================== */
+/*  Print stylesheet — one-sheet A4 PDF                                       */
+/* ========================================================================== */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm 14mm;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    background: white !important;
+    color: #000 !important;
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+    font-size: 10pt;
+    line-height: 1.4;
+  }
+
+  /* Hide nav, footer, and anything not part of the one-sheet */
+  header,
+  footer,
+  .print-hide,
+  [aria-label="Watch"] iframe,
+  [aria-label="Watch"] button,
+  .print-hide-video {
+    display: none !important;
+  }
+
+  /* Show video titles and links instead of embeds */
+  [aria-label="Watch"] .print-video-title {
+    display: block !important;
+    margin-top: 1rem;
+    font-size: 9pt;
+    color: #000;
+  }
+
+  [aria-label="Watch"] .print-video-title a {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  /* Layout */
+  .container {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  h1, h2, h3 {
+    font-family: "Fraunces", ui-serif, Georgia, serif !important;
+    color: #000 !important;
+    page-break-after: avoid;
+  }
+
+  h1 {
+    font-size: 24pt !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  h2 {
+    font-size: 16pt !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  p {
+    page-break-inside: avoid;
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Hero: stack vertically for print */
+  section:first-of-type .grid {
+    display: block !important;
+  }
+
+  section:first-of-type img {
+    display: none !important;
+  }
+
+  section:first-of-type h1 {
+    font-size: 24pt !important;
+  }
+
+  section:first-of-type p {
+    font-size: 11pt !important;
+  }
+
+  section:first-of-type .flex {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+
+  section:first-of-type button,
+  section:first-of-type a {
+    display: block !important;
+    width: auto !important;
+    text-align: center !important;
+    padding: 0.5rem 1rem !important;
+    margin: 0.25rem 0 !important;
+    border: 1px solid #000 !important;
+    background: white !important;
+    color: #000 !important;
+  }
+
+  /* Bio: use medium length only — hide tab UI */
+  [aria-label="Bio"] .flex-wrap {
+    display: none !important;
+  }
+
+  [aria-label="Bio"] button[role="tab"] {
+    display: none !important;
+  }
+
+  [aria-label="Bio"] p {
+    font-size: 10pt !important;
+  }
+
+  [aria-label="Bio"] .absolute {
+    display: none !important;
+  }
+
+  /* Offer cards */
+  [aria-label="What I offer"] .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  [aria-label="What I offer"] > div > div {
+    border: 1px solid #ccc !important;
+    padding: 0.75rem !important;
+    page-break-inside: avoid;
+  }
+
+  [aria-label="What I offer"] h3 {
+    font-size: 11pt !important;
+  }
+
+  [aria-label="What I offer"] p {
+    font-size: 9pt !important;
+  }
+
+  /* Credits */
+  [aria-label="Selected credits"] .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  [aria-label="Selected credits"] > div {
+    border-bottom: 1px solid #ccc !important;
+    padding: 0.5rem 0 !important;
+  }
+
+  /* Contact */
+  [aria-label="Contact"] a {
+    color: #000 !important;
+    text-decoration: underline !important;
+  }
+
+  [aria-label="Contact"] svg {
+    display: none !important;
+  }
+
+  /* Hide testimonials section if empty (it won't render anyway) */
+  [aria-label="Testimonials"] {
+    display: none !important;
+  }
+
+  /* Hide download buttons and external links that don't make sense in print */
+  a[download],
+  a[target="_blank"] {
+    text-decoration: underline !important;
+  }
+}

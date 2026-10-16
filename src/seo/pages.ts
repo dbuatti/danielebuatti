@@ -74,6 +74,11 @@ export const pageMeta = {
     description: "Get in touch with Daniele Buatti for coaching, performance bookings, or general inquiries.",
     image: "/og/contact.jpg",
   },
+  "/media": {
+    title: "Media & Press Kit | Daniele Buatti",
+    description: "Press kit for Daniele Buatti — Melbourne pianist, vocalist and music director. Bios, photos, videos, credits and contact for venues, bookers and music directors.",
+    image: "/media/headshot.jpg",
+  },
   "/athome": {
     title: "Live piano at home | Daniele Buatti",
     description:
