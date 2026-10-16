@@ -1,7 +1,21 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
-import { Copy, Download, ExternalLink, Mail, Phone, Play } from "lucide-react";
+import { useState } from "react";
+import {
+  ArrowRight,
+  AudioLines,
+  Copy,
+  Download,
+  Drama,
+  ExternalLink,
+  Mail,
+  Phone,
+  Piano,
+  Play,
+  Printer,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 import { useRouteMeta } from "@/hooks/use-page-meta";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { cn } from "@/lib/utils";
@@ -29,6 +43,8 @@ interface Video {
 interface Photo {
   src: string;
   alt: string;
+  /** Photographer, shown as "Photo: …" under the image. */
+  credit?: string;
   /** Optional filename suggested when the full-size file is downloaded. */
   downloadName?: string;
 }
@@ -36,6 +52,13 @@ interface Photo {
 interface Credit {
   name: string;
   role: string;
+}
+
+interface Offer {
+  title: string;
+  description: string;
+  icon: "piano" | "theater" | "users" | "tracks";
+  link?: string;
 }
 
 interface Testimonial {
@@ -63,13 +86,15 @@ const mediaData = {
     { id: "vW_-D9AhZag", title: "Dangerous Woman (Ariana Grande, jazz arrangement)" },
     { id: "0Oq5SCM_OIE", title: "Bridge Over Troubled Water, with Kala Gare" },
   ] as Video[],
+  // `credit` is shown under the photo; press should credit the photographer.
+  // TODO: add credits for photos 2, 4, 5 and 6 if known.
   photos: [
-    { src: "/media/photo-1.jpg", alt: "Daniele Buatti at the piano", downloadName: "daniele-buatti-photo-1.jpg" },
-    { src: "/media/photo-2.jpg", alt: "Daniele Buatti at the piano", downloadName: "daniele-buatti-photo-2.jpg" },
-    { src: "/media/photo-3.jpg", alt: "Daniele Buatti at the piano", downloadName: "daniele-buatti-photo-3.jpg" },
-    { src: "/media/photo-4.jpg", alt: "Daniele Buatti at the piano", downloadName: "daniele-buatti-photo-4.jpg" },
-    { src: "/media/photo-5.jpg", alt: "Daniele Buatti at the piano", downloadName: "daniele-buatti-photo-5.jpg" },
-    { src: "/media/photo-6.jpg", alt: "Daniele Buatti at the piano", downloadName: "daniele-buatti-photo-6.jpg" },
+    { src: "/media/photo-1.jpg", alt: "Daniele Buatti playing grand piano on stage", credit: "Paul Micallef", downloadName: "daniele-buatti-on-stage.jpg" },
+    { src: "/media/photo-2.jpg", alt: "Guests singing around the piano as Daniele plays at a private party", downloadName: "daniele-buatti-private-party.jpg" },
+    { src: "/media/photo-3.jpg", alt: "Daniele Buatti smiling at the keyboard during a live show", credit: "Vudoo Photos", downloadName: "daniele-buatti-live-show.jpg" },
+    { src: "/media/photo-4.jpg", alt: "Daniele Buatti singing at an upright piano in black tie", downloadName: "daniele-buatti-piano-vocals.jpg" },
+    { src: "/media/photo-5.jpg", alt: "Daniele Buatti at the piano with guests at a cabaret evening", downloadName: "daniele-buatti-cabaret-evening.jpg" },
+    { src: "/media/photo-6.jpg", alt: "Daniele Buatti on keys with a live band in rehearsal", downloadName: "daniele-buatti-with-band.jpg" },
   ] as Photo[],
   photosArchiveLabel: "Full photo and video archive",
   photosArchiveUrl:
@@ -84,7 +109,7 @@ const mediaData = {
     {
       title: "Solo piano and vocals",
       description: "Jazz, cocktail and piano-bar sets for events and venues.",
-      icon: "music",
+      icon: "piano",
     },
     {
       title: "Music theatre",
@@ -99,10 +124,10 @@ const mediaData = {
     {
       title: "Custom backing tracks",
       description: "Audition tracks and rehearsal backings.",
-      icon: "disc",
+      icon: "tracks",
       link: "https://pianobackings.danielebuatti.com",
     },
-  ] as { title: string; description: string; icon: string; link?: string }[],
+  ] as Offer[],
   // Two groups: stage work first, then Daniele's own projects.
   // TODO: "My Fair Lady" — add the company / venue if known.
   // TODO: "School productions" — name the school(s) if it's a recognisable one.
@@ -174,49 +199,20 @@ const SectionHeading = ({
   </div>
 );
 
-/* Simple line icons matching the brand's line-icon aesthetic */
-const MusicIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M9 18V5l12-2v13" />
-    <circle cx="9" cy="18" r="3" />
-    <circle cx="21" cy="16" r="3" />
-  </svg>
-);
-const TheaterIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M2 12V4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8" />
-    <path d="M2 12v8a2 2 0 0 0 2 2h16a2 2 0 0 1-2-2V12" />
-    <path d="M4 16h16" />
-  </svg>
-);
-const UsersIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M17 21v-2a4 4 0 0 0-3.87-4H8.83a4 4 0 0 0-3.86 4 2 2 0 0 0 2 2h10Z" />
-    <circle cx="9" cy="7" r="2" />
-    <path d="M21 15.5a4 4 0 0 0-3.87-4H16" />
-    <circle cx="17" cy="10" r="2" />
-  </svg>
-);
-const DiscIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <circle cx="12" cy="12" r="10" />
-    <circle cx="12" cy="12" r="3" />
-    <path d="M12 1v6m0 10v6" />
-  </svg>
-);
+const OFFER_ICONS: Record<Offer["icon"], LucideIcon> = {
+  piano: Piano,
+  theater: Drama,
+  users: Users,
+  tracks: AudioLines,
+};
 
-const OfferCard = ({ offer }: { offer: { title: string; description: string; icon: string; link?: string } }) => {
-  const IconMap: Record<string, ReactNode> = {
-    music: <MusicIcon />,
-    theater: <TheaterIcon />,
-    users: <UsersIcon />,
-    disc: <DiscIcon />,
-  };
+const OfferCard = ({ offer }: { offer: Offer }) => {
+  const Icon = OFFER_ICONS[offer.icon];
 
   const body = (
     <>
       <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-[#D4A208]/15 text-[#8A6900]">
-        {IconMap[offer.icon]}
+        <Icon className="h-6 w-6" strokeWidth={1.5} aria-hidden="true" />
       </div>
       <h3 className="mb-2 text-lg font-medium text-[#1F1C19]">{offer.title}</h3>
       <p className="text-sm leading-relaxed text-[#1F1C19]/70">{offer.description}</p>
@@ -235,7 +231,7 @@ const OfferCard = ({ offer }: { offer: { title: string; description: string; ico
       >
         {body}
         <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-[#8A6900]">
-          pianobackings.danielebuatti.com
+          {new URL(offer.link).hostname}
           <ExternalLink className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </span>
       </a>
@@ -320,7 +316,7 @@ const BioTabs = () => {
 /*  Video card — click-to-load YouTube (privacy-enhanced)                     */
 /* ========================================================================== */
 
-const VideoCard = ({ video }: { video: Video }) => {
+const VideoCard = ({ video, featured = false }: { video: Video; featured?: boolean }) => {
   const [loaded, setLoaded] = useState(false);
   const embedUrl = `https://www.youtube-nocookie.com/embed/${video.id}?autoplay=1&rel=0&modestbranding=1`;
   const watchUrl = `https://www.youtube.com/watch?v=${video.id}`;
@@ -342,11 +338,12 @@ const VideoCard = ({ video }: { video: Video }) => {
           <button
             type="button"
             onClick={() => setLoaded(true)}
-            className="group absolute inset-0 h-full w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A208]"
+            className="group absolute inset-0 flex h-full w-full items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#D4A208]"
             aria-label={`Play video: ${video.title}`}
           >
+            {/* hqdefault is 4:3 with letterbox bars; object-cover crops them off. */}
             <img
-              src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`}
+              src={`https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`}
               alt=""
               aria-hidden="true"
               loading="lazy"
@@ -355,14 +352,19 @@ const VideoCard = ({ video }: { video: Video }) => {
               height={360}
               className="absolute inset-0 h-full w-full object-cover brightness-[0.72] transition-transform duration-500 ease-out-expo group-hover:scale-[1.03]"
             />
-            <span className="relative z-10 flex h-16 w-16 items-center justify-center rounded-full bg-[#D4A208] text-[#0B0B0B] shadow-lifted transition-transform duration-300 ease-out-expo group-active:scale-95">
-              <Play className="ml-0.5 h-7 w-7" fill="currentColor" strokeWidth={0} aria-hidden="true" />
+            <span
+              className={cn(
+                "relative z-10 flex items-center justify-center rounded-full bg-[#D4A208] text-[#0B0B0B] shadow-lifted transition-transform duration-300 ease-out-expo group-hover:scale-105 group-active:scale-95",
+                featured ? "h-20 w-20" : "h-16 w-16",
+              )}
+            >
+              <Play className={cn("ml-1", featured ? "h-8 w-8" : "h-7 w-7")} fill="currentColor" strokeWidth={0} aria-hidden="true" />
             </span>
           </button>
         )}
       </div>
       {/* Title stays visible on screen and in print; the URL only prints. */}
-      <figcaption className="mt-3 text-sm font-medium text-[#1F1C19]">
+      <figcaption className={cn("mt-3 font-medium text-[#1F1C19]", featured ? "text-base" : "text-sm")}>
         <a
           href={watchUrl}
           target="_blank"
@@ -434,15 +436,15 @@ const MediaPage = () => {
                   onClick={handlePrint}
                   className="print-hide inline-flex items-center justify-center gap-2 rounded-full bg-[#D4A208] px-6 py-3 text-sm font-medium text-[#0B0B0B] transition-all hover:brightness-95 active:scale-[0.98]"
                 >
-                  <Download className="h-4 w-4" aria-hidden="true" />
-                  Download one-sheet (PDF)
+                  <Printer className="h-4 w-4" aria-hidden="true" />
+                  Print or save one-sheet
                 </button>
                 <button
                   type="button"
                   onClick={scrollToBookingForm}
                   className="print-hide inline-flex items-center justify-center rounded-full border border-[#D4A208] px-6 py-3 text-sm font-medium text-[#D4A208] transition-colors hover:bg-[#D4A208] hover:text-[#0B0B0B]"
                 >
-                  Book me
+                  Booking enquiry
                 </button>
               </div>
             </div>
@@ -455,11 +457,15 @@ const MediaPage = () => {
         <SectionHeading
           eyebrow="Watch"
           title="Selected performances"
-          description="All videos are embedded from YouTube in privacy-enhanced mode and load only when you press play."
+          description="Solo piano and vocals, from jazz standards to contemporary songs reimagined at the piano."
         />
-        <div className="grid gap-8 sm:grid-cols-2">
-          {mediaData.videos.map((v) => (
-            <VideoCard key={v.id} video={v} />
+        {/* First video is featured: full width on tablets, two-thirds width
+            beside the others (stacked) on desktop. */}
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+          {mediaData.videos.map((v, i) => (
+            <div key={v.id} className={cn(i === 0 && "sm:col-span-2 lg:row-span-2")}>
+              <VideoCard video={v} featured={i === 0} />
+            </div>
           ))}
         </div>
       </section>
@@ -469,7 +475,7 @@ const MediaPage = () => {
         <SectionHeading
           eyebrow="Photos"
           title="Press photos"
-          description="High-resolution images for print and online. Click download for the full-size file."
+          description="High-resolution images for press and promotional use. Please credit the photographer where listed."
         />
         {/* Masonry-style columns so tall/portrait photos are never cropped. */}
         <div className="columns-2 gap-4 sm:columns-3">
@@ -485,7 +491,9 @@ const MediaPage = () => {
                 />
               </div>
               <figcaption className="flex items-center justify-between gap-2 border-t border-[#1F1C19]/10 px-3 py-2.5">
-                <span className="truncate text-xs text-[#1F1C19]/60">{photo.alt}</span>
+                <span className="truncate text-xs text-[#1F1C19]/60">
+                  {photo.credit ? `Photo: ${photo.credit}` : "Daniele Buatti"}
+                </span>
                 <a
                   href={photo.src}
                   download={photo.downloadName}
@@ -607,7 +615,7 @@ const MediaPage = () => {
                 href={mediaData.contact.servicesPage}
                 className="inline-flex w-fit items-center gap-3 text-[#1F1C19] transition-colors hover:text-[#8A6900]"
               >
-                <ExternalLink className="h-5 w-5 text-[#8A6900]" aria-hidden="true" />
+                <ArrowRight className="h-5 w-5 text-[#8A6900]" aria-hidden="true" />
                 {mediaData.contact.servicesLabel}
               </a>
             </div>
