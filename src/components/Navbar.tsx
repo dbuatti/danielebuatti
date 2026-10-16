@@ -41,7 +41,7 @@ const AnnouncementBar = () => {
   };
 
   return (
-    <div className="relative bg-[#0b0b0d] text-white/90">
+    <div className="print-hide relative bg-[#0b0b0d] text-white/90">
       <div className="container flex h-10 items-center justify-center gap-3 text-[11px] tracking-[0.18em] uppercase">
         <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" aria-hidden="true" />
         <span className="hidden sm:inline">Signature live piano & vocals</span>

@@ -6,6 +6,7 @@ import { useRouteMeta } from "@/hooks/use-page-meta";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import MediaBookingForm from "@/components/MediaBookingForm";
 
 /* ---------------------------------------------------------------------------
  * /media — Media & Press Kit (one-link EPK)
@@ -61,7 +62,6 @@ const mediaData = {
     { id: "DcVOldCIbgE", title: "Misty (Erroll Garner)" },
     { id: "vW_-D9AhZag", title: "Dangerous Woman (Ariana Grande, jazz arrangement)" },
     { id: "0Oq5SCM_OIE", title: "Bridge Over Troubled Water, with Kala Gare" },
-    { id: "qOsEDG8td1Q", title: "Piano improvisation" },
   ] as Video[],
   photos: [
     { src: "/media/photo-1.jpg", alt: "Daniele Buatti at the piano", downloadName: "daniele-buatti-photo-1.jpg" },
@@ -103,12 +103,31 @@ const mediaData = {
       link: "https://pianobackings.danielebuatti.com",
     },
   ] as { title: string; description: string; icon: string; link?: string }[],
-  credits: [
-    { name: "Wicked", role: "Rehearsal pianist" },
-    { name: "The Bodyguard", role: "Deputy keyboard" },
-    { name: "Into the Woods (VCA)", role: "Assistant music director" },
-    { name: "Broadway Unplugged", role: "Creator and host, ~12 years" },
-  ] as Credit[],
+  // Two groups: stage work first, then Daniele's own projects.
+  // TODO: "My Fair Lady" — add the company / venue if known.
+  // TODO: "School productions" — name the school(s) if it's a recognisable one.
+  // TODO: Broadway Unplugged ran for ~12 years? If that figure is about
+  // Daniele's overall career rather than the series, move it into the bio
+  // (long bio) and leave the credit as-is.
+  credits: {
+    theatre: [
+      { name: "Mrs Doubtfire", role: "Rehearsal pianist · JONES Theatrical Group" },
+      { name: "My Fair Lady", role: "Pianist · MD David Young" },
+      { name: "Elf the Musical", role: "Audition pianist · MD Vicky Jacobs" },
+      { name: "Wicked", role: "Rehearsal pianist" },
+      { name: "The Bodyguard", role: "Deputy keyboard" },
+      { name: "Into the Woods", role: "Assistant music director · VCA" },
+      { name: "School productions", role: "Musical director (multiple)" },
+    ] as Credit[],
+    ownWork: [
+      { name: "Broadway Unplugged", role: "Co-creator and co-host (with Bradley Dylan)" },
+      { name: "Piano by Heart", role: "Creator and pianist · improvised piano sound journey, HUMM St Kilda, from Nov 2026" },
+      { name: "Dharma Piano", role: "Composer and pianist · 'Remembering' on Spotify, Apple Music and Insight Timer" },
+      { name: "Resonance", role: "Founder and director · pop-up choir" },
+      { name: "Piano Backings by Daniele", role: "Custom audition tracks for music theatre performers" },
+      { name: "The Audition Guidebook", role: "Author · online course for music theatre auditionees" },
+    ] as Credit[],
+  },
   // TODO: Add real testimonials here. This section is hidden entirely while the
   // array is empty — do NOT invent quotes. There are three slots; to fill them,
   // replace [] with:
@@ -365,9 +384,9 @@ const MediaPage = () => {
     window.print();
   };
 
-  const mailto = `mailto:${mediaData.contact.email}?subject=${encodeURIComponent(
-    `Booking enquiry — ${mediaData.name}`,
-  )}`;
+  const scrollToBookingForm = () => {
+    document.getElementById("book")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
     <div className="media-page overflow-x-hidden bg-[#F7F3EA] text-[#1F1C19] selection:bg-[#D4A208]/30">
@@ -408,12 +427,13 @@ const MediaPage = () => {
                   <Download className="h-4 w-4" aria-hidden="true" />
                   Download one-sheet (PDF)
                 </button>
-                <a
-                  href={mailto}
+                <button
+                  type="button"
+                  onClick={scrollToBookingForm}
                   className="print-hide inline-flex items-center justify-center rounded-full border border-[#D4A208] px-6 py-3 text-sm font-medium text-[#D4A208] transition-colors hover:bg-[#D4A208] hover:text-[#0B0B0B]"
                 >
                   Book me
-                </a>
+                </button>
               </div>
             </div>
           </div>
@@ -441,18 +461,17 @@ const MediaPage = () => {
           title="Press photos"
           description="High-resolution images for print and online. Click download for the full-size file."
         />
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+        {/* Masonry-style columns so tall/portrait photos are never cropped. */}
+        <div className="columns-2 gap-4 sm:columns-3">
           {mediaData.photos.map((photo) => (
-            <figure key={photo.src} className="m-0 overflow-hidden rounded-2xl border border-[#1F1C19]/10 bg-white/60">
+            <figure key={photo.src} className="mb-4 break-inside-avoid overflow-hidden rounded-2xl border border-[#1F1C19]/10 bg-white/60">
               <div className="overflow-hidden">
                 <img
                   src={photo.src}
                   alt={photo.alt}
                   loading="lazy"
                   decoding="async"
-                  width={500}
-                  height={375}
-                  className="aspect-[4/3] w-full object-cover transition-transform duration-500 ease-out-expo hover:scale-[1.04]"
+                  className="h-auto w-full transition-transform duration-500 ease-out-expo hover:scale-[1.04]"
                 />
               </div>
               <figcaption className="flex items-center justify-between gap-2 border-t border-[#1F1C19]/10 px-3 py-2.5">
@@ -501,14 +520,23 @@ const MediaPage = () => {
       {/* ===== Selected credits ===== */}
       <section aria-label="Selected credits" className="container pb-16 md:pb-20">
         <SectionHeading eyebrow="Selected credits" title="Credits" />
-        <ul className="grid gap-x-10 gap-y-4 sm:grid-cols-2">
-          {mediaData.credits.map((credit) => (
-            <li key={credit.name} className="flex items-baseline justify-between gap-4 border-b border-[#1F1C19]/10 pb-3">
-              <span className="font-medium text-[#1F1C19]">{credit.name}</span>
-              <span className="text-right text-sm text-[#1F1C19]/60">{credit.role}</span>
-            </li>
-          ))}
-        </ul>
+        <div className="grid gap-10 md:grid-cols-2">
+          {([["Theatre", mediaData.credits.theatre], ["Own work", mediaData.credits.ownWork]] as const).map(
+            ([label, items]) => (
+              <div key={label}>
+                <h3 className="mb-5 text-xs font-medium uppercase tracking-[0.3em] text-[#8A6900]">{label}</h3>
+                <ul className="space-y-4">
+                  {items.map((credit) => (
+                    <li key={credit.name} className="border-b border-[#1F1C19]/10 pb-3">
+                      <p className="font-medium text-[#1F1C19]">{credit.name}</p>
+                      <p className="mt-0.5 text-sm text-[#1F1C19]/60">{credit.role}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ),
+          )}
+        </div>
       </section>
 
       {/* ===== Testimonials — hidden entirely while the array is empty ===== */}
@@ -541,32 +569,43 @@ const MediaPage = () => {
         </ul>
       </section>
 
-      {/* ===== Contact ===== */}
-      <section aria-label="Contact" className="border-t border-[#1F1C19]/10">
+      {/* ===== Contact + booking enquiry form ===== */}
+      <section aria-label="Contact" id="book" className="scroll-mt-24 border-t border-[#1F1C19]/10">
         <div className="container py-16 md:py-20">
-          <SectionHeading eyebrow="Contact" title="Get in touch" />
-          <div className="flex flex-col gap-4">
-            <a
-              href={`mailto:${mediaData.contact.email}`}
-              className="inline-flex w-fit items-center gap-3 text-[#1F1C19] transition-colors hover:text-[#8A6900]"
-            >
-              <Mail className="h-5 w-5 text-[#8A6900]" aria-hidden="true" />
-              {mediaData.contact.email}
-            </a>
-            <a
-              href={`tel:${mediaData.contact.phone.replace(/\s/g, "")}`}
-              className="inline-flex w-fit items-center gap-3 text-[#1F1C19] transition-colors hover:text-[#8A6900]"
-            >
-              <Phone className="h-5 w-5 text-[#8A6900]" aria-hidden="true" />
-              {mediaData.contact.phone}
-            </a>
-            <a
-              href={mediaData.contact.servicesPage}
-              className="inline-flex w-fit items-center gap-3 text-[#1F1C19] transition-colors hover:text-[#8A6900]"
-            >
-              <ExternalLink className="h-5 w-5 text-[#8A6900]" aria-hidden="true" />
-              {mediaData.contact.servicesLabel}
-            </a>
+          <SectionHeading
+            eyebrow="Contact"
+            title="Get in touch"
+            description="Send a booking enquiry for your venue or event, or reach me directly."
+          />
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
+            <div className="flex flex-col gap-4">
+              <a
+                href={`mailto:${mediaData.contact.email}`}
+                className="inline-flex w-fit items-center gap-3 text-[#1F1C19] transition-colors hover:text-[#8A6900]"
+              >
+                <Mail className="h-5 w-5 text-[#8A6900]" aria-hidden="true" />
+                {mediaData.contact.email}
+              </a>
+              <a
+                href={`tel:${mediaData.contact.phone.replace(/\s/g, "")}`}
+                className="inline-flex w-fit items-center gap-3 text-[#1F1C19] transition-colors hover:text-[#8A6900]"
+              >
+                <Phone className="h-5 w-5 text-[#8A6900]" aria-hidden="true" />
+                {mediaData.contact.phone}
+              </a>
+              <a
+                href={mediaData.contact.servicesPage}
+                className="inline-flex w-fit items-center gap-3 text-[#1F1C19] transition-colors hover:text-[#8A6900]"
+              >
+                <ExternalLink className="h-5 w-5 text-[#8A6900]" aria-hidden="true" />
+                {mediaData.contact.servicesLabel}
+              </a>
+            </div>
+
+            {/* Form is screen-only; the one-sheet already lists the contact details. */}
+            <div data-print="hide" className="rounded-2xl border border-[#1F1C19]/10 bg-white/60 p-6 md:p-8">
+              <MediaBookingForm />
+            </div>
           </div>
         </div>
       </section>
