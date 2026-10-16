@@ -16,6 +16,7 @@ import LandingPageV4 from './pages/LandingPageV4';
 
 // Public Pages
 const NotFound = lazy(() => import('./pages/NotFound'));
+const AtHomePage = lazy(() => import('./pages/AtHomePage'));
 const LivePianoServicesPage = lazy(() => import('./pages/LivePianoServicesPage'));
 const AmebAccompanyingPage = lazy(() => import('./pages/AmebAccompanyingPage'));
 const MusicDirectorPianistPage = lazy(() => import('./pages/MusicDirectorPianistPage'));
@@ -63,6 +64,8 @@ function App() {
             <Route path="/" element={<RootLayout />}>
               {/* Public Routes */}
               <Route index element={<LandingPageV4 />} />
+              <Route path="athome" element={<AtHomePage />} />
+              <Route path="at-home" element={<Navigate to="/athome" replace />} />
               <Route path="booking" element={<Navigate to="/book-voice-piano" replace />} />
               <Route path="coaching" element={<CoachingPage />} />
               <Route path="projects-resources" element={<ProjectsResourcesPage />} />

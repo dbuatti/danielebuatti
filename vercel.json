@@ -26,6 +26,11 @@
       "source": "/booking",
       "destination": "/book-voice-piano",
       "permanent": true
+    },
+    {
+      "source": "/at-home",
+      "destination": "/athome",
+      "permanent": true
     }
   ],
   "rewrites": [

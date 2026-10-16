@@ -74,6 +74,12 @@ export const pageMeta = {
     description: "Get in touch with Daniele Buatti for coaching, performance bookings, or general inquiries.",
     image: "/og/contact.jpg",
   },
+  "/athome": {
+    title: "Live piano at home | Daniele Buatti",
+    description:
+      "Live piano and vocals for home events in Toorak, Melbourne. Get a fast, calm quote for dinner parties, milestones, engagements, weddings and Christmas.",
+    image: "/og/live-piano.jpg",
+  },
 } satisfies Record<string, PageMeta>;
 
 export type PagePath = keyof typeof pageMeta;
