@@ -185,6 +185,11 @@
   background-color: hsl(45 100% 40%);
 }
 
+/* Print-only elements — hidden on screen, shown when printing */
+.print-video-title {
+  display: none;
+}
+
 /* ========================================================================== */
 /*  Print stylesheet — one-sheet A4 PDF                                       */
 /* ========================================================================== */

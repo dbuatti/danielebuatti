@@ -107,7 +107,7 @@ const mediaData = {
 
 const BioTabs = () => {
   const [active, setActive] = useState<"short" | "medium" | "long">("medium");
-    const [, copy] = useCopyToClipboard();
+  const [, copy] = useCopyToClipboard();
 
   const labels = {
     short: "Short",
@@ -154,8 +154,8 @@ const BioTabs = () => {
         className="relative"
       >
         <p className="max-w-none text-brand-dark/80 leading-relaxed">
-                        {mediaData.bios[active]}
-                      </p>
+          {mediaData.bios[active]}
+        </p>
         <button
           type="button"
           onClick={() => handleCopy(mediaData.bios[active])}
