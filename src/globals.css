@@ -357,9 +357,45 @@
     margin: 0 !important;
   }
 
+  /* 44px tap-target heights are for touch screens, not paper. */
+  .media-page a,
+  .media-page button {
+    min-height: 0 !important;
+  }
+
+  /* Theatre / Events stacked in one column: keep the gap between them small. */
+  .media-page [aria-label="Selected credits"] .space-y-10 > * + * {
+    margin-top: 0.5rem !important;
+  }
+
+  /* Booking options: a plain two-column list, no card. */
+  .media-page .booking-options {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0 1.5rem !important;
+    padding: 0 !important;
+    border: 0 !important;
+  }
+
+  .media-page .booking-options li {
+    padding: 0.1rem 0 !important;
+    border: 0 !important;
+    break-inside: avoid;
+  }
+
+  .media-page .booking-options svg {
+    display: none !important;
+  }
+
   /* Contact reads as plain underlined text. */
   .media-page [aria-label="Contact"] svg {
     display: none !important;
+  }
+
+  .media-page [aria-label="Contact"] .flex-col {
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    gap: 0 1.25rem !important;
   }
 
   .media-page [aria-label="Contact"] a,

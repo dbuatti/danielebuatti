@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type MouseEvent } from "react";
 import {
   ArrowRight,
   AudioLines,
+  Check,
   Copy,
   Download,
   Drama,
@@ -17,6 +18,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useRouteMeta } from "@/hooks/use-page-meta";
+import { SITE_URL } from "@/seo/pages";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -61,6 +63,11 @@ interface Offer {
   link?: string;
 }
 
+interface BookingOption {
+  title: string;
+  description: string;
+}
+
 interface Testimonial {
   quote: string;
   attribution: string;
@@ -80,7 +87,11 @@ const mediaData = {
     servicesPage: "/live-piano-services",
     servicesLabel: "Live piano services",
   },
+  // Hi-res photos, CV and full press kit (Google Drive).
+  pressKitUrl: "https://drive.google.com/drive/folders/19kmkNG3kKZw0HABgkW2tIOuwZIz7lAui",
+  instagram: "https://www.instagram.com/daniele.buatti",
   // privacy-enhanced, click-to-load YouTube embeds (see VideoCard below).
+  // The first video is featured and should be the strongest live performance.
   videos: [
     { id: "DcVOldCIbgE", title: "Misty (Erroll Garner)" },
     { id: "vW_-D9AhZag", title: "Dangerous Woman (Ariana Grande, jazz arrangement)" },
@@ -96,7 +107,8 @@ const mediaData = {
     { src: "/media/photo-5.jpg", alt: "Daniele Buatti at the piano with guests at a cabaret evening", downloadName: "daniele-buatti-cabaret-evening.jpg" },
     { src: "/media/photo-6.jpg", alt: "Daniele Buatti on keys with a live band in rehearsal", downloadName: "daniele-buatti-with-band.jpg" },
   ] as Photo[],
-  photosArchiveLabel: "Full photo and video archive",
+  // Curated formal set (Google Drive) for weddings, galas and corporate bookers.
+  photosArchiveLabel: "Black-tie and cocktail jazz photos",
   photosArchiveUrl:
     "https://drive.google.com/drive/folders/1jKpXpOYhZmYOG5Sx2VqixQFvcV_hZpf1",
   bios: {
@@ -128,7 +140,15 @@ const mediaData = {
       link: "https://pianobackings.danielebuatti.com",
     },
   ] as Offer[],
-  // Two groups: stage work first, then Daniele's own projects.
+  bookingOptions: [
+    { title: "Solo piano bar", description: "Standards, pop and music theatre, with requests welcome." },
+    { title: "Pianist & vocalist", description: "Piano and lead vocals from one performer." },
+    { title: "Three-piece", description: "Piano, bass and drums." },
+    { title: "Musical theatre nights / cabaret", description: "Co-lead of Broadway Unplugged." },
+    { title: "Open mic host and accompanist", description: "Hosting the night and accompanying each performer." },
+    { title: "Music direction and audition pianist", description: "For productions, auditions and rehearsals." },
+  ] as BookingOption[],
+  // Stage work and events first, then Daniele's own projects.
   // TODO: "My Fair Lady" — add the company / venue if known.
   // TODO: "School productions" — name the school(s) if it's a recognisable one.
   // TODO: Broadway Unplugged ran for ~12 years? If that figure is about
@@ -140,10 +160,11 @@ const mediaData = {
       { name: "My Fair Lady", role: "Pianist · MD David Young" },
       { name: "Elf the Musical", role: "Audition pianist · MD Vicky Jacobs" },
       { name: "Wicked", role: "Rehearsal pianist" },
-      { name: "The Bodyguard", role: "Deputy keyboard" },
-      { name: "Into the Woods", role: "Assistant music director · VCA" },
+      { name: "The Bodyguard", role: "Deputy keyboard player" },
+      { name: "Into the Woods, VCA", role: "Assistant Music Director" },
       { name: "School productions", role: "Musical director (multiple)" },
     ] as Credit[],
+    events: [{ name: "NGV Gala", role: "Piano bar" }] as Credit[],
     ownWork: [
       { name: "Broadway Unplugged", role: "Co-creator and co-host (with Bradley Dylan)" },
       { name: "Piano by Heart", role: "Creator and pianist · improvised piano sound journey, HUMM St Kilda, from Nov 2026" },
@@ -187,17 +208,83 @@ const SectionHeading = ({
   eyebrow,
   title,
   description,
+  className,
 }: {
   eyebrow: string;
   title: string;
   description?: string;
+  className?: string;
 }) => (
-  <div className="mb-10 max-w-2xl">
+  <div className={cn("mb-10 max-w-2xl", className)}>
     <p className="text-xs font-medium uppercase tracking-[0.3em] text-[#8A6900]">{eyebrow}</p>
     <h2 className="mt-3 text-3xl font-light text-[#1F1C19] md:text-4xl">{title}</h2>
     {description && <p className="mt-4 leading-relaxed text-[#1F1C19]/70">{description}</p>}
   </div>
 );
+
+/* Smooth-scrolls to the booking enquiry form; the href keeps it working without JS. */
+const scrollToBookingForm = (e: MouseEvent<HTMLAnchorElement>) => {
+  const form = document.getElementById("book");
+  if (!form) return;
+  e.preventDefault();
+  form.scrollIntoView({ behavior: "smooth", block: "start" });
+  history.replaceState(null, "", "#book");
+};
+
+const EnquiryButton = ({ className }: { className?: string }) => (
+  <a
+    href="#book"
+    onClick={scrollToBookingForm}
+    className={cn(
+      "print-hide inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#D4A208] px-6 py-3 text-sm font-medium text-[#0B0B0B] transition-all hover:brightness-95 active:scale-[0.98]",
+      className,
+    )}
+  >
+    Make an enquiry
+    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+  </a>
+);
+
+/* Email + phone, for use on the dark hero / closing band. */
+const ContactLinks = ({ className }: { className?: string }) => (
+  <div className={cn("flex flex-col gap-1 sm:flex-row sm:flex-wrap sm:gap-x-6", className)}>
+    <a
+      href={`mailto:${mediaData.contact.email}`}
+      className="inline-flex min-h-11 w-fit items-center gap-2.5 text-[#F7F3EA]/85 transition-colors hover:text-[#D4A208]"
+    >
+      <Mail className="h-4 w-4 text-[#D4A208]" aria-hidden="true" />
+      {mediaData.contact.email}
+    </a>
+    <a
+      href={`tel:${mediaData.contact.phone.replace(/\s/g, "")}`}
+      className="inline-flex min-h-11 w-fit items-center gap-2.5 text-[#F7F3EA]/85 transition-colors hover:text-[#D4A208]"
+    >
+      <Phone className="h-4 w-4 text-[#D4A208]" aria-hidden="true" />
+      {mediaData.contact.phone}
+    </a>
+  </div>
+);
+
+/* Person schema for this page. Kept separate from the site-wide Person in
+ * SeoStructuredData (which describes the coaching business). */
+const PersonJsonLd = () => {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: mediaData.name,
+    jobTitle: "Pianist, vocalist and music director",
+    url: `${SITE_URL}/`,
+    email: `mailto:${mediaData.contact.email}`,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Melbourne",
+      addressRegion: "VIC",
+      addressCountry: "AU",
+    },
+    sameAs: [mediaData.instagram],
+  };
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
+};
 
 const OFFER_ICONS: Record<Offer["icon"], LucideIcon> = {
   piano: Piano,
@@ -269,7 +356,7 @@ const BioTabs = () => {
             aria-controls={`bio-panel-${key}`}
             onClick={() => setActive(key)}
             className={cn(
-              "rounded-full px-5 py-2 text-sm font-medium transition-colors",
+              "min-h-11 rounded-full px-5 py-2 text-sm font-medium transition-colors",
               active === key
                 ? "bg-[#D4A208] text-[#0B0B0B]"
                 : "border border-[#1F1C19]/15 text-[#1F1C19]/70 hover:border-[#D4A208] hover:text-[#1F1C19]",
@@ -294,13 +381,13 @@ const BioTabs = () => {
               active !== key && "hidden",
             )}
           >
-            <p className="max-w-3xl pr-16 leading-relaxed text-[#1F1C19]/85 sm:pr-20">
+            <p className="max-w-3xl pr-24 leading-relaxed text-[#1F1C19]/85">
               {mediaData.bios[key]}
             </p>
             <button
               type="button"
               onClick={() => handleCopy(key)}
-              className="bio-copy absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-[#D4A208]/15 px-3 py-1.5 text-xs font-medium text-[#8A6900] transition-colors hover:bg-[#D4A208]/25"
+              className="bio-copy absolute right-3 top-3 inline-flex min-h-11 items-center gap-1.5 rounded-full bg-[#D4A208]/15 px-4 text-xs font-medium text-[#8A6900] transition-colors hover:bg-[#D4A208]/25"
             >
               <Copy className="h-3.5 w-3.5" />
               Copy
@@ -364,12 +451,12 @@ const VideoCard = ({ video, featured = false }: { video: Video; featured?: boole
         )}
       </div>
       {/* Title stays visible on screen and in print; the URL only prints. */}
-      <figcaption className={cn("mt-3 font-medium text-[#1F1C19]", featured ? "text-base" : "text-sm")}>
+      <figcaption className={cn("mt-1 font-medium text-[#1F1C19]", featured ? "text-base" : "text-sm")}>
         <a
           href={watchUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="transition-colors hover:text-[#8A6900]"
+          className="inline-flex min-h-11 items-center transition-colors hover:text-[#8A6900]"
         >
           {video.title}
         </a>
@@ -396,18 +483,15 @@ const MediaPage = () => {
     window.print();
   };
 
-  const scrollToBookingForm = () => {
-    document.getElementById("book")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
   return (
     <div className="media-page overflow-x-hidden bg-[#F7F3EA] text-[#1F1C19] selection:bg-[#D4A208]/30">
       {/* ===== Hero ===== */}
       <section className="media-hero bg-[#0B0B0B] text-[#F7F3EA]">
-        <div className="container py-16 md:py-24">
-          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,380px)_1fr] lg:gap-16">
-            {/* Headshot (left) — stacked above the text on mobile */}
-            <div className="mx-auto w-full max-w-xs sm:max-w-sm lg:mx-0">
+        <div className="container py-10 md:py-24">
+          <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,380px)_1fr] lg:gap-16">
+            {/* Headshot (left) — small and stacked above the text on phones so
+                the first video is reachable within one scroll. */}
+            <div className="mx-auto w-full max-w-[180px] sm:max-w-sm lg:mx-0">
               <img
                 src={mediaData.headshot}
                 alt={`${mediaData.name}, pianist and vocalist`}
@@ -424,40 +508,71 @@ const MediaPage = () => {
               <p className="text-xs font-medium uppercase tracking-[0.3em] text-[#D4A208]">
                 Media &amp; Press Kit
               </p>
-              <h1 className="mt-4 text-[40px] font-light leading-[1.05] text-[#F7F3EA] sm:text-6xl">
+              <h1 className="mt-3 text-[40px] font-light leading-[1.05] text-[#F7F3EA] sm:text-6xl">
                 {mediaData.name}
               </h1>
               <div className="mt-5 h-px w-24 bg-[#D4A208]" aria-hidden="true" />
               <p className="media-tagline mt-5 text-lg text-[#F7F3EA]/80">{mediaData.tagline}</p>
 
-              <div className="mt-8 flex flex-wrap gap-3">
+              {/* Top contact strip */}
+              <div className="mt-6 flex flex-wrap gap-3 md:mt-8">
+                <EnquiryButton />
                 <button
                   type="button"
                   onClick={handlePrint}
-                  className="print-hide inline-flex items-center justify-center gap-2 rounded-full bg-[#D4A208] px-6 py-3 text-sm font-medium text-[#0B0B0B] transition-all hover:brightness-95 active:scale-[0.98]"
+                  className="print-hide inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#D4A208] px-6 py-3 text-sm font-medium text-[#D4A208] transition-colors hover:bg-[#D4A208] hover:text-[#0B0B0B]"
                 >
                   <Printer className="h-4 w-4" aria-hidden="true" />
                   Print or save one-sheet
                 </button>
-                <button
-                  type="button"
-                  onClick={scrollToBookingForm}
-                  className="print-hide inline-flex items-center justify-center rounded-full border border-[#D4A208] px-6 py-3 text-sm font-medium text-[#D4A208] transition-colors hover:bg-[#D4A208] hover:text-[#0B0B0B]"
-                >
-                  Booking enquiry
-                </button>
               </div>
+              <ContactLinks className="mt-4 border-t border-[#D4A208]/20 pt-3" />
             </div>
           </div>
         </div>
       </section>
 
+      {/* ===== Downloads (screen only) ===== */}
+      <section aria-label="Downloads" data-print="hide" className="border-b border-[#1F1C19]/10 bg-[#D4A208]/10">
+        <div className="container flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-[0.3em] text-[#8A6900]">Downloads</p>
+            <p className="mt-1 text-sm text-[#1F1C19]/70">
+              The full press kit, plus a formal photo set for weddings, galas and corporate listings.
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-end">
+            <a
+              href={mediaData.pressKitUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#0B0B0B] px-6 py-3 text-center text-sm font-medium text-[#F7F3EA] transition-colors hover:bg-[#1F1C19]"
+            >
+              <Download className="h-4 w-4 shrink-0 text-[#D4A208]" aria-hidden="true" />
+              Download hi-res photos, CV and full press kit
+              <span className="sr-only">(opens in a new tab)</span>
+            </a>
+            <a
+              href={mediaData.photosArchiveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#0B0B0B]/80 px-6 py-3 text-center text-sm font-medium text-[#0B0B0B] transition-colors hover:bg-[#0B0B0B] hover:text-[#F7F3EA]"
+            >
+              {mediaData.photosArchiveLabel}
+              <ExternalLink className="h-4 w-4 shrink-0" aria-hidden="true" />
+              <span className="sr-only">(opens in a new tab)</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* ===== Watch ===== */}
-      <section aria-label="Watch" className="container py-16 md:py-20">
+      <section aria-label="Watch" className="container py-10 md:py-20">
         <SectionHeading
           eyebrow="Watch"
           title="Selected performances"
           description="Solo piano and vocals, from jazz standards to contemporary songs reimagined at the piano."
+          className="mb-6 md:mb-10"
         />
         {/* First video is featured: full width on tablets, two-thirds width
             beside the others (stacked) on desktop. */}
@@ -468,6 +583,22 @@ const MediaPage = () => {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* ===== Booking options ===== */}
+      <section aria-label="Booking options" className="container pb-16 md:pb-20">
+        <SectionHeading eyebrow="Booking options" title="Formats" />
+        <ul className="booking-options grid gap-x-10 gap-y-1 rounded-2xl border border-[#1F1C19]/10 bg-white/60 p-6 sm:grid-cols-2 md:p-8">
+          {mediaData.bookingOptions.map((option) => (
+            <li key={option.title} className="flex items-start gap-3 border-b border-[#1F1C19]/10 py-3 last:border-b-0 sm:[&:nth-last-child(2)]:border-b-0">
+              <Check className="mt-1 h-4 w-4 shrink-0 text-[#8A6900]" aria-hidden="true" />
+              <p>
+                <span className="font-medium text-[#1F1C19]">{option.title}</span>
+                <span className="text-[#1F1C19]/65"> — {option.description}</span>
+              </p>
+            </li>
+          ))}
+        </ul>
       </section>
 
       {/* ===== Photos (hidden in print) ===== */}
@@ -490,14 +621,14 @@ const MediaPage = () => {
                   className="h-auto w-full transition-transform duration-500 ease-out-expo hover:scale-[1.04]"
                 />
               </div>
-              <figcaption className="flex items-center justify-between gap-2 border-t border-[#1F1C19]/10 px-3 py-2.5">
+              <figcaption className="flex items-center justify-between gap-2 border-t border-[#1F1C19]/10 px-3">
                 <span className="truncate text-xs text-[#1F1C19]/60">
                   {photo.credit ? `Photo: ${photo.credit}` : "Daniele Buatti"}
                 </span>
                 <a
                   href={photo.src}
                   download={photo.downloadName}
-                  className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-[#8A6900] transition-colors hover:text-[#1F1C19]"
+                  className="inline-flex min-h-11 shrink-0 items-center gap-1 text-xs font-medium text-[#8A6900] transition-colors hover:text-[#1F1C19]"
                 >
                   <Download className="h-3.5 w-3.5" aria-hidden="true" />
                   Download
@@ -511,7 +642,7 @@ const MediaPage = () => {
             href={mediaData.photosArchiveUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 font-medium text-[#8A6900] underline-offset-4 transition-colors hover:text-[#1F1C19] hover:underline"
+            className="inline-flex min-h-11 items-center gap-2 font-medium text-[#8A6900] underline-offset-4 transition-colors hover:text-[#1F1C19] hover:underline"
           >
             {mediaData.photosArchiveLabel}
             <ExternalLink className="h-4 w-4" aria-hidden="true" />
@@ -539,21 +670,28 @@ const MediaPage = () => {
       <section aria-label="Selected credits" className="container pb-16 md:pb-20">
         <SectionHeading eyebrow="Selected credits" title="Credits" />
         <div className="grid gap-10 md:grid-cols-2">
-          {([["Theatre", mediaData.credits.theatre], ["Own work", mediaData.credits.ownWork]] as const).map(
-            ([label, items]) => (
-              <div key={label}>
-                <h3 className="mb-5 text-xs font-medium uppercase tracking-[0.3em] text-[#8A6900]">{label}</h3>
-                <ul className="space-y-4">
-                  {items.map((credit) => (
-                    <li key={credit.name} className="border-b border-[#1F1C19]/10 pb-3">
-                      <p className="font-medium text-[#1F1C19]">{credit.name}</p>
-                      <p className="mt-0.5 text-sm text-[#1F1C19]/60">{credit.role}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ),
-          )}
+          {(
+            [
+              [["Theatre", mediaData.credits.theatre], ["Events", mediaData.credits.events]],
+              [["Own work", mediaData.credits.ownWork]],
+            ] as const
+          ).map((groups) => (
+            <div key={groups[0][0]} className="space-y-10">
+              {groups.map(([label, items]) => (
+                <div key={label}>
+                  <h3 className="mb-5 text-xs font-medium uppercase tracking-[0.3em] text-[#8A6900]">{label}</h3>
+                  <ul className="space-y-4">
+                    {items.map((credit) => (
+                      <li key={credit.name} className="border-b border-[#1F1C19]/10 pb-3">
+                        <p className="font-medium text-[#1F1C19]">{credit.name}</p>
+                        <p className="mt-0.5 text-sm text-[#1F1C19]/60">{credit.role}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          ))}
         </div>
       </section>
 
@@ -596,24 +734,24 @@ const MediaPage = () => {
             description="Send a booking enquiry for your venue or event, or reach me directly."
           />
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1">
               <a
                 href={`mailto:${mediaData.contact.email}`}
-                className="inline-flex w-fit items-center gap-3 text-[#1F1C19] transition-colors hover:text-[#8A6900]"
+                className="inline-flex min-h-11 w-fit items-center gap-3 text-[#1F1C19] transition-colors hover:text-[#8A6900]"
               >
                 <Mail className="h-5 w-5 text-[#8A6900]" aria-hidden="true" />
                 {mediaData.contact.email}
               </a>
               <a
                 href={`tel:${mediaData.contact.phone.replace(/\s/g, "")}`}
-                className="inline-flex w-fit items-center gap-3 text-[#1F1C19] transition-colors hover:text-[#8A6900]"
+                className="inline-flex min-h-11 w-fit items-center gap-3 text-[#1F1C19] transition-colors hover:text-[#8A6900]"
               >
                 <Phone className="h-5 w-5 text-[#8A6900]" aria-hidden="true" />
                 {mediaData.contact.phone}
               </a>
               <a
                 href={mediaData.contact.servicesPage}
-                className="inline-flex w-fit items-center gap-3 text-[#1F1C19] transition-colors hover:text-[#8A6900]"
+                className="inline-flex min-h-11 w-fit items-center gap-3 text-[#1F1C19] transition-colors hover:text-[#8A6900]"
               >
                 <ArrowRight className="h-5 w-5 text-[#8A6900]" aria-hidden="true" />
                 {mediaData.contact.servicesLabel}
@@ -627,6 +765,19 @@ const MediaPage = () => {
           </div>
         </div>
       </section>
+
+      {/* ===== Bottom contact strip (screen only) ===== */}
+      <section aria-label="Book Daniele" data-print="hide" className="bg-[#0B0B0B] text-[#F7F3EA]">
+        <div className="container flex flex-col gap-5 py-10 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-[0.3em] text-[#D4A208]">Bookings</p>
+            <ContactLinks className="mt-2" />
+          </div>
+          <EnquiryButton className="w-full sm:w-auto" />
+        </div>
+      </section>
+
+      <PersonJsonLd />
     </div>
   );
 };

@@ -115,7 +115,7 @@ const MediaBookingForm = () => {
         <button
           type="button"
           onClick={() => setSent(false)}
-          className="mt-2 text-sm font-medium text-[#8A6900] underline underline-offset-4 transition-colors hover:text-[#1F1C19]"
+          className="mt-2 inline-flex min-h-11 items-center text-sm font-medium text-[#8A6900] underline underline-offset-4 transition-colors hover:text-[#1F1C19]"
         >
           Send another enquiry
         </button>
