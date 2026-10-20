@@ -163,7 +163,17 @@ const Footer = () => {
 
       <div className="border-t border-white/10">
         <div className="container flex flex-col-reverse items-start gap-4 py-6 text-sm text-brand-light/50 sm:flex-row sm:items-center sm:justify-between">
-          <p>&copy; {year} Daniele Buatti. All rights reserved.</p>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
+            <p>&copy; {year} Daniele Buatti. All rights reserved.</p>
+            <nav aria-label="Legal" className="flex items-center gap-5">
+              <Link to="/privacy" className="transition-colors hover:text-brand-light">
+                Privacy
+              </Link>
+              <Link to="/terms" className="transition-colors hover:text-brand-light">
+                Terms
+              </Link>
+            </nav>
+          </div>
           <button
             type="button"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}

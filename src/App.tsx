@@ -34,6 +34,8 @@ const StorePage = lazy(() => import('./pages/StorePage'));
 const StoreSuccessPage = lazy(() => import('./pages/StoreSuccessPage'));
 const ArrangementDetailsPage = lazy(() => import('./pages/ArrangementDetailsPage'));
 const MediaPage = lazy(() => import('./pages/MediaPage'));
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
+const TermsPage = lazy(() => import('./pages/TermsPage'));
 
 // Admin Pages
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'));
@@ -87,6 +89,8 @@ function App() {
               <Route path="store/success" element={<StoreSuccessPage />} />
               <Route path="store/arrangements/:slug" element={<ArrangementDetailsPage />} />
               <Route path="media" element={<MediaPage />} />
+              <Route path="privacy" element={<PrivacyPage />} />
+              <Route path="terms" element={<TermsPage />} />
 
               {/* Auth Route */}
               <Route path="login" element={<Login />} />
