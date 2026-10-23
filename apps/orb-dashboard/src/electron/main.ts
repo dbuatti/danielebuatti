@@ -4,11 +4,100 @@ import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import { exec, execSync } from 'node:child_process';
 import os from 'node:os';
+import http from 'node:http';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const scriptPath = path.join(os.homedir(), 'Library', 'Scripts', 'mount-nas.zsh');
 const credFile = path.join(app.getPath('userData'), 'nas-credentials.enc');
+const WEB_PORT = 8450;
+
+// --- Web Server for remote access via Tailscale ---
+let webServer: http.Server | null = null;
+
+function startWebServer() {
+  if (webServer) return;
+  const rendererDir = path.join(__dirname, 'renderer');
+
+  webServer = http.createServer((req, res) => {
+    // API endpoints
+    if (req.url === '/api/system-info') {
+      const info = collectSystemInfo();
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+      res.end(JSON.stringify(info));
+      return;
+    }
+
+    if (req.url === '/api/nas-creds' && req.method === 'GET') {
+      if (!fs.existsSync(credFile)) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, message: 'No saved credentials' }));
+        return;
+      }
+      if (!safeStorage.isEncryptionAvailable()) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, message: 'Encryption not available' }));
+        return;
+      }
+      try {
+        const encrypted = fs.readFileSync(credFile);
+        const decrypted = safeStorage.decryptString(encrypted);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, creds: JSON.parse(decrypted) }));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, message: String(e) }));
+      }
+      return;
+    }
+
+    // Static files
+    let filePath = req.url === '/' ? '/index.html' : req.url || '/index.html';
+    filePath = path.join(rendererDir, filePath.split('?')[0]);
+
+    const ext = path.extname(filePath);
+    const mimeTypes: Record<string, string> = {
+      '.html': 'text/html',
+      '.js': 'application/javascript',
+      '.css': 'text/css',
+      '.json': 'application/json',
+      '.png': 'image/png',
+      '.jpg': 'image/jpeg',
+      '.svg': 'image/svg+xml',
+      '.ico': 'image/x-icon',
+    };
+    const contentType = mimeTypes[ext] || 'application/octet-stream';
+
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        // SPA fallback
+        fs.readFile(path.join(rendererDir, 'index.html'), (err2, data2) => {
+          if (err2) {
+            res.writeHead(404);
+            res.end('Not found');
+            return;
+          }
+          res.writeHead(200, { 'Content-Type': 'text/html' });
+          res.end(data2);
+        });
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': contentType });
+      res.end(data);
+    });
+  });
+
+  webServer.listen(WEB_PORT, '0.0.0.0', () => {
+    console.log(`Web server running on port ${WEB_PORT}`);
+  });
+}
+
+function stopWebServer() {
+  if (webServer) {
+    webServer.close();
+    webServer = null;
+  }
+}
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -47,15 +136,12 @@ function collectSystemInfo() {
 
 function getNetworkInfo() {
   try {
-    // os already imported
-    const interfaces = os.networkInterfaces();
-    return interfaces;
+    return os.networkInterfaces();
   } catch (e) { return {}; }
 }
 
 function getLaunchAgents() {
   try {
-    // execSync from already-imported exec
     const out = execSync('launchctl list 2>/dev/null || echo "N/A"', { encoding: 'utf8', timeout: 5000 });
     return out.trim();
   } catch (e) { return 'Could not collect'; }
@@ -63,7 +149,6 @@ function getLaunchAgents() {
 
 function getIPAddresses() {
   try {
-    // execSync from already-imported exec
     const out = execSync('ifconfig | grep "inet " | awk \'{print $2}\' 2>/dev/null || echo "N/A"', { encoding: 'utf8', timeout: 5000 });
     return out.trim();
   } catch (e) { return 'Could not collect'; }
@@ -77,7 +162,6 @@ ipcMain.handle('open-comm-analytics', async () => {
     await shell.openPath(appPath);
     return { success: true, message: 'Comm Analytics.app launched' };
   } catch (e) {
-    // execSync from already-imported exec
     try {
       execSync('open "/Applications/Comm Analytics.app"');
       return { success: true, message: 'Comm Analytics.app launched via open' };
@@ -112,7 +196,6 @@ ipcMain.handle('run-mount-nas', async () => {
   }
 });
 
-// NAS Credentials (encrypted with Electron safeStorage)
 ipcMain.handle('save-nas-creds', (event, creds) => {
   if (!safeStorage.isEncryptionAvailable()) {
     return { success: false, message: 'Encryption not available' };
@@ -142,8 +225,21 @@ ipcMain.handle('load-nas-creds', () => {
   }
 });
 
+// Web server IPC
+ipcMain.handle('start-web-server', () => {
+  startWebServer();
+  return { port: WEB_PORT, url: `http://0.0.0.0:${WEB_PORT}` };
+});
+
+ipcMain.handle('stop-web-server', () => {
+  stopWebServer();
+  return { stopped: true };
+});
+
 app.whenReady().then(() => {
   createWindow();
+  // Auto-start web server for remote access
+  startWebServer();
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
@@ -154,6 +250,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('before-quit', () => {
+  stopWebServer();
   const info = collectSystemInfo();
   const dataDir = path.join(app.getPath('userData'), 'data');
   if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });

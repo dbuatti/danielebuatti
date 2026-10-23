@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Globe, Database, Terminal, Server, Film, Gamepad2, Video, Laptop, ChevronRight } from 'lucide-react';
+import { Globe, Database, Terminal, Server, Film, Gamepad2, Video, Laptop, ChevronRight, Link2 } from 'lucide-react';
 
 export default function RootLayout() {
   const location = useLocation();
@@ -13,6 +13,7 @@ export default function RootLayout() {
     { path: '/crossover', label: 'CrossOver', icon: Gamepad2 },
     { path: '/jitsi', label: 'Jitsi', icon: Video },
     { path: '/devices', label: 'Devices', icon: Laptop },
+    { path: '/links', label: 'Links', icon: Link2 },
   ];
 
   return (

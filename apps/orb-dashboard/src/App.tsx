@@ -14,6 +14,7 @@ const StremioPage = lazy(() => import('./pages/StremioPage'));
 const CrossOverPage = lazy(() => import('./pages/CrossOverPage'));
 const JitsiPage = lazy(() => import('./pages/JitsiPage'));
 const DevicesPage = lazy(() => import('./pages/DevicesPage'));
+const LinksPage = lazy(() => import('./pages/LinksPage'));
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="crossover" element={<CrossOverPage />} />
             <Route path="jitsi" element={<JitsiPage />} />
             <Route path="devices" element={<DevicesPage />} />
+          <Route path="links" element={<LinksPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

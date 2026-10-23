@@ -7,4 +7,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   runMountNas: (): Promise<any> => ipcRenderer.invoke('run-mount-nas'),
   saveNasCreds: (creds: any): Promise<any> => ipcRenderer.invoke('save-nas-creds', creds),
   loadNasCreds: (): Promise<any> => ipcRenderer.invoke('load-nas-creds'),
+  startWebServer: (): Promise<any> => ipcRenderer.invoke('start-web-server'),
+  stopWebServer: (): Promise<any> => ipcRenderer.invoke('stop-web-server'),
 });

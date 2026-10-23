@@ -8,6 +8,8 @@ declare global {
       runMountNas: () => Promise<{ stdout?: string; stderr?: string; success: boolean }>;
       saveNasCreds: (creds: any) => Promise<{ success: boolean; message: string }>;
       loadNasCreds: () => Promise<{ success: boolean; creds?: any; message?: string }>;
+      startWebServer: () => Promise<{ port: number; url: string }>;
+      stopWebServer: () => Promise<{ stopped: boolean }>;
     };
   }
 }

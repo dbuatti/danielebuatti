@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Monitor, Database, Server, Terminal, ExternalLink, RefreshCw, Zap, Film, Gamepad2, Video, Laptop, Cpu, HardDrive, Wifi } from 'lucide-react';
+import { Monitor, Database, Server, Terminal, ExternalLink, RefreshCw, Zap, Film, Gamepad2, Video, Laptop, Cpu, HardDrive, Wifi, Link2 } from 'lucide-react';
 
 interface SystemInfo {
   timestamp: string;
@@ -54,6 +54,7 @@ export default function IndexPage() {
     { path: '/crossover', label: 'CrossOver', icon: Gamepad2, desc: 'Bottles, 38 launchers, 3.7 GB sync remaining', color: 'orange' },
     { path: '/jitsi', label: 'Jitsi', icon: Video, desc: '5 containers, WebSocket TLS issue', color: 'red' },
     { path: '/devices', label: 'Devices', icon: Laptop, desc: '5 Tailscale machines with specs', color: 'cyan' },
+    { path: '/links', label: 'Links', icon: Link2, desc: 'All accessible URLs — Comm Analytics, NAS, Tailscale, and more', color: 'pink' },
   ];
 
   return (
