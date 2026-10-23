@@ -91,11 +91,12 @@ export default function LinksPage() {
                 <div key={link.url} className="flex items-center justify-between p-3 bg-neutral-900/50 rounded-lg hover:bg-neutral-900/80 transition-colors group">
                   <div className="flex items-center gap-3 min-w-0 flex-1">
                     <span className="text-lg flex-shrink-0">{link.icon}</span>
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-white font-medium text-sm hover:text-amber-300 transition-colors">
                         {link.label}
                       </a>
                       <p className="text-neutral-500 text-xs truncate">{link.description}</p>
+                      <p className="text-neutral-600 text-xs font-mono truncate mt-0.5">{link.url}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-1 flex-shrink-0">
