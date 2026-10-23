@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Monitor, Database, Server, Terminal, ExternalLink, RefreshCw, Zap } from 'lucide-react';
+import { Monitor, Database, Server, Terminal, ExternalLink, RefreshCw, Zap, Film, Gamepad2 } from 'lucide-react';
 
 interface SystemInfo {
   timestamp: string;
@@ -110,24 +110,24 @@ export default function IndexPage() {
         <h3 className="font-display font-semibold text-xl text-white">System Snapshot</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatusIndicator
-            label="Hostname"
-            value={systemInfo?.hostname || (loading ? '—' : 'N/A')}
+            label="MBP Hostname"
+            value="macbook-pro-6.tailab1fd5.ts.net"
             icon={Monitor}
           />
           <StatusIndicator
-            label="IP Addresses"
-            value={systemInfo?.ipAddresses?.split('\n')[0] || (loading ? '—' : 'N/A')}
+            label="MBP Disk"
+            value="837 GB / 926 GB (95%)"
             icon={Server}
           />
           <StatusIndicator
-            label="Last Updated"
-            value={systemInfo ? new Date(systemInfo.timestamp).toLocaleTimeString() : (loading ? '—' : 'Never')}
-            icon={Database}
+            label="Launch Agents"
+            value="3 user + 12 system"
+            icon={Terminal}
           />
           <StatusIndicator
-            label="Launch Agents"
-            value={systemInfo ? `${systemInfo.launchAgents.split('\n').filter(Boolean).length} active` : (loading ? '—' : 'N/A')}
-            icon={Terminal}
+            label="Mini Disk"
+            value="185 GB / 228 GB (94%)"
+            icon={Database}
           />
         </div>
       </section>
@@ -143,7 +143,7 @@ export default function IndexPage() {
               </div>
               <div>
                 <h4 className="font-semibold text-white">NAS Mounting</h4>
-                <p className="text-neutral-500 text-sm mt-1">Home & away mount instructions, credentials, scripts</p>
+                <p className="text-neutral-500 text-sm mt-1">crystal-tokyo @ 100.124.90.53, Moon Prism share, Tailscale mount</p>
               </div>
             </div>
           </Link>
@@ -154,7 +154,7 @@ export default function IndexPage() {
               </div>
               <div>
                 <h4 className="font-semibold text-white">Network Info</h4>
-                <p className="text-neutral-500 text-sm mt-1">Interfaces, IPs, routes, DNS, VPN status</p>
+                <p className="text-neutral-500 text-sm mt-1">TPG NBN, Deco M5, VR1600v, Jitsi, JVB TLS issue</p>
               </div>
             </div>
           </Link>
@@ -166,6 +166,28 @@ export default function IndexPage() {
               <div>
                 <h4 className="font-semibold text-white">Launch Agents & Daemons</h4>
                 <p className="text-neutral-500 text-sm mt-1">All user & system launch agents, plists, status</p>
+              </div>
+            </div>
+          </Link>
+          <Link to="/stremio" className="card-glass rounded-xl p-6 group hover:border-amber-500/30 transition-all duration-300">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center flex-shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                <Film size={24} className="text-amber-400" strokeWidth={1.5} />
+              </div>
+              <div>
+                <h4 className="font-semibold text-white">Stremio</h4>
+                <p className="text-neutral-500 text-sm mt-1">Server status, port conflicts, restart</p>
+              </div>
+            </div>
+          </Link>
+          <Link to="/crossover" className="card-glass rounded-xl p-6 group hover:border-amber-500/30 transition-all duration-300">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center flex-shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                <Gamepad2 size={24} className="text-amber-400" strokeWidth={1.5} />
+              </div>
+              <div>
+                <h4 className="font-semibold text-white">CrossOver</h4>
+                <p className="text-neutral-500 text-sm mt-1">Bottles, launchers, sync status, disk usage</p>
               </div>
             </div>
           </Link>
