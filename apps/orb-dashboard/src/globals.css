@@ -5,13 +5,46 @@
 @layer base {
   :root {
     --bg: #09090b;
+    --bg-elevated: #111113;
+    --bg-card: rgba(255, 255, 255, 0.03);
+    --border: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(249, 115, 22, 0.3);
     --orb: #f97316;
     --orb-glow: #fb923c;
+    --orb-dim: rgba(249, 115, 22, 0.15);
+    --text-primary: #fafafa;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --error: #ef4444;
   }
 
   body {
     background-color: var(--bg);
-    color: #fafafa;
+    color: var(--text-primary);
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
   }
 }
 
@@ -21,22 +54,100 @@
   }
 
   .card-glass {
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--bg-card);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+
+  .card-glass:hover {
+    border-color: var(--border-hover);
+    background: rgba(255, 255, 255, 0.05);
   }
 
   .orb-glow {
     box-shadow: 0 0 30px rgba(249, 115, 22, 0.4), 0 0 60px rgba(249, 115, 22, 0.2);
   }
+
+  .orb-glow-sm {
+    box-shadow: 0 0 15px rgba(249, 115, 22, 0.3), 0 0 30px rgba(249, 115, 22, 0.15);
+  }
+
+  .animate-pulse-slow {
+    animation: pulse-slow 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-slow {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.85; transform: scale(1.02); }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-out;
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.4s ease-out;
+  }
+
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 }
 
 @layer components {
   .btn-orb {
-    @apply px-6 py-3 rounded-full bg-amber-600 text-white font-semibold tracking-wide transition-all duration-300 hover:bg-amber-500 hover:scale-105 hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] active:scale-95;
+    @apply px-6 py-3 rounded-full bg-gradient-to-r from-amber-600 to-amber-500 text-white font-semibold tracking-wide transition-all duration-300 hover:from-amber-500 hover:to-amber-400 hover:scale-105 hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] active:scale-95 focus:outline-none focus:ring-2 focus:ring-amber-500/50;
   }
 
   .btn-outline {
-    @apply px-6 py-3 rounded-full border border-neutral-600 bg-transparent text-neutral-300 font-semibold tracking-wide transition-all duration-300 hover:border-amber-500 hover:text-amber-200 hover:bg-amber-500/10 active:scale-95;
+    @apply px-6 py-3 rounded-full border border-neutral-700 bg-transparent text-neutral-300 font-semibold tracking-wide transition-all duration-300 hover:border-amber-500 hover:text-amber-200 hover:bg-amber-500/10 active:scale-95 focus:outline-none focus:ring-2 focus:ring-amber-500/30;
+  }
+
+  .btn-ghost {
+    @apply px-4 py-2 rounded-lg text-neutral-400 hover:text-neutral-200 hover:bg-white/5 transition-all duration-200 focus:outline-none;
+  }
+
+  .badge {
+    @apply px-2 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-success {
+    @apply badge bg-green-500/20 text-green-300;
+  }
+
+  .badge-warning {
+    @apply badge bg-amber-500/20 text-amber-300;
+  }
+
+  .badge-error {
+    @apply badge bg-red-500/20 text-red-300;
+  }
+
+  .badge-info {
+    @apply badge bg-blue-500/20 text-blue-300;
+  }
+
+  .section-title {
+    @apply font-display font-bold text-2xl text-white tracking-tight;
+  }
+
+  .card-title {
+    @apply font-semibold text-white text-lg;
+  }
+
+  .label {
+    @apply text-xs font-medium text-neutral-400 tracking-wide uppercase;
+  }
+
+  .mono {
+    @apply font-mono text-sm;
   }
 }
