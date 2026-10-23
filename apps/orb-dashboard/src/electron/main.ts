@@ -27,7 +27,7 @@ function createWindow() {
   });
 
   if (app.isPackaged) {
-    win.loadFile(path.join(__dirname, '../renderer/index.html'));
+    win.loadFile(path.join(__dirname, 'renderer', 'index.html'));
   } else {
     win.loadURL('http://localhost:5173');
   }
