@@ -1,11 +1,12 @@
-import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, shell, safeStorage } from 'electron';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
-import { exec } from 'node:child_process';
+import { exec, execSync } from 'node:child_process';
 import os from 'node:os';
 
 const scriptPath = path.join(os.homedir(), 'Library', 'Scripts', 'mount-nas.zsh');
+const credFile = path.join(app.getPath('userData'), 'nas-credentials.enc');
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -21,7 +22,7 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
     },
-    icon: path.join(__dirname, '../assets/orb-icon.png'),
+    icon: path.join(__dirname, '../assets/orb.icns'),
   });
 
   if (app.isPackaged) {
@@ -35,7 +36,7 @@ function createWindow() {
 function collectSystemInfo() {
   const info = {
     timestamp: new Date().toISOString(),
-    hostname: require('node:os').hostname(),
+    hostname: os.hostname(),
     network: getNetworkInfo(),
     launchAgents: getLaunchAgents(),
     ipAddresses: getIPAddresses(),
@@ -45,7 +46,7 @@ function collectSystemInfo() {
 
 function getNetworkInfo() {
   try {
-    const os = require('node:os');
+    // os already imported
     const interfaces = os.networkInterfaces();
     return interfaces;
   } catch (e) { return {}; }
@@ -53,7 +54,7 @@ function getNetworkInfo() {
 
 function getLaunchAgents() {
   try {
-    const { execSync } = require('node:child_process');
+    // execSync from already-imported exec
     const out = execSync('launchctl list 2>/dev/null || echo "N/A"', { encoding: 'utf8', timeout: 5000 });
     return out.trim();
   } catch (e) { return 'Could not collect'; }
@@ -61,7 +62,7 @@ function getLaunchAgents() {
 
 function getIPAddresses() {
   try {
-    const { execSync } = require('node:child_process');
+    // execSync from already-imported exec
     const out = execSync('ifconfig | grep "inet " | awk \'{print $2}\' 2>/dev/null || echo "N/A"', { encoding: 'utf8', timeout: 5000 });
     return out.trim();
   } catch (e) { return 'Could not collect'; }
@@ -75,7 +76,7 @@ ipcMain.handle('open-comm-analytics', async () => {
     await shell.openPath(appPath);
     return { success: true, message: 'Comm Analytics.app launched' };
   } catch (e) {
-    const { execSync } = require('node:child_process');
+    // execSync from already-imported exec
     try {
       execSync('open "/Applications/Comm Analytics.app"');
       return { success: true, message: 'Comm Analytics.app launched via open' };
@@ -107,6 +108,36 @@ ipcMain.handle('run-mount-nas', async () => {
     return { stdout: result.stdout, stderr: result.stderr, success: true };
   } catch (e) {
     return { error: String(e), success: false };
+  }
+});
+
+// NAS Credentials (encrypted with Electron safeStorage)
+ipcMain.handle('save-nas-creds', (event, creds) => {
+  if (!safeStorage.isEncryptionAvailable()) {
+    return { success: false, message: 'Encryption not available' };
+  }
+  try {
+    const encrypted = safeStorage.encryptString(JSON.stringify(creds));
+    fs.writeFileSync(credFile, encrypted);
+    return { success: true, message: 'Credentials saved (encrypted)' };
+  } catch (e) {
+    return { success: false, message: String(e) };
+  }
+});
+
+ipcMain.handle('load-nas-creds', () => {
+  if (!fs.existsSync(credFile)) {
+    return { success: false, message: 'No saved credentials' };
+  }
+  if (!safeStorage.isEncryptionAvailable()) {
+    return { success: false, message: 'Encryption not available' };
+  }
+  try {
+    const encrypted = fs.readFileSync(credFile);
+    const decrypted = safeStorage.decryptString(encrypted);
+    return { success: true, creds: JSON.parse(decrypted) };
+  } catch (e) {
+    return { success: false, message: String(e) };
   }
 });
 
