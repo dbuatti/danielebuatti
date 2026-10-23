@@ -9,7 +9,7 @@
     "build": "tsc && vite build",
     "serve": "vite preview",
     "electron:dev": "concurrently \"npm run build\" \"npm start\"",
-    "electron:build": "tsc && vite build && electron-builder",
+    "electron:build": "tsc && vite build && npx tsc src/electron/main.ts --outDir /tmp/manual-build --module esnext --target es2022 --moduleResolution bundler --esModuleInterop --skipLibCheck --resolveJsonModule && cp /tmp/manual-build/main.js dist-electron/main.js && electron-builder",
     "lint": "eslint src --ext .ts,.tsx"
   },
   "dependencies": {
@@ -42,10 +42,6 @@
   "build": {
     "appId": "com.daniele.orb-dashboard",
     "productName": "The Orb",
-    "directories": {
-      "output": "dist/mac-arm64",
-      "app": "."
-    },
     "files": [
       "dist-electron/**/*",
       "dist/**/*",
@@ -53,7 +49,7 @@
     ],
     "mac": {
       "target": "dmg",
-      "icon": "src/assets/orb-icon.png"
+      "icon": "src/assets/orb.icns"
     }
   }
 }
