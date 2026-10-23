@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, shell, safeStorage } from 'electron';
+import { app, BrowserWindow, ipcMain, shell, safeStorage, webContents } from 'electron';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
@@ -237,6 +237,17 @@ ipcMain.handle('stop-web-server', () => {
 });
 
 app.whenReady().then(() => {
+  // Handle external links - open in default browser
+  app.on('web-contents-created', (event, contents) => {
+    contents.setWindowOpenHandler(({ url }) => {
+      if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('smb://')) {
+        shell.openExternal(url);
+        return { action: 'deny' };
+      }
+      return { action: 'allow' };
+    });
+  });
+
   createWindow();
   // Auto-start web server for remote access
   startWebServer();

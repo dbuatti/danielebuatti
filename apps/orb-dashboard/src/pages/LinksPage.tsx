@@ -26,9 +26,10 @@ const links: LinkItem[] = [
   { label: 'noVNC (Full Desktop)', url: 'https://macbook-pro-6.tailab1fd5.ts.net:8443/vnc.html', description: 'Full desktop access from iPad', category: 'Network', icon: '🖥️' },
 
   // Stremio
+  { label: 'Stremio Server', url: 'https://danieles-mac-mini.tailab1fd5.ts.net:8447', description: 'Stremio streaming server backend (Mini Docker)', category: 'Stremio', icon: '🎬' },
   { label: 'AIOStreams Config', url: 'http://danieles-mac-mini.tailab1fd5.ts.net:3000/stremio/configure', description: 'Configure AIOStreams addons and debrid', category: 'Stremio', icon: '🎬' },
   { label: 'AIOStreams Manifest', url: 'http://danieles-mac-mini.tailab1fd5.ts.net:3000/stremio/manifest.json', description: 'Manifest URL for Stremio client', category: 'Stremio', icon: '🎬' },
-  { label: 'Stremio Web Player', url: 'https://app.strem.io', description: 'Stremio web client (connects to Mini server)', category: 'Stremio', icon: '▶️' },
+  { label: 'Stremio Server', url: 'https://danieles-mac-mini.tailab1fd5.ts.net:8447', description: 'Stremio streaming server backend (Mini Docker)', category: 'Stremio', icon: '🎬' },
 
   // Jitsi
   { label: 'Jitsi Meet', url: 'https://macbook-pro-6.tailab1fd5.ts.net:8443', description: 'Self-hosted video conferencing (Mini)', category: 'Jitsi', icon: '📹' },
@@ -97,12 +98,22 @@ export default function LinksPage() {
                       <p className="text-neutral-500 text-xs truncate">{link.description}</p>
                     </div>
                   </div>
-                  <button
-                    onClick={() => copyUrl(link.url)}
-                    className="btn-ghost text-xs flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    {copied === link.url ? '✓ Copied' : 'Copy'}
-                  </button>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-ghost text-xs"
+                    >
+                      Open
+                    </a>
+                    <button
+                      onClick={() => copyUrl(link.url)}
+                      className="btn-ghost text-xs"
+                    >
+                      {copied === link.url ? '✓ Copied' : 'Copy'}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
