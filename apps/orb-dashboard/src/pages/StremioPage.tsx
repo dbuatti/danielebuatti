@@ -48,8 +48,12 @@ export default function StremioPage() {
 
       {/* Access Points */}
       <div className="card-glass rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-amber-300 mb-3">Access Points</h3>
+        <h3 className="text-lg font-semibold text-amber-300 mb-3">Architecture & Access</h3>
         <div className="space-y-3 text-sm">
+          <div className="flex items-center justify-between p-3 bg-neutral-900/50 rounded-lg">
+            <span className="text-neutral-400">Streaming Server (backend)</span>
+            <span className="text-amber-300 font-mono text-xs">http://100.116.158.22:11470</span>
+          </div>
           <div className="flex items-center justify-between p-3 bg-neutral-900/50 rounded-lg">
             <span className="text-neutral-400">AIOStreams Config Dashboard</span>
             <a href="http://danieles-mac-mini.tailab1fd5.ts.net:3000/stremio/configure" target="_blank" rel="noopener noreferrer" className="text-amber-300 hover:underline text-xs font-mono">
@@ -62,13 +66,8 @@ export default function StremioPage() {
               danieles-mac-mini.tailab1fd5.ts.net:3000/stremio/manifest.json
             </a>
           </div>
-          <div className="flex items-center justify-between p-3 bg-neutral-900/50 rounded-lg">
-            <span className="text-neutral-400">Stremio Web Player</span>
-            <a href="https://app.strem.io/shell-v4.4/?streamingServer=http://100.116.158.22:11470" target="_blank" rel="noopener noreferrer" className="text-amber-300 hover:underline text-xs font-mono">
-              app.strem.io (auto-redirects from Mini's 11470)
-            </a>
-          </div>
         </div>
+        <p className="text-xs text-neutral-500 mt-3">Server = Mini Docker (the pipe). Client = any Stremio app (iPad, MBP, phone) pointing at the server URL. Addon = AIOStreams installed via client's Add-on UI. Web player (app.strem.io) is optional — only shown if you open localhost:11470 in a browser.</p>
       </div>
 
       {/* Security Fix */}
