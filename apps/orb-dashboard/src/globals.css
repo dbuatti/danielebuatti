@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: #09090b;
+    --orb: #f97316;
+    --orb-glow: #fb923c;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: #fafafa;
+  }
+}
+
+@layer utilities {
+  .text-shadow-orange {
+    text-shadow: 0 0 20px rgba(249, 115, 22, 0.6), 0 0 40px rgba(249, 115, 22, 0.3);
+  }
+
+  .card-glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .orb-glow {
+    box-shadow: 0 0 30px rgba(249, 115, 22, 0.4), 0 0 60px rgba(249, 115, 22, 0.2);
+  }
+}
+
+@layer components {
+  .btn-orb {
+    @apply px-6 py-3 rounded-full bg-amber-600 text-white font-semibold tracking-wide transition-all duration-300 hover:bg-amber-500 hover:scale-105 hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] active:scale-95;
+  }
+
+  .btn-outline {
+    @apply px-6 py-3 rounded-full border border-neutral-600 bg-transparent text-neutral-300 font-semibold tracking-wide transition-all duration-300 hover:border-amber-500 hover:text-amber-200 hover:bg-amber-500/10 active:scale-95;
+  }
+}

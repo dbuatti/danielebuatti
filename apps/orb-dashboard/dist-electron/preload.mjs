@@ -1,0 +1,1 @@
+"use strict";const e=require("electron");e.contextBridge.exposeInMainWorld("electronAPI",{getSystemInfo:()=>e.ipcRenderer.invoke("get-system-info"),openCommAnalytics:()=>e.ipcRenderer.invoke("open-comm-analytics"),saveData:n=>e.ipcRenderer.invoke("save-data",n),runMountNas:()=>e.ipcRenderer.invoke("run-mount-nas")});

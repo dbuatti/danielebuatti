@@ -1,0 +1,18 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer glow (soft amber) -->
+  <defs>
+    <radialGradient id="orb-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fb923c" stop-opacity="0.8"/>
+      <stop offset="70%" stop-color="#f97316" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- Glow backdrop -->
+  <circle cx="256" cy="256" r="230" fill="url(#orb-glow)" />
+  <!-- Core orb -->
+  <circle cx="256" cy="256" r="160" fill="#f97316" />
+  <!-- Inner bright ring -->
+  <circle cx="256" cy="256" r="100" fill="#fde68a" />
+  <!-- Core point -->
+  <circle cx="256" cy="256" r="50" fill="#ffffff" />
+</svg>
