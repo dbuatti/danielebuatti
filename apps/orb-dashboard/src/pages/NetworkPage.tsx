@@ -123,20 +123,27 @@ export default function NetworkPage() {
       <div className="card-glass rounded-xl p-6 border-amber-500/20">
         <h3 className="text-lg font-semibold text-amber-300 mb-3">Remote Access (Tailscale)</h3>
         <div className="space-y-3 text-sm">
-          <p className="text-neutral-400">To access The Orb from other devices on your tailnet:</p>
+          <p className="text-neutral-400">The Orb is now accessible as a web app from any device on your tailnet — no VNC needed.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
             <div className="rounded-xl bg-neutral-900/50 border border-white/5 p-4">
               <h4 className="font-medium text-white mb-1">From MBP (local)</h4>
-              <p className="text-xs text-neutral-400 font-mono">Open the app from Dock or /Applications/The Orb.app</p>
+              <p className="text-xs text-neutral-400 font-mono">Open from Dock or /Applications/The Orb.app</p>
             </div>
-            <div className="rounded-xl bg-neutral-900/50 border border-white/5 p-4">
-              <h4 className="font-medium text-white mb-1">From other devices (tailnet)</h4>
-              <p className="text-xs text-neutral-400">The Orb runs as a desktop app on MBP. To access remotely, use Tailscale + VNC (port 5900) or noVNC (port 6080).</p>
-              <p className="text-xs text-amber-300 mt-1 font-mono">https://macbook-pro-6.tailab1fd5.ts.net:8443/vnc.html</p>
+            <div className="rounded-xl bg-neutral-900/50 border border-amber-500/20 p-4">
+              <h4 className="font-medium text-amber-300 mb-1">From any device (tailnet) 🌐</h4>
+              <p className="text-xs text-neutral-400">Web version served on port 8450</p>
+              <a href="https://macbook-pro-6.tailab1fd5.ts.net:8446" target="_blank" rel="noopener noreferrer" className="text-amber-300 hover:underline text-xs font-mono mt-1 block">
+                https://macbook-pro-6.tailab1fd5.ts.net:8446
+              </a>
+              <p className="text-xs text-neutral-500 mt-1">Remember this link! Bookmark it on your phone/iPad.</p>
             </div>
           </div>
           <div className="mt-3 p-3 bg-neutral-900/50 rounded-lg">
-            <p className="text-xs text-neutral-400"><strong className="text-white">Remember:</strong> The Orb is a desktop app — it only runs on the MBP. Remote access requires VNC/noVNC through Tailscale. The URL above is your one-stop access point.</p>
+            <p className="text-xs text-neutral-400"><strong className="text-white">How it works:</strong> The Orb desktop app runs a built-in web server on port 8450. Tailscale Serve exposes it on your tailnet. Any device can access it via the URL above — no VNC, no desktop sharing needed.</p>
+          </div>
+          <div className="flex gap-2 mt-3">
+            <button onClick={async () => { if (window.electronAPI) { const r = await window.electronAPI.startWebServer(); alert(`Web server started on port ${r.port}`); } }} className="btn-ghost text-xs">Start Server</button>
+            <button onClick={async () => { if (window.electronAPI) { await window.electronAPI.stopWebServer(); alert('Web server stopped'); } }} className="btn-ghost text-xs">Stop Server</button>
           </div>
         </div>
       </div>
