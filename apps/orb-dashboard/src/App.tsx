@@ -10,6 +10,10 @@ const IndexPage = lazy(() => import('./pages/IndexPage'));
 const NASPage = lazy(() => import('./pages/NASPage'));
 const NetworkPage = lazy(() => import('./pages/NetworkPage'));
 const LaunchAgentsPage = lazy(() => import('./pages/LaunchAgentsPage'));
+const StremioPage = lazy(() => import('./pages/StremioPage'));
+const CrossOverPage = lazy(() => import('./pages/CrossOverPage'));
+const JitsiPage = lazy(() => import('./pages/JitsiPage'));
+const DevicesPage = lazy(() => import('./pages/DevicesPage'));
 
 function App() {
   return (
@@ -20,6 +24,10 @@ function App() {
           <Route path="nas" element={<NASPage />} />
           <Route path="network" element={<NetworkPage />} />
           <Route path="launch-agents" element={<LaunchAgentsPage />} />
+          <Route path="stremio" element={<StremioPage />} />
+          <Route path="crossover" element={<CrossOverPage />} />
+          <Route path="jitsi" element={<JitsiPage />} />
+          <Route path="devices" element={<DevicesPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

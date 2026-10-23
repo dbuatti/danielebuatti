@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Monitor, Database, Server, Terminal, ExternalLink, RefreshCw, Zap, Film, Gamepad2 } from 'lucide-react';
+import { Monitor, Database, Server, Terminal, ExternalLink, RefreshCw, Zap, Film, Gamepad2, Laptop } from 'lucide-react';
 
 interface SystemInfo {
   timestamp: string;
@@ -188,6 +188,17 @@ export default function IndexPage() {
               <div>
                 <h4 className="font-semibold text-white">CrossOver</h4>
                 <p className="text-neutral-500 text-sm mt-1">Bottles, launchers, sync status, disk usage</p>
+              </div>
+            </div>
+          </Link>
+          <Link to="/devices" className="card-glass rounded-xl p-6 group hover:border-amber-500/30 transition-all duration-300 md:col-span-2">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center flex-shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                <Laptop size={24} className="text-amber-400" strokeWidth={1.5} />
+              </div>
+              <div>
+                <h4 className="font-semibold text-white">Devices</h4>
+                <p className="text-neutral-500 text-sm mt-1">All 5 Tailscale machines with specs, IPs, and status</p>
               </div>
             </div>
           </Link>
