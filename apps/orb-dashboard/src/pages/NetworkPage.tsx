@@ -97,6 +97,50 @@ export default function NetworkPage() {
         </table>
       </div>
 
+      {/* Server Hosting */}
+      <div className="card-glass rounded-xl p-6 border-amber-500/20">
+        <h3 className="text-lg font-semibold text-amber-300 mb-3">Server Hosting (Local Service Accessibility)</h3>
+        <div className="space-y-3 text-sm">
+          <p className="text-neutral-400">The MacBook is the only place the server runs — data lives there (Beeper DB, Messages chat.db, local mail). When the MacBook is asleep or away, the service is unreachable.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+            <div className="rounded-xl bg-neutral-900/50 border border-white/5 p-4">
+              <h4 className="font-medium text-white mb-1">Option 1: Prevent Sleep on Power</h4>
+              <p className="text-xs text-neutral-400">System Settings → Battery → Options → "Prevent automatic sleeping on power adapter when display is off". Keeps it reachable while plugged in.</p>
+              <p className="text-xs text-neutral-500 mt-1">Doesn't help when shut down, unplugged, or away.</p>
+            </div>
+            <div className="rounded-xl bg-neutral-900/50 border border-white/5 p-4">
+              <h4 className="font-medium text-white mb-1">Option 2: Host on Mac Mini (Best)</h4>
+              <p className="text-xs text-neutral-400">Mac Mini is always on, already on tailnet. Needs own copies of data: Messages (iCloud), Beeper (install + sign in), Mail (same accounts), app copy + Full Disk Access + launchd + Tailscale Serve.</p>
+              <p className="text-xs text-neutral-500 mt-1">Address becomes: https://danieles-mac-mini.tailab1fd5.ts.net:8445/</p>
+            </div>
+          </div>
+          <p className="text-xs text-red-300 mt-2">Option 3 (Cloud hosting) — NOT recommended. Private message/email content would sit on someone else's server.</p>
+          <p className="text-xs text-neutral-500 mt-1">Recommendation: Do Option 1 now (takes a minute). Move to Mac Mini if you regularly want access while MacBook is closed or away. Security stays the same: Tailscale only, your login only.</p>
+        </div>
+      </div>
+
+      {/* Remote Access / Tailscale */}
+      <div className="card-glass rounded-xl p-6 border-amber-500/20">
+        <h3 className="text-lg font-semibold text-amber-300 mb-3">Remote Access (Tailscale)</h3>
+        <div className="space-y-3 text-sm">
+          <p className="text-neutral-400">To access The Orb from other devices on your tailnet:</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+            <div className="rounded-xl bg-neutral-900/50 border border-white/5 p-4">
+              <h4 className="font-medium text-white mb-1">From MBP (local)</h4>
+              <p className="text-xs text-neutral-400 font-mono">Open the app from Dock or /Applications/The Orb.app</p>
+            </div>
+            <div className="rounded-xl bg-neutral-900/50 border border-white/5 p-4">
+              <h4 className="font-medium text-white mb-1">From other devices (tailnet)</h4>
+              <p className="text-xs text-neutral-400">The Orb runs as a desktop app on MBP. To access remotely, use Tailscale + VNC (port 5900) or noVNC (port 6080).</p>
+              <p className="text-xs text-amber-300 mt-1 font-mono">https://macbook-pro-6.tailab1fd5.ts.net:8443/vnc.html</p>
+            </div>
+          </div>
+          <div className="mt-3 p-3 bg-neutral-900/50 rounded-lg">
+            <p className="text-xs text-neutral-400"><strong className="text-white">Remember:</strong> The Orb is a desktop app — it only runs on the MBP. Remote access requires VNC/noVNC through Tailscale. The URL above is your one-stop access point.</p>
+          </div>
+        </div>
+      </div>
+
       <button onClick={async () => { if (window.electronAPI) { const { saved } = await window.electronAPI.saveData({ type: 'network-snapshot' }); alert(`Saved to ${saved}`); } }} className="btn-orb w-full">Save Network Snapshot</button>
     </div>
   );
