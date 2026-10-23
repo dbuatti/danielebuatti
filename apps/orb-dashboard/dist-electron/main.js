@@ -1,102 +1,266 @@
-import { ipcMain as c, shell as p, app as o, BrowserWindow as u } from "electron";
-import s from "node:path";
-import r from "node:fs";
-import { exec as h } from "node:child_process";
-import f from "node:os";
-const y = s.join(f.homedir(), "Library", "Scripts", "mount-nas.zsh");
-function a() {
-  const e = new u({
-    width: 900,
-    height: 700,
-    minWidth: 600,
-    minHeight: 400,
-    title: "The Orb",
-    titleBarStyle: "hiddenInset",
-    trafficLightPosition: { x: 10, y: 10 },
-    webPreferences: {
-      preload: s.join(__dirname, "preload.js"),
-      contextIsolation: !0,
-      nodeIntegration: !1
-    },
-    icon: s.join(__dirname, "../assets/orb-icon.png")
-  });
-  o.isPackaged ? e.loadFile(s.join(__dirname, "../renderer/index.html")) : e.loadURL("http://localhost:5173"), o.isPackaged || e.webContents.openDevTools({ mode: "detach" });
-}
-function l() {
-  return {
-    timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-    hostname: require("node:os").hostname(),
-    network: g(),
-    launchAgents: w(),
-    ipAddresses: S()
-  };
-}
-function g() {
-  try {
-    return require("node:os").networkInterfaces();
-  } catch {
-    return {};
-  }
-}
-function w() {
-  try {
-    const { execSync: e } = require("node:child_process");
-    return e('launchctl list 2>/dev/null || echo "N/A"', { encoding: "utf8", timeout: 5e3 }).trim();
-  } catch {
-    return "Could not collect";
-  }
-}
-function S() {
-  try {
-    const { execSync: e } = require("node:child_process");
-    return e(`ifconfig | grep "inet " | awk '{print $2}' 2>/dev/null || echo "N/A"`, { encoding: "utf8", timeout: 5e3 }).trim();
-  } catch {
-    return "Could not collect";
-  }
-}
-c.handle("get-system-info", () => l());
-c.handle("open-comm-analytics", async () => {
-  const e = "/Applications/Comm Analytics.app";
-  try {
-    return await p.openPath(e), { success: !0, message: "Comm Analytics.app launched" };
-  } catch {
-    const { execSync: n } = require("node:child_process");
-    try {
-      return n('open "/Applications/Comm Analytics.app"'), { success: !0, message: "Comm Analytics.app launched via open" };
-    } catch {
-      return { success: !1, message: "Could not open Comm Analytics.app" };
-    }
-  }
-});
-c.handle("save-data", (e, t) => {
-  const n = s.join(o.getPath("userData"), "data");
-  r.existsSync(n) || r.mkdirSync(n, { recursive: !0 });
-  const i = s.join(n, `snapshot-${(/* @__PURE__ */ new Date()).toISOString().split("T")[0]}.json`);
-  return r.writeFileSync(i, JSON.stringify(t, null, 2)), { saved: i };
-});
-c.handle("run-mount-nas", async () => {
-  try {
-    const e = await new Promise((t, n) => {
-      h(y, (i, d, m) => {
-        i ? n(i) : t({ stdout: d || "", stderr: m || "", success: !0 });
-      });
+import { app, BrowserWindow, ipcMain, shell, safeStorage } from 'electron';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import fs from 'node:fs';
+import { exec, execSync } from 'node:child_process';
+import os from 'node:os';
+import http from 'node:http';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const scriptPath = path.join(os.homedir(), 'Library', 'Scripts', 'mount-nas.zsh');
+const credFile = path.join(app.getPath('userData'), 'nas-credentials.enc');
+const WEB_PORT = 8450;
+// --- Web Server for remote access via Tailscale ---
+let webServer = null;
+function startWebServer() {
+    if (webServer)
+        return;
+    const rendererDir = path.join(__dirname, 'renderer');
+    webServer = http.createServer((req, res) => {
+        // API endpoints
+        if (req.url === '/api/system-info') {
+            const info = collectSystemInfo();
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            res.end(JSON.stringify(info));
+            return;
+        }
+        if (req.url === '/api/nas-creds' && req.method === 'GET') {
+            if (!fs.existsSync(credFile)) {
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: false, message: 'No saved credentials' }));
+                return;
+            }
+            if (!safeStorage.isEncryptionAvailable()) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: false, message: 'Encryption not available' }));
+                return;
+            }
+            try {
+                const encrypted = fs.readFileSync(credFile);
+                const decrypted = safeStorage.decryptString(encrypted);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: true, creds: JSON.parse(decrypted) }));
+            }
+            catch (e) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: false, message: String(e) }));
+            }
+            return;
+        }
+        // Static files
+        let filePath = req.url === '/' ? '/index.html' : req.url || '/index.html';
+        filePath = path.join(rendererDir, filePath.split('?')[0]);
+        const ext = path.extname(filePath);
+        const mimeTypes = {
+            '.html': 'text/html',
+            '.js': 'application/javascript',
+            '.css': 'text/css',
+            '.json': 'application/json',
+            '.png': 'image/png',
+            '.jpg': 'image/jpeg',
+            '.svg': 'image/svg+xml',
+            '.ico': 'image/x-icon',
+        };
+        const contentType = mimeTypes[ext] || 'application/octet-stream';
+        fs.readFile(filePath, (err, data) => {
+            if (err) {
+                // SPA fallback
+                fs.readFile(path.join(rendererDir, 'index.html'), (err2, data2) => {
+                    if (err2) {
+                        res.writeHead(404);
+                        res.end('Not found');
+                        return;
+                    }
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(data2);
+                });
+                return;
+            }
+            res.writeHead(200, { 'Content-Type': contentType });
+            res.end(data);
+        });
     });
-    return { stdout: e.stdout, stderr: e.stderr, success: !0 };
-  } catch (e) {
-    return { error: String(e), success: !1 };
-  }
+    webServer.listen(WEB_PORT, '0.0.0.0', () => {
+        console.log(`Web server running on port ${WEB_PORT}`);
+    });
+}
+function stopWebServer() {
+    if (webServer) {
+        webServer.close();
+        webServer = null;
+    }
+}
+function createWindow() {
+    const win = new BrowserWindow({
+        width: 900,
+        height: 700,
+        minWidth: 600,
+        minHeight: 400,
+        title: 'The Orb',
+        titleBarStyle: 'hiddenInset',
+        trafficLightPosition: { x: 10, y: 10 },
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.mjs'),
+            contextIsolation: true,
+            nodeIntegration: false,
+        },
+    });
+    if (app.isPackaged) {
+        win.loadFile(path.join(__dirname, 'renderer', 'index.html'));
+    }
+    else {
+        win.loadURL('http://localhost:5173');
+    }
+    if (!app.isPackaged)
+        win.webContents.openDevTools({ mode: 'detach' });
+}
+function collectSystemInfo() {
+    const info = {
+        timestamp: new Date().toISOString(),
+        hostname: os.hostname(),
+        network: getNetworkInfo(),
+        launchAgents: getLaunchAgents(),
+        ipAddresses: getIPAddresses(),
+    };
+    return info;
+}
+function getNetworkInfo() {
+    try {
+        return os.networkInterfaces();
+    }
+    catch (e) {
+        return {};
+    }
+}
+function getLaunchAgents() {
+    try {
+        const out = execSync('launchctl list 2>/dev/null || echo "N/A"', { encoding: 'utf8', timeout: 5000 });
+        return out.trim();
+    }
+    catch (e) {
+        return 'Could not collect';
+    }
+}
+function getIPAddresses() {
+    try {
+        const out = execSync('ifconfig | grep "inet " | awk \'{print $2}\' 2>/dev/null || echo "N/A"', { encoding: 'utf8', timeout: 5000 });
+        return out.trim();
+    }
+    catch (e) {
+        return 'Could not collect';
+    }
+}
+ipcMain.handle('get-system-info', () => collectSystemInfo());
+ipcMain.handle('open-comm-analytics', async () => {
+    const appPath = '/Applications/Comm Analytics.app';
+    try {
+        await shell.openPath(appPath);
+        return { success: true, message: 'Comm Analytics.app launched' };
+    }
+    catch (e) {
+        try {
+            execSync('open "/Applications/Comm Analytics.app"');
+            return { success: true, message: 'Comm Analytics.app launched via open' };
+        }
+        catch (e2) {
+            return { success: false, message: 'Could not open Comm Analytics.app' };
+        }
+    }
 });
-o.whenReady().then(() => {
-  a(), o.on("activate", () => {
-    u.getAllWindows().length === 0 && a();
-  });
+ipcMain.handle('save-data', (event, payload) => {
+    const dataDir = path.join(app.getPath('userData'), 'data');
+    if (!fs.existsSync(dataDir))
+        fs.mkdirSync(dataDir, { recursive: true });
+    const file = path.join(dataDir, `snapshot-${new Date().toISOString().split('T')[0]}.json`);
+    fs.writeFileSync(file, JSON.stringify(payload, null, 2));
+    return { saved: file };
 });
-o.on("window-all-closed", () => {
-  process.platform !== "darwin" && o.quit();
+ipcMain.handle('run-mount-nas', async () => {
+    try {
+        const result = await new Promise((resolve, reject) => {
+            exec(scriptPath, (error, outStdout, outStderr) => {
+                if (error) {
+                    reject(error);
+                }
+                else {
+                    resolve({ stdout: outStdout || '', stderr: outStderr || '', success: true });
+                }
+            });
+        });
+        return { stdout: result.stdout, stderr: result.stderr, success: true };
+    }
+    catch (e) {
+        return { error: String(e), success: false };
+    }
 });
-o.on("before-quit", () => {
-  const e = l(), t = s.join(o.getPath("userData"), "data");
-  r.existsSync(t) || r.mkdirSync(t, { recursive: !0 });
-  const n = s.join(t, `backup-${(/* @__PURE__ */ new Date()).toISOString()}.json`);
-  r.writeFileSync(n, JSON.stringify(e, null, 2));
+ipcMain.handle('save-nas-creds', (event, creds) => {
+    if (!safeStorage.isEncryptionAvailable()) {
+        return { success: false, message: 'Encryption not available' };
+    }
+    try {
+        const encrypted = safeStorage.encryptString(JSON.stringify(creds));
+        fs.writeFileSync(credFile, encrypted);
+        return { success: true, message: 'Credentials saved (encrypted)' };
+    }
+    catch (e) {
+        return { success: false, message: String(e) };
+    }
+});
+ipcMain.handle('load-nas-creds', () => {
+    if (!fs.existsSync(credFile)) {
+        return { success: false, message: 'No saved credentials' };
+    }
+    if (!safeStorage.isEncryptionAvailable()) {
+        return { success: false, message: 'Encryption not available' };
+    }
+    try {
+        const encrypted = fs.readFileSync(credFile);
+        const decrypted = safeStorage.decryptString(encrypted);
+        return { success: true, creds: JSON.parse(decrypted) };
+    }
+    catch (e) {
+        return { success: false, message: String(e) };
+    }
+});
+// Web server IPC
+ipcMain.handle('start-web-server', () => {
+    startWebServer();
+    return { port: WEB_PORT, url: `http://0.0.0.0:${WEB_PORT}` };
+});
+ipcMain.handle('stop-web-server', () => {
+    stopWebServer();
+    return { stopped: true };
+});
+app.whenReady().then(() => {
+    // Handle external links - open in default browser
+    app.on('web-contents-created', (event, contents) => {
+        contents.setWindowOpenHandler(({ url }) => {
+            if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('smb://')) {
+                shell.openExternal(url);
+                return { action: 'deny' };
+            }
+            return { action: 'allow' };
+        });
+    });
+    createWindow();
+    console.log('Window created');
+    // Auto-start web server for remote access
+    startWebServer();
+    console.log('Web server started');
+    app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0)
+            createWindow();
+    });
+});
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin')
+        app.quit();
+});
+app.on('before-quit', () => {
+    stopWebServer();
+    const info = collectSystemInfo();
+    const dataDir = path.join(app.getPath('userData'), 'data');
+    if (!fs.existsSync(dataDir))
+        fs.mkdirSync(dataDir, { recursive: true });
+    const file = path.join(dataDir, `backup-${new Date().toISOString()}.json`);
+    fs.writeFileSync(file, JSON.stringify(info, null, 2));
 });

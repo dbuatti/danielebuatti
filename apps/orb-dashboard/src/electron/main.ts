@@ -249,8 +249,10 @@ app.whenReady().then(() => {
   });
 
   createWindow();
+  console.log('Window created');
   // Auto-start web server for remote access
   startWebServer();
+  console.log('Web server started');
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
