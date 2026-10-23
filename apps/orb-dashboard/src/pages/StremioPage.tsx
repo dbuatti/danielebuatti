@@ -52,7 +52,9 @@ export default function StremioPage() {
         <div className="space-y-3 text-sm">
           <div className="flex items-center justify-between p-3 bg-neutral-900/50 rounded-lg">
             <span className="text-neutral-400">Streaming Server (backend)</span>
-            <span className="text-amber-300 font-mono text-xs">http://100.116.158.22:11470</span>
+            <a href="https://danieles-mac-mini.tailab1fd5.ts.net:8447" target="_blank" rel="noopener noreferrer" className="text-amber-300 hover:underline text-xs font-mono">
+              danieles-mac-mini.tailab1fd5.ts.net:8447
+            </a>
           </div>
           <div className="flex items-center justify-between p-3 bg-neutral-900/50 rounded-lg">
             <span className="text-neutral-400">AIOStreams Config Dashboard</span>
