@@ -5,6 +5,8 @@ import fs from 'node:fs';
 import { exec, execSync } from 'node:child_process';
 import os from 'node:os';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 const scriptPath = path.join(os.homedir(), 'Library', 'Scripts', 'mount-nas.zsh');
 const credFile = path.join(app.getPath('userData'), 'nas-credentials.enc');
 
