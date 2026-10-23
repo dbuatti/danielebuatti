@@ -10,8 +10,9 @@ interface LinkItem {
 
 const links: LinkItem[] = [
   // The Orb
-  { label: 'The Orb (Web)', url: 'https://macbook-pro-6.tailab1fd5.ts.net:8446', description: 'Central dashboard — accessible from any device on tailnet', category: 'The Orb', icon: '🔮' },
-  { label: 'The Orb (Local)', url: 'http://localhost:8450', description: 'Local web server on MBP', category: 'The Orb', icon: '🔮' },
+  { label: 'The Orb (MBP Web)', url: 'https://macbook-pro-6.tailab1fd5.ts.net:8446', description: 'Central dashboard — accessible from any device on tailnet', category: 'The Orb', icon: '🔮' },
+  { label: 'The Orb (Mini Web)', url: 'https://danieles-mac-mini.tailab1fd5.ts.net:8449', description: 'Backup instance on Mac mini — accessible from any device on tailnet', category: 'The Orb', icon: '🔮' },
+  { label: 'The Orb (MBP Local)', url: 'http://localhost:8450', description: 'Local web server on MBP', category: 'The Orb', icon: '🔮' },
 
   // Comm Analytics
   { label: 'Comm Analytics', url: 'https://comm-analytics.app', description: 'Local analytics application', category: 'Analytics', icon: '📊' },

@@ -135,7 +135,15 @@ export default function NetworkPage() {
               <a href="https://macbook-pro-6.tailab1fd5.ts.net:8446" target="_blank" rel="noopener noreferrer" className="text-amber-300 hover:underline text-xs font-mono mt-1 block">
                 https://macbook-pro-6.tailab1fd5.ts.net:8446
               </a>
-              <p className="text-xs text-neutral-500 mt-1">Remember this link! Bookmark it on your phone/iPad.</p>
+              <p className="text-xs text-neutral-500 mt-1">MBP instance (primary)</p>
+            </div>
+            <div className="rounded-xl bg-neutral-900/50 border border-green-500/20 p-4">
+              <h4 className="font-medium text-green-300 mb-1">Backup instance (Mac Mini) 🌐</h4>
+              <p className="text-xs text-neutral-400">Web version served on port 8450</p>
+              <a href="https://danieles-mac-mini.tailab1fd5.ts.net:8449" target="_blank" rel="noopener noreferrer" className="text-green-300 hover:underline text-xs font-mono mt-1 block">
+                https://danieles-mac-mini.tailab1fd5.ts.net:8449
+              </a>
+              <p className="text-xs text-neutral-500 mt-1">Mac Mini instance (backup/failover)</p>
             </div>
           </div>
           <div className="mt-3 p-3 bg-neutral-900/50 rounded-lg">
