@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import type { Plugin } from "vite";
-import { SITE_URL, pageMeta } from "../src/seo/pages";
+import { SITE_URL, pageMeta, type PageMeta } from "../src/seo/pages";
 
 const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -15,7 +15,7 @@ const REPLACED_TAGS = [
   /\s*<link\s+rel="canonical"[^>]*>/gi,
 ];
 
-function headFor(route: string, meta: { title: string; description: string; image: string }) {
+function headFor(route: string, meta: PageMeta) {
   const url = `${SITE_URL}${route}`;
   const image = `${SITE_URL}${meta.image}`;
   const t = escapeHtml(meta.title);
@@ -31,8 +31,8 @@ function headFor(route: string, meta: { title: string; description: string; imag
     <meta property="og:title" content="${t}" />
     <meta property="og:description" content="${d}" />
     <meta property="og:image" content="${image}" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image:width" content="${meta.imageWidth ?? 1200}" />
+    <meta property="og:image:height" content="${meta.imageHeight ?? 630}" />
     <meta property="twitter:url" content="${url}" />
     <meta property="twitter:title" content="${t}" />
     <meta property="twitter:description" content="${d}" />
