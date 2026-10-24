@@ -156,6 +156,105 @@ export default function NetworkPage() {
         </div>
       </div>
 
+      {/* Comm Analytics Server */}
+      <div className="card-glass rounded-xl p-6">
+        <h3 className="text-lg font-semibold text-amber-300 mb-3">Comm Analytics Server (Mac Mini)</h3>
+        <div className="space-y-3 text-sm">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="rounded-xl bg-neutral-900/50 border border-white/5 p-4">
+              <h4 className="font-medium text-white mb-1">Host</h4>
+              <p className="text-xs text-neutral-400">Mac mini, ~/dyad-apps/comm-analytics</p>
+              <p className="text-xs text-neutral-500 mt-1">Python 3.11, no framework</p>
+            </div>
+            <div className="rounded-xl bg-neutral-900/50 border border-white/5 p-4">
+              <h4 className="font-medium text-white mb-1">Server</h4>
+              <p className="text-xs text-neutral-400">src/serve.py (built-in Python web server)</p>
+              <p className="text-xs text-neutral-500 mt-1">Background service: com.commanalytics.serve</p>
+            </div>
+            <div className="rounded-xl bg-neutral-900/50 border border-white/5 p-4">
+              <h4 className="font-medium text-white mb-1">Listen</h4>
+              <p className="text-xs text-neutral-400">127.0.0.1:8799 (local only)</p>
+              <p className="text-xs text-neutral-500 mt-1">Remote via Tailscale Serve: port 8445</p>
+            </div>
+            <div className="rounded-xl bg-neutral-900/50 border border-white/5 p-4">
+              <h4 className="font-medium text-white mb-1">Config</h4>
+              <p className="text-xs text-neutral-400">COMM_HOST=0.0.0.0, COMM_TOKEN=local</p>
+              <p className="text-xs text-neutral-500 mt-1">Starts at login, restarts on crash</p>
+            </div>
+          </div>
+
+          <div className="mt-3">
+            <h4 className="font-medium text-white mb-2">Data Sources (read-only)</h4>
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-white/10 text-neutral-400">
+                  <th className="text-left py-1">Source</th>
+                  <th className="text-left py-1">Reader</th>
+                  <th className="text-left py-1">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-white/5"><td className="py-1 text-white">Beeper (WhatsApp, IG, Messenger, LinkedIn, Discord)</td><td className="py-1 text-neutral-400">extract.py</td><td className="py-1 text-neutral-500">Beeper local DB on mini</td></tr>
+                <tr className="border-b border-white/5"><td className="py-1 text-white">iMessage / SMS</td><td className="py-1 text-neutral-400">imessage_native.py</td><td className="py-1 text-neutral-500">~/Library/Messages/chat.db (needs Full Disk Access)</td></tr>
+                <tr className="border-b border-white/5"><td className="py-1 text-white">Email</td><td className="py-1 text-neutral-400">email_store.py, extract_gmail.py</td><td className="py-1 text-neutral-500">Apple Mail local store + optional Gmail</td></tr>
+                <tr className="border-b border-white/5"><td className="py-1 text-white">Calendar</td><td className="py-1 text-neutral-400">calendar_read.py</td><td className="py-1 text-neutral-500">Apple Calendar (date clash check)</td></tr>
+              </tbody>
+            </table>
+            <p className="text-xs text-neutral-500 mt-2">Merged into data/messages.jsonl (~69k messages)</p>
+          </div>
+
+          <div className="mt-3">
+            <h4 className="font-medium text-white mb-2">Processing Pipeline (Sync, via make_report.sh)</h4>
+            <ol className="text-xs text-neutral-400 space-y-1 list-decimal list-inside">
+              <li><strong className="text-white">Extract:</strong> Read each source, merge new messages, dedup</li>
+              <li><strong className="text-white">Classify:</strong> analyze.py (reply needed, urgency), email_classify.py (Needs you / Not sure / Receipts / Newsletters / Spam), booking_decision.py + calendar_check.py (proposed dates vs calendar)</li>
+              <li><strong className="text-white">Drafts:</strong> drafts.py writes suggested replies via local Ollama (no cloud)</li>
+              <li><strong className="text-white">Media:</strong> media_extract.py finds links/recommendations to data/media.json</li>
+              <li><strong className="text-white">Build:</strong> to_html.py produces dashboard.html (single page, no frameworks)</li>
+            </ol>
+          </div>
+
+          <div className="mt-3">
+            <h4 className="font-medium text-white mb-2">Dashboard Views</h4>
+            <p className="text-xs text-neutral-400">Today, Inbox, Email, Follow-ups, Media, Calendar, People, Insights, Settings + side panel (Decide today, Needs a reply, Coming up)</p>
+            <p className="text-xs text-neutral-500 mt-1">Data from /api/app-data; Media from /api/media. Saves to data/: preferences.json, tasks.json, email_preferences.json, media_state.json</p>
+          </div>
+
+          <div className="mt-3">
+            <h4 className="font-medium text-white mb-2">Access Points</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+              <div className="rounded-lg bg-neutral-900/50 p-3">
+                <p className="text-xs text-neutral-400">Direct (Mini local)</p>
+                <a href="http://127.0.0.1:8799/" target="_blank" rel="noopener noreferrer" className="text-amber-300 hover:underline text-xs font-mono">http://127.0.0.1:8799/</a>
+                <p className="text-xs text-neutral-500">No auth</p>
+              </div>
+              <div className="rounded-lg bg-neutral-900/50 p-3">
+                <p className="text-xs text-neutral-400">Tailscale IP</p>
+                <a href="http://100.116.158.22:8799/?token=local" target="_blank" rel="noopener noreferrer" className="text-amber-300 hover:underline text-xs font-mono">http://100.116.158.22:8799/?token=local</a>
+                <p className="text-xs text-neutral-500">Requires token</p>
+              </div>
+              <div className="rounded-lg bg-neutral-900/50 p-3">
+                <p className="text-xs text-neutral-400">Tailscale Serve</p>
+                <a href="https://danieles-mac-mini.tailab1fd5.ts.net:8445/" target="_blank" rel="noopener noreferrer" className="text-amber-300 hover:underline text-xs font-mono">https://danieles-mac-mini.tailab1fd5.ts.net:8445/</a>
+                <p className="text-xs text-neutral-500">Tailnet only</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-3 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+            <h4 className="font-medium text-amber-300 mb-1 text-xs">Things to be aware of</h4>
+            <ul className="text-xs text-neutral-400 space-y-1 list-disc list-inside">
+              <li>Two copies: MacBook and Mini don't sync - changes must be copied manually</li>
+              <li>Not in git on the Mini: folder isn't tracked by git (MBP repo has one commit)</li>
+              <li>Full Disk Access still needed for /usr/local/bin/python3 on Mini (Messages + Mail sync)</li>
+              <li>Replying: "Open chat" opens Beeper/Messages on the Mini screen - only works when at the Mini</li>
+              <li>Some marks (e.g. "Mark handled") are per-device (browser localStorage)</li>
+              <li>Outside connections: media lookups (YouTube/Spotify/Vimeo/SoundCloud), thumbnail images, optional Gmail</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       <button onClick={async () => { if (window.electronAPI) { const { saved } = await window.electronAPI.saveData({ type: 'network-snapshot' }); alert(`Saved to ${saved}`); } }} className="btn-orb w-full">Save Network Snapshot</button>
     </div>
   );
