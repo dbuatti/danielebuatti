@@ -16,7 +16,6 @@ const links: LinkItem[] = [
 
   // Comm Analytics
   { label: 'Comm Analytics (Definitive)', url: 'https://macbook-pro-6.tailab1fd5.ts.net:8445/', description: 'Comm Analytics server — definitive link, accessible from all devices', category: 'Analytics', icon: '📊' },
-  { label: 'Comm Analytics (MBP)', url: 'https://comm-analytics.app', description: 'Local analytics application on MBP', category: 'Analytics', icon: '📊' },
   { label: 'Comm Analytics (Mini - Direct)', url: 'http://127.0.0.1:8799/', description: 'Direct from Mac Mini (local, no auth)', category: 'Analytics', icon: '📊' },
   { label: 'Comm Analytics (Mini - Tailnet)', url: 'http://100.116.158.22:8799/?token=local', description: 'Via Tailscale IP (requires token, works with cookie)', category: 'Analytics', icon: '📊' },
   { label: 'Comm Analytics (Mini - Tailscale Serve)', url: 'https://danieles-mac-mini.tailab1fd5.ts.net:8445/', description: 'Via Tailscale Serve (port 8445)', category: 'Analytics', icon: '📊' },
