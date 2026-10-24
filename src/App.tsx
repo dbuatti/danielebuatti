@@ -36,6 +36,7 @@ const ArrangementDetailsPage = lazy(() => import('./pages/ArrangementDetailsPage
 const MediaPage = lazy(() => import('./pages/MediaPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
+const PianoByHeartPage = lazy(() => import('./pages/PianoByHeartPage'));
 
 // Admin Pages
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'));
@@ -89,6 +90,8 @@ function App() {
               <Route path="store/success" element={<StoreSuccessPage />} />
               <Route path="store/arrangements/:slug" element={<ArrangementDetailsPage />} />
               <Route path="media" element={<MediaPage />} />
+              <Route path="pianobyheart" element={<PianoByHeartPage />} />
+              <Route path="piano-by-heart" element={<Navigate to="/pianobyheart" replace />} />
               <Route path="privacy" element={<PrivacyPage />} />
               <Route path="terms" element={<TermsPage />} />
 

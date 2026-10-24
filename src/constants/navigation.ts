@@ -47,6 +47,7 @@ export const serviceLinks: ServiceLink[] = [
 
 // Top-level links shown beside the "Work with me" menu.
 export const navLinks: NavLink[] = [
+  { name: "Piano by Heart", href: "/pianobyheart" },
   { name: "Store", href: "/store" },
   { name: "Resources", href: "/projects-resources" },
   { name: "About", href: "/about" },
@@ -54,6 +55,7 @@ export const navLinks: NavLink[] = [
 ];
 
 export const exploreLinks: NavLink[] = [
+  { name: "Piano by Heart", href: "/pianobyheart" },
   { name: "Sheet Music Store", href: "/store" },
   { name: "Projects & Resources", href: "/projects-resources" },
   { name: "Gift Cards", href: "/gift-cards" },
