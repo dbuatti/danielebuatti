@@ -15,14 +15,17 @@ const links: LinkItem[] = [
   { label: 'The Orb (MBP Local)', url: 'http://localhost:8450', description: 'Local web server on MBP', category: 'The Orb', icon: '🔮' },
 
   // Comm Analytics
-  { label: 'Comm Analytics', url: 'https://comm-analytics.app', description: 'Local analytics application', category: 'Analytics', icon: '📊' },
+  { label: 'Comm Analytics (MBP)', url: 'https://comm-analytics.app', description: 'Local analytics application on MBP', category: 'Analytics', icon: '📊' },
+  { label: 'Comm Analytics (Mini - Direct)', url: 'http://127.0.0.1:8799/', description: 'Direct from Mac Mini (local, no auth)', category: 'Analytics', icon: '📊' },
+  { label: 'Comm Analytics (Mini - Tailnet)', url: 'http://100.116.158.22:8799/?token=local', description: 'Via Tailscale IP (requires token, works with cookie)', category: 'Analytics', icon: '📊' },
+  { label: 'Comm Analytics (Mini - Tailscale Serve)', url: 'https://danieles-mac-mini.tailab1fd5.ts.net:8445/', description: 'Via Tailscale Serve (port 8445)', category: 'Analytics', icon: '📊' },
 
   // NAS
   { label: 'NAS (Moon Prism)', url: 'smb://100.124.90.53/Moon%20Prism', description: 'Crystal Tokyo NAS — Tailscale IP 100.124.90.53', category: 'NAS', icon: '💾' },
 
-  // Network / Infrastructure
-  { label: 'Tailscale Admin', url: 'https://login.tailscale.com/admin/machines', description: 'Manage tailnet machines', category: 'Network', icon: '🌐' },
-  { label: 'OpenCode Web UI', url: 'https://macbook-pro-6.tailab1fd5.ts.net:8444', description: 'AI coding agent — native HTML web UI', category: 'Network', icon: '🤖' },
+  // OpenCode
+  { label: 'OpenCode (MBP)', url: 'https://macbook-pro-6.tailab1fd5.ts.net:8444', description: 'AI coding agent — native HTML web UI (MBP)', category: 'OpenCode', icon: '🤖' },
+  { label: 'OpenCode (Mini)', url: 'http://danieles-mac-mini.tailab1fd5.ts.net:4096', description: 'AI coding agent on Mac mini (if running)', category: 'OpenCode', icon: '🤖' },
   { label: 'OpenCode Landing', url: 'https://macbook-pro-6.tailab1fd5.ts.net:8443', description: 'Session list + links to chat and VNC', category: 'Network', icon: '🏠' },
   { label: 'noVNC (Full Desktop)', url: 'https://macbook-pro-6.tailab1fd5.ts.net:8443/vnc.html', description: 'Full desktop access from iPad', category: 'Network', icon: '🖥️' },
 
