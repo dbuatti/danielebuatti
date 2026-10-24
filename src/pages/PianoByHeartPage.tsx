@@ -116,8 +116,8 @@ const Hero = ({ evening }: { evening: PianoByHeartEvening | null }) => (
       src={pianoByHeartArtwork.src}
       alt={pianoByHeartArtwork.alt}
       className="absolute inset-0 -z-20 h-full w-full object-cover object-[70%_center]"
-      width={2400}
-      height={1350}
+      width={2000}
+      height={1125}
       priority
     />
     {/* Darkens the left side (and all of it on phones) so the type stays legible. */}

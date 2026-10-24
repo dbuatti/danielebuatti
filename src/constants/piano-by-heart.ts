@@ -60,7 +60,7 @@ export const pianoByHeartLinks = {
   enquiry: `mailto:info@danielebuatti.com?subject=${encodeURIComponent("Piano by Heart — next evening")}`,
 };
 
-// Text-free background artwork for the hero (wide, about 2400x1350).
+// Text-free background artwork for the hero (2000x1125).
 export const pianoByHeartArtwork = {
   src: "/piano-by-heart-bg.jpg",
   alt: "Piano by Heart — abstract indigo and pink artwork",
