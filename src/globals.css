@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Piano by Heart's display face (commercial, self-hosted). Drop the licensed
+   web files into public/fonts/; until then font-seasons falls back to Fraunces. */
+@font-face {
+  font-family: "The Seasons";
+  src: url("/fonts/the-seasons.woff2") format("woff2"), url("/fonts/the-seasons.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   :root {
     /* Editorial palette: warm ivory paper, deep navy ink, magenta used sparingly. */

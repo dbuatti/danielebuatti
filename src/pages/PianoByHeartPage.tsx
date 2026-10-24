@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import "@fontsource-variable/dm-sans/index.css";
 import { ArrowDown, ArrowUpRight, Mail } from "lucide-react";
 import { SectionIntro } from "@/components/editorial";
 import DynamicImage from "@/components/DynamicImage";
@@ -126,12 +127,12 @@ const Hero = ({ evening }: { evening: PianoByHeartEvening | null }) => (
     />
     <div className="container flex min-h-[min(88vh,820px)] flex-col justify-center py-24 lg:py-32">
       <div className="max-w-xl">
-        <h1 className="text-[64px] leading-[0.95] sm:text-8xl lg:text-[120px] font-light tracking-[-0.01em] text-brand-light">
+        <h1 className="font-seasons text-[64px] leading-[0.95] sm:text-8xl lg:text-[120px] font-light tracking-[-0.01em] text-brand-light">
           Piano
           <br />
           by Heart
         </h1>
-        <p className="mt-6 text-lg md:text-xl leading-relaxed text-brand-light/90">
+        <p className="mt-6 font-dm-sans text-lg md:text-xl leading-relaxed text-brand-light/90">
           An hour of improvised piano to rest, move and sound.
         </p>
         {evening && (
