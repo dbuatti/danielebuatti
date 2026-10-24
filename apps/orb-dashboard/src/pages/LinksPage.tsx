@@ -15,6 +15,7 @@ const links: LinkItem[] = [
   { label: 'The Orb (MBP Local)', url: 'http://localhost:8450', description: 'Local web server on MBP', category: 'The Orb', icon: '🔮' },
 
   // Comm Analytics
+  { label: 'Comm Analytics (Definitive)', url: 'https://macbook-pro-6.tailab1fd5.ts.net:8445/', description: 'Comm Analytics server — definitive link, accessible from all devices', category: 'Analytics', icon: '📊' },
   { label: 'Comm Analytics (MBP)', url: 'https://comm-analytics.app', description: 'Local analytics application on MBP', category: 'Analytics', icon: '📊' },
   { label: 'Comm Analytics (Mini - Direct)', url: 'http://127.0.0.1:8799/', description: 'Direct from Mac Mini (local, no auth)', category: 'Analytics', icon: '📊' },
   { label: 'Comm Analytics (Mini - Tailnet)', url: 'http://100.116.158.22:8799/?token=local', description: 'Via Tailscale IP (requires token, works with cookie)', category: 'Analytics', icon: '📊' },
