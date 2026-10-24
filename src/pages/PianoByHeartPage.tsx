@@ -127,7 +127,7 @@ const Hero = ({ evening }: { evening: PianoByHeartEvening | null }) => (
     />
     <div className="container flex min-h-[min(88vh,820px)] flex-col justify-center py-24 lg:py-32">
       <div className="max-w-xl">
-        <h1 className="font-seasons text-[64px] leading-[0.95] sm:text-8xl lg:text-[120px] font-light tracking-[-0.01em] text-brand-light">
+        <h1 className="font-seasons text-[64px] leading-[0.95] sm:text-8xl lg:text-[120px] font-normal tracking-[-0.01em] text-brand-light">
           Piano
           <br />
           by Heart
