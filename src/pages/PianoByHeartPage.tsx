@@ -2,11 +2,13 @@
 
 import React from "react";
 import { ArrowDown, ArrowUpRight, Mail } from "lucide-react";
-import { PageHeader, SectionIntro } from "@/components/editorial";
+import { SectionIntro } from "@/components/editorial";
+import DynamicImage from "@/components/DynamicImage";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { ghostLightButton, outlineButton, primaryButton } from "@/lib/button-styles";
+import { ghostLightButton, inkButton, lightButton, primaryButton } from "@/lib/button-styles";
 import { useRouteMeta } from "@/hooks/use-page-meta";
 import { SITE_URL } from "@/seo/pages";
+import { cn } from "@/lib/utils";
 import {
   getUpcomingEvening,
   pianoByHeartEventSchema,
@@ -15,6 +17,29 @@ import {
   venueAddress,
   type PianoByHeartEvening,
 } from "@/constants/piano-by-heart";
+
+/* ---------------------------------------------------------------------------
+ * Full-bleed colour bands taken from the event artwork, so the page reads as
+ * one continuous piece rather than white with cards on it.
+ *   indigo   #1C2260   hero (the artwork's deep blue)
+ *   blush    #F6DCE6   intro, FAQ
+ *   lavender #E3E0F4   the evening / good to know
+ *   ink      brand-dark  next evening
+ *   magenta  brand-primary  listen first
+ * Text on each band is ivory or navy ink. The magenta accent drops to a
+ * deeper shade on the pale bands so small text keeps AA contrast.
+ * ------------------------------------------------------------------------- */
+
+const band = {
+  indigo: "bg-[#1C2260] text-brand-light",
+  blush: "bg-[#F6DCE6] text-brand-dark [&_.eyebrow]:text-[hsl(325_72%_36%)]",
+  lavender: "bg-[#E3E0F4] text-brand-dark [&_.eyebrow]:text-[hsl(325_72%_36%)]",
+  ink: "bg-brand-dark text-brand-light",
+  magenta: "bg-brand-primary text-white",
+};
+
+// Pink eyebrow that stays readable on the dark bands.
+const darkEyebrow = "eyebrow text-[hsl(325_72%_78%)]";
 
 const runSheet = [
   { time: "5:00pm", detail: "Arrive, settle in and find your spot" },
@@ -68,9 +93,10 @@ const BookingLink = ({ evening, className }: { evening: PianoByHeartEvening; cla
   </a>
 );
 
+
 // In-page jump to the booking details. A plain anchor so the browser scrolls to it.
 const JumpLink = ({ children }: { children: React.ReactNode }) => (
-  <a href="#next-evening" className="group inline-flex items-center gap-2 text-base font-medium text-brand-dark">
+  <a href="#next-evening" className="group inline-flex items-center gap-2 text-base font-medium text-brand-light">
     {children}
     <ArrowDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5" aria-hidden="true" />
   </a>
@@ -81,61 +107,97 @@ const EventSchema = ({ evening }: { evening: PianoByHeartEvening }) => {
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
 };
 
-const NextEvening = ({ evening }: { evening: PianoByHeartEvening | null }) => (
-  <section id="next-evening" className="container scroll-mt-28 pb-24 lg:pb-32">
-    <div className="relative overflow-hidden rounded-3xl bg-brand-dark px-8 py-14 text-brand-light md:px-14 md:py-20">
-      <div
-        className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-brand-primary/25 blur-[100px]"
-        aria-hidden="true"
-      />
-      <div className="relative">
-        <p className="eyebrow text-[hsl(325_72%_72%)]">Next evening</p>
-        {evening ? (
-          <>
-            <h2 className="mt-4 text-4xl md:text-5xl font-light leading-[1.08] text-brand-light">{evening.date}</h2>
-            {evening.status === "sold-out" && (
-              <p className="mt-4 text-lg text-brand-light/80">This evening is sold out. Join the waitlist for a place.</p>
-            )}
-            <dl className="mt-10 grid gap-x-12 gap-y-6 sm:grid-cols-2">
-              {[
-                { label: "Time", value: evening.time },
-                {
-                  label: "Venue",
-                  value: (
-                    <>
-                      {evening.venue.room}, {evening.venue.name}
-                      <br />
-                      {venueAddress(evening)}
-                    </>
-                  ),
-                },
-                { label: "Price", value: evening.price },
-                { label: "Places", value: evening.places },
-              ].map(({ label, value }) => (
-                <div key={label} className="border-t border-white/15 pt-4">
-                  <dt className="text-xs font-medium uppercase tracking-[0.2em] text-brand-light/60">{label}</dt>
-                  <dd className="mt-2 text-lg leading-relaxed text-brand-light/90">{value}</dd>
-                </div>
-              ))}
-            </dl>
-            <div className="mt-10">
+const Hero = ({ evening }: { evening: PianoByHeartEvening | null }) => (
+  <header className={cn(band.indigo, "relative overflow-hidden")}>
+    <div
+      className="pointer-events-none absolute -right-32 top-10 h-96 w-96 rounded-full bg-brand-primary/30 blur-[120px]"
+      aria-hidden="true"
+    />
+    <div className="container relative grid items-center gap-12 pb-20 pt-12 md:pt-16 lg:grid-cols-[1.1fr_1fr] lg:gap-20 lg:pb-28">
+      <div>
+        <p className={darkEyebrow}>Live improvised piano</p>
+        <h1 className="mt-5 text-[44px] leading-[1.02] sm:text-6xl lg:text-7xl font-light text-brand-light">Piano by Heart</h1>
+        <p className="mt-6 max-w-xl text-lg md:text-xl leading-relaxed text-brand-light/80">
+          An hour of improvised piano to rest, move and sound.
+        </p>
+        <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
+          {evening ? (
+            <>
               <BookingLink evening={evening} className={primaryButton} />
-            </div>
-          </>
-        ) : (
-          <>
-            <h2 className="mt-4 text-4xl md:text-5xl font-light leading-[1.08] text-brand-light">
-              The next evening will be announced soon.
-            </h2>
-            <div className="mt-10">
-              <a href={pianoByHeartLinks.enquiry} className={ghostLightButton}>
-                <Mail className="h-4 w-4" aria-hidden="true" />
-                Get in touch
-              </a>
-            </div>
-          </>
-        )}
+              <JumpLink>{evening.date}</JumpLink>
+            </>
+          ) : (
+            <JumpLink>Next evening</JumpLink>
+          )}
+        </div>
       </div>
+      <div className="mx-auto w-full max-w-md lg:mr-0">
+        <DynamicImage
+          src={pianoByHeartHero.src}
+          alt={pianoByHeartHero.alt}
+          className="aspect-[746/1052] w-full rounded-2xl object-cover shadow-lifted"
+          width={600}
+          height={846}
+          priority
+        />
+      </div>
+    </div>
+  </header>
+);
+
+const NextEvening = ({ evening }: { evening: PianoByHeartEvening | null }) => (
+  <section id="next-evening" className={cn(band.ink, "relative scroll-mt-20 overflow-hidden")}>
+    <div
+      className="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-brand-primary/25 blur-[110px]"
+      aria-hidden="true"
+    />
+    <div className="container relative py-24 lg:py-32">
+      <p className={darkEyebrow}>Next evening</p>
+      {evening ? (
+        <>
+          <h2 className="mt-4 text-4xl md:text-5xl font-light leading-[1.08] text-brand-light">{evening.date}</h2>
+          {evening.status === "sold-out" && (
+            <p className="mt-4 text-lg text-brand-light/80">This evening is sold out. Join the waitlist for a place.</p>
+          )}
+          <dl className="mt-10 grid max-w-4xl gap-x-12 gap-y-6 sm:grid-cols-2">
+            {[
+              { label: "Time", value: evening.time },
+              {
+                label: "Venue",
+                value: (
+                  <>
+                    {evening.venue.room}, {evening.venue.name}
+                    <br />
+                    {venueAddress(evening)}
+                  </>
+                ),
+              },
+              { label: "Price", value: evening.price },
+              { label: "Places", value: evening.places },
+            ].map(({ label, value }) => (
+              <div key={label} className="border-t border-white/15 pt-4">
+                <dt className="text-xs font-medium uppercase tracking-[0.2em] text-brand-light/60">{label}</dt>
+                <dd className="mt-2 text-lg leading-relaxed text-brand-light/90">{value}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="mt-10">
+            <BookingLink evening={evening} className={primaryButton} />
+          </div>
+        </>
+      ) : (
+        <>
+          <h2 className="mt-4 text-4xl md:text-5xl font-light leading-[1.08] text-brand-light">
+            The next evening will be announced soon.
+          </h2>
+          <div className="mt-10">
+            <a href={pianoByHeartLinks.enquiry} className={ghostLightButton}>
+              <Mail className="h-4 w-4" aria-hidden="true" />
+              Get in touch
+            </a>
+          </div>
+        </>
+      )}
     </div>
   </section>
 );
@@ -148,28 +210,13 @@ const PianoByHeartPage: React.FC = () => {
     <div>
       {evening && <EventSchema evening={evening} />}
 
-      <PageHeader
-        eyebrow="Live improvised piano"
-        title="Piano by Heart"
-        lede="An hour of improvised piano to rest, move and sound."
-        image={{ src: pianoByHeartHero.src, alt: pianoByHeartHero.alt }}
-        actions={
-          evening ? (
-            <>
-              <BookingLink evening={evening} className={primaryButton} />
-              <JumpLink>{evening.date}</JumpLink>
-            </>
-          ) : (
-            <JumpLink>Next evening</JumpLink>
-          )
-        }
-      />
+      <Hero evening={evening} />
 
       {/* Intro */}
-      <section className="border-y border-border bg-card/60">
+      <section className={band.blush}>
         <div className="container grid gap-8 py-20 lg:grid-cols-[1fr_1.3fr] lg:gap-20 lg:py-28">
           <p className="font-serif text-3xl md:text-4xl font-light leading-[1.2] text-brand-dark">Come as you are.</p>
-          <div className="space-y-6 text-lg leading-relaxed text-brand-dark/80">
+          <div className="space-y-6 text-lg leading-relaxed text-brand-dark/85">
             <p>
               Lie back on a thick futon in a dark, cosy room, and let an hour of live, improvised piano move through
               you. There's nothing to do and nothing to get right. Some people rest the whole time, some drift into
@@ -184,78 +231,84 @@ const PianoByHeartPage: React.FC = () => {
       </section>
 
       {/* The evening + good to know */}
-      <section className="container grid gap-16 py-24 lg:grid-cols-2 lg:gap-20 lg:py-32">
-        <div>
-          <SectionIntro eyebrow="Run-sheet" title="The evening" />
-          <ol className="mt-10 space-y-0">
-            {runSheet.map((item) => (
-              <li key={item.time} className="grid grid-cols-[5.5rem_1fr] gap-4 border-t border-brand-dark/15 py-5">
-                <span className="font-serif text-lg text-brand-primary">{item.time}</span>
-                <span className="text-lg leading-relaxed text-brand-dark/80">{item.detail}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-        <div>
-          <SectionIntro eyebrow="Before you come" title="Good to know" />
-          <ul className="mt-10">
-            {goodToKnow.map((item) => (
-              <li key={item} className="flex gap-4 border-t border-brand-dark/15 py-5 text-lg leading-relaxed text-brand-dark/80">
-                <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-primary/60" aria-hidden="true" />
-                {item}
-              </li>
-            ))}
-          </ul>
+      <section className={band.lavender}>
+        <div className="container grid gap-16 py-24 lg:grid-cols-2 lg:gap-20 lg:py-32">
+          <div>
+            <SectionIntro eyebrow="Run-sheet" title="The evening" />
+            <ol className="mt-10">
+              {runSheet.map((item) => (
+                <li key={item.time} className="grid grid-cols-[5.5rem_1fr] gap-4 border-t border-brand-dark/15 py-5">
+                  <span className="font-serif text-lg text-[hsl(325_72%_36%)]">{item.time}</span>
+                  <span className="text-lg leading-relaxed text-brand-dark/85">{item.detail}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div>
+            <SectionIntro eyebrow="Before you come" title="Good to know" />
+            <ul className="mt-10">
+              {goodToKnow.map((item) => (
+                <li key={item} className="flex gap-4 border-t border-brand-dark/15 py-5 text-lg leading-relaxed text-brand-dark/85">
+                  <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-primary" aria-hidden="true" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 
       <NextEvening evening={evening} />
 
       {/* Listen first */}
-      <section className="container grid gap-12 pb-24 lg:grid-cols-[1fr_1.2fr] lg:items-center lg:gap-20 lg:pb-32">
-        <div>
-          <SectionIntro eyebrow="Listen first" title="Hear the music">
-            Get a feel for the music before you come.
-          </SectionIntro>
-          <div className="mt-9 flex flex-wrap items-center gap-3">
-            <a href={pianoByHeartLinks.spotify} target="_blank" rel="noopener noreferrer" className={outlineButton}>
-              Listen on Spotify
-              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-            </a>
-            <a href={pianoByHeartLinks.instagram} target="_blank" rel="noopener noreferrer" className={outlineButton}>
-              Instagram
-              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-            </a>
+      <section className={band.magenta}>
+        <div className="container grid gap-12 py-24 lg:grid-cols-[1fr_1.2fr] lg:items-center lg:gap-20 lg:py-32">
+          <div className="max-w-2xl">
+            <p className="text-xs font-medium uppercase tracking-[0.22em] text-white/80">Listen first</p>
+            <h2 className="mt-4 text-4xl md:text-5xl font-light leading-[1.08] text-white">Hear the music</h2>
+            <p className="mt-5 text-lg leading-relaxed text-white/90">Get a feel for the music before you come.</p>
+            <div className="mt-9 flex flex-wrap items-center gap-3">
+              <a href={pianoByHeartLinks.spotify} target="_blank" rel="noopener noreferrer" className={lightButton}>
+                Listen on Spotify
+                <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+              </a>
+              <a href={pianoByHeartLinks.instagram} target="_blank" rel="noopener noreferrer" className={ghostLightButton}>
+                Instagram
+                <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+              </a>
+            </div>
           </div>
+          <iframe
+            src={pianoByHeartLinks.spotifyEmbed}
+            title="Daniele Buatti on Spotify"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+            className="h-[352px] w-full rounded-2xl border-0 bg-black/10 shadow-lifted"
+          />
         </div>
-        <iframe
-          src={pianoByHeartLinks.spotifyEmbed}
-          title="Daniele Buatti on Spotify"
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-          loading="lazy"
-          className="h-[352px] w-full rounded-2xl border-0 shadow-soft"
-        />
       </section>
 
       {/* FAQ */}
-      <section className="container pb-24 lg:pb-32">
-        <div className="mx-auto max-w-3xl">
-          <SectionIntro eyebrow="Questions" title="FAQ" />
-          <Accordion type="single" collapsible className="mt-10">
-            {faqItems.map(({ q, a }) => (
-              <AccordionItem key={q} value={q} className="border-brand-dark/15">
-                <AccordionTrigger className="text-left text-lg font-normal text-brand-dark hover:no-underline">
-                  {q}
-                </AccordionTrigger>
-                <AccordionContent className="text-base leading-relaxed text-brand-dark/80">{a}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-          {evening && (
-            <div className="mt-12">
-              <BookingLink evening={evening} className={primaryButton} />
-            </div>
-          )}
+      <section className={band.blush}>
+        <div className="container py-24 lg:py-32">
+          <div className="mx-auto max-w-3xl">
+            <SectionIntro eyebrow="Questions" title="FAQ" />
+            <Accordion type="single" collapsible className="mt-10">
+              {faqItems.map(({ q, a }) => (
+                <AccordionItem key={q} value={q} className="border-brand-dark/15">
+                  <AccordionTrigger className="text-left text-lg font-normal text-brand-dark hover:no-underline">
+                    {q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-base leading-relaxed text-brand-dark/85">{a}</AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+            {evening && (
+              <div className="mt-12">
+                <BookingLink evening={evening} className={inkButton} />
+              </div>
+            )}
+          </div>
         </div>
       </section>
     </div>

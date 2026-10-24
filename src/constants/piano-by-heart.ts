@@ -63,8 +63,6 @@ export const pianoByHeartLinks = {
 export const pianoByHeartHero = {
   src: "/piano-by-heart-hero.jpg",
   alt: "Piano by Heart — abstract indigo and pink artwork",
-  width: 1200,
-  height: 1500,
 };
 
 // The scheduled evening, or null if there isn't one or it has already finished.

@@ -31,8 +31,8 @@ function headFor(route: string, meta: PageMeta) {
     <meta property="og:title" content="${t}" />
     <meta property="og:description" content="${d}" />
     <meta property="og:image" content="${image}" />
-    <meta property="og:image:width" content="${meta.imageWidth ?? 1200}" />
-    <meta property="og:image:height" content="${meta.imageHeight ?? 630}" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="twitter:url" content="${url}" />
     <meta property="twitter:title" content="${t}" />
     <meta property="twitter:description" content="${d}" />
