@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import "@fontsource-variable/dm-sans/index.css";
 import { ArrowDown, ArrowUpRight, Mail } from "lucide-react";
 import { SectionIntro } from "@/components/editorial";
 import DynamicImage from "@/components/DynamicImage";
@@ -12,7 +13,7 @@ import { cn } from "@/lib/utils";
 import {
   getUpcomingEvening,
   pianoByHeartEventSchema,
-  pianoByHeartHero,
+  pianoByHeartArtwork,
   pianoByHeartLinks,
   venueAddress,
   type PianoByHeartEvening,
@@ -21,7 +22,7 @@ import {
 /* ---------------------------------------------------------------------------
  * Full-bleed colour bands taken from the event artwork, so the page reads as
  * one continuous piece rather than white with cards on it.
- *   indigo   #1C2260   hero (the artwork's deep blue)
+ *   indigo   #11153F   hero overlay (the artwork's deep blue)
  *   blush    #F6DCE6   intro, FAQ
  *   lavender #E3E0F4   the evening / good to know
  *   ink      brand-dark  next evening
@@ -31,7 +32,7 @@ import {
  * ------------------------------------------------------------------------- */
 
 const band = {
-  indigo: "bg-[#1C2260] text-brand-light",
+  indigo: "bg-[#11153F] text-brand-light",
   blush: "bg-[#F6DCE6] text-brand-dark [&_.eyebrow]:text-[hsl(325_72%_36%)]",
   lavender: "bg-[#E3E0F4] text-brand-dark [&_.eyebrow]:text-[hsl(325_72%_36%)]",
   ink: "bg-brand-dark text-brand-light",
@@ -103,43 +104,58 @@ const JumpLink = ({ children }: { children: React.ReactNode }) => (
 );
 
 const EventSchema = ({ evening }: { evening: PianoByHeartEvening }) => {
-  const schema = pianoByHeartEventSchema(evening, `${SITE_URL}/pianobyheart`, `${SITE_URL}${pianoByHeartHero.src}`);
+  const schema = pianoByHeartEventSchema(evening, `${SITE_URL}/pianobyheart`, `${SITE_URL}${pianoByHeartArtwork.src}`);
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
 };
 
+// Full-bleed artwork with the poster's type set live over it, so the date and
+// venue come from the config rather than being baked into an image.
 const Hero = ({ evening }: { evening: PianoByHeartEvening | null }) => (
-  <header className={cn(band.indigo, "relative overflow-hidden")}>
+  <header className={cn(band.indigo, "relative isolate overflow-hidden")}>
+    <DynamicImage
+      src={pianoByHeartArtwork.src}
+      alt={pianoByHeartArtwork.alt}
+      className="absolute inset-0 -z-20 h-full w-full object-cover object-[70%_center]"
+      width={2000}
+      height={1125}
+      priority
+    />
+    {/* Darkens the left side (and all of it on phones) so the type stays legible. */}
     <div
-      className="pointer-events-none absolute -right-32 top-10 h-96 w-96 rounded-full bg-brand-primary/30 blur-[120px]"
+      className="absolute inset-0 -z-10 bg-[#11153F]/60 lg:bg-transparent lg:bg-gradient-to-r lg:from-[#11153F]/90 lg:via-[#11153F]/50 lg:to-transparent"
       aria-hidden="true"
     />
-    <div className="container relative grid items-center gap-12 pb-20 pt-12 md:pt-16 lg:grid-cols-[1.1fr_1fr] lg:gap-20 lg:pb-28">
-      <div>
-        <p className={darkEyebrow}>Live improvised piano</p>
-        <h1 className="mt-5 text-[44px] leading-[1.02] sm:text-6xl lg:text-7xl font-light text-brand-light">Piano by Heart</h1>
-        <p className="mt-6 max-w-xl text-lg md:text-xl leading-relaxed text-brand-light/80">
+    <div className="container flex min-h-[min(88vh,820px)] flex-col justify-center py-24 lg:py-32">
+      <div className="max-w-xl">
+        <h1 className="font-seasons text-[64px] leading-[0.95] sm:text-8xl lg:text-[120px] font-light tracking-[-0.01em] text-brand-light">
+          Piano
+          <br />
+          by Heart
+        </h1>
+        <p className="mt-6 font-dm-sans text-lg md:text-xl leading-relaxed text-brand-light/90">
           An hour of improvised piano to rest, move and sound.
         </p>
-        <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
+        {evening && (
+          <>
+            <span className="mt-8 block h-px w-full max-w-sm bg-[#E9C98B]/50" aria-hidden="true" />
+            <p className="mt-6 text-sm font-medium uppercase tracking-[0.2em] text-[#E9C98B]">
+              {evening.date}
+              <span className="hidden sm:inline" aria-hidden="true"> · </span>
+              <br className="sm:hidden" />
+              {evening.venue.name}, {evening.venue.locality}
+            </p>
+          </>
+        )}
+        <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
           {evening ? (
             <>
               <BookingLink evening={evening} className={primaryButton} />
-              <JumpLink>{evening.date}</JumpLink>
+              <JumpLink>Details</JumpLink>
             </>
           ) : (
             <JumpLink>Next evening</JumpLink>
           )}
         </div>
-      </div>
-      <div className="mx-auto w-full max-w-md lg:mr-0">
-        <DynamicImage
-          src={pianoByHeartHero.src}
-          alt={pianoByHeartHero.alt}
-          className="aspect-[746/1052] w-full rounded-2xl object-cover shadow-lifted"
-          width={600}
-          height={846}
-          priority
-        />
       </div>
     </div>
   </header>

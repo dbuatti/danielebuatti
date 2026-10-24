@@ -31,6 +31,9 @@ export default {
         display: ["Fraunces Variable", "Fraunces", "ui-serif", "Georgia", "serif"],
         montserrat: ["Inter Variable", "Inter", "ui-sans-serif", "system-ui", "sans-serif"],
         "libre-baskerville": ["Fraunces Variable", "Fraunces", "ui-serif", "Georgia", "serif"],
+        // Piano by Heart only.
+        seasons: ["The Seasons", "Fraunces Variable", "Fraunces", "ui-serif", "Georgia", "serif"],
+        "dm-sans": ["DM Sans Variable", "DM Sans", "ui-sans-serif", "system-ui", "sans-serif"],
       },
       colors: {
         // Warm-to-ink neutral scale replacing Tailwind's cool greys, so every
