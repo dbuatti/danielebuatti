@@ -4,17 +4,15 @@
 // search engines see the right details without running JavaScript.
 // Keep this file free of browser-only imports: vite.config.ts loads it.
 
-import { getUpcomingEvening, pianoByHeartDescription, pianoByHeartHero } from "../constants/piano-by-heart";
+import { getUpcomingEvening, pianoByHeartDescription } from "../constants/piano-by-heart";
 
 export const SITE_URL = "https://www.danielebuatti.com";
 
 export interface PageMeta {
   title: string;
   description: string;
-  // Share image path under /public (1200x630 unless imageWidth/imageHeight say otherwise).
+  // Share image path under /public (1200x630).
   image: string;
-  imageWidth?: number;
-  imageHeight?: number;
 }
 
 export const pageMeta = {
@@ -104,9 +102,7 @@ export const pageMeta = {
   "/pianobyheart": {
     title: "Piano by Heart — Live improvised piano to rest | Daniele Buatti",
     description: pianoByHeartDescription(getUpcomingEvening()),
-    image: pianoByHeartHero.src,
-    imageWidth: pianoByHeartHero.width,
-    imageHeight: pianoByHeartHero.height,
+    image: "/og/piano-by-heart.jpg",
   },
 } satisfies Record<string, PageMeta>;
 
