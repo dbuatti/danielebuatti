@@ -131,7 +131,7 @@ const VoicePianoServicesPage: React.FC = () => {
         {/* Credit strip */}
         <div className="border-y border-brand-secondary bg-secondary dark:bg-brand-dark-alt/30 py-3">
           <p className="text-center text-xs md:text-sm text-brand-dark/70 dark:text-brand-light/70 px-4">
-            Twelve years in Melbourne music theatre as music director, répétiteur and vocal coach. <span className="font-semibold">Wicked. The Bodyguard. Into the Woods</span> at the VCA.
+            Over 12 years in Melbourne music theatre as music director, répétiteur and vocal coach. <span className="font-semibold">Wicked. The Bodyguard. Into the Woods</span> at the VCA.
           </p>
         </div>
 
@@ -213,7 +213,7 @@ const VoicePianoServicesPage: React.FC = () => {
             />
             <h2 className="font-display text-3xl font-bold mb-6">About</h2>
             <p className="text-base text-brand-dark/80 dark:text-brand-light/80 leading-relaxed mb-4">
-              Hi, I'm Daniele. I'm a pianist, vocal coach and music director based in Melbourne. Twelve years in music theatre, plus school and community productions most years.
+              Hi, I'm Daniele. I'm a pianist, vocal coach and music director based in Melbourne. Over 12 years in music theatre, plus school and community productions most years.
             </p>
             <p className="text-base text-brand-dark/80 dark:text-brand-light/80 leading-relaxed mb-4">
               What I care about most is the moment a song stops being an exercise and starts being something you actually mean. That's rarely a technique problem, it's usually an intention one, and it's the part I find most rewarding to work on.

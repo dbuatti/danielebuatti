@@ -75,7 +75,7 @@ const MusicDirectorPianistPage: React.FC = () => {
       {/* Bio */}
       <section className="container grid gap-12 py-24 lg:grid-cols-[1fr_1.3fr] lg:gap-20 lg:py-32">
         <p className="font-serif text-3xl md:text-4xl font-light leading-[1.2] text-brand-dark">
-          I’m a music theatre practitioner based in Melbourne, with over a decade of experience as a music director,
+          I’m a music theatre practitioner based in Melbourne, with over 12 years of experience as a music director,
           pianist, vocal coach, and performer.
         </p>
         <div className="space-y-6 text-lg leading-relaxed text-brand-dark/80">

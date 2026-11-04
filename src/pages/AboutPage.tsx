@@ -46,7 +46,7 @@ const AboutPage: React.FC = () => {
           </div>
           <div className="space-y-6 text-lg leading-relaxed text-brand-dark/80">
             <p>
-              I’ve spent over fifteen years working across music theatre and performance as a music director, pianist,
+              I’ve spent over 12 years working across music theatre and performance as a music director, pianist,
               arranger, vocal coach, and educator.
             </p>
             <p>

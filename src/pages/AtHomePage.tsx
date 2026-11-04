@@ -95,7 +95,7 @@ const AtHomePage: React.FC = () => {
           <div className="mt-6 space-y-5 text-base leading-relaxed text-[#1F1C19]/90 md:text-lg">
             <p>No piano at home? I can bring one.</p>
             <p>
-              Solo piano, or piano and voice. Twelve years in Melbourne music theatre, including <em className="italic">Wicked</em> and <em className="italic">The Bodyguard</em>.
+              Solo piano, or piano and voice. Over 12 years in Melbourne music theatre, including <em className="italic">Wicked</em> and <em className="italic">The Bodyguard</em>.
             </p>
           </div>
         </div>
