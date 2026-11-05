@@ -6,6 +6,15 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Basic email validation used to decide whether the visitor's address is safe
+// to use as the Reply-To header. Falls back to no Reply-To when invalid.
+function isValidEmail(email: unknown): email is string {
+  if (typeof email !== 'string' || !email) {
+    return false;
+  }
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+}
+
 serve(async (req: Request) => { // Added type annotation for 'req'
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -38,7 +47,7 @@ serve(async (req: Request) => { // Added type annotation for 'req'
       });
     }
 
-    const subject = `New Contact Form Submission from ${name}`;
+    const subject = `New enquiry from ${name}`;
     const emailHtml = `
       <div style="font-family: 'Outfit', sans-serif; color: #00022D; background-color: #F8F8F8; padding: 20px; border-radius: 8px;">
         <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
@@ -69,6 +78,10 @@ serve(async (req: Request) => { // Added type annotation for 'req'
       </div>
     `;
 
+    // Use the visitor's email as Reply-To so replying goes to them, not info@.
+    // Validate first; fall back to no Reply-To if the address is invalid.
+    const replyTo = isValidEmail(email) ? email : undefined;
+
     const emailResponse = await fetch(EMAIL_SERVICE_ENDPOINT, {
       method: 'POST',
       headers: {
@@ -79,6 +92,7 @@ serve(async (req: Request) => { // Added type annotation for 'req'
         from: 'info@danielebuatti.com',
         to: CONTACT_FORM_RECIPIENT_EMAIL,
         subject: subject,
+        ...(replyTo ? { reply_to: replyTo } : {}),
         html: emailHtml,
       }),
     });
