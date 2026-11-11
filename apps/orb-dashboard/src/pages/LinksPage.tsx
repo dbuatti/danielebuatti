@@ -15,36 +15,43 @@ const links: LinkItem[] = [
   { label: 'The Orb (MBP Local)', url: 'http://localhost:8450', description: 'Local web server on MBP', category: 'The Orb', icon: '🔮' },
 
   // Comm Analytics
-  { label: 'Comm Analytics (Definitive)', url: 'https://macbook-pro-6.tailab1fd5.ts.net:8445/', description: 'Comm Analytics server — definitive link, accessible from all devices', category: 'Analytics', icon: '📊' },
-  { label: 'Comm Analytics (Mini - Direct)', url: 'http://127.0.0.1:8799/', description: 'Direct from Mac Mini (local, no auth)', category: 'Analytics', icon: '📊' },
-  { label: 'Comm Analytics (Mini - Tailnet)', url: 'http://100.116.158.22:8799/?token=local', description: 'Via Tailscale IP (requires token, works with cookie)', category: 'Analytics', icon: '📊' },
-  { label: 'Comm Analytics (Mini - Tailscale Serve)', url: 'https://danieles-mac-mini.tailab1fd5.ts.net:8445/', description: 'Via Tailscale Serve (port 8445)', category: 'Analytics', icon: '📊' },
+  { label: 'Comm Analytics (Definitive)', url: 'https://macbook-pro-6.tailab1fd5.ts.net:8445/', description: 'Comm Analytics — definitive link, accessible from all devices', category: 'Analytics', icon: '📊' },
+  { label: 'Comm Analytics (Mini Failover)', url: 'https://danieles-mac-mini.tailab1fd5.ts.net:8445/', description: 'Mini copy of Comm Analytics (separate data)', category: 'Analytics', icon: '📊' },
+  { label: 'Comm Analytics (MBP Local)', url: 'http://127.0.0.1:8799/', description: 'Direct from MBP (local, no auth)', category: 'Analytics', icon: '📊' },
 
   // NAS
-  { label: 'NAS (Moon Prism)', url: 'smb://100.124.90.53/Moon%20Prism', description: 'Crystal Tokyo NAS — Tailscale IP 100.124.90.53', category: 'NAS', icon: '💾' },
+  { label: 'NAS (Moon Prism)', url: 'smb://100.124.90.53/Moon%20Prism', description: 'Crystal Tokyo NAS — Tailscale IP 100.124.90.53 (LAN 192.168.2.100)', category: 'NAS', icon: '💾' },
 
   // OpenCode
   { label: 'OpenCode (MBP)', url: 'https://macbook-pro-6.tailab1fd5.ts.net:8444', description: 'AI coding agent — native HTML web UI (MBP)', category: 'OpenCode', icon: '🤖' },
-  { label: 'OpenCode (Mini)', url: 'http://danieles-mac-mini.tailab1fd5.ts.net:4096', description: 'AI coding agent on Mac mini (if running)', category: 'OpenCode', icon: '🤖' },
-  { label: 'OpenCode Landing', url: 'https://macbook-pro-6.tailab1fd5.ts.net:8443', description: 'Session list + links to chat and VNC', category: 'Network', icon: '🏠' },
-  { label: 'noVNC (Full Desktop)', url: 'https://macbook-pro-6.tailab1fd5.ts.net:8443/vnc.html', description: 'Full desktop access from iPad', category: 'Network', icon: '🖥️' },
+  { label: 'OpenCode (Mini)', url: 'http://danieles-mac-mini.tailab1fd5.ts.net:4096', description: 'AI coding agent on Mac mini (basic auth)', category: 'OpenCode', icon: '🤖' },
+
+  // Desktop / remote
+  { label: 'OpenCode Landing', url: 'https://macbook-pro-6.tailab1fd5.ts.net:8443', description: 'Session list + links to chat and VNC', category: 'Remote Access', icon: '🏠' },
+  { label: 'noVNC (Full Desktop)', url: 'https://macbook-pro-6.tailab1fd5.ts.net:8443/vnc.html', description: 'Full desktop access from iPad', category: 'Remote Access', icon: '🖥️' },
 
   // Stremio
   { label: 'Stremio Server', url: 'https://danieles-mac-mini.tailab1fd5.ts.net:8447', description: 'Stremio streaming server backend (Mini Docker)', category: 'Stremio', icon: '🎬' },
-  { label: 'AIOStreams Config', url: 'http://danieles-mac-mini.tailab1fd5.ts.net:3000/stremio/configure', description: 'Configure AIOStreams addons and debrid', category: 'Stremio', icon: '🎬' },
-  { label: 'AIOStreams Manifest', url: 'http://danieles-mac-mini.tailab1fd5.ts.net:3000/stremio/manifest.json', description: 'Manifest URL for Stremio client', category: 'Stremio', icon: '🎬' },
-  { label: 'Stremio Server', url: 'https://danieles-mac-mini.tailab1fd5.ts.net:8447', description: 'Stremio streaming server backend (Mini Docker)', category: 'Stremio', icon: '🎬' },
+  { label: 'AIOStreams Config', url: 'https://danieles-mac-mini.tailab1fd5.ts.net:8448/stremio/configure', description: 'Configure AIOStreams addons and debrid', category: 'Stremio', icon: '🎬' },
+  { label: 'AIOStreams Manifest', url: 'https://danieles-mac-mini.tailab1fd5.ts.net:8448/stremio/manifest.json', description: 'Manifest URL for Stremio client', category: 'Stremio', icon: '🎬' },
 
   // Jitsi
-  { label: 'Jitsi Meet', url: 'https://macbook-pro-6.tailab1fd5.ts.net:8443', description: 'Self-hosted video conferencing (Mini)', category: 'Jitsi', icon: '📹' },
+  { label: 'Jitsi Meet', url: 'https://danieles-mac-mini.tailab1fd5.ts.net/', description: 'Self-hosted video conferencing (Mini, public via Funnel :443)', category: 'Jitsi', icon: '📹' },
+
+  // Media / *arr (Mini, direct on tailnet)
+  { label: 'Plex', url: 'http://100.116.158.22:32400/web/', description: 'Plex Media Server (Mini)', category: 'Media', icon: '🍿' },
+  { label: 'Radarr', url: 'http://100.116.158.22:7878/', description: 'Movie management (Mini)', category: 'Media', icon: '🎥' },
+  { label: 'Sonarr', url: 'http://100.116.158.22:8989/', description: 'TV management (Mini)', category: 'Media', icon: '📺' },
+  { label: 'Prowlarr', url: 'http://100.116.158.22:9696/', description: 'Indexer management (Mini)', category: 'Media', icon: '🔎' },
 
   // Systems
   { label: 'Systems Repo (GitHub)', url: 'https://github.com/dbuatti/danielebuatti', description: 'Central repository for all system configs', category: 'Systems', icon: '📁' },
   { label: 'Neon Console', url: 'https://console.neon.tech', description: 'Database quota management', category: 'Systems', icon: '🗄️' },
+  { label: 'Tailscale Admin', url: 'https://login.tailscale.com/admin/machines', description: 'Manage tailnet machines', category: 'Systems', icon: '🌐' },
 
-  // Syncthing
-  { label: 'Syncthing (MBP)', url: 'http://127.0.0.1:8384', description: 'Sync status — MBP', category: 'Sync', icon: '🔄' },
-  { label: 'Syncthing (Mini)', url: 'http://danieles-mac-mini.tailab1fd5.ts.net:8384', description: 'Sync status — Mini', category: 'Sync', icon: '🔄' },
+  // Sync
+  { label: 'Syncthing (MBP)', url: 'http://127.0.0.1:8384', description: 'Sync status — MBP (localhost only)', category: 'Sync', icon: '🔄' },
+  { label: 'Syncthing (Mini)', url: 'http://100.116.158.22:8384', description: 'Sync status — Mini (localhost only, use SSH tunnel)', category: 'Sync', icon: '🔄' },
 ];
 
 const categories = [...new Set(links.map(l => l.category))];
@@ -68,8 +75,10 @@ export default function LinksPage() {
 
   return (
     <div className="space-y-6">
-      <h2 className="font-display font-bold text-3xl text-white">Links</h2>
-      <p className="text-neutral-400 text-sm">All your regularly accessible links in one place. Tap to open, or copy to clipboard.</p>
+      <div>
+        <h2 className="font-display font-bold text-3xl text-white">Links</h2>
+        <p className="text-neutral-400 text-sm mt-1">All your regularly accessible links in one place — verified 11 Nov 2026. Tap to open, or copy to clipboard.</p>
+      </div>
 
       {/* Search */}
       <div className="relative">
@@ -92,7 +101,7 @@ export default function LinksPage() {
             <h3 className="text-lg font-semibold text-amber-300 mb-3">{cat}</h3>
             <div className="space-y-2">
               {catLinks.map(link => (
-                <div key={link.url} className="flex items-center justify-between p-3 bg-neutral-900/50 rounded-lg hover:bg-neutral-900/80 transition-colors group">
+                <div key={`${link.category}-${link.url}`} className="flex items-center justify-between p-3 bg-neutral-900/50 rounded-lg hover:bg-neutral-900/80 transition-colors group">
                   <div className="flex items-center gap-3 min-w-0 flex-1">
                     <span className="text-lg flex-shrink-0">{link.icon}</span>
                     <div className="min-w-0 flex-1">

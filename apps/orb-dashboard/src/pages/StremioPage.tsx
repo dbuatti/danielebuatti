@@ -5,8 +5,8 @@ export default function StremioPage() {
 
       {/* Status Summary */}
       <div className="card-glass rounded-xl p-6 border-green-500/20">
-        <h3 className="text-lg font-semibold text-green-300 mb-3">✅ Stremio Fully Fixed — Running on Mini Docker Stack</h3>
-        <p className="text-sm text-neutral-400">Native apps quit, ports freed, Docker containers running on Mini.</p>
+        <h3 className="text-lg font-semibold text-green-300 mb-3">✅ Stremio Running on Mini Docker Stack</h3>
+        <p className="text-sm text-neutral-400">7 containers up 8 days: 4 × Jitsi, aiostreams (healthy), stremio-server, openprofiles (healthy). Native Stremio apps quit so the ports stay free.</p>
       </div>
 
       {/* Native Apps */}
@@ -58,14 +58,14 @@ export default function StremioPage() {
           </div>
           <div className="flex items-center justify-between p-3 bg-neutral-900/50 rounded-lg">
             <span className="text-neutral-400">AIOStreams Config Dashboard</span>
-            <a href="http://danieles-mac-mini.tailab1fd5.ts.net:3000/stremio/configure" target="_blank" rel="noopener noreferrer" className="text-amber-300 hover:underline text-xs font-mono">
-              danieles-mac-mini.tailab1fd5.ts.net:3000/stremio/configure
+            <a href="https://danieles-mac-mini.tailab1fd5.ts.net:8448/stremio/configure" target="_blank" rel="noopener noreferrer" className="text-amber-300 hover:underline text-xs font-mono">
+              danieles-mac-mini.tailab1fd5.ts.net:8448/stremio/configure
             </a>
           </div>
           <div className="flex items-center justify-between p-3 bg-neutral-900/50 rounded-lg">
             <span className="text-neutral-400">AIOStreams Manifest</span>
-            <a href="http://danieles-mac-mini.tailab1fd5.ts.net:3000/stremio/manifest.json" target="_blank" rel="noopener noreferrer" className="text-amber-300 hover:underline text-xs font-mono">
-              danieles-mac-mini.tailab1fd5.ts.net:3000/stremio/manifest.json
+            <a href="https://danieles-mac-mini.tailab1fd5.ts.net:8448/stremio/manifest.json" target="_blank" rel="noopener noreferrer" className="text-amber-300 hover:underline text-xs font-mono">
+              danieles-mac-mini.tailab1fd5.ts.net:8448/stremio/manifest.json
             </a>
           </div>
         </div>

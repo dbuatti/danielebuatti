@@ -56,13 +56,18 @@ export default function NASPage() {
             <p className="text-white font-mono">100.124.90.53</p>
           </div>
           <div>
+            <span className="text-neutral-400">LAN IP</span>
+            <p className="text-white font-mono">192.168.2.100</p>
+            <p className="text-xs text-neutral-500">Changed from 192.168.1.102 after router reset</p>
+          </div>
+          <div>
             <span className="text-neutral-400">SMB Path</span>
             <p className="text-white font-mono text-xs">smb://100.124.90.53/Moon Prism</p>
           </div>
-          <div>
-            <span className="text-neutral-400">Services</span>
-            <p className="text-white text-xs">File sharing, Media archive, Backups</p>
-          </div>
+        </div>
+        <div className="mt-3 p-3 bg-neutral-900/50 rounded-lg">
+          <p className="text-xs text-neutral-400 font-mono">Reachable path: 192.168.68.x → Deco 192.168.68.1 → Modem 192.168.1.1 → NAS 192.168.2.100</p>
+          <p className="text-xs text-neutral-500 mt-1">SMB port 445 is open and the NAS responds to Tailscale ping (direct, ~6 ms on LAN).</p>
         </div>
       </div>
 
@@ -124,7 +129,7 @@ export default function NASPage() {
           <p className="text-neutral-400 text-sm">Run the mount script for home or away access</p>
           <div className="mt-4 p-4 bg-neutral-900/50 rounded-lg border border-white/5">
             <p className="text-neutral-400 text-xs">Script: <code className="monospace">~/Library/Scripts/mount-nas.zsh</code></p>
-            <p className="text-neutral-400 text-xs mt-1">Fixed from LAN IP 192.168.1.102 → Tailscale IP 100.124.90.53</p>
+            <p className="text-neutral-400 text-xs mt-1">Uses Tailscale IP 100.124.90.53 (LAN moved to 192.168.2.100 after the router reset)</p>
             <div className="mt-2">
               <button onClick={runMount} className="btn-orb w-full bg-amber-600 text-white hover:bg-amber-500 transition-colors">
                 Run Mount Script

@@ -47,12 +47,12 @@ export default function IndexPage() {
   }
 
   const modules = [
-    { path: '/nas', label: 'NAS', icon: Database, desc: 'Mount scripts, credentials, home & away access', color: 'amber' },
-    { path: '/network', label: 'Network', icon: Wifi, desc: 'TPG NBN, Deco M5, Tailscale nodes, Jitsi', color: 'blue' },
-    { path: '/launch-agents', label: 'Launch Agents', icon: Terminal, desc: '3 user + 12 system agents', color: 'green' },
-    { path: '/stremio', label: 'Stremio', icon: Film, desc: 'Running on Mini Docker, AIOStreams healthy', color: 'purple' },
+    { path: '/nas', label: 'NAS', icon: Database, desc: 'Moon Prism at 192.168.2.100 / 100.124.90.53, mount scripts', color: 'amber' },
+    { path: '/network', label: 'Network', icon: Wifi, desc: 'TPG NBN, Deco M5, Tailscale nodes, Serve map', color: 'blue' },
+    { path: '/launch-agents', label: 'Launch Agents', icon: Terminal, desc: '12 MBP + 6 Mini user agents', color: 'green' },
+    { path: '/stremio', label: 'Stremio', icon: Film, desc: 'Mini Docker stack, AIOStreams healthy', color: 'purple' },
     { path: '/crossover', label: 'CrossOver', icon: Gamepad2, desc: 'Bottles, 38 launchers, 3.7 GB sync remaining', color: 'orange' },
-    { path: '/jitsi', label: 'Jitsi', icon: Video, desc: '5 containers, WebSocket TLS issue', color: 'red' },
+    { path: '/jitsi', label: 'Jitsi', icon: Video, desc: '4 containers, public via Funnel :443', color: 'red' },
     { path: '/devices', label: 'Devices', icon: Laptop, desc: '5 Tailscale machines with specs', color: 'cyan' },
     { path: '/links', label: 'Links', icon: Link2, desc: 'All accessible URLs — Comm Analytics, NAS, Tailscale, and more', color: 'pink' },
   ];
@@ -111,9 +111,9 @@ export default function IndexPage() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
             { label: 'MBP Hostname', value: 'macbook-pro-6.tailab1fd5.ts.net', icon: Monitor, color: 'text-amber-400' },
-            { label: 'MBP Disk', value: '837 GB / 926 GB (95%)', icon: HardDrive, color: 'text-orange-400' },
-            { label: 'Launch Agents', value: '3 user + 12 system', icon: Terminal, color: 'text-green-400' },
-            { label: 'Mini Disk', value: '185 GB / 228 GB (94%)', icon: HardDrive, color: 'text-blue-400' },
+            { label: 'MBP Disk', value: '828 GB / 926 GB (96%)', icon: HardDrive, color: 'text-orange-400' },
+            { label: 'Public IP', value: '115.129.82.205 (TPG)', icon: Wifi, color: 'text-green-400' },
+            { label: 'Mini Disk', value: '180 GB / 228 GB + MEDIA 1.3 TB', icon: HardDrive, color: 'text-blue-400' },
           ].map(item => (
             <div key={item.label} className="card-glass rounded-xl p-4 flex items-start gap-3">
               <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0">

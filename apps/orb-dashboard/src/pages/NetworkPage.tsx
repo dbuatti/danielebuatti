@@ -1,7 +1,31 @@
+const tailscaleNodes = [
+  { name: 'macbook-pro-6', ip: '100.74.213.103', lan: '192.168.68.116 (Wi-Fi)', os: 'macOS 26.7', type: 'Primary Mac', online: true },
+  { name: 'danieles-mac-mini', ip: '100.116.158.22', lan: '192.168.68.105 (Wi-Fi)', os: 'macOS 14.8.7', type: 'Secondary Mac / Server', online: true },
+  { name: 'crystal-tokyo', ip: '100.124.90.53', lan: '192.168.2.100 (NAS LAN)', os: 'Linux', type: 'NAS', online: true },
+  { name: 'ipad-pro-12-9-gen-5', ip: '100.67.83.5', lan: '—', os: 'iOS', type: 'Tablet', online: true },
+  { name: 'iphone173', ip: '100.118.89.79', lan: '—', os: 'iOS', type: 'Phone', online: false },
+];
+
+const serveMap = [
+  { host: 'MBP', port: '443', target: '127.0.0.1:11470', note: 'Dead — Stremio not running on MBP (502)' },
+  { host: 'MBP', port: '8443', target: '127.0.0.1:6081', note: 'Landing page + noVNC' },
+  { host: 'MBP', port: '8444', target: '127.0.0.1:4097', note: 'OpenCode (via auth proxy)' },
+  { host: 'MBP', port: '8445', target: '127.0.0.1:8799', note: 'Comm Analytics (definitive)' },
+  { host: 'MBP', port: '8446', target: '127.0.0.1:8450', note: 'The Orb' },
+  { host: 'Mini', port: '443 (Funnel)', target: '127.0.0.1:8000', note: 'Jitsi Meet (public)' },
+  { host: 'Mini', port: '8445', target: '127.0.0.1:8799', note: 'Comm Analytics (Mini copy)' },
+  { host: 'Mini', port: '8447', target: '127.0.0.1:11470', note: 'Stremio server' },
+  { host: 'Mini', port: '8448', target: '127.0.0.1:3000', note: 'AIOStreams' },
+  { host: 'Mini', port: '8449', target: '127.0.0.1:8450', note: 'The Orb (backup)' },
+];
+
 export default function NetworkPage() {
   return (
     <div className="space-y-6">
-      <h2 className="font-display font-bold text-3xl text-white">Network Information</h2>
+      <div>
+        <h2 className="font-display font-bold text-3xl text-white">Network Information</h2>
+        <p className="text-neutral-500 text-sm mt-1">Last audited: 11 Nov 2026 (after router/modem power-cycle)</p>
+      </div>
 
       {/* Provider & Modem */}
       <div className="card-glass rounded-xl p-6">
@@ -9,24 +33,47 @@ export default function NetworkPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
           <div>
             <span className="text-neutral-400">Provider</span>
-            <p className="text-white">TPG NBN</p>
+            <p className="text-white">TPG NBN (AS7545)</p>
+            <p className="text-xs text-neutral-500">Melbourne, VIC</p>
+          </div>
+          <div>
+            <span className="text-neutral-400">Public IP</span>
+            <p className="text-white font-mono text-xs">115.129.82.205</p>
+            <p className="text-xs text-neutral-500">Changed on reset</p>
           </div>
           <div>
             <span className="text-neutral-400">Modem</span>
-            <p className="text-white">VR1600v</p>
+            <p className="text-white">TP-Link VR1600v</p>
+            <p className="text-xs text-neutral-500 font-mono">192.168.1.1</p>
           </div>
           <div>
             <span className="text-neutral-400">Mesh</span>
             <p className="text-white">Deco M5 (3 units)</p>
-          </div>
-          <div>
-            <span className="text-neutral-400">Clients</span>
-            <p className="text-white">16</p>
+            <p className="text-xs text-neutral-500 font-mono">192.168.68.1</p>
           </div>
         </div>
-        <div className="mt-3 text-sm">
-          <span className="text-neutral-400">Double NAT:</span>
-          <span className="text-amber-300 ml-2">Yes</span>
+        <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+          <div>
+            <span className="text-neutral-400">LAN Subnet</span>
+            <p className="text-white font-mono text-xs">192.168.68.0/24</p>
+          </div>
+          <div>
+            <span className="text-neutral-400">NAS Segment</span>
+            <p className="text-white font-mono text-xs">192.168.2.0/24</p>
+          </div>
+          <div>
+            <span className="text-neutral-400">Double NAT</span>
+            <p className="text-amber-300">Yes (harmless for calls)</p>
+          </div>
+          <div>
+            <span className="text-neutral-400">Deco MAC</span>
+            <p className="text-white font-mono text-xs">84:D8:1B:E6:19:44</p>
+          </div>
+        </div>
+        <div className="mt-4 p-3 bg-neutral-900/50 rounded-lg">
+          <p className="text-xs text-neutral-400 font-mono">
+            Path: MBP/Mini (192.168.68.x) → Deco 192.168.68.1 → Modem 192.168.1.1 → NAS 192.168.2.100 → Internet
+          </p>
         </div>
       </div>
 
@@ -37,20 +84,52 @@ export default function NetworkPage() {
           <thead>
             <tr className="border-b border-white/10 text-neutral-400">
               <th className="text-left font-medium py-2">Node</th>
-              <th className="text-left font-medium py-2">IP</th>
-              <th className="text-left font-medium py-2">Type</th>
+              <th className="text-left font-medium py-2">Tailscale IP</th>
+              <th className="text-left font-medium py-2">LAN</th>
+              <th className="text-left font-medium py-2">OS</th>
+              <th className="text-left font-medium py-2">Role</th>
+              <th className="text-left font-medium py-2">Status</th>
             </tr>
           </thead>
           <tbody>
-            {[
-              { name: 'MBP', ip: '100.116.158.22', type: 'Main' },
-              { name: 'Mini', ip: '100.116.158.22', type: 'Secondary' },
-              { name: 'crystal-tokyo', ip: '100.124.90.53', type: 'NAS' },
-            ].map(row => (
+            {tailscaleNodes.map(row => (
               <tr key={row.name} className="border-b border-white/5">
-                <td className="py-3 text-white font-mono">{row.name}</td>
+                <td className="py-3 text-white font-mono text-xs">{row.name}</td>
                 <td className="py-3 text-neutral-300 font-mono text-xs">{row.ip}</td>
+                <td className="py-3 text-neutral-400 font-mono text-xs">{row.lan}</td>
+                <td className="py-3 text-neutral-400 text-xs">{row.os}</td>
                 <td className="py-3"><span className="px-2 py-0.5 rounded-full text-xs bg-amber-500/20 text-amber-300">{row.type}</span></td>
+                <td className="py-3">
+                  <span className={`px-2 py-0.5 rounded-full text-xs ${row.online ? 'bg-green-500/20 text-green-300' : 'bg-neutral-700 text-neutral-300'}`}>
+                    {row.online ? 'online' : 'offline'}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p className="text-xs text-neutral-500 mt-3">All Tailscale IPs survived the router reset unchanged. Only LAN and public IPs moved.</p>
+      </div>
+
+      {/* Tailscale Serve */}
+      <div className="card-glass rounded-xl p-6">
+        <h3 className="text-lg font-semibold text-amber-300 mb-3">Tailscale Serve / Funnel Map</h3>
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-white/10 text-neutral-400">
+              <th className="text-left font-medium py-2">Host</th>
+              <th className="text-left font-medium py-2">Public Port</th>
+              <th className="text-left font-medium py-2">Local Target</th>
+              <th className="text-left font-medium py-2">Service</th>
+            </tr>
+          </thead>
+          <tbody>
+            {serveMap.map((row, i) => (
+              <tr key={`${row.host}-${row.port}-${i}`} className="border-b border-white/5">
+                <td className="py-2 text-white text-xs">{row.host}</td>
+                <td className="py-2 text-neutral-300 font-mono text-xs">{row.port}</td>
+                <td className="py-2 text-neutral-400 font-mono text-xs">{row.target}</td>
+                <td className="py-2 text-neutral-400 text-xs">{row.note}</td>
               </tr>
             ))}
           </tbody>
@@ -60,62 +139,52 @@ export default function NetworkPage() {
       {/* Jitsi */}
       <div className="card-glass rounded-xl p-6">
         <h3 className="text-lg font-semibold text-amber-300 mb-3">Jitsi (Mini)</h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
           <div>
             <span className="text-neutral-400">Containers</span>
-            <p className="text-white">5</p>
+            <p className="text-white">4 (web, jicofo, jvb, prosody)</p>
           </div>
           <div>
             <span className="text-neutral-400">Port</span>
-            <p className="text-white font-mono">8443</p>
+            <p className="text-white font-mono">8443 / 8000</p>
           </div>
           <div>
-            <span className="text-neutral-400">WebSocket</span>
-            <p className="text-amber-300">TLS issue (ws:// not wss://)</p>
+            <span className="text-neutral-400">Public URL</span>
+            <p className="text-white font-mono text-xs">danieles-mac-mini:443</p>
+          </div>
+          <div>
+            <span className="text-neutral-400">Uptime</span>
+            <p className="text-white">8 days</p>
           </div>
         </div>
-      </div>
-
-      {/* Port Conflicts */}
-      <div className="card-glass rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-amber-300 mb-3">Port Conflicts</h3>
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-white/10 text-neutral-400">
-              <th className="text-left font-medium py-2">Service</th>
-              <th className="text-left font-medium py-2">Port</th>
-              <th className="text-left font-medium py-2">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="border-b border-white/5">
-              <td className="py-3 text-white">Stremio</td>
-              <td className="py-3 text-neutral-300 font-mono">11470</td>
-              <td className="py-3"><span className="px-2 py-0.5 rounded-full text-xs bg-red-500/20 text-red-300">Conflict</span></td>
-            </tr>
-          </tbody>
-        </table>
+        <p className="text-xs text-neutral-500 mt-3">No Jibri recording container is deployed. Public via Tailscale Funnel on :443 → 127.0.0.1:8000.</p>
       </div>
 
       {/* Server Hosting */}
       <div className="card-glass rounded-xl p-6 border-amber-500/20">
         <h3 className="text-lg font-semibold text-amber-300 mb-3">Server Hosting (Local Service Accessibility)</h3>
         <div className="space-y-3 text-sm">
-          <p className="text-neutral-400">The MacBook is the only place the server runs — data lives there (Beeper DB, Messages chat.db, local mail). When the MacBook is asleep or away, the service is unreachable.</p>
+          <p className="text-neutral-400">Comm Analytics now runs on <strong className="text-white">both</strong> machines. The MBP copy is the definitive link (it holds the live Beeper DB, Messages chat.db and local mail). The Mini copy is the failover.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
             <div className="rounded-xl bg-neutral-900/50 border border-white/5 p-4">
-              <h4 className="font-medium text-white mb-1">Option 1: Prevent Sleep on Power</h4>
-              <p className="text-xs text-neutral-400">System Settings → Battery → Options → "Prevent automatic sleeping on power adapter when display is off". Keeps it reachable while plugged in.</p>
-              <p className="text-xs text-neutral-500 mt-1">Doesn't help when shut down, unplugged, or away.</p>
+              <h4 className="font-medium text-white mb-1">MBP — definitive</h4>
+              <p className="text-xs text-neutral-400 font-mono">localhost:8799 → :8445</p>
+              <a href="https://macbook-pro-6.tailab1fd5.ts.net:8445/" target="_blank" rel="noopener noreferrer" className="text-amber-300 hover:underline text-xs font-mono mt-1 block">
+                https://macbook-pro-6.tailab1fd5.ts.net:8445/
+              </a>
+              <p className="text-xs text-neutral-500 mt-1">Unreachable when the MBP is asleep or away.</p>
             </div>
             <div className="rounded-xl bg-neutral-900/50 border border-white/5 p-4">
-              <h4 className="font-medium text-white mb-1">Option 2: Host on Mac Mini (Best)</h4>
-              <p className="text-xs text-neutral-400">Mac Mini is always on, already on tailnet. Needs own copies of data: Messages (iCloud), Beeper (install + sign in), Mail (same accounts), app copy + Full Disk Access + launchd + Tailscale Serve.</p>
-              <p className="text-xs text-neutral-500 mt-1">Address becomes: https://danieles-mac-mini.tailab1fd5.ts.net:8445/</p>
+              <h4 className="font-medium text-white mb-1">Mini — failover</h4>
+              <p className="text-xs text-neutral-400 font-mono">localhost:8799 → :8445</p>
+              <a href="https://danieles-mac-mini.tailab1fd5.ts.net:8445/" target="_blank" rel="noopener noreferrer" className="text-amber-300 hover:underline text-xs font-mono mt-1 block">
+                https://danieles-mac-mini.tailab1fd5.ts.net:8445/
+              </a>
+              <p className="text-xs text-neutral-500 mt-1">Always on. Data is a separate copy.</p>
             </div>
           </div>
-          <p className="text-xs text-red-300 mt-2">Option 3 (Cloud hosting) — NOT recommended. Private message/email content would sit on someone else's server.</p>
-          <p className="text-xs text-neutral-500 mt-1">Recommendation: Do Option 1 now (takes a minute). Move to Mac Mini if you regularly want access while MacBook is closed or away. Security stays the same: Tailscale only, your login only.</p>
+          <p className="text-xs text-amber-300 mt-2">The two copies do NOT sync — changes have to be copied manually.</p>
+          <p className="text-xs text-neutral-500 mt-1">Security stays the same: Tailscale only, your login only.</p>
         </div>
       </div>
 
@@ -123,7 +192,7 @@ export default function NetworkPage() {
       <div className="card-glass rounded-xl p-6 border-amber-500/20">
         <h3 className="text-lg font-semibold text-amber-300 mb-3">Remote Access (Tailscale)</h3>
         <div className="space-y-3 text-sm">
-          <p className="text-neutral-400">The Orb is now accessible as a web app from any device on your tailnet — no VNC needed.</p>
+          <p className="text-neutral-400">The Orb is accessible as a web app from any device on your tailnet — no VNC needed.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
             <div className="rounded-xl bg-neutral-900/50 border border-white/5 p-4">
               <h4 className="font-medium text-white mb-1">From MBP (local)</h4>
@@ -147,7 +216,7 @@ export default function NetworkPage() {
             </div>
           </div>
           <div className="mt-3 p-3 bg-neutral-900/50 rounded-lg">
-            <p className="text-xs text-neutral-400"><strong className="text-white">How it works:</strong> The Orb desktop app runs a built-in web server on port 8450. Tailscale Serve exposes it on your tailnet. Any device can access it via the URL above — no VNC, no desktop sharing needed.</p>
+            <p className="text-xs text-neutral-400"><strong className="text-white">How it works:</strong> The Orb desktop app runs a built-in web server on port 8450. Tailscale Serve exposes it on your tailnet. Both instances are now kept alive by a LaunchAgent (<code className="text-amber-300">com.user.the-orb</code>).</p>
           </div>
           <div className="flex gap-2 mt-3">
             <button onClick={async () => { if (window.electronAPI) { const r = await window.electronAPI.startWebServer(); alert(`Web server started on port ${r.port}`); } }} className="btn-ghost text-xs">Start Server</button>
@@ -158,13 +227,13 @@ export default function NetworkPage() {
 
       {/* Comm Analytics Server */}
       <div className="card-glass rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-amber-300 mb-3">Comm Analytics Server (Mac Mini)</h3>
+        <h3 className="text-lg font-semibold text-amber-300 mb-3">Comm Analytics Server</h3>
         <div className="space-y-3 text-sm">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="rounded-xl bg-neutral-900/50 border border-white/5 p-4">
               <h4 className="font-medium text-white mb-1">Host</h4>
-              <p className="text-xs text-neutral-400">Mac mini, ~/dyad-apps/comm-analytics</p>
-              <p className="text-xs text-neutral-500 mt-1">Python 3.11, no framework</p>
+              <p className="text-xs text-neutral-400">MBP (definitive) + Mac mini (failover)</p>
+              <p className="text-xs text-neutral-500 mt-1">~/dyad-apps/comm-analytics — Python 3.11, no framework</p>
             </div>
             <div className="rounded-xl bg-neutral-900/50 border border-white/5 p-4">
               <h4 className="font-medium text-white mb-1">Server</h4>
@@ -174,12 +243,12 @@ export default function NetworkPage() {
             <div className="rounded-xl bg-neutral-900/50 border border-white/5 p-4">
               <h4 className="font-medium text-white mb-1">Listen</h4>
               <p className="text-xs text-neutral-400">127.0.0.1:8799 (local only)</p>
-              <p className="text-xs text-neutral-500 mt-1">Remote via Tailscale Serve: port 8445</p>
+              <p className="text-xs text-neutral-500 mt-1">Remote via Tailscale Serve: port 8445 on both hosts</p>
             </div>
             <div className="rounded-xl bg-neutral-900/50 border border-white/5 p-4">
-              <h4 className="font-medium text-white mb-1">Config</h4>
-              <p className="text-xs text-neutral-400">COMM_HOST=0.0.0.0, COMM_TOKEN=local</p>
-              <p className="text-xs text-neutral-500 mt-1">Starts at login, restarts on crash</p>
+              <h4 className="font-medium text-white mb-1">Auth</h4>
+              <p className="text-xs text-neutral-400">Tailscale-User-Login allowlist</p>
+              <p className="text-xs text-neutral-500 mt-1">COMM_TAILSCALE_USERS=daniele.buatti@gmail.com</p>
             </div>
           </div>
 
@@ -224,19 +293,19 @@ export default function NetworkPage() {
             <h4 className="font-medium text-white mb-2">Access Points</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
               <div className="rounded-lg bg-neutral-900/50 p-3">
-                <p className="text-xs text-neutral-400">Direct (Mini local)</p>
-                <a href="http://127.0.0.1:8799/" target="_blank" rel="noopener noreferrer" className="text-amber-300 hover:underline text-xs font-mono">http://127.0.0.1:8799/</a>
-                <p className="text-xs text-neutral-500">No auth</p>
+                <p className="text-xs text-neutral-400">Definitive (MBP)</p>
+                <a href="https://macbook-pro-6.tailab1fd5.ts.net:8445/" target="_blank" rel="noopener noreferrer" className="text-amber-300 hover:underline text-xs font-mono">https://macbook-pro-6.tailab1fd5.ts.net:8445/</a>
+                <p className="text-xs text-neutral-500">Tailnet only</p>
               </div>
               <div className="rounded-lg bg-neutral-900/50 p-3">
-                <p className="text-xs text-neutral-400">Tailscale IP</p>
-                <a href="http://100.116.158.22:8799/?token=local" target="_blank" rel="noopener noreferrer" className="text-amber-300 hover:underline text-xs font-mono">http://100.116.158.22:8799/?token=local</a>
-                <p className="text-xs text-neutral-500">Requires token</p>
-              </div>
-              <div className="rounded-lg bg-neutral-900/50 p-3">
-                <p className="text-xs text-neutral-400">Tailscale Serve</p>
+                <p className="text-xs text-neutral-400">Failover (Mini)</p>
                 <a href="https://danieles-mac-mini.tailab1fd5.ts.net:8445/" target="_blank" rel="noopener noreferrer" className="text-amber-300 hover:underline text-xs font-mono">https://danieles-mac-mini.tailab1fd5.ts.net:8445/</a>
                 <p className="text-xs text-neutral-500">Tailnet only</p>
+              </div>
+              <div className="rounded-lg bg-neutral-900/50 p-3">
+                <p className="text-xs text-neutral-400">Tailscale IP (Mini)</p>
+                <a href="http://100.116.158.22:8799/?token=local" target="_blank" rel="noopener noreferrer" className="text-amber-300 hover:underline text-xs font-mono">http://100.116.158.22:8799/?token=local</a>
+                <p className="text-xs text-neutral-500">Token bootstrap</p>
               </div>
             </div>
           </div>
@@ -244,10 +313,10 @@ export default function NetworkPage() {
           <div className="mt-3 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
             <h4 className="font-medium text-amber-300 mb-1 text-xs">Things to be aware of</h4>
             <ul className="text-xs text-neutral-400 space-y-1 list-disc list-inside">
-              <li>Two copies: MacBook and Mini don't sync - changes must be copied manually</li>
+              <li>Two copies: MacBook and Mini don't sync — changes must be copied manually</li>
               <li>Not in git on the Mini: folder isn't tracked by git (MBP repo has one commit)</li>
               <li>Full Disk Access still needed for /usr/local/bin/python3 on Mini (Messages + Mail sync)</li>
-              <li>Replying: "Open chat" opens Beeper/Messages on the Mini screen - only works when at the Mini</li>
+              <li>Replying: "Open chat" opens Beeper/Messages on the host screen — only works at that machine</li>
               <li>Some marks (e.g. "Mark handled") are per-device (browser localStorage)</li>
               <li>Outside connections: media lookups (YouTube/Spotify/Vimeo/SoundCloud), thumbnail images, optional Gmail</li>
             </ul>
