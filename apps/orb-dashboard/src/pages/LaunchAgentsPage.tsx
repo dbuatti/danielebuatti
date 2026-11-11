@@ -11,7 +11,7 @@ export default function LaunchAgentsPage() {
     { name: 'sh.brew.syncthing', status: 'running', pid: '4558', desc: 'Syncthing on :8384' },
     { name: 'pm2.danielebuatti', status: 'loaded', pid: '—', desc: 'PM2 process manager for node services' },
     { name: 'daniele.static-planner.pull', status: 'loaded', pid: '—', desc: 'Pulls static-planner schedule updates' },
-    { name: 'daniele.tick-rename', status: 'loaded', pid: '—', desc: 'Renames calendar ticks (Neon quota issue)' },
+    { name: 'daniele.tick-rename', status: 'loaded', pid: '—', desc: 'Renames calendar ticks — Neon is reachable again (11 Nov)' },
   ];
 
   const miniAgents = [
@@ -21,6 +21,10 @@ export default function LaunchAgentsPage() {
     { name: 'ai.opencode.web', status: 'running', pid: '977', desc: 'Second OpenCode web server on :4096' },
     { name: 'com.user.stremio-health-check', status: 'idle', pid: 'exit 0', desc: 'Checks Stremio container health' },
     { name: 'com.charmingdivinations.auto-tunnel', status: 'failed', pid: 'exit 1', desc: 'Auto SSH tunnel helper — failing' },
+    { name: 'danieletown.town-relay', status: 'not loaded', pid: '—', desc: 'TOWN iMessage relay — gui/504 domain, no session' },
+    { name: 'danieletown.ical-sync', status: 'not loaded', pid: '—', desc: 'iCloud ICS → Neon cache — last ran 3 Nov 12:06' },
+    { name: 'danieletown.calendar-sync', status: 'not loaded', pid: '—', desc: 'Builds schedule.js — last ran 3 Nov 12:06' },
+    { name: 'danieletown.imessage-agent', status: 'not loaded', pid: '—', desc: 'iMessage agent — gui/504 domain, no session' },
   ];
 
   const systemAgents = [
@@ -95,6 +99,21 @@ export default function LaunchAgentsPage() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* TOWN pipeline warning */}
+      <div className="card-glass rounded-xl p-6 border-red-500/20">
+        <h3 className="text-lg font-semibold text-red-300 mb-2">⚠️ TOWN pipeline is down (danieletown has no GUI session)</h3>
+        <p className="text-sm text-neutral-400">
+          The four <code className="text-amber-300">danieletown.*</code> agents live in the GUI domain of uid 504, which only exists while
+          <code className="text-amber-300"> danieletown</code> is logged in at the screen. The Mini's console user has been
+          <code className="text-amber-300"> danielebuatti</code> since <strong className="text-white">3 Nov 13:02</strong> — exactly when every
+          TOWN log stops. Nothing has run since.
+        </p>
+        <p className="text-xs text-neutral-500 mt-2">
+          Neon itself is fine again (11 Nov: <code>select now()</code> OK, <code>ical_sync.py</code> synced 84 events). The blocker is purely the
+          missing GUI session. Durable fix: move the agents to <code>/Library/LaunchDaemons</code> with <code>UserName=danieletown</code>.
+        </p>
       </div>
 
       {/* System Agents */}

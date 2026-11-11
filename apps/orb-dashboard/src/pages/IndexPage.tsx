@@ -49,7 +49,7 @@ export default function IndexPage() {
   const modules = [
     { path: '/nas', label: 'NAS', icon: Database, desc: 'Moon Prism at 192.168.2.100 / 100.124.90.53, mount scripts', color: 'amber' },
     { path: '/network', label: 'Network', icon: Wifi, desc: 'TPG NBN, Deco M5, Tailscale nodes, Serve map', color: 'blue' },
-    { path: '/launch-agents', label: 'Launch Agents', icon: Terminal, desc: '12 MBP + 6 Mini user agents', color: 'green' },
+    { path: '/launch-agents', label: 'Launch Agents', icon: Terminal, desc: '12 MBP + 10 Mini agents — TOWN pipeline down', color: 'green' },
     { path: '/stremio', label: 'Stremio', icon: Film, desc: 'Mini Docker stack, AIOStreams healthy', color: 'purple' },
     { path: '/crossover', label: 'CrossOver', icon: Gamepad2, desc: 'Bottles, 38 launchers, 3.7 GB sync remaining', color: 'orange' },
     { path: '/jitsi', label: 'Jitsi', icon: Video, desc: '4 containers, public via Funnel :443', color: 'red' },
