@@ -72,6 +72,81 @@ serve(async (req: Request) => {
             },
           });
         }
+      } else if (type === 'gift_voucher') {
+        // --- Handle Voucher Purchase ---
+        // The pending voucher was already written by create-voucher-checkout.
+        // This handler only flips it to paid. The unique index on
+        // stripe_checkout_session_id means a Stripe retry updates the same row
+        // instead of creating a second voucher.
+        const voucherId = session.client_reference_id || null;
+
+        const { data: voucher, error: lookupError } = await supabaseClient
+          .from('gift_vouchers')
+          .select('*')
+          .eq('stripe_checkout_session_id', session.id)
+          .maybeSingle();
+
+        if (lookupError) {
+          console.error(`[stripe-webhook] Error looking up voucher:`, lookupError);
+          return new Response(JSON.stringify({ received: true, error: lookupError.message }), {
+            status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        if (!voucher) {
+          console.error(`[stripe-webhook] No voucher found for session ${session.id}`);
+          return new Response(JSON.stringify({ received: true, unmatched: true }), {
+            status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        if (voucher.status !== 'pending') {
+          console.log(`[stripe-webhook] Voucher ${voucher.code} already ${voucher.status}; ignoring retry.`);
+          return new Response(JSON.stringify({ received: true, alreadyProcessed: true }), {
+            status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        const paidAt = session.payment_intent
+          ? new Date((session.payment_intent as any).created * 1000).toISOString()
+          : new Date().toISOString();
+
+        const { data: paid, error: payError } = await supabaseClient
+          .from('gift_vouchers')
+          .update({ status: 'paid', paid_at: paidAt })
+          .eq('id', voucher.id)
+          .eq('status', 'pending')
+          .select('*')
+          .maybeSingle();
+
+        if (payError) {
+          console.error(`[stripe-webhook] Error marking voucher paid:`, payError);
+          return new Response(JSON.stringify({ received: true, error: payError.message }), {
+            status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        // A mail failure must not make Stripe retry the whole webhook, which
+        // would then find the voucher already paid. Log and carry on.
+        const trySend = async (kind: string) => {
+          try {
+            const { error } = await supabaseClient.functions.invoke('send-voucher-email', {
+              body: { voucherId: voucher.id, kind },
+            });
+            if (error) console.error(`[stripe-webhook] ${kind} email failed:`, error);
+          } catch (e) {
+            console.error(`[stripe-webhook] ${kind} email threw:`, (e as Error).message);
+          }
+        };
+
+        // The buyer always gets a receipt. The recipient email is held back
+        // until send_recipient_on, or sent now when no date was set.
+        await trySend('receipt');
+        if (paid && paid.recipient_email && !paid.send_recipient_on) {
+          await trySend('recipient');
+        }
+
+        console.log(`[stripe-webhook] Voucher ${voucher.code} marked paid.`);
       } else if (type === 'gift_card' || !type) {
         // --- Handle Gift Card Purchase ---
         

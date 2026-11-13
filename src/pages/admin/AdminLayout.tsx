@@ -21,6 +21,7 @@ const navItems = [
   { to: '/admin/ameb-bookings', label: 'AMEB Bookings', icon: Music },
   { to: '/admin/email-templates', label: 'Email Templates', icon: MailOpen },
   { to: '/admin/gift-cards', label: 'Gift Cards', icon: Gift },
+  { to: '/admin/vouchers', label: 'Vouchers', icon: Gift },
   { to: '/admin/job-decision-filter', label: 'Job Decision Filter', icon: ClipboardList },
 ];
 

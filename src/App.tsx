@@ -30,6 +30,9 @@ const DynamicQuotePage = lazy(() => import('./pages/DynamicQuotePage'));
 const QuoteConfirmationPage = lazy(() => import('./pages/QuoteConfirmationPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const GiftCardsPage = lazy(() => import('./pages/GiftCardsPage'));
+const GiftVouchersPage = lazy(() => import('./pages/GiftVouchersPage'));
+const GiftVoucherSuccessPage = lazy(() => import('./pages/GiftVoucherSuccessPage'));
+const VoucherPage = lazy(() => import('./pages/VoucherPage'));
 const StorePage = lazy(() => import('./pages/StorePage'));
 const StoreSuccessPage = lazy(() => import('./pages/StoreSuccessPage'));
 const ArrangementDetailsPage = lazy(() => import('./pages/ArrangementDetailsPage'));
@@ -51,6 +54,7 @@ const AdminAmebBookingsPage = lazy(() => import('./pages/admin/AdminAmebBookings
 const AdminAmebBookingDetailsPage = lazy(() => import('./pages/admin/AdminAmebBookingDetailsPage'));
 const AdminEmailTemplatesPage = lazy(() => import('./pages/admin/AdminEmailTemplatesPage'));
 const AdminGiftCardsPage = lazy(() => import('./pages/admin/AdminGiftCardsPage'));
+const AdminVouchersPage = lazy(() => import('./pages/admin/AdminVouchersPage'));
 const AdminStorePage = lazy(() => import('./pages/admin/AdminStorePage'));
 const JobDecisionFilterPage = lazy(() => import('./pages/admin/JobDecisionFilterPage'));
 const AdminLeadsPage = lazy(() => import('./pages/admin/AdminLeadsPage'));
@@ -84,13 +88,15 @@ function App() {
               <Route path="live-piano-services/quote-confirmation" element={<QuoteConfirmationPage />} />
               <Route path="contact" element={<ContactPage />} />
               <Route path="gift-cards" element={<GiftCardsPage />} />
+              <Route path="gift" element={<GiftVouchersPage />} />
+              <Route path="gift/success" element={<GiftVoucherSuccessPage />} />
+              <Route path="voucher/:code" element={<VoucherPage />} />
               {/* Retired page; send old links to the live piano services instead. */}
               <Route path="ceremony-specialist" element={<Navigate to="/live-piano-services" replace />} />
               <Route path="store" element={<StorePage />} />
               <Route path="store/success" element={<StoreSuccessPage />} />
               <Route path="store/arrangements/:slug" element={<ArrangementDetailsPage />} />
               <Route path="media" element={<MediaPage />} />
-              <Route path="pianobyheart" element={<PianoByHeartPage />} />
               <Route path="piano-by-heart" element={<Navigate to="/pianobyheart" replace />} />
               <Route path="privacy" element={<PrivacyPage />} />
               <Route path="terms" element={<TermsPage />} />
@@ -112,6 +118,7 @@ function App() {
                 <Route path="ameb-bookings/:id" element={<AdminAmebBookingDetailsPage />} />
                 <Route path="email-templates" element={<AdminEmailTemplatesPage />} />
                 <Route path="gift-cards" element={<AdminGiftCardsPage />} />
+                <Route path="vouchers" element={<AdminVouchersPage />} />
                 <Route path="store" element={<AdminStorePage />} />
                 <Route path="job-decision-filter" element={<JobDecisionFilterPage />} />
               </Route>

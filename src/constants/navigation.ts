@@ -49,6 +49,7 @@ export const serviceLinks: ServiceLink[] = [
 export const navLinks: NavLink[] = [
   { name: "Piano by Heart", href: "/pianobyheart" },
   { name: "Store", href: "/store" },
+  { name: "Gift Vouchers", href: "/gift" },
   { name: "Resources", href: "/projects-resources" },
   { name: "About", href: "/about" },
   { name: "Contact", href: "/contact" },

@@ -1,0 +1,247 @@
+/*
+ * Print and screen styles for the A5 gift voucher.
+ *
+ * The sheet is 148mm × 210mm (A5 portrait) so it prints on a single page with
+ * no scaling. On screen it sits in a soft frame at the same proportions, which
+ * means what you see is what prints.
+ */
+
+.voucher-sheet {
+  width: 148mm;
+  min-height: 210mm;
+  background: #faf7f2;
+  color: #1a2039;
+  box-shadow: 0 2px 4px hsl(229 44% 14% / 0.05), 0 24px 48px -20px hsl(229 44% 14% / 0.25);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.voucher-inner {
+  display: flex;
+  flex-direction: column;
+  min-height: 210mm;
+  padding: 14mm 13mm 12mm;
+  box-sizing: border-box;
+}
+
+/* ------------------------------------------------------------------ header */
+
+.voucher-header {
+  border-bottom: 1px solid #e7e0d5;
+  padding-bottom: 7mm;
+  text-align: center;
+}
+
+.voucher-logo {
+  height: 11mm;
+  width: auto;
+  margin: 0 auto;
+  display: block;
+}
+
+.voucher-eyebrow {
+  margin: 5mm 0 0;
+  font-size: 8pt;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #a39e97;
+}
+
+/* -------------------------------------------------------------------- body */
+
+.voucher-body {
+  flex: 1;
+  padding: 11mm 0 8mm;
+  text-align: center;
+}
+
+.voucher-for {
+  margin: 0 0 4mm;
+  font-size: 10pt;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #db4ca3;
+}
+
+.voucher-what {
+  margin: 0;
+  font-family: "Fraunces Variable", Fraunces, Georgia, serif;
+  font-size: 27pt;
+  font-weight: 300;
+  line-height: 1.14;
+  color: #1a2039;
+  text-wrap: balance;
+}
+
+.voucher-description {
+  margin: 4mm auto 0;
+  max-width: 105mm;
+  font-size: 9.5pt;
+  line-height: 1.55;
+  color: #585c6b;
+}
+
+.voucher-value {
+  margin: 3mm 0 0;
+  font-family: "Fraunces Variable", Fraunces, Georgia, serif;
+  font-size: 20pt;
+  font-weight: 300;
+  color: #db4ca3;
+}
+
+.voucher-sessions {
+  margin: 5mm 0 0;
+  font-size: 9pt;
+  letter-spacing: 0.06em;
+  color: #76767c;
+}
+
+.voucher-sessions strong {
+  font-weight: 600;
+  color: #1a2039;
+}
+
+/* ----------------------------------------------------------------- message */
+
+.voucher-message {
+  margin: 8mm auto 0;
+  max-width: 100mm;
+  padding: 5mm 6mm;
+  border-left: 2px solid #db4ca3;
+  background: #ffffff;
+  font-family: "Fraunces Variable", Fraunces, Georgia, serif;
+  font-size: 11pt;
+  font-style: italic;
+  line-height: 1.55;
+  color: #2a3048;
+  text-align: left;
+}
+
+/* -------------------------------------------------------------------- code */
+
+.voucher-code-block {
+  margin: 9mm auto 0;
+  padding: 5mm 4mm;
+  max-width: 95mm;
+  border: 1px dashed #d3cbbe;
+  border-radius: 3mm;
+  background: #ffffff;
+}
+
+.voucher-code-label {
+  margin: 0;
+  font-size: 7.5pt;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #a39e97;
+}
+
+.voucher-code {
+  margin: 2mm 0 0;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 17pt;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #db4ca3;
+}
+
+/* -------------------------------------------------------------------- meta */
+
+.voucher-meta {
+  margin: 8mm 0 0;
+  display: flex;
+  justify-content: center;
+  gap: 12mm;
+}
+
+.voucher-meta div {
+  margin: 0;
+}
+
+.voucher-meta dt {
+  font-size: 7.5pt;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #a39e97;
+}
+
+.voucher-meta dd {
+  margin: 1.5mm 0 0;
+  font-size: 10pt;
+  color: #1a2039;
+}
+
+/* ------------------------------------------------------------------ footer */
+
+.voucher-footer {
+  border-top: 1px solid #e7e0d5;
+  padding-top: 6mm;
+  text-align: center;
+}
+
+.voucher-booking {
+  margin: 0;
+  font-size: 8.5pt;
+  line-height: 1.6;
+  color: #585c6b;
+}
+
+.voucher-booking a {
+  color: #db4ca3;
+  text-decoration: none;
+  border-bottom: 1px solid rgb(219 76 163 / 0.35);
+}
+
+.voucher-expired {
+  margin: 3mm 0 0;
+  font-size: 8pt;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #b4443c;
+}
+
+/* ------------------------------------------------------------------ print */
+
+@page {
+  size: A5 portrait;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body {
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Hide everything except the voucher sheet. */
+  body * {
+    visibility: hidden;
+  }
+
+  .voucher-sheet,
+  .voucher-sheet * {
+    visibility: visible;
+  }
+
+  .voucher-sheet {
+    position: absolute;
+    inset: 0 auto auto 0;
+    margin: 0;
+    width: 148mm;
+    min-height: 210mm;
+    box-shadow: none;
+    border-radius: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .voucher-inner {
+    min-height: 210mm;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}

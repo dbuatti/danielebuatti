@@ -28,3 +28,4 @@ supabase/.temp/
 # Build artifacts
 apps/orb-dashboard/dist/
 apps/orb-dashboard/dist-electron/
+.vercel
