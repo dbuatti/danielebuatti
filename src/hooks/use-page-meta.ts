@@ -91,8 +91,10 @@ export function usePageMeta(title: string, description: string, options: PageMet
   }, [title, description, pathname, noindex, image]);
 }
 
-// Applies a public page's entry from src/seo/pages.ts.
-export function useRouteMeta(path: PagePath) {
-  const { title, description, image } = pageMeta[path];
-  usePageMeta(title, description, { image });
+// Applies a public page's entry from src/seo/pages.ts. Falls back to the
+// homepage entry rather than throwing, so a route added before its metadata
+// cannot crash the page.
+export function useRouteMeta(path: PagePath, options: PageMetaOptions = {}) {
+  const meta = pageMeta[path] ?? pageMeta["/"];
+  usePageMeta(meta.title, meta.description, { image: meta.image, ...options });
 }

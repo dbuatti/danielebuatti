@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS public.gift_vouchers (
   sessions_total INTEGER,            -- NULL for a custom dollar credit
   sessions_remaining INTEGER,
   session_length_minutes INTEGER,
-  amount_cents INTEGER,              -- set for custom-amount / credit vouchers
+  amount_cents INTEGER,              -- what was paid, in cents (see comment below)
 
   buyer_name TEXT NOT NULL,
   buyer_email TEXT NOT NULL,
@@ -100,6 +100,9 @@ COMMENT ON COLUMN public.gift_vouchers.code IS
 
 COMMENT ON COLUMN public.gift_vouchers.paid_at IS
   'The date payment cleared. Used for income reporting instead of created_at.';
+
+COMMENT ON COLUMN public.gift_vouchers.amount_cents IS
+  'What was paid for the voucher, in cents. Recorded for every voucher so income is reported from the voucher row alone.';
 
 CREATE INDEX IF NOT EXISTS gift_vouchers_status_idx ON public.gift_vouchers (status);
 CREATE INDEX IF NOT EXISTS gift_vouchers_paid_at_idx ON public.gift_vouchers (paid_at);

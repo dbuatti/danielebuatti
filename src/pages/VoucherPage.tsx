@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { AlertCircle, Loader2, Printer } from "lucide-react";
-import { useRouteMeta } from "@/hooks/use-page-meta";
+import { usePageMeta } from "@/hooks/use-page-meta";
 import { supabase } from "@/integrations/supabase/client";
 import "@/voucher.css";
 
@@ -33,7 +33,12 @@ interface VoucherView {
  * the rest of the site's styles never have to carry print rules.
  */
 const VoucherPage: React.FC = () => {
-  useRouteMeta("/gift", { noindex: true });
+  // Printable per-voucher page: public but never indexed.
+  usePageMeta(
+    "Your gift voucher | Daniele Buatti",
+    "View and print your Daniele Buatti gift voucher.",
+    { noindex: true },
+  );
 
   const { code = "" } = useParams();
   const [voucher, setVoucher] = useState<VoucherView | null>(null);
@@ -51,7 +56,12 @@ const VoucherPage: React.FC = () => {
       if (cancelled) return;
 
       if (fnError || (data as { error?: string })?.error) {
-        const message = (data as { error?: string })?.error || fnError?.message || "Voucher not found.";
+        // A 404 comes back as a FunctionsHttpError whose body supabase-js
+        // doesn't parse, so fall back to wording a buyer can act on rather
+        // than the library's "non-2xx status code" message.
+        const message =
+          (data as { error?: string })?.error ||
+          (fnError ? "That voucher code wasn't found. Check the spelling and try again." : "Voucher not found.");
         setError(message);
         return;
       }

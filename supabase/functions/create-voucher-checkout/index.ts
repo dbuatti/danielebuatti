@@ -96,40 +96,12 @@ serve(async (req: Request) => {
       ? `${p.label} — $${(priceCents / 100).toFixed(0)}`
       : p.label;
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      mode: 'payment',
-      customer_email: buyerEmail,
-      line_items: [{
-        quantity: 1,
-        price_data: {
-          currency: 'aud',
-          unit_amount: priceCents,
-          product_data: {
-            name: productName,
-            description: p.is_custom_amount
-              ? 'A dollar credit to put towards any session.'
-              : (p.description || describeVoucher(p)),
-          },
-        },
-      }],
-      success_url: `${origin}/gift/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/gift?canceled=1`,
-      metadata: {
-        type: 'gift_voucher',
-        pack_key: p.key,
-        buyer_name: buyerName.slice(0, 200),
-        buyer_email: buyerEmail.slice(0, 200),
-        recipient_name: recipientName.slice(0, 200),
-        recipient_email: recipientEmail.slice(0, 200),
-        message,
-        send_recipient_on: sendOn ?? '',
-      },
-    });
-
-    // ---- record the pending voucher ----
-    // The unique index on stripe_checkout_session_id is what stops a Stripe
-    // retry (or a double-click) from creating a second voucher.
+    // ---- record the pending voucher first ----
+    // The voucher is written before the Stripe session so its code can be put
+    // in the return URL: the success page shows the printable voucher straight
+    // away, and RLS never has to expose the table to the browser. The unique
+    // index on stripe_checkout_session_id still stops a retry from creating a
+    // second voucher, and the webhook only ever finds a paid voucher by that id.
     const { data: code, error: codeError } = await supabase
       .rpc('generate_voucher_code', { p_discipline: p.discipline });
 
@@ -148,7 +120,10 @@ serve(async (req: Request) => {
         sessions_total: p.sessions_total,
         sessions_remaining: p.sessions_total,
         session_length_minutes: p.session_length_minutes,
-        amount_cents: p.is_custom_amount ? priceCents : null,
+        // What was actually paid, in cents. Recorded for every voucher so
+        // income can be reported from the voucher row alone, without joining
+        // back to a price list that may have changed since.
+        amount_cents: priceCents,
         buyer_name: buyerName,
         buyer_email: buyerEmail,
         recipient_name: recipientName || null,
@@ -157,12 +132,58 @@ serve(async (req: Request) => {
         send_recipient_on: sendOn,
         status: 'pending',
         expires_at: expiryTwelveMonths(),
-        stripe_checkout_session_id: session.id,
       })
       .select('id, code')
       .single();
 
     if (insertError) throw new Error(`Could not save the voucher: ${insertError.message}`);
+
+    // ---- create the Stripe session ----
+    let session;
+    try {
+      session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        mode: 'payment',
+        customer_email: buyerEmail,
+        line_items: [{
+          quantity: 1,
+          price_data: {
+            currency: 'aud',
+            unit_amount: priceCents,
+            product_data: {
+              name: productName,
+              description: p.is_custom_amount
+                ? 'A dollar credit to put towards any session.'
+                : (p.description || describeVoucher(p)),
+            },
+          },
+        }],
+        success_url: `${origin}/gift/success?code=${encodeURIComponent(voucher.code)}`,
+        cancel_url: `${origin}/gift?canceled=1`,
+        metadata: {
+          type: 'gift_voucher',
+          pack_key: p.key,
+          voucher_code: voucher.code,
+          buyer_name: buyerName.slice(0, 200),
+          buyer_email: buyerEmail.slice(0, 200),
+          recipient_name: recipientName.slice(0, 200),
+          recipient_email: recipientEmail.slice(0, 200),
+          message,
+          send_recipient_on: sendOn ?? '',
+        },
+      });
+    } catch (stripeError) {
+      // No session means no way to pay, so don't leave the pending row behind.
+      await supabase.from('gift_vouchers').delete().eq('id', voucher.id);
+      throw stripeError;
+    }
+
+    const { error: linkError } = await supabase
+      .from('gift_vouchers')
+      .update({ stripe_checkout_session_id: session.id })
+      .eq('id', voucher.id);
+
+    if (linkError) throw new Error(`Could not link the voucher to checkout: ${linkError.message}`);
 
     console.log(`[create-voucher-checkout] ${session.id} -> voucher ${voucher.code}`);
 

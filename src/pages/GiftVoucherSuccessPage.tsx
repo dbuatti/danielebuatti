@@ -4,32 +4,38 @@ import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { CheckCircle2, Loader2, Mail, Printer } from "lucide-react";
 import { PageHeader } from "@/components/editorial";
-import { useRouteMeta } from "@/hooks/use-page-meta";
+import { usePageMeta } from "@/hooks/use-page-meta";
 import { supabase } from "@/integrations/supabase/client";
 
-interface PaidVoucher {
+interface VoucherView {
   code: string;
-  recipient_name: string | null;
-  buyer_name: string;
+  recipientName: string | null;
   status: string;
+  isExpired: boolean;
 }
 
 /**
- * Stripe returns the buyer here with ?session_id=... The voucher is marked paid
- * by the webhook, which can lag a second or two behind the redirect, so this
- * page polls briefly rather than assuming.
+ * Stripe returns the buyer here with ?code=... (the code is put in the return
+ * URL by create-voucher-checkout, so no table access is needed). The webhook
+ * marks the voucher paid a second or two after the redirect, so this page
+ * polls the narrow public voucher endpoint rather than assuming.
  */
 const GiftVoucherSuccessPage: React.FC = () => {
-  useRouteMeta("/gift/success", { noindex: true });
+  // A confirmation page: never indexed, and no share image of its own.
+  usePageMeta(
+    "Thank you — your gift voucher | Daniele Buatti",
+    "Your gift voucher is ready. View and print it, or check your inbox for the receipt.",
+    { noindex: true },
+  );
 
   const [params] = useSearchParams();
-  const sessionId = params.get("session_id");
+  const code = params.get("code");
 
-  const [voucher, setVoucher] = useState<PaidVoucher | null>(null);
+  const [voucher, setVoucher] = useState<VoucherView | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "pending" | "missing">("loading");
 
   useEffect(() => {
-    if (!sessionId) {
+    if (!code) {
       setStatus("missing");
       return;
     }
@@ -38,22 +44,26 @@ const GiftVoucherSuccessPage: React.FC = () => {
     let attempts = 0;
 
     const poll = async () => {
-      const { data } = await supabase
-        .from("gift_vouchers")
-        .select("code, recipient_name, buyer_name, status")
-        .eq("stripe_checkout_session_id", sessionId)
-        .maybeSingle();
+      const { data } = await supabase.functions.invoke(
+        `fetch-voucher?code=${encodeURIComponent(code)}`,
+        { method: "GET" },
+      );
 
       if (cancelled) return;
 
-      if (data) {
-        setVoucher(data as PaidVoucher);
+      const view = data as VoucherView | null;
+
+      if (view?.code && view.status !== "pending") {
+        setVoucher(view);
         setStatus("ready");
         return;
       }
 
       attempts += 1;
+      // Eight seconds is enough for the webhook to land. After that the email
+      // is the reliable copy, so say so rather than spinning forever.
       if (attempts >= 8) {
+        if (view?.code) setVoucher(view);
         setStatus("pending");
         return;
       }
@@ -65,7 +75,7 @@ const GiftVoucherSuccessPage: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [sessionId]);
+  }, [code]);
 
   return (
     <div>
@@ -91,9 +101,21 @@ const GiftVoucherSuccessPage: React.FC = () => {
             <div className="rounded-2xl border border-border bg-card p-8">
               <h2 className="text-2xl font-normal text-brand-dark">Payment received</h2>
               <p className="mt-3 text-muted-foreground">
-                Your voucher is being prepared. A receipt with the voucher is on its way to your inbox — it should
-                arrive within a minute or two.
+                Your receipt with the voucher is on its way to your inbox — it should arrive within a minute
+                or two.
               </p>
+
+              {voucher && (
+                <div className="mt-6">
+                  <Link
+                    to={`/voucher/${voucher.code}`}
+                    className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-brand-primary px-6 text-sm font-medium text-white transition-colors hover:bg-brand-primary/90"
+                  >
+                    <Printer className="h-4 w-4" aria-hidden="true" /> View &amp; print
+                  </Link>
+                </div>
+              )}
+
               <p className="mt-4 text-sm text-muted-foreground">
                 Nothing arrived? Email{" "}
                 <a href="mailto:info@danielebuatti.com" className="text-brand-primary underline">
@@ -118,10 +140,10 @@ const GiftVoucherSuccessPage: React.FC = () => {
             <div className="rounded-2xl border border-border bg-card p-8">
               <CheckCircle2 className="h-10 w-10 text-brand-primary" aria-hidden="true" />
               <h2 className="mt-4 text-2xl font-normal text-brand-dark">
-                {voucher.recipient_name ? `For ${voucher.recipient_name}` : "All sorted"}
+                {voucher.recipientName ? `For ${voucher.recipientName}` : "All sorted"}
               </h2>
               <p className="mt-3 text-muted-foreground">
-                Your receipt is in your inbox, and the printable voucher is attached to this page.
+                Your receipt is in your inbox, and the printable voucher is below.
               </p>
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">

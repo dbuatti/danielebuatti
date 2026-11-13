@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Calendar, Mail, MapPin, MessageCircle } from "lucide-react";
+import { ArrowRight, Calendar, Gift, Mail, MapPin, MessageCircle } from "lucide-react";
 import ContactForm from "@/components/ContactForm";
 import CalEmbed from "@/components/CalEmbed";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -92,6 +92,19 @@ const ContactPage: React.FC = () => {
           {/* Form */}
           <div className="rounded-2xl border border-border bg-card p-8 shadow-soft md:p-10">
             <h2 className="text-3xl font-light text-brand-dark">Send a message</h2>
+
+            <p className="mt-4 flex items-start gap-3 rounded-xl border border-border bg-secondary/20 p-4 text-sm leading-relaxed text-brand-dark/80">
+              <Gift className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary" aria-hidden="true" />
+              <span>
+                <strong className="font-medium text-brand-dark">Have a gift voucher?</strong> Mention your
+                voucher code in your message and I'll apply it when we confirm your time.{" "}
+                <Link to="/gift" className="text-brand-primary underline underline-offset-4">
+                  Buy a voucher
+                </Link>
+                .
+              </span>
+            </p>
+
             <div className="mt-8">
               <ContactForm />
             </div>

@@ -33,6 +33,7 @@ const headerTitles: Record<string, string> = {
   '/admin/ameb-bookings': 'AMEB Bookings',
   '/admin/email-templates': 'Email Templates',
   '/admin/gift-cards': 'Gift Cards',
+  '/admin/vouchers': 'Gift Vouchers',
   '/admin/job-decision-filter': 'Job Decision Filter',
 };
 

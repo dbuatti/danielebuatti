@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { Gift } from "lucide-react";
 import CalEmbed from "@/components/CalEmbed";
 import { ArrowLink, PageHeader } from "@/components/editorial";
 import { useRouteMeta } from "@/hooks/use-page-meta";
@@ -64,6 +65,21 @@ const VoicePianoBookingPage: React.FC = () => {
       </PageHeader>
 
       <section className="container pb-24 lg:pb-32">
+        <div className="mb-5 flex items-start gap-3 rounded-2xl border border-border bg-secondary/20 p-4 text-sm leading-relaxed text-brand-dark/80">
+          <Gift className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary" aria-hidden="true" />
+          <p>
+            <strong className="font-medium text-brand-dark">Have a gift voucher?</strong> Pick your time below,
+            then email{" "}
+            <a
+              href="mailto:info@danielebuatti.com?subject=Gift%20voucher%20booking"
+              className="text-brand-primary underline underline-offset-4"
+            >
+              info@danielebuatti.com
+            </a>{" "}
+            with your voucher code and I'll apply it to the booking.
+          </p>
+        </div>
+
         <div className="rounded-3xl border border-border bg-card p-2 shadow-soft sm:p-4" key={selectedDuration}>
           <CalEmbed calLink={currentOption.calLink} layout="month_view" />
         </div>

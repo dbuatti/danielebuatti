@@ -162,10 +162,14 @@ async function danieleBuatti() {
   const safe = makeSafe(warnings);
   const d30 = daysAgo(30), fy = financialYearStart();
 
-  const [quotes, leads, giftCards, amebUpcoming, messages30] = await Promise.all([
+  const [quotes, leads, giftCards, giftVouchers, amebUpcoming, messages30] = await Promise.all([
     safe(() => selectAll(client, 'invoices', 'id, client_name, event_title, total_amount, accepted_at, rejected_at, created_at'), []),
     safe(() => selectAll(client, 'leads', 'id, status, estimated_value'), []),
     safe(() => selectAll(client, 'gift_cards', 'id, value, payment_status, created_at'), []),
+    // Vouchers are counted on the date they were paid, not the date they were
+    // redeemed, so a voucher sold in June is June income even if the lessons
+    // run in September. paid_at is also what stops a row being counted twice.
+    safe(() => selectAll(client, 'gift_vouchers', 'id, label, amount_cents, status, paid_at, created_at'), []),
     safe(() => count(client, 'ameb_bookings', (q) => q.gte('exam_date', todayIso())), null),
     safe(() => count(client, 'contact_messages', (q) => q.gte('created_at', d30.toISOString())), null),
   ]);
@@ -173,11 +177,17 @@ async function danieleBuatti() {
   const accepted = quotes.filter((q) => q.accepted_at);
   const pending = quotes.filter((q) => !q.accepted_at && !q.rejected_at);
   const paidCards = giftCards.filter((g) => lower(g.payment_status) === 'paid');
+  // A voucher counts once it has a paid_at and has not been cancelled. The
+  // legacy gift_cards table is a separate table with no overlapping rows.
+  const paidVouchers = giftVouchers.filter(
+    (v) => v.paid_at && v.status !== 'pending' && v.status !== 'cancelled',
+  );
   const openLeads = leads.filter((l) => !['lost', 'converted'].includes(lower(l.status)));
 
-  const revenue = revenueSummary('Accepted quotes + gift cards', [
+  const revenue = revenueSummary('Accepted quotes + gift cards + vouchers', [
     ...accepted.map((q) => ({ date: q.accepted_at, amount: num(q.total_amount) })),
     ...paidCards.map((g) => ({ date: g.created_at, amount: num(g.value) })),
+    ...paidVouchers.map((v) => ({ date: v.paid_at, amount: num(v.amount_cents) / 100 })),
   ]);
 
   const metrics: Metric[] = [
@@ -186,6 +196,7 @@ async function danieleBuatti() {
     { label: 'Open leads', value: openLeads.length, format: 'number', hint: `${leads.filter((l) => lower(l.status) === 'new').length} new` },
     { label: 'Pipeline value', value: openLeads.reduce((s, l) => s + num(l.estimated_value), 0), format: 'currency' },
     { label: 'Gift card sales (FY)', value: sumWhere(paidCards, (g) => num(g.value), (g) => g.created_at, fy), format: 'currency' },
+    { label: 'Voucher sales (FY)', value: sumWhere(paidVouchers, (v) => num(v.amount_cents) / 100, (v) => v.paid_at, fy), format: 'currency', hint: `${paidVouchers.length} paid` },
     { label: 'Upcoming AMEB exams', value: amebUpcoming, format: 'number' },
     { label: 'Contact messages (30d)', value: messages30, format: 'number' },
   ];
@@ -193,6 +204,7 @@ async function danieleBuatti() {
   const recent: Activity[] = [
     ...accepted.map((q) => ({ title: `Quote accepted: ${q.client_name ?? 'Client'}`, subtitle: q.event_title, date: q.accepted_at, amount: num(q.total_amount) })),
     ...pending.map((q) => ({ title: `Quote sent: ${q.client_name ?? 'Client'}`, subtitle: q.event_title, date: q.created_at, amount: num(q.total_amount) })),
+    ...paidVouchers.map((v) => ({ title: `Gift voucher sold: ${v.label ?? 'Voucher'}`, date: v.paid_at, amount: num(v.amount_cents) / 100 })),
   ];
 
   return done(meta, metrics, recent, revenue, warnings);

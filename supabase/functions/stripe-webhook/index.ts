@@ -107,9 +107,11 @@ serve(async (req: Request) => {
           });
         }
 
-        const paidAt = session.payment_intent
-          ? new Date((session.payment_intent as any).created * 1000).toISOString()
-          : new Date().toISOString();
+        // session.created is a Unix timestamp in seconds and is always present.
+        // payment_intent is only an object when Stripe expands it, so using it
+        // here produced an Invalid Date and a 500 on exactly the events that
+        // matter. The checkout's created time is the honest "paid" date.
+        const paidAt = new Date((session.created ?? Math.floor(Date.now() / 1000)) * 1000).toISOString();
 
         const { data: paid, error: payError } = await supabaseClient
           .from('gift_vouchers')

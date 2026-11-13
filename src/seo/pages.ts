@@ -66,6 +66,12 @@ export const pageMeta = {
     description: "Give the gift of transformative coaching sessions or open credit with Daniele Buatti.",
     image: "/og/gift-cards.jpg",
   },
+  "/gift": {
+    title: "Gift Vouchers | Voice, Piano & Kinesiology Lessons | Daniele Buatti",
+    description:
+      "Give the gift of lessons. Choose a voice, piano or kinesiology session pack, add a personal message, and receive a printable voucher valid for 12 months.",
+    image: "/og/lessons.jpg",
+  },
   "/about": {
     title: "About Daniele Buatti | Pianist, Vocal Coach & Music Director",
     description: "Daniele Buatti is a Melbourne-based pianist, vocal coach and music director working across music theatre, cabaret, events and education.",

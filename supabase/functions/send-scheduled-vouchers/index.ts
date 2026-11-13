@@ -50,8 +50,32 @@ serve(async (req: Request) => {
       }
     }
 
-    console.log(`[send-scheduled-vouchers] expired=${expired ?? 0} sent=${sent} failed=${failures.length}`);
-    return json({ expired: expired ?? 0, sent, failed: failures.length, failures });
+    // 3. Clear out checkouts that were opened and never paid. Seven days is
+    //    long enough that a slow bank card can still complete; without this the
+    //    list slowly fills with rows that were never real.
+    const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const { count: abandoned, error: abandonError } = await supabase
+      .from('gift_vouchers')
+      .delete({ count: 'exact' })
+      .eq('status', 'pending')
+      .is('paid_at', null)
+      .lt('created_at', cutoff);
+
+    if (abandonError) {
+      // A cleanup failure shouldn't stop the scheduled sends above.
+      console.error(`[send-scheduled-vouchers] could not clear abandoned checkouts: ${abandonError.message}`);
+    }
+
+    console.log(
+      `[send-scheduled-vouchers] expired=${expired ?? 0} sent=${sent} failed=${failures.length} abandoned=${abandoned ?? 0}`,
+    );
+    return json({
+      expired: expired ?? 0,
+      sent,
+      failed: failures.length,
+      failures,
+      abandoned: abandoned ?? 0,
+    });
   } catch (error) {
     return fail((error as Error).message, 500);
   }

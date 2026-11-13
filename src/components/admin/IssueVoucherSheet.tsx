@@ -159,7 +159,7 @@ export const IssueVoucherSheet: React.FC<Props> = ({ open, onOpenChange, onIssue
     try {
       const amountCents = selected.is_custom_amount
         ? Math.round((Number.parseFloat(customAmount) || 0) * 100)
-        : null;
+        : priceToday(selected);
 
       if (selected.is_custom_amount && (!amountCents || amountCents < (selected.min_cents ?? 5000))) {
         showError(`The minimum custom amount is ${money(selected.min_cents ?? 5000)}.`);

@@ -1,0 +1,20 @@
+# Supabase CLI configuration for this project.
+#
+# Only the settings that differ from the defaults are listed. Everything else
+# keeps the CLI's defaults, so deploying a function does not silently change
+# how the others authenticate.
+#
+# verify_jwt = false is required for the two functions called by something that
+# is not a signed-in Supabase user:
+#   stripe-webhook           called by Stripe, which sends its own signature
+#   send-scheduled-vouchers  called by pg_cron, which has no user token
+# The voucher functions called from the browser or admin app keep the default
+# (true): the anon key and the admin's session token are both valid JWTs.
+
+project_id = "shkwqfggbcqtaedfxvwd"
+
+[functions.stripe-webhook]
+verify_jwt = false
+
+[functions.send-scheduled-vouchers]
+verify_jwt = false
