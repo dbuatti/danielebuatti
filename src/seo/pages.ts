@@ -51,6 +51,11 @@ export const pageMeta = {
     description: "Calm, reliable piano accompaniment for AMEB exams of all grades and instruments, with optional rehearsals beforehand. Book an accompanist in Melbourne.",
     image: "/og/ameb.jpg",
   },
+  "/audition-cut-playthrough": {
+    title: "Audition Cut Playthrough Online | 15-Minute Drop-In | Daniele Buatti",
+    description: "Run your 16–32 bar musical theatre audition cut live with an experienced audition pianist. 15-minute online drop-in, $30. Same-day bookings welcome.",
+    image: "/og/ameb.jpg",
+  },
   "/store": {
     title: "Sheet Music Store | Professional Piano & Vocal Arrangements | Daniele Buatti",
     description: "Browse a curated collection of professional sheet music PDFs, piano arrangements, and vocal scores. Digital downloads delivered instantly.",

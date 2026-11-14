@@ -90,10 +90,11 @@ const ProjectsPage: React.FC = () => {
 
         <div className="mt-16 space-y-20">
           <Group eyebrow="On stage" title="Specialised services">
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               <ProjectCard title="Music Director & Pianist" description="Music theatre direction, vocal coaching, and performance." link="/music-director-pianist" imageSrc="/daniele-conducting.jpeg" />
               <ProjectCard title="Live Piano Services" description="Weddings, events, and private functions." link="/live-piano-services" imageSrc="/blacktie.avif" />
               <ProjectCard title="AMEB Accompanying" description="Exam day and rehearsal accompaniment." link="/ameb-accompanying" imageSrc="/ameb-placeholder.jpg" />
+              <ProjectCard title="Audition Cut Playthrough" description="15-minute online run of your audition cut. $30." link="/audition-cut-playthrough" imageSrc="/danielepianolaugh.jpeg" />
             </div>
           </Group>
 

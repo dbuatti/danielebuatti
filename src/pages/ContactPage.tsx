@@ -18,6 +18,7 @@ const details = [
 const quickLinks = [
   { label: "Book a coaching session", to: "/book-voice-piano" },
   { label: "AMEB rates & booking", to: "/ameb-accompanying" },
+  { label: "Audition cut playthrough", to: "/audition-cut-playthrough" },
   { label: "Live piano for your event", to: "/live-piano-services" },
 ];
 

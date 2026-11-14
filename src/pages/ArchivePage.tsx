@@ -36,7 +36,7 @@ const ArchivePage: React.FC = () => {
                 <li>Upload your clear PDF when booking</li>
               </ul>
             }
-            link="/book-voice-piano"
+            link="/audition-cut-playthrough"
             linkText="Book a Playthrough"
             bgColorClass="bg-brand-dark"
             textColorClass="text-brand-light"

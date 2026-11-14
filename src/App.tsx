@@ -19,6 +19,7 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 const AtHomePage = lazy(() => import('./pages/AtHomePage'));
 const LivePianoServicesPage = lazy(() => import('./pages/LivePianoServicesPage'));
 const AmebAccompanyingPage = lazy(() => import('./pages/AmebAccompanyingPage'));
+const AuditionCutPlaythroughPage = lazy(() => import('./pages/AuditionCutPlaythroughPage'));
 const MusicDirectorPianistPage = lazy(() => import('./pages/MusicDirectorPianistPage'));
 const ProjectsResourcesPage = lazy(() => import('./pages/ProjectsResourcesPage'));
 const ArchivePage = lazy(() => import('./pages/ArchivePage'));
@@ -79,6 +80,8 @@ function App() {
               <Route path="projects-resources" element={<ProjectsResourcesPage />} />
               <Route path="live-piano-services" element={<LivePianoServicesPage />} />
               <Route path="ameb-accompanying" element={<AmebAccompanyingPage />} />
+              <Route path="audition-cut-playthrough" element={<AuditionCutPlaythroughPage />} />
+              <Route path="playthrough" element={<Navigate to="/audition-cut-playthrough" replace />} />
               <Route path="music-director-pianist" element={<MusicDirectorPianistPage />} />
               <Route path="archive" element={<ArchivePage />} />
               <Route path="about" element={<AboutPage />} />

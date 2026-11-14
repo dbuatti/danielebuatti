@@ -43,6 +43,12 @@ export const serviceLinks: ServiceLink[] = [
     description: "Calm, reliable accompaniment for exams.",
     icon: Piano,
   },
+  {
+    name: "Audition Cut Playthrough",
+    href: "/audition-cut-playthrough",
+    description: "15-minute online run of your audition cut.",
+    icon: Music,
+  },
 ];
 
 // Top-level links shown beside the "Work with me" menu.
