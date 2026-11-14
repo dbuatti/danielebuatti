@@ -259,7 +259,7 @@ const GiftVouchersPage: React.FC = () => {
                               )}
                             </div>
                             <p className="font-serif text-2xl font-light text-brand-dark">
-                              {isCustom ? "From" : ""} {dollars(price)}
+                              {isCustom ? `From ${dollars(pack.min_cents ?? 5000)}` : dollars(price)}
                             </p>
                           </label>
                         );
