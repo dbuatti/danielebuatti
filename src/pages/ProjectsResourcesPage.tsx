@@ -49,7 +49,7 @@ const ProjectCard: React.FC<{
 
 const PianoBackingsCard: React.FC = () => (
   <a
-    href="https://pianobackingsbydaniele.vercel.app"
+    href="https://pianobackings.danielebuatti.com"
     target="_blank"
     rel="noopener noreferrer"
     aria-label="Piano Backings by Daniele"
@@ -98,9 +98,10 @@ const ProjectsPage: React.FC = () => {
           </Group>
 
           <Group eyebrow="Online & in the community" title="Digital products & community">
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               <ProjectCard title="Sheet Music Store" description="Professional arrangements and vocal scores. Instant digital downloads." link="/store" imageSrc="/sheetmusic.png" />
               <PianoBackingsCard />
+              <ProjectCard title="The Audition Guidebook" description="My online course for musical theatre auditions: cutting, marking and handing over your music." link="https://theauditionguidebook.vercel.app" imageSrc="/danielepianolaugh.jpeg" />
               <ProjectCard title="Resonance with Daniele" description="A joyful pop-up choir for all voices. No experience needed." link="https://resonance-with-daniele.vercel.app" imageSrc="/conduct.jpeg" />
             </div>
           </Group>
