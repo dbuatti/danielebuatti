@@ -123,6 +123,10 @@ const GiftVouchersPage: React.FC = () => {
       setError("Choose a voucher.");
       return;
     }
+    if (buyerName.trim().length < 2) {
+      setError("Enter your name.");
+      return;
+    }
     if (selected.is_custom_amount && (!Number.isFinite(totalCents) || totalCents < (selected.min_cents ?? 5000))) {
       setError(`The minimum custom amount is ${dollars(selected.min_cents ?? 5000)}.`);
       return;
@@ -143,7 +147,18 @@ const GiftVouchersPage: React.FC = () => {
         },
       });
 
-      if (fnError) throw fnError;
+      if (fnError) {
+        // supabase-js hides the function's own message behind a generic
+        // "non-2xx status code" error; read it from the response instead.
+        let detail: string | undefined;
+        try {
+          const ctx = (fnError as { context?: Response }).context;
+          if (ctx && typeof ctx.json === "function") detail = (await ctx.json())?.error;
+        } catch {
+          /* fall through to the generic message */
+        }
+        throw new Error(detail || fnError.message);
+      }
       if (!data?.url) throw new Error("The checkout link was not returned.");
 
       window.location.href = data.url;
