@@ -34,8 +34,11 @@ serve(async (req: Request) => {
     let event: Stripe.Event;
 
     try {
-      // Use constructEvent instead of constructEventAsync to avoid Deno runMicrotasks error
-      event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+      // constructEvent is synchronous and uses SubtleCrypto, which cannot run
+      // synchronously in the Deno runtime — it throws
+      // "SubtleCryptoProvider cannot be used in a synchronous context".
+      // constructEventAsync is the supported path.
+      event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
     } catch (err: any) {
       console.error(`[stripe-webhook] Signature verification failed: ${err.message}`);
       return new Response(JSON.stringify({ error: `Webhook Error: ${err.message}` }), {
