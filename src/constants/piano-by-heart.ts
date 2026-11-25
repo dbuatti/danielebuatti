@@ -33,37 +33,37 @@ export interface PianoByHeartEvening {
 }
 
 export const nextEvening: PianoByHeartEvening | null = {
-  date: "Saturday 14 November 2026",
-  time: "5:00–6:15pm (arrive from 5pm)",
-  price: "Early bird $28 until 8 Nov, then $35",
-  places: "Limited to 11 futons",
-  shortDate: "Sat 14 Nov 2026, 5pm",
-  startDate: "2026-11-14T17:00+11:00",
-  endDate: "2026-11-14T18:15+11:00",
+  date: "Saturday 19 December 2026",
+  time: "5:00 to 6:30pm (arrive from 4:45pm)",
+  price: "Early bird $35 (5 spots), then $40",
+  places: "11 futons",
+  shortDate: "Sat 19 Dec 2026, 5pm",
+  startDate: "2026-12-19T17:00+11:00",
+  endDate: "2026-12-19T18:30+11:00",
   venue: {
-    room: "Inner HUMM Studio",
-    name: "HUMM",
+    room: "Studio",
+    name: "Inner HUMM",
     streetAddress: "144 St Kilda Rd",
     locality: "St Kilda",
     region: "VIC",
     postcode: "3182",
   },
-  priceFrom: 28,
+  priceFrom: 35,
   status: "on-sale",
-  bookingUrl: "https://events.humanitix.com/pianobyheart",
+  bookingUrl: "https://events.humanitix.com/piano-by-heart-19-dec-2026",
 };
 
 export const pianoByHeartLinks = {
   spotify: "https://open.spotify.com/artist/757mrj4tUtmbtCHVqFWNZt",
   spotifyEmbed: "https://open.spotify.com/embed/artist/757mrj4tUtmbtCHVqFWNZt",
   instagram: "https://www.instagram.com/daniele.buatti/",
-  enquiry: `mailto:info@danielebuatti.com?subject=${encodeURIComponent("Piano by Heart — next evening")}`,
+  enquiry: `mailto:info@danielebuatti.com?subject=${encodeURIComponent("Piano by Heart, next evening")}`,
 };
 
 // Text-free background artwork for the hero (2000x1125).
 export const pianoByHeartArtwork = {
   src: "/piano-by-heart-bg.jpg",
-  alt: "Piano by Heart — abstract indigo and pink artwork",
+  alt: "Piano by Heart, abstract indigo and pink artwork",
 };
 
 // The scheduled evening, or null if there isn't one or it has already finished.

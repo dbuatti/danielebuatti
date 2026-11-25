@@ -101,6 +101,7 @@ function App() {
               <Route path="store/arrangements/:slug" element={<ArrangementDetailsPage />} />
               <Route path="media" element={<MediaPage />} />
               <Route path="piano-by-heart" element={<Navigate to="/pianobyheart" replace />} />
+              <Route path="pianobyheart" element={<PianoByHeartPage />} />
               <Route path="privacy" element={<PrivacyPage />} />
               <Route path="terms" element={<TermsPage />} />
 

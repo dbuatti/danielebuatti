@@ -111,7 +111,7 @@ export const pageMeta = {
     image: "/og/live-piano.jpg",
   },
   "/pianobyheart": {
-    title: "Piano by Heart — Live improvised piano to rest | Daniele Buatti",
+    title: "Piano by Heart, live improvised piano to rest | Daniele Buatti",
     description: pianoByHeartDescription(getUpcomingEvening()),
     image: "/og/piano-by-heart.jpg",
   },

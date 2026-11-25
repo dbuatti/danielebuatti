@@ -43,9 +43,9 @@ const band = {
 const darkEyebrow = "eyebrow text-[hsl(325_72%_78%)]";
 
 const runSheet = [
-  { time: "5:00pm", detail: "Arrive, settle in and find your spot" },
-  { time: "5:15pm", detail: "An hour of live improvised piano" },
-  { time: "6:15pm", detail: "A quiet close and a cup of tea" },
+  { time: "4:45pm", detail: "Doors, settle onto a futon" },
+  { time: "5:00pm", detail: "An hour of improvised piano" },
+  { time: "6:00pm", detail: "Tea to close" },
 ];
 
 const goodToKnow = [
@@ -71,7 +71,7 @@ const faqItems = [
   },
   {
     q: "What if I'm running late?",
-    a: "Please arrive by 5:15pm, when the music begins, so the room stays undisturbed.",
+    a: "Please arrive by 4:45pm so we can begin together at 5pm.",
   },
   {
     q: "Can I take photos or videos?",
@@ -81,7 +81,10 @@ const faqItems = [
     q: "I have an injury or a specific need.",
     a: "Let me know when you book, or get in touch, and I'll make sure you're comfortable.",
   },
-  { q: "What's the refund policy?", a: "Refunds are available up to 7 days before the event." },
+  {
+    q: "What's the refund policy?",
+    a: "Refunds follow the venue terms. More than 2 weeks before, 80% back. 1 to 2 weeks before, 50%. Within 72 hours, no refund. Special consideration may be possible, please get in touch.",
+  },
 ];
 
 const bookingLabel = (evening: PianoByHeartEvening) =>
@@ -133,7 +136,7 @@ const Hero = ({ evening }: { evening: PianoByHeartEvening | null }) => (
           by Heart
         </h1>
         <p className="mt-6 font-dm-sans text-lg md:text-xl leading-relaxed text-brand-light/90">
-          An hour of improvised piano to rest, move and sound.
+          An hour of improvised piano in a dim, quiet room with soft visuals.
         </p>
         {evening && (
           <>
@@ -234,14 +237,15 @@ const PianoByHeartPage: React.FC = () => {
           <p className="font-serif text-3xl md:text-4xl font-light leading-[1.2] text-brand-dark">Come as you are.</p>
           <div className="space-y-6 text-lg leading-relaxed text-brand-dark/85">
             <p>
-              Lie back on a thick futon in a dark, cosy room, and let an hour of live, improvised piano move through
-              you. There's nothing to do and nothing to get right. Some people rest the whole time, some drift into
-              sleep, some stretch, sway or hum along. All of it is welcome.
+              Lie back on a futon in a dim, quiet room with soft visuals and let an hour of live, improvised piano move
+              through you. There is nothing to do and nothing to get right. Some people rest the whole time, some drift
+              into sleep, some stretch, sway or hum along. All of it is welcome.
             </p>
             <p>
               Every note is made up in the moment, played live by Melbourne pianist Daniele Buatti, responding to the
               room and the people in it. No two evenings are the same.
             </p>
+            <p className="font-serif text-xl text-brand-dark/80">December's theme is REST.</p>
           </div>
         </div>
       </section>
