@@ -89,7 +89,7 @@ export const pageMeta = {
   },
   "/media": {
     title: "Media & Press Kit | Daniele Buatti",
-    description: "Press kit for Daniele Buatti — Melbourne pianist, vocalist and music director. Bios, photos, videos, credits and contact for venues, bookers and music directors.",
+    description: "Press kit for Daniele Buatti, Melbourne pianist, vocalist and music director. Bios, photos, videos, credits and contact for venues, bookers and music directors.",
     image: "/og/media.jpg",
   },
   "/privacy": {
