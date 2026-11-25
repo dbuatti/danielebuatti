@@ -1,33 +1,165 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="x-apple-disable-message-reformatting" />
+  <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+  <meta name="color-scheme" content="light only" />
+  <meta name="supported-color-schemes" content="light only" />
+  <meta name="theme-color" content="#FAF7F2" />
   <title>Daniele Buatti</title>
-  <style type="text/css">
-    /* FONTS */
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
 
-    /* CLIENT-SPECIFIC STYLES */
+  <!--[if mso]>
+  <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+  <style type="text/css">
+    /* Outlook ignores web fonts — use the site's native fallbacks, not Times defaults. */
+    body, table, td, p, a, h3, li { font-family: Arial, Helvetica, sans-serif !important; }
+    h1, h2, blockquote { font-family: Georgia, 'Times New Roman', serif !important; font-weight: normal !important; }
+  </style>
+  <![endif]-->
+
+  <!-- Same type system as danielebuatti.com: Fraunces display, Inter text. -->
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style type="text/css">
     body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
     table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
     img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
     table { border-collapse: collapse !important; }
-    body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; font-family: 'Outfit', Helvetica, Arial, sans-serif; background-color: #F8F8F8; color: #00022D; }
 
-    /* MOBILE STYLES */
-    @media screen and (max-width: 700px) {
-      .wrapper { width: 100% !important; max-width: 100% !important; }
-      .content-padding { padding: 30px 25px !important; }
-      .logo-text { width: 180px !important; }
+    a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !important; font-size: inherit !important; font-family: inherit !important; font-weight: inherit !important; line-height: inherit !important; }
+    u + #body a { color: inherit; text-decoration: none; font-size: inherit; font-family: inherit; font-weight: inherit; line-height: inherit; }
+
+    /* ---------------------------------------------------------
+       BRAND TOKENS (from globals.css / tailwind.config.ts)
+       #FAF7F2  ivory page        (gray-50, theme-color)
+       #FEFDFB  paper card
+       #141A33  navy ink          (--brand-dark)
+       #C52081  magenta accent    (--brand-primary / hsl 325 72% 45%)
+       #5C6070  muted text
+       #F2ECE3  sand wash
+       #E5DDD2  warm hairline
+       Fraunces 300 italic for the accent word, Inter for text
+       --------------------------------------------------------- */
+
+    body {
+      height: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+      font-family: 'Inter', -apple-system, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #FAF7F2;
+      color: #141A33;
+      mso-line-height-rule: exactly;
     }
 
-    /* CUSTOM STYLES */
-    a { color: #DB4CA3; text-decoration: none; font-weight: 600; }
-    .button { background-color: #DB4CA3; color: #ffffff !important; padding: 14px 28px; border-radius: 50px; display: inline-block; font-weight: bold; text-align: center; }
-    h1, h2, h3 { color: #00022D; margin-top: 0; }
-    
-    /* RESPONSIVE IMAGES IN CONTENT */
+    a { color: #C52081; text-decoration: none; font-weight: 500; }
+
+    /* Eyebrow: matches .eyebrow on the site (uppercase, 0.22em, magenta). */
+    .eyebrow {
+      font-family: 'Inter', Arial, sans-serif;
+      font-size: 11px;
+      line-height: 1.5;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #C52081;
+    }
+
+    .wordmark {
+      font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      color: #141A33;
+    }
+    .wordmark em { font-style: italic; color: #C52081; }
+
+    /* Message body */
+    .content-padding { padding: 44px 46px 38px 46px; }
+
+    .content-padding a {
+      color: #C52081;
+      text-decoration: underline;
+      text-decoration-color: rgba(197, 32, 129, 0.4);
+      text-underline-offset: 3px;
+    }
+
+    .content-padding p {
+      margin: 0 0 18px 0;
+      font-size: 16px;
+      line-height: 1.72;
+      color: #3E4459;
+    }
+
+    .content-padding h1 {
+      margin: 0 0 16px 0;
+      font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+      font-size: 34px;
+      line-height: 1.08;
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      color: #141A33;
+    }
+    /* Write <em>word</em> in Kit to echo the site's italic magenta accent. */
+    .content-padding h1 em, .content-padding h2 em { font-style: italic; color: #C52081; }
+
+    .content-padding h2 {
+      margin: 34px 0 12px 0;
+      font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+      font-size: 25px;
+      line-height: 1.18;
+      font-weight: 300;
+      letter-spacing: -0.015em;
+      color: #141A33;
+    }
+
+    .content-padding h3 {
+      margin: 28px 0 8px 0;
+      font-size: 11px;
+      line-height: 1.5;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #C52081;
+    }
+
+    .content-padding > *:first-child,
+    .content-padding h1:first-child,
+    .content-padding h2:first-child,
+    .content-padding h3:first-child,
+    .content-padding p:first-child { margin-top: 0 !important; }
+
+    .content-padding ul, .content-padding ol {
+      margin: 0 0 18px 0;
+      padding-left: 22px;
+      font-size: 16px;
+      line-height: 1.65;
+      color: #3E4459;
+    }
+    .content-padding li { margin-bottom: 8px; }
+    .content-padding li::marker { color: #C52081; }
+
+    .content-padding strong, .content-padding b { font-weight: 600; color: #141A33; }
+
+    /* Quotes on the site are Fraunces italic on a warm sand wash. */
+    .content-padding blockquote {
+      margin: 6px 0 24px 0;
+      padding: 18px 22px;
+      border-left: 3px solid #C52081;
+      background-color: #F2ECE3;
+      border-radius: 0 12px 12px 0;
+      font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+      font-size: 19px;
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.5;
+      color: #141A33;
+    }
+    .content-padding blockquote p { font-size: inherit; line-height: inherit; color: inherit; }
+    .content-padding blockquote p:last-child { margin-bottom: 0; }
+
     .content-padding img {
       max-width: 100% !important;
       height: auto !important;
@@ -35,100 +167,288 @@
       margin: 24px auto;
       border-radius: 16px;
     }
+
+    .content-padding hr {
+      border: 0;
+      border-top: 1px solid #E5DDD2;
+      margin: 34px 0;
+    }
+
+    .preheader {
+      display: none !important;
+      visibility: hidden;
+      opacity: 0;
+      color: transparent;
+      height: 0; width: 0; max-height: 0; max-width: 0;
+      overflow: hidden;
+      mso-hide: all;
+    }
+
+    .btn a:hover { opacity: 0.9; }
+
+    @media screen and (max-width: 660px) {
+      .wrapper { width: 100% !important; max-width: 100% !important; }
+      .outer-pad { padding-left: 12px !important; padding-right: 12px !important; }
+      .content-padding { padding: 30px 22px 26px 22px !important; }
+      .content-padding h1 { font-size: 28px !important; }
+      .content-padding h2 { font-size: 23px !important; margin-top: 30px !important; }
+      .content-padding p, .content-padding ul, .content-padding ol { font-size: 16px !important; }
+      .content-padding blockquote { font-size: 17px !important; }
+      .sig-padding { padding: 0 22px 30px 22px !important; }
+      .card-pad { padding: 24px 22px !important; }
+      .card-radius { border-radius: 20px !important; }
+      .mark { width: 64px !important; }
+      .stack { display: block !important; width: 100% !important; }
+      .stack-gap { display: block !important; height: 18px !important; line-height: 18px !important; }
+      .hide-mobile { display: none !important; }
+      .two-col-divider { border-left: 0 !important; border-top: 1px solid #E5DDD2 !important; padding-top: 18px !important; }
+    }
   </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #F8F8F8;">
+
+<body id="body" style="margin: 0; padding: 0; background-color: #FAF7F2;">
+
+  <div class="preheader">{{ preview_text }}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>
+
+  <div role="article" aria-roledescription="email" aria-label="Daniele Buatti" lang="en">
   <center>
-    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #F8F8F8;">
-      <tr>
-        <td align="center" style="padding: 40px 0 30px 0;">
-          <!-- HEADER TEXT LOGO -->
-          <table border="0" cellpadding="0" cellspacing="0" width="700" class="wrapper">
-            <tr>
-              <td align="center">
-                <a href="https://danielebuatti.com" target="_blank">
-                  <img src="https://danielebuatti.com/logo-dark-blue-transparent-25.png" alt="Daniele Buatti" width="200" style="display: block; border: 0;" class="logo-text" />
-                </a>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-      <tr>
-        <td align="center" style="padding-bottom: 40px;">
-          <!-- MAIN CONTENT CARD -->
-          <table border="0" cellpadding="0" cellspacing="0" width="700" class="wrapper" style="background-color: #ffffff; border-radius: 32px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
-            <tr>
-              <td class="content-padding" style="padding: 50px 60px 40px 60px; font-size: 17px; line-height: 1.7; color: #00022D;">
-                
-                <!-- KIT CONTENT VARIABLE -->
-                {{ message_content }}
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #FAF7F2;">
 
-              </td>
-            </tr>
-            <tr>
-              <td class="content-padding" style="padding: 0 60px 50px 60px;">
-                <!-- SIGN-OFF SECTION -->
-                <table border="0" cellpadding="0" cellspacing="0">
-                  <tr>
-                    <td width="70" align="left" style="padding-right: 15px;">
-                      <!-- WRAPPER TO FORCE CIRCLE -->
-                      <div style="width: 70px; height: 70px; border-radius: 50%; overflow: hidden; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
-                        <img src="https://danielebuatti.com/daniele%20simple.jpeg" alt="Daniele" width="70" height="70" style="display: block; width: 70px; height: 70px; object-fit: cover; border-radius: 50%;" />
-                      </div>
-                    </td>
-                    <td align="left" style="vertical-align: middle;">
-                      <p style="margin: 0; font-weight: 700; font-size: 18px; color: #00022D;">Daniele Buatti</p>
-                      <p style="margin: 2px 0 0 0; font-size: 13px; color: #DB4CA3; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Pianist & Vocal Coach</p>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-      <tr>
-        <td align="center" style="padding-bottom: 60px;">
-          <!-- FOOTER SECTION -->
-          <table border="0" cellpadding="0" cellspacing="0" width="700" class="wrapper">
-            <tr>
-              <td align="center" style="padding: 0 20px; color: #00022D; font-size: 14px; line-height: 1.5; opacity: 0.8;">
-                
-                <!-- COLOR PIANO LOGO IN FOOTER -->
-                <img src="https://danielebuatti.com/blue-pink-ontrans.png" alt="Daniele Buatti Logo" width="100" style="margin-bottom: 25px; display: block;" />
-                
-                <p style="margin: 0 0 10px 0; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; font-size: 11px; color: #DB4CA3;">
-                  MUSIC DIRECTOR | VOICE COACH | PIANIST | ENTERTAINER
-                </p>
+    <!-- HEADER: piano-keys mark + text wordmark (renders even if images are blocked) -->
+    <tr>
+      <td align="center" class="outer-pad" style="padding: 34px 0 22px 0;">
+        <!--[if mso]><table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]-->
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="640" class="wrapper" style="max-width: 640px;">
+          <tr>
+            <td align="center">
+              <a href="https://danielebuatti.com" target="_blank" style="text-decoration: none;">
+                <img src="https://danielebuatti.com/blue-pink-ontrans.png"
+                     alt="Daniele Buatti" width="72"
+                     style="display: block; border: 0;" class="mark" />
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding-top: 12px;">
+              <a href="https://danielebuatti.com" target="_blank" class="wordmark" style="font-size: 24px; text-decoration: none;">Daniele <em>Buatti</em></a>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" class="eyebrow" style="padding-top: 7px;">
+              Melbourne &middot; Studio &amp; stage
+            </td>
+          </tr>
+        </table>
+        <!--[if mso]></td></tr></table><![endif]-->
+      </td>
+    </tr>
 
-                <!-- SOCIAL LINKS -->
-                <p style="margin: 0 0 20px 0; font-size: 13px;">
-                  <a href="https://instagram.com/daniele.buatti" target="_blank" style="color: #DB4CA3; text-decoration: none; margin: 0 8px;">Instagram</a>
-                  <a href="http://youtube.com/danielebuatti" target="_blank" style="color: #DB4CA3; text-decoration: none; margin: 0 8px;">YouTube</a>
-                  <a href="https://substack.com/@danielebuatti" target="_blank" style="color: #DB4CA3; text-decoration: none; margin: 0 8px;">Substack</a>
-                  <a href="http://www.facebook.com/danielebuatti" target="_blank" style="color: #DB4CA3; text-decoration: none; margin: 0 8px;">Facebook</a>
-                </p>
-                
-                <p style="margin: 0 0 20px 0; font-size: 13px;">
-                  {{ address }}
-                </p>
-                
-                <p style="margin: 0; font-size: 13px;">
-                  <a href="{{ unsubscribe_url }}" style="color: #00022D; text-decoration: underline;">Unsubscribe</a> 
-                  <span style="margin: 0 10px; opacity: 0.3;">|</span>
-                  <a href="{{ subscriber_preferences_url }}" style="color: #00022D; text-decoration: underline;">Update Preferences</a>
-                </p>
-                
-                <p style="margin-top: 30px; font-size: 11px; opacity: 0.5;">
-                  &copy; 2025 Daniele Buatti. All rights reserved.
-                </p>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
+    <!-- MAIN CARD -->
+    <tr>
+      <td align="center" class="outer-pad" style="padding-bottom: 16px;">
+        <!--[if mso]><table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]-->
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="640" class="wrapper card-radius"
+               style="max-width: 640px; background-color: #FEFDFB; border: 1px solid #E5DDD2; border-radius: 20px; overflow: hidden;">
+
+          <!-- Brand rule: magenta fading to navy (solid magenta where gradients aren't supported) -->
+          <tr>
+            <td height="3" bgcolor="#C52081"
+                style="height:3px; line-height:3px; font-size:0; background-color:#C52081; background-image:linear-gradient(90deg, #C52081 0%, #C52081 60%, #141A33 100%);">&nbsp;</td>
+          </tr>
+
+          <tr>
+            <td class="content-padding" style="font-size: 16px; line-height: 1.72; color: #3E4459;">
+              {{ message_content }}
+            </td>
+          </tr>
+
+          <!-- SIGNATURE -->
+          <tr>
+            <td class="sig-padding" style="padding: 0 46px 36px 46px;">
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td style="border-top: 1px solid #E5DDD2; font-size:0; line-height:0; height:1px;">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td style="padding-top: 22px;">
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td width="64" align="left" valign="middle" style="padding-right: 16px;">
+                          <img src="https://danielebuatti.com/headshot.jpeg"
+                               alt="Daniele Buatti" width="64" height="64"
+                               style="display: block; width: 64px; height: 64px; object-fit: cover; border-radius: 50%; border: 2px solid #F2ECE3;" />
+                        </td>
+                        <td align="left" valign="middle">
+                          <div class="wordmark" style="font-size: 20px; line-height: 1.2; margin-bottom: 6px;">Daniele <em>Buatti</em></div>
+                          <p style="margin: 0; font-size: 12px; line-height: 1.5; color: #5C6070;">
+                            Pianist &middot; Vocal Coach &middot; Music Director &middot; Embodiment Practitioner
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+        <!--[if mso]></td></tr></table><![endif]-->
+      </td>
+    </tr>
+
+    <!-- ===========================================================
+         SERVICES
+         One featured card (FNH), then one quieter card holding the
+         rest in two rows: gatherings and music work.
+         For a music-focused send, swap the FEATURED block for the
+         commented-out "MUSIC FEATURE" block below it.
+         =========================================================== -->
+    <tr>
+      <td align="center" class="outer-pad" style="padding: 0 0 30px 0;">
+        <!--[if mso]><table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]-->
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="640" class="wrapper" style="max-width: 640px;">
+
+          <!-- FEATURED: Functional Neuro Health -->
+          <tr>
+            <td class="card-radius card-pad" bgcolor="#F2ECE3"
+                style="background-color:#F2ECE3; border:1px solid #E5DDD2; border-radius:20px; padding:28px 30px;">
+              <p class="eyebrow" style="margin:0 0 9px 0;">
+                One-on-one &middot; Toorak
+              </p>
+              <p class="wordmark" style="margin:0 0 10px 0; font-size:25px; line-height:1.18;">
+                Functional Neuro Health
+              </p>
+              <p style="margin:0 0 22px 0; font-size:15px; line-height:1.65; color:#5C6070;">
+                Kinesiology and nervous system work at my studio on Toorak Road. For the body underneath the voice, and for anything you're holding that you can't talk your way out of.
+              </p>
+              <!-- Button: table-based so it renders in Outlook and Gmail. Magenta = site primary button. -->
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn">
+                <tr>
+                  <td align="center" bgcolor="#C52081" style="background-color:#C52081; border-radius:999px;">
+                    <a href="https://cal.com/danielebuatti/fnh-neuro" target="_blank"
+                       style="display:inline-block; padding:13px 26px; font-size:15px; line-height:1; font-weight:600; color:#ffffff; text-decoration:none; border-radius:999px;">
+                      Book a session &rarr;
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- MUSIC FEATURE (alternative top card; uncomment and remove the FNH one above)
+          <tr>
+            <td class="card-radius card-pad" bgcolor="#F2ECE3"
+                style="background-color:#F2ECE3; border:1px solid #E5DDD2; border-radius:20px; padding:28px 30px;">
+              <p class="eyebrow" style="margin:0 0 9px 0;">In your key, your cut</p>
+              <p class="wordmark" style="margin:0 0 10px 0; font-size:25px; line-height:1.18;">Custom piano backing tracks</p>
+              <p style="margin:0 0 22px 0; font-size:15px; line-height:1.65; color:#5C6070;">Expressive, note-perfect tracks for auditions, self-tapes and practice. From $15, usually back within 3–5 business days.</p>
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn"><tr>
+                <td align="center" bgcolor="#C52081" style="background-color:#C52081; border-radius:999px;">
+                  <a href="https://pianobackings.danielebuatti.com/form-page" target="_blank" style="display:inline-block; padding:13px 26px; font-size:15px; line-height:1; font-weight:600; color:#ffffff; text-decoration:none; border-radius:999px;">Order a track &rarr;</a>
+                </td></tr></table>
+            </td>
+          </tr>
+          -->
+
+          <tr>
+            <td height="12" style="height:12px; line-height:12px; font-size:0;">&nbsp;</td>
+          </tr>
+
+          <!-- SECONDARY: everything else, one quiet card -->
+          <tr>
+            <td class="card-radius card-pad" bgcolor="#FEFDFB"
+                style="background-color:#FEFDFB; border:1px solid #E5DDD2; border-radius:20px; padding:26px 30px;">
+
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <!-- Gatherings -->
+                  <td class="stack" width="50%" valign="top" style="padding-right: 14px;">
+                    <p class="eyebrow" style="margin:0 0 11px 0;">
+                      Come along
+                    </p>
+                    <p style="margin:0 0 4px 0; font-size:15px; line-height:1.4; font-weight:600; color:#141A33;">Resonance Pop-Up Choir</p>
+                    <p style="margin:0 0 15px 0; font-size:13px; line-height:1.55; color:#5C6070;">
+                      One song, one morning, no audition. <a href="https://www.facebook.com/share/g/172Pdo3b1n/" target="_blank" style="color:#C52081; font-weight:600;">Join the group&nbsp;&rsaquo;</a>
+                    </p>
+                    <p style="margin:0 0 4px 0; font-size:15px; line-height:1.4; font-weight:600; color:#141A33;">Piano by Heart</p>
+                    <p style="margin:0; font-size:13px; line-height:1.55; color:#5C6070;">
+                      An hour of improvised piano to rest, move and sound. <a href="https://events.humanitix.com/pianobyheart" target="_blank" style="color:#C52081; font-weight:600;">Next session&nbsp;&rsaquo;</a>
+                    </p>
+                  </td>
+
+                  <td class="stack-gap" width="1" style="font-size:0; line-height:0;">&nbsp;</td>
+
+                  <!-- Music work -->
+                  <td class="stack two-col-divider" width="50%" valign="top" style="padding-left: 14px; border-left: 1px solid #E5DDD2;">
+                    <p class="eyebrow" style="margin:0 0 11px 0;">
+                      On the music side
+                    </p>
+                    <p style="margin:0 0 9px 0; font-size:14px; line-height:1.5;">
+                      <a href="https://cal.com/danielebuatti/voice-and-piano-coaching-60" target="_blank" style="color:#C52081; font-weight:600;">Voice &amp; piano coaching&nbsp;&rsaquo;</a>
+                    </p>
+                    <p style="margin:0 0 9px 0; font-size:14px; line-height:1.5;">
+                      <a href="https://pianobackings.danielebuatti.com/form-page" target="_blank" style="color:#C52081; font-weight:600;">Custom backing tracks&nbsp;&rsaquo;</a>
+                    </p>
+                    <p style="margin:0 0 9px 0; font-size:14px; line-height:1.5;">
+                      <a href="https://theauditionguidebook.vercel.app" target="_blank" style="color:#C52081; font-weight:600;">The Audition Guidebook&nbsp;&rsaquo;</a>
+                    </p>
+                    <p style="margin:0; font-size:14px; line-height:1.5;">
+                      <a href="https://danielebuatti.com" target="_blank" style="color:#C52081; font-weight:600;">Live piano for your event&nbsp;&rsaquo;</a>
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+        </table>
+        <!--[if mso]></td></tr></table><![endif]-->
+      </td>
+    </tr>
+
+    <!-- FOOTER -->
+    <tr>
+      <td align="center" style="padding-bottom: 52px;">
+        <!--[if mso]><table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]-->
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="640" class="wrapper" style="max-width: 640px;">
+          <tr>
+            <td align="center" style="padding: 0 20px; color: #141A33; font-size: 14px; line-height: 1.5;">
+
+              <p style="margin: 0 0 16px 0; font-size: 12px;">
+                <a href="https://instagram.com/daniele.buatti" target="_blank" style="margin: 0 8px; color:#C52081; font-weight:600;">Instagram</a>
+                <a href="https://youtube.com/danielebuatti" target="_blank" style="margin: 0 8px; color:#C52081; font-weight:600;">YouTube</a>
+                <a href="https://substack.com/@danielebuatti" target="_blank" style="margin: 0 8px; color:#C52081; font-weight:600;">Substack</a>
+                <a href="https://www.facebook.com/danielebuatti" target="_blank" style="margin: 0 8px; color:#C52081; font-weight:600;">Facebook</a>
+              </p>
+
+              <p style="margin: 0 0 14px 0; font-size: 12px; line-height: 1.6; color: #5C6070;">
+                You're getting this because you've sung, trained, booked or signed up with me somewhere along the way.
+              </p>
+
+              <p style="margin: 0 0 14px 0; font-size: 12px; color: #5C6070;">
+                {{ address }}
+              </p>
+
+              <p style="margin: 0; font-size: 12px;">
+                <a href="{{ unsubscribe_url }}" style="color: #5C6070; text-decoration: underline; font-weight: 400;">Unsubscribe</a>
+                <span style="margin: 0 9px; color:#C9C0B4;">|</span>
+                <a href="{{ subscriber_preferences_url }}" style="color: #5C6070; text-decoration: underline; font-weight: 400;">Update preferences</a>
+              </p>
+
+              <p style="margin-top: 22px; margin-bottom: 0; font-size: 11px; color: #76767C;">
+                &copy; 2026 Daniele Buatti
+              </p>
+
+            </td>
+          </tr>
+        </table>
+        <!--[if mso]></td></tr></table><![endif]-->
+      </td>
+    </tr>
+
+  </table>
   </center>
+  </div>
 </body>
 </html>

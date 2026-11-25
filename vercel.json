@@ -36,6 +36,11 @@
       "source": "/piano-by-heart",
       "destination": "/pianobyheart",
       "permanent": true
+    },
+    {
+      "source": "/tip",
+      "destination": "https://buy.stripe.com/eVq6oI0yI0gq8D0bo18g000",
+      "permanent": true
     }
   ],
   "rewrites": [

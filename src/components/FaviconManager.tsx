@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-const BRAND_FAVICON_PATH = '/blue-pink-ontrans.png?v=1';
+const BRAND_FAVICON_PATH = '/logo-pinkwhite.png?v=3';
 
 const FaviconManager: React.FC = () => {
   useEffect(() => {
