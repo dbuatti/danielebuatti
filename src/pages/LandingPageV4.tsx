@@ -176,7 +176,7 @@ const LandingPageV4: React.FC = () => {
                 aria-label="Get tickets to Resonance Pop-Up Choir: Somewhere Only We Know"
               >
                 <img
-                  src="/events/resonance-choir-dec.webp"
+                  src="/events/resonance-choir-dec.png"
                   alt="Resonance Pop-Up Choir: Somewhere Only We Know artwork"
                   className="aspect-[16/9] w-full object-cover transition-transform duration-700 ease-out-expo group-hover:scale-105"
                   loading="lazy"
@@ -214,7 +214,7 @@ const LandingPageV4: React.FC = () => {
                 aria-label="Get tickets to Piano by Heart"
               >
                 <img
-                  src="/events/piano-by-heart-19-dec.webp"
+                  src="/events/piano-by-heart-19-dec.png"
                   alt="Piano by Heart artwork"
                   className="aspect-[16/9] w-full object-cover transition-transform duration-700 ease-out-expo group-hover:scale-105"
                   loading="lazy"
