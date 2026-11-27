@@ -167,59 +167,79 @@ const LandingPageV4: React.FC = () => {
             Two gatherings to close the year. Come as you are, details and booking on Humanitix.
           </p>
           <ul className="mt-12 grid gap-6 md:grid-cols-2">
-            <li className="flex flex-col justify-between rounded-2xl border border-border bg-card p-8 md:p-9">
-              <div>
-                <p className="text-xs font-medium uppercase tracking-[0.2em] text-brand-primary">Resonance Pop-Up Choir</p>
-                <h3 className="mt-3 font-serif text-2xl font-light text-brand-dark">Somewhere Only We Know</h3>
-                <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
-                  A morning of singing together. We learn Somewhere Only We Know by Keane in four parts, no experience
-                  needed, I teach each part at the piano.
-                </p>
-                <dl className="mt-6 space-y-2 text-[15px] text-brand-dark/80">
-                  <div className="flex gap-3">
-                    <dt className="w-16 shrink-0 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">When</dt>
-                    <dd>Saturday 5 December 2026, 10am to 1pm</dd>
-                  </div>
-                  <div className="flex gap-3">
-                    <dt className="w-16 shrink-0 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Where</dt>
-                    <dd>Armadale Baptist Church, Auditorium, 88 Kooyong Road, Armadale</dd>
-                  </div>
-                </dl>
-              </div>
+            <li className="group relative overflow-hidden rounded-2xl border border-border bg-brand-dark">
               <a
                 href="https://events.humanitix.com/resonance-choir-dec"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-8 inline-flex items-center gap-2 font-medium text-brand-dark hover:text-brand-primary transition-colors"
+                className="block"
+                aria-label="Get tickets to Resonance Pop-Up Choir: Somewhere Only We Know"
               >
-                Get tickets <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                <img
+                  src="/events/resonance-choir-dec.webp"
+                  alt="Resonance Pop-Up Choir: Somewhere Only We Know artwork"
+                  className="aspect-[16/9] w-full object-cover transition-transform duration-700 ease-out-expo group-hover:scale-105"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" aria-hidden="true" />
+                <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 text-white">
+                  <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/80">Resonance Pop-Up Choir</p>
+                  <h3 className="mt-2 font-serif text-2xl md:text-3xl font-light leading-tight">Somewhere Only We Know</h3>
+                  <p className="mt-3 text-[15px] leading-relaxed text-white/85">
+                    A morning of singing together. We learn Somewhere Only We Know by Keane in four parts, no experience
+                    needed, I teach each part at the piano.
+                  </p>
+                  <dl className="mt-4 space-y-1 text-[14px] text-white/80">
+                    <div className="flex gap-3">
+                      <dt className="w-14 shrink-0 text-xs font-medium uppercase tracking-[0.18em] text-white/60">When</dt>
+                      <dd>Saturday 5 December 2026, 10am to 1pm</dd>
+                    </div>
+                    <div className="flex gap-3">
+                      <dt className="w-14 shrink-0 text-xs font-medium uppercase tracking-[0.18em] text-white/60">Where</dt>
+                      <dd>Armadale Baptist Church, Auditorium, 88 Kooyong Road, Armadale</dd>
+                    </div>
+                  </dl>
+                </div>
+                <span className="absolute bottom-6 right-6 md:bottom-8 md:right-8 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition-colors group-hover:bg-white/25" aria-hidden="true">
+                  <ArrowUpRight className="h-5 w-5" />
+                </span>
               </a>
             </li>
-            <li className="flex flex-col justify-between rounded-2xl border border-border bg-card p-8 md:p-9">
-              <div>
-                <p className="text-xs font-medium uppercase tracking-[0.2em] text-brand-primary">Piano by Heart</p>
-                <h3 className="mt-3 font-serif text-2xl font-light text-brand-dark">An hour of improvised piano</h3>
-                <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
-                  A dim room with soft visuals, then tea to close. A place to rest and restore. December's theme is REST.
-                </p>
-                <dl className="mt-6 space-y-2 text-[15px] text-brand-dark/80">
-                  <div className="flex gap-3">
-                    <dt className="w-16 shrink-0 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">When</dt>
-                    <dd>Saturday 19 December 2026, 5:00 to 6:30pm</dd>
-                  </div>
-                  <div className="flex gap-3">
-                    <dt className="w-16 shrink-0 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Where</dt>
-                    <dd>Inner HUMM, 144 St Kilda Rd, St Kilda</dd>
-                  </div>
-                </dl>
-              </div>
+            <li className="group relative overflow-hidden rounded-2xl border border-border bg-brand-dark">
               <a
                 href="https://events.humanitix.com/piano-by-heart-19-dec-2026"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-8 inline-flex items-center gap-2 font-medium text-brand-dark hover:text-brand-primary transition-colors"
+                className="block"
+                aria-label="Get tickets to Piano by Heart"
               >
-                Get tickets <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                <img
+                  src="/events/piano-by-heart-19-dec.webp"
+                  alt="Piano by Heart artwork"
+                  className="aspect-[16/9] w-full object-cover transition-transform duration-700 ease-out-expo group-hover:scale-105"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" aria-hidden="true" />
+                <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 text-white">
+                  <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/80">Piano by Heart</p>
+                  <h3 className="mt-2 font-serif text-2xl md:text-3xl font-light leading-tight">An hour of improvised piano</h3>
+                  <p className="mt-3 text-[15px] leading-relaxed text-white/85">
+                    A dim room with soft visuals, then tea to close. A place to rest and restore. December's theme is REST.
+                  </p>
+                  <dl className="mt-4 space-y-1 text-[14px] text-white/80">
+                    <div className="flex gap-3">
+                      <dt className="w-14 shrink-0 text-xs font-medium uppercase tracking-[0.18em] text-white/60">When</dt>
+                      <dd>Saturday 19 December 2026, 5:00 to 6:30pm</dd>
+                    </div>
+                    <div className="flex gap-3">
+                      <dt className="w-14 shrink-0 text-xs font-medium uppercase tracking-[0.18em] text-white/60">Where</dt>
+                      <dd>Inner HUMM, 144 St Kilda Rd, St Kilda</dd>
+                    </div>
+                  </dl>
+                </div>
+                <span className="absolute bottom-6 right-6 md:bottom-8 md:right-8 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition-colors group-hover:bg-white/25" aria-hidden="true">
+                  <ArrowUpRight className="h-5 w-5" />
+                </span>
               </a>
             </li>
           </ul>
