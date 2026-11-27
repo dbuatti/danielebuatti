@@ -195,7 +195,7 @@ const VoicePianoServicesPage: React.FC = () => {
             <ul className="space-y-2.5 text-center text-sm text-brand-dark/80 dark:text-brand-light/80">
               <li>685 Toorak Road, Toorak. Online available.</li>
               <li>45 or 60 minute lessons.</li>
-              <li className="font-semibold text-brand-dark dark:text-brand-light">From $75 a lesson.</li>
+              <li className="font-semibold text-brand-dark dark:text-brand-light">$75 for 45 minutes · $95 for 60 minutes.</li>
               <li>Voice and piano, from school age to professional.</li>
             </ul>
           </div>
@@ -242,7 +242,7 @@ const VoicePianoServicesPage: React.FC = () => {
           <div className="mx-auto max-w-3xl">
             <h2 className="font-display text-3xl font-bold text-center mb-2">Book a lesson</h2>
             <p className="text-center text-sm text-brand-dark/60 dark:text-brand-light/60 mb-8">
-              Pick a time, no account needed. From $75 a lesson.
+              Pick a time, no account needed. $75 for 45 minutes · $95 for 60 minutes.
             </p>
             <div className="flex justify-center gap-3 mb-8">
               {durationOptions.map((opt) => (
