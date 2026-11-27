@@ -159,6 +159,73 @@ const LandingPageV4: React.FC = () => {
         </div>
       </section>
 
+      {/* 1c. UPCOMING EVENTS */}
+      <section className="border-y border-border bg-card/40">
+        <div className="container py-20 lg:py-28">
+          <SectionIntro eyebrow="This December" title="Upcoming events" />
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+            Two gatherings to close the year. Come as you are, details and booking on Humanitix.
+          </p>
+          <ul className="mt-12 grid gap-6 md:grid-cols-2">
+            <li className="flex flex-col justify-between rounded-2xl border border-border bg-card p-8 md:p-9">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-[0.2em] text-brand-primary">Resonance Pop-Up Choir</p>
+                <h3 className="mt-3 font-serif text-2xl font-light text-brand-dark">Somewhere Only We Know</h3>
+                <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
+                  A morning of singing together. We learn Somewhere Only We Know by Keane in four parts, no experience
+                  needed, I teach each part at the piano.
+                </p>
+                <dl className="mt-6 space-y-2 text-[15px] text-brand-dark/80">
+                  <div className="flex gap-3">
+                    <dt className="w-16 shrink-0 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">When</dt>
+                    <dd>Saturday 5 December 2026, 10am to 1pm</dd>
+                  </div>
+                  <div className="flex gap-3">
+                    <dt className="w-16 shrink-0 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Where</dt>
+                    <dd>Armadale Baptist Church, Auditorium, 88 Kooyong Road, Armadale</dd>
+                  </div>
+                </dl>
+              </div>
+              <a
+                href="https://events.humanitix.com/resonance-choir-dec"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-8 inline-flex items-center gap-2 font-medium text-brand-dark hover:text-brand-primary transition-colors"
+              >
+                Get tickets <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+              </a>
+            </li>
+            <li className="flex flex-col justify-between rounded-2xl border border-border bg-card p-8 md:p-9">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-[0.2em] text-brand-primary">Piano by Heart</p>
+                <h3 className="mt-3 font-serif text-2xl font-light text-brand-dark">An hour of improvised piano</h3>
+                <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
+                  A dim room with soft visuals, then tea to close. A place to rest and restore. December's theme is REST.
+                </p>
+                <dl className="mt-6 space-y-2 text-[15px] text-brand-dark/80">
+                  <div className="flex gap-3">
+                    <dt className="w-16 shrink-0 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">When</dt>
+                    <dd>Saturday 19 December 2026, 5:00 to 6:30pm</dd>
+                  </div>
+                  <div className="flex gap-3">
+                    <dt className="w-16 shrink-0 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Where</dt>
+                    <dd>Inner HUMM, 144 St Kilda Rd, St Kilda</dd>
+                  </div>
+                </dl>
+              </div>
+              <a
+                href="https://events.humanitix.com/piano-by-heart-19-dec-2026"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-8 inline-flex items-center gap-2 font-medium text-brand-dark hover:text-brand-primary transition-colors"
+              >
+                Get tickets <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+              </a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
       {/* 2. EXPERTISE */}
       <section className="border-y border-border bg-card/60">
         <div className="container py-20 lg:py-28">
