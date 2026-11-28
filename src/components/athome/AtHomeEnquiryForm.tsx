@@ -116,7 +116,7 @@ const AtHomeEnquiryForm: React.FC = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-6">
         <div className="grid gap-6 md:grid-cols-2">
           <FormField
             control={form.control}
@@ -298,6 +298,7 @@ const AtHomeEnquiryForm: React.FC = () => {
           type="submit"
           size="lg"
           disabled={loading}
+          aria-busy={loading}
           className="h-14 w-full rounded-full bg-[#D4A208] text-[#0B0B0B] text-base font-medium shadow-soft transition-all duration-300 hover:brightness-95 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#8A6900]/60 focus-visible:ring-offset-2 disabled:opacity-60"
         >
           {loading ? "Sending..." : "Enquire"}

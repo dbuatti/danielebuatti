@@ -8,15 +8,16 @@ const BackToTopButton = () => {
   const isVisible = useScrollVisibility(300); // Show button after scrolling 300px
 
   const scrollToTop = () => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     window.scrollTo({
       top: 0,
-      behavior: "smooth",
+      behavior: reduceMotion ? "auto" : "smooth",
     });
   };
 
   return (
     <div
-      className={`fixed bottom-8 right-8 z-50 transition-opacity duration-300 ${
+      className={`fixed bottom-20 right-6 z-50 transition-opacity duration-300 motion-reduce:transition-none md:bottom-8 md:right-8 ${
         isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >

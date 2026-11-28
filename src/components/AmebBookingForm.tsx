@@ -78,7 +78,7 @@ const AmebBookingForm: React.FC = () => {
 
   if (isSubmitted) {
     return (
-      <div className="text-center space-y-6 p-8 bg-gray-900 dark:bg-gray-800 rounded-xl shadow-soft border border-gray-700 max-w-lg mx-auto">
+      <div className="text-center space-y-6 p-8 bg-brand-dark text-brand-light rounded-xl shadow-soft border border-brand-dark-alt max-w-lg mx-auto">
         <CheckCircle2 className="h-24 w-24 text-brand-primary mx-auto animate-bounce" />
         <h3 className="text-4xl font-bold text-white">Booking Confirmed!</h3>
         <p className="text-xl text-white/90">
@@ -99,13 +99,13 @@ const AmebBookingForm: React.FC = () => {
     );
   }
 
-  const inputClass = "bg-card dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500";
-  const labelClass = "text-gray-800 dark:text-gray-200";
-  const checkboxClass = "h-5 w-5 border-gray-400 dark:border-gray-500 text-brand-primary data-[state=checked]:bg-brand-primary data-[state=checked]:text-white";
+  const inputClass = "bg-background border-input text-foreground placeholder:text-muted-foreground";
+  const labelClass = "text-brand-dark dark:text-brand-light";
+  const checkboxClass = "h-5 w-5 border-input text-brand-primary data-[state=checked]:bg-brand-primary data-[state=checked]:text-white";
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-lg mx-auto">
+      <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-6 max-w-lg mx-auto">
         <FormField
           control={form.control}
           name="studentParentName"
@@ -219,6 +219,7 @@ const AmebBookingForm: React.FC = () => {
           size="lg"
           className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white text-lg py-3 rounded-full"
           disabled={loading}
+          aria-busy={loading}
         >
           {loading ? 'Sending Inquiry...' : 'Book Now / Inquire'}
         </Button>

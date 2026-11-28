@@ -89,7 +89,7 @@ const NewsletterSignup: React.FC<NewsletterSignupProps> = ({ variant = "light" }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-3">
+      <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="w-full space-y-3">
         <div className="grid grid-cols-2 gap-3">
           <FormField
             control={form.control}
@@ -133,6 +133,7 @@ const NewsletterSignup: React.FC<NewsletterSignupProps> = ({ variant = "light" }
             type="submit"
             className="h-11 rounded-full bg-brand-primary px-6 text-white hover:bg-brand-primary/90"
             disabled={loading}
+            aria-busy={loading}
           >
             {loading ? "Subscribing…" : "Subscribe"}
           </Button>

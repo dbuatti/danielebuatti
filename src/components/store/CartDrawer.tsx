@@ -38,8 +38,8 @@ export const CartDrawer: React.FC = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" className="relative border-brand-primary text-brand-primary hover:bg-brand-primary/10 bg-card dark:bg-brand-dark rounded-full px-4">
-          <ShoppingCart className="h-5 w-5" />
+        <Button variant="outline" aria-label={`Open cart, ${items.length} item${items.length === 1 ? '' : 's'}`} className="relative border-brand-primary text-brand-primary hover:bg-brand-primary/10 bg-card dark:bg-brand-dark rounded-full px-4 min-h-11 min-w-11">
+          <ShoppingCart className="h-5 w-5" aria-hidden="true" />
           <AnimatePresence>
             {items.length > 0 && (
               <motion.span 
@@ -82,13 +82,14 @@ export const CartDrawer: React.FC = () => {
                   <p className="text-xs text-brand-dark/60 dark:text-brand-light/60 mt-0.5">{item.composer}</p>
                   <p className="text-sm font-bold text-brand-primary mt-2">A${item.price.toFixed(2)}</p>
                 </div>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={() => removeFromCart(item.id)} 
-                  className="text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 ml-4"
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removeFromCart(item.id)}
+                  aria-label={`Remove ${item.title} from cart`}
+                  className="text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 ml-4 min-h-11 min-w-11"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4" aria-hidden="true" />
                 </Button>
               </div>
             ))

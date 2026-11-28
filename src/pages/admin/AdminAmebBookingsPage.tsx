@@ -134,7 +134,7 @@ const AdminAmebBookingsPage: React.FC = () => {
           ) : bookings.length === 0 ? (
             <p className="text-center text-brand-dark/70 dark:text-brand-light/70">No AMEB bookings found yet.</p>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto" tabIndex={0} aria-label="Scrollable table">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-brand-secondary/10 dark:bg-brand-dark/50">

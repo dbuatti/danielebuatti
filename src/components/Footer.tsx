@@ -98,7 +98,7 @@ const Footer = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={name}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-brand-light/80 transition-colors hover:border-brand-primary hover:bg-brand-primary hover:text-white"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-brand-light/80 transition-colors hover:border-brand-primary hover:bg-brand-primary hover:text-white"
                 >
                   <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
                 </a>
@@ -177,7 +177,7 @@ const Footer = () => {
           <button
             type="button"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="inline-flex items-center gap-2 hover:text-brand-light transition-colors"
+            className="inline-flex min-h-11 items-center gap-2 px-2 hover:text-brand-light transition-colors"
           >
             Back to top <ArrowUp className="h-4 w-4" aria-hidden="true" />
           </button>

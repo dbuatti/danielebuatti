@@ -35,14 +35,29 @@ const VoicePianoBookingPage: React.FC = () => {
       >
         <div className="mt-8 flex flex-wrap items-center gap-6">
           <div role="tablist" aria-label="Lesson length" className="relative inline-flex rounded-full border border-border bg-card p-1 shadow-soft">
-            {durationOptions.map((opt) => {
+            {durationOptions.map((opt, idx) => {
               const active = selectedDuration === opt.value;
               return (
                 <button
                   key={opt.value}
+                  id={`duration-tab-${opt.value}`}
                   role="tab"
+                  tabIndex={active ? 0 : -1}
                   aria-selected={active}
+                  aria-controls="lesson-calendar"
                   onClick={() => setSelectedDuration(opt.value)}
+                  onKeyDown={(e) => {
+                    let next: Duration | null = null;
+                    if (e.key === "ArrowRight" || e.key === "ArrowDown") next = durationOptions[(idx + 1) % durationOptions.length].value;
+                    else if (e.key === "ArrowLeft" || e.key === "ArrowUp") next = durationOptions[(idx - 1 + durationOptions.length) % durationOptions.length].value;
+                    else if (e.key === "Home") next = durationOptions[0].value;
+                    else if (e.key === "End") next = durationOptions[durationOptions.length - 1].value;
+                    if (next) {
+                      e.preventDefault();
+                      setSelectedDuration(next);
+                      document.getElementById(`duration-tab-${next}`)?.focus();
+                    }
+                  }}
                   className={cn(
                     "relative z-10 h-11 rounded-full px-6 text-sm font-medium transition-colors duration-300",
                     active ? "text-white" : "text-brand-dark/70 hover:text-brand-dark",
@@ -80,7 +95,13 @@ const VoicePianoBookingPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="rounded-3xl border border-border bg-card p-2 shadow-soft sm:p-4" key={selectedDuration}>
+        <div
+          id="lesson-calendar"
+          role="region"
+          aria-label="Booking calendar"
+          className="rounded-3xl border border-border bg-card p-2 shadow-soft sm:p-4"
+          key={selectedDuration}
+        >
           <CalEmbed calLink={currentOption.calLink} layout="month_view" />
         </div>
       </section>

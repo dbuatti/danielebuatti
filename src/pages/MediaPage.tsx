@@ -352,9 +352,23 @@ const BioTabs = () => {
             type="button"
             role="tab"
             id={`bio-tab-${key}`}
+            tabIndex={active === key ? 0 : -1}
             aria-selected={active === key}
             aria-controls={`bio-panel-${key}`}
             onClick={() => setActive(key)}
+            onKeyDown={(e) => {
+              const idx = keys.indexOf(key);
+              let nextKey: BioKey | null = null;
+              if (e.key === "ArrowRight" || e.key === "ArrowDown") nextKey = keys[(idx + 1) % keys.length];
+              else if (e.key === "ArrowLeft" || e.key === "ArrowUp") nextKey = keys[(idx - 1 + keys.length) % keys.length];
+              else if (e.key === "Home") nextKey = keys[0];
+              else if (e.key === "End") nextKey = keys[keys.length - 1];
+              if (nextKey) {
+                e.preventDefault();
+                setActive(nextKey);
+                document.getElementById(`bio-tab-${nextKey}`)?.focus();
+              }
+            }}
             className={cn(
               "min-h-11 rounded-full px-5 py-2 text-sm font-medium transition-colors",
               active === key
@@ -376,6 +390,7 @@ const BioTabs = () => {
             role="tabpanel"
             aria-labelledby={`bio-tab-${key}`}
             data-bio={key}
+            hidden={active !== key}
             className={cn(
               "relative rounded-2xl border border-[#1F1C19]/10 bg-white/60 p-6",
               active !== key && "hidden",

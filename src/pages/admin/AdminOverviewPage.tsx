@@ -167,7 +167,7 @@ const IncomeTrend: React.FC<{ sites: Site[] }> = ({ sites }) => {
 
         <details className="mt-4 text-sm">
           <summary className={cn('cursor-pointer text-xs', mutedClass)}>Show as a table</summary>
-          <div className="mt-2 overflow-x-auto">
+          <div className="mt-2 overflow-x-auto" tabIndex={0} aria-label="Scrollable table">
             <table className="w-full text-left">
               <thead>
                 <tr className={cn('text-xs', mutedClass)}>

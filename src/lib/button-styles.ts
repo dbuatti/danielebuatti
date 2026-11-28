@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 // Pill button styles shared across the editorial pages.
 const btnBase =
-  "inline-flex h-14 items-center justify-center gap-2 rounded-full px-8 text-base font-medium transition-all duration-300 ease-out-expo active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
+  "inline-flex h-14 items-center justify-center gap-2 rounded-full px-8 text-base font-medium transition-all duration-300 ease-out-expo active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2";
 
 export const primaryButton = cn(btnBase, "bg-brand-primary text-white shadow-soft hover:bg-brand-primary/90 hover:shadow-lifted");
 export const inkButton = cn(btnBase, "bg-brand-dark text-brand-light hover:bg-brand-dark/90");

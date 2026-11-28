@@ -172,7 +172,7 @@ const LandingPageV4: React.FC = () => {
                 href="https://events.humanitix.com/resonance-choir-dec"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block"
+                className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-inset"
                 aria-label="Get tickets to Resonance Pop-Up Choir: Somewhere Only We Know"
               >
                 <img
@@ -180,6 +180,7 @@ const LandingPageV4: React.FC = () => {
                   alt="Resonance Pop-Up Choir: Somewhere Only We Know artwork"
                   className="aspect-[16/9] w-full object-cover transition-transform duration-700 ease-out-expo group-hover:scale-105"
                   loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" aria-hidden="true" />
                 <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 text-white">
@@ -210,7 +211,7 @@ const LandingPageV4: React.FC = () => {
                 href="https://events.humanitix.com/piano-by-heart-19-dec-2026"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block"
+                className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-inset"
                 aria-label="Get tickets to Piano by Heart"
               >
                 <img
@@ -218,6 +219,7 @@ const LandingPageV4: React.FC = () => {
                   alt="Piano by Heart artwork"
                   className="aspect-[16/9] w-full object-cover transition-transform duration-700 ease-out-expo group-hover:scale-105"
                   loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" aria-hidden="true" />
                 <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 text-white">

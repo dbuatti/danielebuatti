@@ -96,7 +96,26 @@
   }
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 88px;
     -webkit-text-size-adjust: 100%;
+  }
+
+  /* Keep images responsive without breaking their intrinsic aspect ratio. */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Respect the user's motion preference across the whole site. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;

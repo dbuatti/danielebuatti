@@ -70,13 +70,14 @@ const ContactForm: React.FC = () => {
     }
   }
   
-  // Define explicit classes for inputs and textareas
-  const inputClasses = "bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus-visible:ring-brand-primary";
-  const labelClasses = "text-gray-800 dark:text-gray-200";
+  // Consistent with the rest of the site: paper inputs with a clear focus ring.
+  const inputClasses =
+    "bg-background border-input text-foreground placeholder:text-muted-foreground focus-visible:ring-brand-primary";
+  const labelClasses = "text-brand-dark dark:text-brand-light";
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-8">
         <FormField
           control={form.control}
           name="name"
@@ -86,6 +87,7 @@ const ContactForm: React.FC = () => {
               <FormControl>
                 <Input
                   placeholder="Your name"
+                  autoComplete="name"
                   {...field}
                   className={`h-12 text-base ${inputClasses}`}
                 />
@@ -105,6 +107,8 @@ const ContactForm: React.FC = () => {
                 <Input
                   type="email"
                   placeholder="your@email.com"
+                  autoComplete="email"
+                  inputMode="email"
                   {...field}
                   className={`h-12 text-base ${inputClasses}`}
                 />
@@ -125,6 +129,7 @@ const ContactForm: React.FC = () => {
                   placeholder="How can I help?"
                   {...field}
                   rows={6}
+                  spellCheck
                   className={`resize-none text-base ${inputClasses}`}
                 />
               </FormControl>
@@ -138,6 +143,7 @@ const ContactForm: React.FC = () => {
           size="lg"
           className="w-full rounded-full py-7 text-lg font-medium shadow-lifted transition-all duration-300 hover:scale-105 bg-brand-primary hover:bg-brand-primary/90 text-brand-light"
           disabled={form.formState.isSubmitting}
+          aria-busy={form.formState.isSubmitting}
         >
           {form.formState.isSubmitting ? "Sending..." : "Send Message"}
         </Button>

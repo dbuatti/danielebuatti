@@ -163,19 +163,22 @@ const StorePage: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12 bg-brand-secondary/5 p-4 rounded-2xl border border-brand-secondary/10">
           <div className="md:col-span-2 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-brand-dark/40" />
-            <Input 
-              placeholder="Search by title or composer..." 
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-brand-dark/40" aria-hidden="true" />
+            <Input
+              aria-label="Search arrangements by title or composer"
+              placeholder="Search by title or composer..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-10 bg-card dark:bg-brand-dark border-brand-secondary/20 h-11"
+              className="pl-10 pr-12 bg-card dark:bg-brand-dark border-brand-secondary/20 h-11"
             />
             {searchTerm && (
-              <button 
+              <button
+                type="button"
                 onClick={() => setSearchTerm('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-dark/40 hover:text-brand-primary transition-colors"
+                aria-label="Clear search"
+                className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-11 w-11 items-center justify-center rounded-full text-brand-dark/40 hover:text-brand-primary transition-colors"
               >
-                <X className="h-4 w-4" />
+                <X className="h-4 w-4" aria-hidden="true" />
               </button>
             )}
           </div>
@@ -217,8 +220,8 @@ const StorePage: React.FC = () => {
             <p className="text-brand-dark/60 dark:text-brand-light/60 max-w-md mx-auto mb-8">
               We couldn't find any arrangements matching your current search or filters.
             </p>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={resetFilters}
               className="rounded-full border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white transition-all"
             >
@@ -226,11 +229,16 @@ const StorePage: React.FC = () => {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {filteredArrangements.map((arr) => (
-              <ArrangementCard key={arr.id} arrangement={arr} />
-            ))}
-          </div>
+          <>
+            <p className="mb-6 text-sm text-muted-foreground" aria-live="polite">
+              Showing {filteredArrangements.length} of {arrangements.length} arrangement{arrangements.length === 1 ? '' : 's'}
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {filteredArrangements.map((arr) => (
+                <ArrangementCard key={arr.id} arrangement={arr} />
+              ))}
+            </div>
+          </>
         )}
 
         {/* SEO Content Section */}

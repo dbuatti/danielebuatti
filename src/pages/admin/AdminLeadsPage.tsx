@@ -269,7 +269,7 @@ const AdminLeadsPage: React.FC = () => {
               <Loader2 className="h-12 w-12 animate-spin text-brand-primary" />
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto" tabIndex={0} aria-label="Scrollable table">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-brand-secondary/5 dark:bg-brand-dark/50 border-none">

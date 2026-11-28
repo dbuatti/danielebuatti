@@ -5,6 +5,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { MotionConfig, motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import BackToTopButton from '@/components/BackToTopButton';
 import PageLoader from '@/components/PageLoader';
 import ScrollReveal from '@/components/ScrollReveal';
 
@@ -38,6 +39,7 @@ const RootLayout = () => {
           </motion.div>
         </main>
         <ScrollReveal root={mainRef} />
+        <BackToTopButton />
         <Footer />
       </div>
     </MotionConfig>

@@ -168,7 +168,7 @@ const AdminDashboardPage: React.FC = () => {
           ) : recentQuotes.length === 0 ? (
             <div className="p-12 text-center text-brand-dark/60 dark:text-brand-light/60">No recent accepted quotes found.</div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto" tabIndex={0} aria-label="Scrollable table">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-brand-secondary/5 dark:bg-brand-dark/50 border-none">

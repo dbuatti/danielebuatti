@@ -12,7 +12,7 @@ interface ArrangementCardProps {
 }
 
 export const ArrangementCard: React.FC<ArrangementCardProps> = ({ arrangement }) => {
-  const { items } = useCart();
+  const { items, addToCart, removeFromCart } = useCart();
   const isInCart = items.some(i => i.id === arrangement.id);
 
   const previewUrl = arrangement.preview_image_path 
@@ -80,8 +80,23 @@ export const ArrangementCard: React.FC<ArrangementCardProps> = ({ arrangement })
             <span className="text-2xl font-bold text-brand-dark dark:text-brand-light">
               A${arrangement.price?.toFixed(2)}
             </span>
-            <Button 
-              size="sm" 
+            <Button
+              type="button"
+              size="sm"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (isInCart) {
+                  removeFromCart(arrangement.id);
+                } else {
+                  addToCart({
+                    id: arrangement.id,
+                    title: arrangement.title,
+                    price: arrangement.price ?? 0,
+                    composer: arrangement.composer || "Unknown Composer",
+                  });
+                }
+              }}
               className={cn(
                 "rounded-full px-6 font-bold transition-all",
                 isInCart ? "bg-green-500 hover:bg-green-600" : "bg-brand-primary hover:bg-brand-primary/90"

@@ -78,6 +78,7 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const closeTimer = useRef<number>();
+  const previousFocusRef = useRef<HTMLElement | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const menuId = useId();
 
@@ -124,6 +125,16 @@ const Navbar = () => {
     return () => {
       document.body.style.overflow = prev;
     };
+  }, [mobileOpen]);
+
+  // Restore focus to the element that opened the mobile menu.
+  useEffect(() => {
+    if (mobileOpen) {
+      previousFocusRef.current = document.activeElement as HTMLElement | null;
+    } else if (previousFocusRef.current) {
+      previousFocusRef.current.focus();
+      previousFocusRef.current = null;
+    }
   }, [mobileOpen]);
 
   const openMenu = useCallback(() => {
@@ -177,7 +188,7 @@ const Navbar = () => {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 6, scale: 0.98 }}
                     transition={{ duration: 0.22, ease }}
-                    className="absolute left-1/2 top-full z-50 w-[760px] -translate-x-1/2 pt-3"
+                    className="absolute left-1/2 top-full z-50 w-[min(760px,calc(100vw-2rem))] -translate-x-1/2 pt-3"
                   >
                     <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-lifted">
                       <div className="grid grid-cols-[1fr_220px]">
@@ -296,8 +307,40 @@ const itemVariants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.45, ease } },
 };
 
-const MobileMenu = ({ pathname, onClose }: { pathname: string; onClose: () => void }) => (
+const MobileMenu = ({ pathname, onClose }: { pathname: string; onClose: () => void }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Trap focus inside the full-screen menu while it is open.
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const getFocusable = () =>
+      Array.from(
+        container.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      );
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const focusable = getFocusable();
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    container.addEventListener("keydown", onKeyDown);
+    return () => container.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  return (
   <motion.div
+    ref={containerRef}
     className="fixed inset-0 z-[60] flex flex-col bg-background lg:hidden"
     role="dialog"
     aria-modal="true"
@@ -372,6 +415,7 @@ const MobileMenu = ({ pathname, onClose }: { pathname: string; onClose: () => vo
       </motion.div>
     </motion.nav>
   </motion.div>
-);
+  );
+};
 
 export default Navbar;
